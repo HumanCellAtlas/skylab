@@ -1,0 +1,1 @@
+This is a one-step pipeline that runs rsem on a pair of fastqs. It is not intended to be a scientifically useful pipeline, but rather an example wdl that can be used to test HCA secondary analysis infrastructure. See mock_smartseq2.json for an example inputs file.

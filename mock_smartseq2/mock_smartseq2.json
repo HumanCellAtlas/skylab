@@ -1,0 +1,5 @@
+{
+  "mock_smartseq2.left_fastq": "gs://broad-dsde-mint-dev-teststorage/left_10000.fastq",
+  "mock_smartseq2.right_fastq": "gs://broad-dsde-mint-dev-teststorage/right_10000.fastq",
+  "mock_smartseq2.ref_tar": "gs://broad-dsde-mint-dev-teststorage/ref_bundle.tar.gz"
+}
