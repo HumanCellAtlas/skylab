@@ -168,6 +168,15 @@ def get_parser(stages):
                     default=None,
                     help=help_message)
 
+            # Handle the "split_file" for mains that come after a split
+            if phase == 'main' and 'split' in available_stage_phases:
+                phase_parser.add_argument(
+                    "--split_file",
+                    type=martian_type_to_python_type("File"),
+                    nargs=martian_type_to_nargs("File"),
+                    default=None,
+                    help="File with split arguments.")
+
     return parser
 
 

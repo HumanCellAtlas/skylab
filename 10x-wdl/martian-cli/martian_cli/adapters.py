@@ -43,6 +43,19 @@ def _write_outs(outs, martian_io_fields):
             with open(field.name, 'w') as outf:
                 json.dump(getattr(outs, field.name), outf)
 
+def _write_chunks(stage_defs, chunks_object_filename):
+    """Write the chunk outputs of a split step to json files.
+
+    Martian split steps tend to specify multiple fields that you're supposed to scatter
+    over. But, WDL only lets you scatter over one array, or two if you use zip. So we
+    just have to shove everything into json files and scatter over those.
+    """
+    chunks = stage_defs["chunks"]
+
+    for idx, chunk in enumerate(chunks):
+        with open("martian_split_{}".format(idx), 'w') as split_file:
+            json.dump(chunk, split_file)
+
 def _common(stage, phase):
     """Martian functions expect a bunch of global scope variables that behave in a wildly
     unpythonic way. That can be mimicked by shamefully sticking things into __builtin__.
@@ -65,14 +78,22 @@ def split(stage, cli_args):
     env.update(locals())
     exec("stage_defs = module.split(args)", env, env)
 
-    _write_outs(stage_defs, stage.splits)
+    _write_chunks(stage_defs, "martian_splits")
 
-    return stage_defs["chunks"]
+    return stage_defs
 
 def main(stage, cli_args):
     """Run a main phase of a stage."""
 
     _common(stage, "main")
+
+    # If there's a "split_file" argument, that's the json file that was created
+    # by the split phase. We need to try to parse that and insert the values
+    # into the args Record that the main function is going to get.
+    cli_dict = vars(cli_args)
+    if hasattr(cli_args, "split_file") and cli_args.split_file:
+        split_dict = json.load(open(cli_args.split_file))
+        cli_dict.update(split_dict)
 
     # Build the args. The args of a main stage are all the "inputs" plus everything
     # in "split using"
