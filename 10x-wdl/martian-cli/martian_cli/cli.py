@@ -1,6 +1,8 @@
 """Module to define and expose the CLI to Martian
 
-Contains the entry point for the package.
+Contains the entry point for the package. Provides subcommands for running
+martian stages as well as looking at what stages exists and what their inputs
+and ouptuts are.
 """
 
 import argparse
@@ -146,6 +148,7 @@ def get_parser(stages):
             help="Execute stage " + stage.name)
         individual_stage_subparsers = individual_stage_parser.add_subparsers()
 
+        # Some stages don't have a split or join
         available_stage_phases = ['split', 'join', 'main'] if (stage.splits or stage.force_split) else ['main']
 
         for phase in available_stage_phases:
@@ -244,7 +247,8 @@ def _stage_inputs(stage, phase):
         return stage.inputs + stage.splits
     elif phase == 'join':
         # The inputs to join are arrays of the split and output fields since it's pulling
-        # together outputs of multiple main steps
+        # together outputs of multiple main steps.
+        # Also, "split" and "output" need to be added to the field names or there are collisions
         return stage.inputs + \
             [add_tag_to_name(arrayify(s), "split") for s in stage.splits] + \
             [add_tag_to_name(arrayify(s), "output") for s in stage.outputs]
