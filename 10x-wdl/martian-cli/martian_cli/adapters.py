@@ -125,21 +125,45 @@ def join(stage, cli_args):
     # 4. chunk_outs - a list of the outputs from each of the main steps. So these are
     #        fields from outs
 
+    # Args and outs are simple
     args = martian.Record(
         {k.name: getattr(cli_args, k.name) for k in stage.inputs})
     outs = _construct_outs(stage.outputs)
 
+    # Now handle the chunk_defs and chunk_outs
+
+    # Read all the arguments that are passed from the split step.
     all_splits = {k.name: getattr(cli_args, k.name + "_split") for k in stage.splits}
+    # Filter out any omitted split values.
+    all_splits = {k: v for k, v in all_splits.items() if v is not None}
+    # Transpose into a list of dicts rather than dict of lists, and create martian.Records
     chunk_defs = [martian.Record(dict(zip(all_splits.keys(), v))) for v in zip(*(all_splits.values()))]
+
+    # Now similarly, read arguments that are outputs from main steps
     all_chunks = {k.name: getattr(cli_args, k.name + "_output") for k in stage.outputs}
-    chunk_outs = [martian.Record(dict(zip(all_chunks.keys(), v))) for v in zip(*(all_chunks.values()))]
+    all_chunks = {k: v for k, v in all_chunks.items() if v is not None}
 
-    print "args", args
-    print "outs", outs
-    print "chunk_defs", chunk_defs
-    print "chunk_outs", chunk_outs
+    # Now transpose but don't put into martian.Records yet
+    flattened_chunks = [dict(zip(all_chunks.keys(), v)) for v in zip(*(all_chunks.values()))]
 
-    # Now continue with the theme of screwing with the environment, and exec the module
+    # The outputs from the main steps might be json files. If they are, then parse them and insert the
+    # values into the dicts in place of the file name
+    parsed_chunks = []
+    for flat_chunk in flattened_chunks:
+        parsed_chunk = {}
+        for key in flat_chunk:
+            try:
+                parsed_json = json.load(open(flat_chunk[key]))
+                parsed_chunk[key] = parsed_json
+            except Exception as exc:
+                parsed_chunk[key] = flat_chunk[key]
+        parsed_chunks.append(parsed_chunk)
+
+    # Finally create the martian.Records
+    chunk_outs = [martian.Record(c) for c in parsed_chunks]
+
+
+    # And run the stage
     env = globals()
     env.update(locals())
     exec("module.join(args, outs, chunk_defs, chunk_outs)", env, env)
