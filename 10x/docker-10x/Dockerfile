@@ -15,3 +15,6 @@ COPY run_in_10x_env.bash /opt/tenx/run_in_10x_env.bash
 
 RUN /bin/bash -c "source /opt/tenx/cellranger-2.0.0/sourceme.bash && pip install --upgrade pyparsing"
 RUN /bin/bash -c "source /opt/tenx/cellranger-2.0.0/sourceme.bash && pip install martian_cli"
+
+RUN apt-get update \
+ && apt-get install -y jq
