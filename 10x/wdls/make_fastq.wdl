@@ -331,6 +331,13 @@ task make_qc_summary_join {
     samples="${dollar}(jq -s '.[].sample' ${sep=' ' split_files} | jq -rs 'join(" ")')"
     lanes="${dollar}(jq -s '.[].lane | tostring' ${sep=' ' split_files} | jq -rs 'join(" ")')"
 
+    # The mro for this stage says that the output of the main steps should be a json file called
+    # qc summary, so that's what the martian_cli is looking for for the join step. But the main
+    # steps don't actually output that, so we have to make our own here. This code iterates
+    # through the collections of files that were produced by the main steps and creates json
+    # files with the expected structure. The json should have three keys: barcode, read1, and
+    # read2. And the values for each is a list of paths. You can tell which list each path should
+    # go it by the presence of a substring: BC --> barcode, R1 --> read1, R2 --> read2
     echo '[${sep=',' qc_jsons}]' | \
       jq -c '.[] | ${lbrace}"barcode": map(select( . |contains("BC"))), "read1": map(select( . |contains("R1"))), "read2": map(select( . |contains("R2")))${rbrace}' | \
       split -l 1 -a 2 - qc_json_split
@@ -408,6 +415,8 @@ task merge_fastqs_by_lane_sample_main {
   String rbrace = "}"
 
   command {
+    # Keep the fastq paths as $PWD/fastq_path so when the paths are passed to the join
+    # step, they'll still be valid.
     mkdir fastq_path
     for fastq in ${sep=' ' input_files}; do
       mkdir -p $(dirname fastq_path/${dollar}${lbrace}fastq##*/fastq_path${rbrace})
@@ -419,7 +428,12 @@ task merge_fastqs_by_lane_sample_main {
       --samplesheet_path '${samplesheet_path}' \
       --bcl2fastq_version '${bcl2fastq_version}' \
       --split_file '${split_file}'
-    
+
+    # The output of this step is "merged_file_paths", which in martian is a string[],
+    # but in WDL, we really want an Array[File]. The martian_cli writes a json file
+    # called merged_file_paths that's a list of paths. Cromwell can't read that, since
+    # read_json is not yet implemented. So this line converts the json to a
+    # newline-separated list of paths that works with read_lines.
     jq -r '.[]' merged_file_paths > merged_file_paths.lines
   }
   
@@ -443,20 +457,39 @@ task merge_fastqs_by_lane_sample_join {
 
   command {
     
+    # merged_file_paths_output is an Array[Array[File]], so we have to refer
+    # to it with a "sep" or cromwell will complain. When we sep with "," and
+    # stick a couple brackets around it, we get a string that is a json list
+    # of lists of paths. We then iterate over each top level list and for each
+    # path in each sublist, we remove the cromwell-specific part of the path by
+    # deleting everything up to "fastq_path". Later, we will create links in
+    # $PWD/fastq_path so these truncated paths point to something valid.
+    #
+    # After truncating the paths, we write each list of paths to its own file.
+    # The `jq -c` will print each list as a single line, and the `split -l 1`
+    # will print each line to its own file, prefixed by "merged_file_paths_output"
     echo '[${sep=',' merged_file_paths_output}]' | \
       jq -c '.[] | map(sub(".*(?=fastq_path\/)"; "")) ' | \
       split -l 1 -a 2 - merged_file_paths_output
     
+    # Now we are once again iterating over the merged_file_paths_output variable.
+    # The `echo | jq .[] | .[]` will pass each file path into this loop as the
+    # "fastq" variable. Then, for each path, strip off the cromwell-specific
+    # path of the path, just like above, and link to the $PWD/fastq_path
+    # directory
     while read fastq; do
       echo ${dollar}${lbrace}fastq${rbrace}
       mkdir -p $(dirname fastq_path/${dollar}${lbrace}fastq##*/fastq_path${rbrace})
       ln $fastq fastq_path/${dollar}${lbrace}fastq##*/fastq_path${rbrace}
     done < <( echo '[${sep=',' merged_file_paths_output}]' | jq -r '.[] | .[]')
 
-    echo '[${sep=',' merged_file_paths_output}]' | \
+
     /opt/tenx/run_in_10x_env.bash martian stage run MERGE_FASTQS_BY_LANE_SAMPLE join \
       --merged_file_paths_output merged_file_paths_output*
 
+    # The join step just renames files in fastq_path, so we have to find the outputs
+    # ourselves. This can be done by just finding all the files in fastq_path and
+    # writing them to a file that read_lines and read.
     find fastq_path -type f -exec echo ${lbrace}${rbrace} >> merged_file_paths.lines \;
 
   }
