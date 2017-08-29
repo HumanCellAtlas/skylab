@@ -22,7 +22,7 @@ task make_fastqs_preflight_local {
       --run_path '${run_path}' \
       --check_executables ${true='true' false='false' check_executables} \
       ${'--lanes ' + lanes} \
-      --specs '${sep=" " specs}' \
+      --specs '${sep="\' \'" specs}' \
       --barcode_whitelist '${barcode_whitelist}' \
       --bc_read_type '${bc_read_type}' \
       --bc_start_index '${bc_start_index}' \
@@ -88,7 +88,7 @@ task prepare_samplesheet {
       --project '${project}' \
       --bc_length '${bc_length}' \
       --si_read_type '${si_read_type}' \
-      --specs '${sep=" " specs}'
+      --specs '${sep="\' \' " specs}'
   }
 
   runtime {
@@ -268,7 +268,7 @@ task make_qc_summary_main {
   # so link them to $CWD/fastq_path
   command {
     mkdir fastq_path
-    for fastq in ${sep=' ' input_files}; do
+    for fastq in '${sep="\' \'" input_files}'; do
       mkdir -p $(dirname fastq_path/${dollar}${lbrace}fastq##*/fastq_path${rbrace})
       ln $fastq fastq_path/${dollar}${lbrace}fastq##*/fastq_path${rbrace}
     done
@@ -328,8 +328,8 @@ task make_qc_summary_join {
 
   command {
 
-    samples="${dollar}(jq -s '.[].sample' ${sep=' ' split_files} | jq -rs 'join(" ")')"
-    lanes="${dollar}(jq -s '.[].lane | tostring' ${sep=' ' split_files} | jq -rs 'join(" ")')"
+    samples="${dollar}(jq -s '.[].sample' '${sep="\' \'" split_files}' | jq -rs 'join(" ")')"
+    lanes="${dollar}(jq -s '.[].lane | tostring' '${sep="\' \'" split_files} | jq -rs 'join(" ")')"
 
     # The mro for this stage says that the output of the main steps should be a json file called
     # qc summary, so that's what the martian_cli is looking for for the join step. But the main
@@ -418,7 +418,7 @@ task merge_fastqs_by_lane_sample_main {
     # Keep the fastq paths as $PWD/fastq_path so when the paths are passed to the join
     # step, they'll still be valid.
     mkdir fastq_path
-    for fastq in ${sep=' ' input_files}; do
+    for fastq in '${sep="\' \'" input_files}'; do
       mkdir -p $(dirname fastq_path/${dollar}${lbrace}fastq##*/fastq_path${rbrace})
       ln $fastq fastq_path/${dollar}${lbrace}fastq##*/fastq_path${rbrace}
     done
