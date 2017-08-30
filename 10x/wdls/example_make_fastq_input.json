@@ -1,0 +1,18 @@
+{
+  "make_fastqs.specs": [{"csv": "/path/to/samplesheet"}],
+  "make_fastqs.umi_start_index": 16,
+  "make_fastqs.ignore_dual_index": false,
+  "make_fastqs.run_path": "/path/to/run/folder",
+  "make_fastqs.bc_length": 16,
+  "make_fastqs.check_executables": false,
+  "make_fastqs.barcode_whitelist": "737K-august-2016",
+  "make_fastqs.si_read_type": "I1",
+  "make_fastqs.bc_read_type": "R1",
+  "make_fastqs.umi_read_type": "R1",
+  "make_fastqs.bc_start_index": 0,
+  "make_fastqs.bcl2fastq2_args": " -r 6 -w 6",
+  "make_fastqs.umi_length": 10,
+  "make_fastqs.max_bcl2fastq_threads": 6,
+  "make_fastqs.project": "demo_project",
+  "make_fastqs.software_version": "cellranger 2.0.0"
+}
