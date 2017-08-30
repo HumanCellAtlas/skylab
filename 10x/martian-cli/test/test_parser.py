@@ -33,7 +33,7 @@ class TestMRO(unittest.TestCase):
 
     def test_default_field(self):
         """Nameless field parsed correctly."""
-        missing_name_stage = self.mro_stages['missing_name']
+        missing_name_stage = self.mro_stages['MISSING_NAME_STAGE']
 
         self.assertEqual(missing_name_stage.inputs[0].name, "default")
         self.assertEqual(missing_name_stage.outputs[0].name, "default")

@@ -14,6 +14,6 @@ stage MISSING_NAME_STAGE(
     in  int,
     out fastq,
     src py      "path/to/source",
-) split using {
-    in float
-}
+) split using (
+    in float,
+)
