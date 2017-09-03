@@ -5,7 +5,7 @@ task Star {
   File star_genome
 
   command {
-    tar -zxvf ${star_genome}
+    tar -xvf ${star_genome}
     STAR  --readFilesIn ${input_fastq_read1} ${input_fastq_read2} \
       --genomeDir ./star \
       --quantMode TranscriptomeSAM \
@@ -42,7 +42,7 @@ task FeatureCountsUniqueMapping {
   }
   runtime {
     docker:"humancellatlas/star_dev:v1"
-    memory: "10 GB"
+    memory: "15 GB"
     disks :"local-disk 50 HDD"
   }
   output {
@@ -58,7 +58,7 @@ task RsemExpression {
   String rsem_out
   
   command {
-    tar -zxvf ${rsem_genome}
+    tar -xvf ${rsem_genome}
     echo "Aligning fastqs and calculating expression"
     rsem-calculate-expression --bam --paired-end ${trans_aligned_bam} rsem/rsem_trans_index  "${rsem_out}"
     ## parse gene expected_count out
