@@ -1,0 +1,11 @@
+{
+  "Ss2RunSingleSample.output_prefix": "demo",
+  "Ss2RunSingleSample.fastq_read1": "gs://broad-dsde-mint-dev-teststorage/demo/R1.fastq.gz",  
+  "Ss2RunSingleSample.fastq_read2": "gs://broad-dsde-mint-dev-teststorage/demo/R2.fastq.gz",
+  "Ss2RunSingleSample.gtf": "gs://broad-dsde-mint-dev-teststorage/demo/gencodev19_chr21.gtf",
+  "Ss2RunSingleSample.ref_fasta": "gs://broad-dsde-mint-dev-teststorage/demo/chr21.fa",
+  "Ss2RunSingleSample.ref_flat": "gs://broad-dsde-mint-dev-teststorage/demo/refFlat.chr21.txt",
+  "Ss2RunSingleSample.rrna_interval": "gs://broad-dsde-mint-dev-teststorage/demo/hg19.chr21.rRNA.interval_list",
+  "Ss2RunSingleSample.star_genome": "gs://broad-dsde-mint-dev-teststorage/demo/star.tar",
+  "Ss2RunSingleSample.rsem_genome": "gs://broad-dsde-mint-dev-teststorage/demo/rsem.tar"
+}

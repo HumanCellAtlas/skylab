@@ -1,0 +1,10 @@
+{
+  "Ss2RunMultiSample.sra_list_file": "gs://broad-dsde-mint-dev-teststorage/demo/sra_list.txt",
+  "Ss2RunMultiSample.sra_dir": "gs://broad-dsde-mint-dev-teststorage/demo",
+  "Ss2RunMultiSample.gtf": "gs://broad-dsde-mint-dev-teststorage/demo/gencodev19_chr21.gtf",
+  "Ss2RunMultiSample.ref_fasta": "gs://broad-dsde-mint-dev-teststorage/demo/chr21.fa",
+  "Ss2RunMultiSample.ref_flat": "gs://broad-dsde-mint-dev-teststorage/demo/refFlat.chr21.txt",
+  "Ss2RunMultiSample.rrna_interval": "gs://broad-dsde-mint-dev-teststorage/demo/hg19.chr21.rRNA.interval_list",
+  "Ss2RunMultiSample.star_genome": "gs://broad-dsde-mint-dev-teststorage/demo/star.tar",
+  "Ss2RunMultiSample.rsem_genome": "gs://broad-dsde-mint-dev-teststorage/demo/rsem.tar"
+}
