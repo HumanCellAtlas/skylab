@@ -81,6 +81,7 @@ def _common(stage, phase):
     """
     import __builtin__
     __builtin__.metadata = martian.Metadata(stage.source, "files", "run", phase)
+    __builtin__.version = {"martian": "HCA", "pipelines": "HCA"}
     sys.path.append(os.path.dirname(stage.source))
     __builtin__.module = __import__(os.path.basename(stage.source))
 
