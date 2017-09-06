@@ -18,8 +18,8 @@ For now, use git clone `git clone git@github.com:HumanCellAtlas/skylab.git` and 
 - Agora
 - Dockstore
 
-#[TODO] Tagged releases
+# [TODO] Tagged releases
 Pipelines are released in tagged releases to track changes in version of pipeline, and to track when a pipeline is blessed.
 
-#[TODO] Automated testing options
-#[TODO] Onboarding pipelines
+# [TODO] Automated testing options
+# [TODO] Onboarding pipelines
