@@ -32,7 +32,7 @@ def main(indices_json, *fastqs):
 
     # write records in indices to output files and close files
     try:
-        for i, records in enumerate(readers):
+        for i, records in enumerate(zip(*readers)):  # bug
             if i in indices:
                 for record, fout in zip(records, output_fileobjs):
                     fout.write(record)
