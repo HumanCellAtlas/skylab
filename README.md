@@ -12,6 +12,8 @@ For now, use git clone `git clone git@github.com:HumanCellAtlas/skylab.git` and 
 1. WDL and Cromwell [Documentation](https://software.broadinstitute.org/wdl/)
 2. Running WDLs in [Cromwell](https://software.broadinstitute.org/wdl/documentation/execution.php)
 
+**[TODO] Update this section with better instructions on how to easily try our pipelines.**
+
 # [TODO] Blessed HCA Pipelines in Methods Repositories
 - Agora
 - Dockstore
