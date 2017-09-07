@@ -1,36 +1,3 @@
-
-task Star {
-  File genomic_fastq
-  File gtf
-  File star_genome  # todo should be included in genome directly
-
-  # note that if runThreadN must always equal 1 or the order will be modified
-  # could pipe zcat to head in readFilesCommand for speed? need only align about ~ 10m reads
-  command {
-    tar -zxvf ${star_genome}
-    STAR  --readFilesIn ${genomic_fastq} \
-      --genomeDir ./star \
-      --quantMode TranscriptomeSAM \
-      --outSAMstrandField intronMotif \
-      --genomeLoad NoSharedMemory \
-      --sjdbGTFfile ${gtf} \
-      --readFilesCommand "zcat" \
-      --outSAMtype BAM Unsorted  \
-      --outSAMunmapped Within \
-      --limitBAMsortRAM 30000000000
-  }
-  output {
-    File output_bam = "Aligned.out.bam"
-  }
-
-  runtime {
-    docker: "humancellatlas/star_dev:v1"
-    memory: "40 GB"  # not used locally
-    disks: "local-disk 250 HDD"  # not used locally
-  }
-}
-
-
 task ExtractSubsetReadIndicesInline {
   File bam_file
   Int chromosome
@@ -39,6 +6,7 @@ task ExtractSubsetReadIndicesInline {
     python <<CODE
 
     import os
+    import sys  # todo debugging
     import json
     import pysam
 
@@ -106,13 +74,15 @@ task SubsetFastqFromIndicesInline {
   import scsequtil.fastq as fq
 
 
+  # get indices, identify maximum (stopping condition for looping)
   with open('${indices_json}', 'r') as f:
       indices = set(json.load(f))
+  max_ind = max(indices)
 
 
   # create fastq readers
   fastqs = ['${input_fastq_r1}', '${input_fastq_r2}', '${input_fastq_i1}']
-  readers = zip(fq.Reader(f) for f in fastqs)
+  readers = zip(*[fq.Reader(f) for f in fastqs])
 
   # create output filenames
   output_filenames = [f.partition('.fastq')[0] + '_subset.fastq.gz' for f in fastqs]
@@ -122,14 +92,19 @@ task SubsetFastqFromIndicesInline {
 
   # write records in indices to output files and close files
   try:
-      for i, records in enumerate(zip(iter(r) for r in readers)):  # bug
+      for i, records in enumerate(readers):
           if i in indices:
               for record, fout in zip(records, output_fileobjs):
-                  fout.write(record)
+                  fout.write(str(record))
+          if i > max_ind:
+              break
 
   finally:
       for f in output_fileobjs:
           f.close()
+
+  for f in output_filenames:
+      print(f)
 
   CODE
   >>>
@@ -142,7 +117,7 @@ task SubsetFastqFromIndicesInline {
   }
 
   output {
-    Array[File] output_subset_fastqs = glob("*_subset.fastq.gz")
+    Array[String] output_subset_fastqs = read_lines(stdout())
   }
 
 }
@@ -153,20 +128,15 @@ workflow generate_test {
   File input_fastq_r1
   File input_fastq_r2
   File input_fastq_i1
+  File aligned_bam
   File gtf
   File star_genome
   Int chromosome
 
-  call Star {
-    input:
-      genomic_fastq = input_fastq_r2,
-      gtf = gtf,
-      star_genome = star_genome
-  }
 
   call ExtractSubsetReadIndicesInline {
     input:
-      bam_file = Star.output_bam,
+      bam_file = aligned_bam,
       chromosome = chromosome
   }
 
