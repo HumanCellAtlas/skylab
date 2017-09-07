@@ -121,15 +121,16 @@ def main(stage, cli_args):
     # into the args Record that the main function is going to get.
     cli_dict = vars(cli_args)
     if hasattr(cli_args, "split_file") and cli_args.split_file:
-        split_dict = cli_args.split_file
+        split_dict = json.load(open(cli_args.split_file))
         cli_dict.update(split_dict)
     else:
         split_dict = {}
 
     # Build the args. The args of a main stage are all the "inputs" plus everything
     # in "split using"
+    arg_keys = set([k.name for k in stage.inputs + stage.splits] + split_dict.keys())
     args = martian.Record(
-        {k.name: getattr(cli_args, k.name) for k in stage.inputs + stage.splits})
+        {k: getattr(cli_args, k) for k in arg_keys})
 
     # Build the outs object, which is just the stage output fields
     outs = _construct_outs(stage.outputs)

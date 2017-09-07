@@ -165,7 +165,7 @@ def get_parser(stages):
                     help_message += " Help: " + input_.help
                 phase_parser.add_argument(
                     "--" + input_.name,
-                    type=_mabye_load_or_parse_json,
+                    type=_maybe_parse_json,
                     default=None,
                     help=help_message)
 
@@ -173,30 +173,23 @@ def get_parser(stages):
             if phase == 'main' and 'split' in available_stage_phases:
                 phase_parser.add_argument(
                     "--split_file",
-                    type=_mabye_load_or_parse_json,
+                    type=_maybe_parse_json,
                     default=None,
                     help="File with split arguments.")
 
     return parser
 
-def _mabye_load_or_parse_json(json_file_or_string):
+def _maybe_parse_json(maybe_json_string):
 
     # Try to read file contents and parse like json
-    if os.path.isfile(json_file_or_string):
+    if not os.path.isfile(maybe_json_string):
         try:
-            with open(json_file_or_string, 'r') as json_file:
-                return json.load(json_file)
-        except ValueError: # Not a json file
-            pass
-    # If that doesn't work, parse it like a json string
-    else:
-        try:
-            return json.loads(json_file_or_string)
+            return json.loads(maybe_json_string)
         except ValueError:
             pass
 
     # Alright, it's not a json file or a json string, so just return it as is.
-    return json_file_or_string
+    return maybe_json_string
 
 def _stage_inputs(stage, phase):
     """Get the inputs to a phase of a stage.
