@@ -4,6 +4,12 @@ task BareTask {
 
   command <<<
     echo "user passed input: ${user_input}"
-    echo "here are the environment variables $ENV"
+    echo "here are the environment variables"
+    TESTVAR="foo"
+    echo $TESTVAR
   >>>
+
+  output {
+    Array[String] standard_out = read_lines(stdout())
+  }
 }
