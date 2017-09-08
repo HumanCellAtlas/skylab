@@ -1,9 +1,0 @@
-{
-  "generate_test.input_fastq_r2": "${HOME}/projects/skylab/10x/test/data/fastqs_10m/pbmc8k_S1_L007_R1_001_10m.fastq.gz",
-  "generate_test.gtf": "${HOME}/projects/skylab/10x/test/data/star/chr21_human/gencodev19_chr21.gtf",
-  "generate_test.input_fastq_i1": "${HOME}/projects/skylab/10x/test/data/fastqs_10m/pbmc8k_S1_L007_I1_001_10m.fastq.gz",
-  "generate_test.star_genome": "${HOME}/projects/skylab/10x/test/data/star/chr21_human/chr21_human.tar.gz",
-  "generate_test.input_fastq_r1": "${HOME}/projects/skylab/10x/test/data/fastqs_10m/pbmc8k_S1_L007_R1_001_10m.fastq.gz",
-  "generate_test.aligned_bam": "${HOME}/projects/skylab/10x/test/data/aligned_bams/pbmc8k_S1_L007_R2_001_10m.bam",
-  "generate_test.chromosome": "21"
-}

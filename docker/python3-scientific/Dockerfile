@@ -4,4 +4,9 @@ MAINTAINER Ambrose Carr <mail@ambrosejcarr.com>
 LABEL software="python 3.6.2"
 LABEL description="python 3.6.2 with pysam and scsequtil"
 
-RUN pip3 install scsequtil
+RUN pip3 install scsequtil==0.0.5 \
+    scipy \
+    numpy \
+    matplotlib \
+    pandas \
+    tables \
