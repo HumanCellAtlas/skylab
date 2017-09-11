@@ -1,0 +1,8 @@
+{
+  "WrapperSs2RsemSingleSample.gtf": "gs://broad-dsde-mint-dev-teststorage/reference/Hg19_kco/Gencode_v19/Gencode_v19.GTF",
+  "WrapperSs2RsemSingleSample.ref_fasta": "gs://broad-dsde-mint-dev-teststorage/reference/Hg19_kco/Hg19.fa",
+  "WrapperSs2RsemSingleSample.ref_flat": "gs://broad-dsde-mint-dev-teststorage/reference/Hg19_kco/refFlat.txt",
+  "WrapperSs2RsemSingleSample.rrna_interval": "gs://broad-dsde-mint-dev-teststorage/reference/Hg19_kco/hg19.rRNA.interval_list",
+  "WrapperSs2RsemSingleSample.star_genome": "gs://broad-dsde-mint-dev-teststorage/reference/Hg19_kco/star_hg19_gencode_v19.tar.gz",
+  "WrapperSs2RsemSingleSample.rsem_genome": "gs://broad-dsde-mint-dev-teststorage/reference/Hg19_kco/rsem_hg19_gencode_v19.tar.gz"
+}
