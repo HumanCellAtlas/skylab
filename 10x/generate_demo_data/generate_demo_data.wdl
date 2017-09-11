@@ -30,7 +30,7 @@ task StarAlignSubset {
   }
   runtime {
     docker: "humancellatlas/star_dev:v1"
-    memory: "10 GB"  # not used locally
+    memory: "8 GB"  # not used locally
     disks: "local-disk 220 HDD"  # 80G fastq, 32G reference bundle, 80G bam, 15% overflow (30G)
   }
 }
