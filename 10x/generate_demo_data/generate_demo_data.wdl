@@ -3,7 +3,7 @@ task StarAlignSubset {
   File genomic_fastq
   File gtf
   File star_genome
-  Int? subset_size
+  Int? subset_size = 1000000
 
   # note that STAR runThreadN must always equal 1 (default) or the order of the .bam file will be
   # disordered relative to the input data, breaking the expectation of same-ordering necessary
@@ -13,7 +13,7 @@ task StarAlignSubset {
     tar -zxvf ${star_genome}
 
     # truncate the input file
-    zcat ${genomic_fastq} | head -n ${default=100000 subset_size} > reads.fastq
+    zcat ${genomic_fastq} | head -n ${subset_size} > reads.fastq
 
     # align reads
     STAR  --readFilesIn reads.fastq \
@@ -38,8 +38,8 @@ task StarAlignSubset {
 task ExtractIndicesSpecificChromosomeAlignments {
   File bam_file
   Int chromosome
-  Int? number_alignable_records
-  Int? number_unalignable_records
+  Int? number_alignable_records = 10000
+  Int? number_unalignable_records = 2000
 
   command <<<
     python3 <<CODE
@@ -49,9 +49,9 @@ task ExtractIndicesSpecificChromosomeAlignments {
 
     sa = bam.SubsetAlignments('${bam_file}')
     alignable, unalignable = sa.indices_by_chromosome(
-        ${default=10000 number_alignable_records},
+        ${number_alignable_records},
         '${chromosome}',
-        ${default=2000 number_unalignable_records})
+        ${number_unalignable_records})
     with open('indices.json', 'w') as f:
         json.dump(alignable + unalignable, f)
 
