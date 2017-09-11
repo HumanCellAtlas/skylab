@@ -1,5 +1,0 @@
-{
-  "count.read_paths": ["/home/ubuntu/fastqs"],
-  "count.sample_def": ["sample_def.json"],
-  "count.sample_id": "hm100"
-}
