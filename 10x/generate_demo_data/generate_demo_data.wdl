@@ -22,7 +22,8 @@ task StarAlignSubset {
       --genomeLoad NoSharedMemory \
       --sjdbGTFfile ${gtf} \
       --outSAMtype BAM Unsorted  \
-      --outSAMunmapped Within
+      --outSAMunmapped Within \
+      --runThreadN 1
   }
   output {
     File output_bam = "Aligned.out.bam"
