@@ -76,6 +76,7 @@ task SubsetFastqFromIndices {
   command <<<
     python3 <<CODE
 
+    import os
     import json
     import scsequtil.fastq as fq
     import scsequtil.reader as rd
@@ -90,7 +91,8 @@ task SubsetFastqFromIndices {
     readers = [fq.Reader(f) for f in fastqs]
 
     # define filenames
-    output_filenames = [f.partition('.fastq')[0] + '_subset.fastq.gz' for f in fastqs]
+    filenames_nopath = [os.path.split(f)[1] for f in fastqs]
+    output_filenames = [f.partition('.fastq')[0] + '_subset.fastq.gz' for f in filenames_nopath]
 
     # open some files
     output_fileobjs = [gzip.open(f, 'wt') for f in output_filenames]
@@ -116,7 +118,7 @@ task SubsetFastqFromIndices {
     disks: "local-disk 220 HDD"
   }
   output {
-    Array[File] output_subset_fastqs = read_lines(stdout())
+    Array[File] output_subset_fastqs = glob("./*_subset.fastq.gz")
   }
 }
 
