@@ -150,8 +150,8 @@ workflow Generate10xDemoData {
   }
 
   output {
-    File subset_fastq_r1 = "subset_wf.output_subset_fastqs[0]"
-    File subset_fastq_r2 = "subset_wf.output_subset_fastqs[1]"
-    File subset_fastq_i1 = "subset_wf.output_subset_fastqs[2]"
+    File subset_fastq_r1 = SubsetFastqFromIndices.output_subset_fastqs[0]
+    File subset_fastq_r2 = SubsetFastqFromIndices.output_subset_fastqs[1]
+    File subset_fastq_i1 = SubsetFastqFromIndices.output_subset_fastqs[2]
   }
 }
