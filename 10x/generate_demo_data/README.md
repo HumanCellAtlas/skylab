@@ -26,7 +26,7 @@ cd skylab/10x/generate_reference_bundle
 - `fastq_r2`: fastq read 2 for the matching experiment
 - `fastq_i1`: fastq index read 1 for the matching 10x experiment
 - `star_genome`: STAR index for the organism matching the 10x experiment. These indices can be
-  created with _____ located at `skylab/___`  # TODO
+  created with `BuildStarReferenceBundle.wdl` in `skylab`
 - `gtf`: The gtf annotation file used to construct the `star_genome` provided above. 
 - `chromosome`: the chromosome `[1-22, X, Y, M]` for reads to be extracted from.
 
@@ -34,17 +34,16 @@ cd skylab/10x/generate_reference_bundle
 - Memory: 8GB
 - Processors: 1
 - Disk Space: 10 GB (including docker images)
+- Expected time: ~ 30s
 
 # Example Input Data
 Example input data is derived from a 10 million read trunction of the 10x public peripheral 
-blood mononuclear cell 8000 cell dataset (#todo link). The remaining parameters would extract
-a demo dataset from chromosome 21.
-- `fastq_r1`: gs:// # todo 
-- `fastq_r2`: 
-- `fastq_i1`: 
-- `star_genome`: #todo, created with _____ located at `skylab/___`, downloaded from  # TODO
-- `gtf`: #todo, downloaded from
-- `chromosome`: 21
+blood mononuclear cell 
+<a href=https://support.10xgenomics.com/single-cell-gene-expression/datasets>8000 cell dataset</a>. 
+The remaining parameters extract a demo dataset from chromosome 21. The 
+genome provided was created with`BuildStarReferenceDemo.wdl` and derived from a
+human genome and annotation that was downloaded from 
+<a href=https://www.gencodegenes.org/releases/current.html>GENCODE</a>
 
 # Output Description
 - `subset_fastq_r1`, `subset_fastq_r2`, `subset_fastq_r3`: three fastq files containing 10000 
