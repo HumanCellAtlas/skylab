@@ -106,10 +106,6 @@ task SubsetFastqFromIndices {
         for f in output_fileobjs:
             f.close()
 
-    # write filenames to stdout for cromwell to pick up
-    for f in output_filenames:
-       print(f)
-
     CODE
   >>>
   runtime {
