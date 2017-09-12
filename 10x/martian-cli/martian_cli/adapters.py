@@ -32,9 +32,10 @@ def _construct_outs(martian_io_fields):
     """
     outs = {}
     for field in martian_io_fields:
-        if field.type in common.MARTIAN_FILETYPES:
-            outs[field.name] = field.name + '.' + field.type
-        elif field.type == "path":
+        field_type = field.type.replace("[]", "")
+        if field_type in common.MARTIAN_FILETYPES:
+            outs[field.name] = field.name + '.' + field_type
+        elif field_type == "path":
             outs[field.name] = field.name
         else:
             outs[field.name] = None
@@ -57,12 +58,7 @@ def _write_outs(outs, martian_io_fields):
     """
     for field in martian_io_fields:
         # Maps require special handling so we can use the WDL read_map function
-        if field.type == 'map':
-            with open(field.name, 'w') as outf:
-                for key, value in getattr(outs, field.name).items():
-                    outf.write("\t".join([str(key), str(value)]))
-                    outf.write("\n")
-        elif field.type not in common.MARTIAN_FILETYPES and field.type != "path":
+        if field.type not in common.MARTIAN_FILETYPES and field.type != "path":
             with open(field.name, 'w') as outf:
                 json.dump(getattr(outs, field.name), outf)
 
@@ -85,6 +81,7 @@ def _common(stage, phase):
     """
     import __builtin__
     __builtin__.metadata = martian.Metadata(stage.source, "files", "run", phase)
+    __builtin__.version = {"martian": "HCA", "pipelines": "HCA"}
     sys.path.append(os.path.dirname(stage.source))
     __builtin__.module = __import__(os.path.basename(stage.source))
 
@@ -126,11 +123,14 @@ def main(stage, cli_args):
     if hasattr(cli_args, "split_file") and cli_args.split_file:
         split_dict = json.load(open(cli_args.split_file))
         cli_dict.update(split_dict)
+    else:
+        split_dict = {}
 
     # Build the args. The args of a main stage are all the "inputs" plus everything
     # in "split using"
+    arg_keys = set([k.name for k in stage.inputs + stage.splits] + split_dict.keys())
     args = martian.Record(
-        {k.name: getattr(cli_args, k.name) for k in stage.inputs + stage.splits})
+        {k: getattr(cli_args, k) for k in arg_keys})
 
     # Build the outs object, which is just the stage output fields
     outs = _construct_outs(stage.outputs)
@@ -181,21 +181,8 @@ def join(stage, cli_args):
     # Now transpose but don't put into martian.Records yet
     flattened_chunks = [dict(zip(all_chunks.keys(), v)) for v in zip(*(all_chunks.values()))]
 
-    # The outputs from the main steps might be json files. If they are, then parse them and insert the
-    # values into the dicts in place of the file name
-    parsed_chunks = []
-    for flat_chunk in flattened_chunks:
-        parsed_chunk = {}
-        for key in flat_chunk:
-            try:
-                parsed_json = json.load(open(flat_chunk[key]))
-                parsed_chunk[key] = parsed_json
-            except Exception as exc:
-                parsed_chunk[key] = flat_chunk[key]
-        parsed_chunks.append(parsed_chunk)
-
     # Finally create the martian.Records
-    chunk_outs = [martian.Record(c) for c in parsed_chunks]
+    chunk_outs = [martian.Record(c) for c in flattened_chunks]
 
 
     # And run the stage

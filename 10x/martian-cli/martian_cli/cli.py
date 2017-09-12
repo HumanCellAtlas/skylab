@@ -8,11 +8,10 @@ and ouptuts are.
 import argparse
 import json
 import os
-import re
 import sys
 import traceback
 
-from martian_cli import adapters, common, mro_parser
+from martian_cli import adapters, mro_parser
 
 
 def verify_environment():
@@ -166,8 +165,7 @@ def get_parser(stages):
                     help_message += " Help: " + input_.help
                 phase_parser.add_argument(
                     "--" + input_.name,
-                    type=martian_type_to_python_type(input_.type),
-                    nargs=martian_type_to_nargs(input_.type),
+                    type=_maybe_parse_json,
                     default=None,
                     help=help_message)
 
@@ -175,46 +173,23 @@ def get_parser(stages):
             if phase == 'main' and 'split' in available_stage_phases:
                 phase_parser.add_argument(
                     "--split_file",
-                    type=martian_type_to_python_type("File"),
-                    nargs=martian_type_to_nargs("File"),
+                    type=_maybe_parse_json,
                     default=None,
                     help="File with split arguments.")
 
     return parser
 
+def _maybe_parse_json(maybe_json_string):
 
-def _strip_quotes(file_arg):
-    """Strip leading and trailing quotes.
+    # Try to read file contents and parse like json
+    if not os.path.isfile(maybe_json_string):
+        try:
+            return json.loads(maybe_json_string)
+        except ValueError:
+            pass
 
-    These are showing up in paths...
-    """
-    return re.sub("^[\'\"]|[\'\"]$", "", file_arg)
-
-def _load_map(arg):
-    """Try to load a map argument.
-
-    This seems to show up in a couple of different ways in WDL. It can just be a json string, or
-    sometimes it get's written to a 2 column tsv.
-    """
-
-    if os.path.isfile(arg):
-        output = {}
-        with open(arg) as arg_f:
-            for line in arg_f:
-                key, val = line.strip().split('\t')
-                output[key] = val
-        return output
-    return json.loads(arg)
-
-def _str_to_bool(val):
-    """Convert a bool-like string to a bool. Useful for exposing options in the cli."""
-    if val.lower() in ('yes', 'true', 't', 'y', '1'):
-        return True
-    elif val.lower() in ('no', 'false', 'f', 'n', '0'):
-        return False
-    else:
-        raise argparse.ArgumentTypeError('Boolean value expected.')
-
+    # Alright, it's not a json file or a json string, so just return it as is.
+    return maybe_json_string
 
 def _stage_inputs(stage, phase):
     """Get the inputs to a phase of a stage.
@@ -253,29 +228,6 @@ def _stage_inputs(stage, phase):
             [add_tag_to_name(arrayify(s), "split") for s in stage.splits] + \
             [add_tag_to_name(arrayify(s), "output") for s in stage.outputs]
 
-
-def martian_type_to_python_type(martian_type):
-    """Convert a Martian type to a python type for argparse."""
-    martian_to_python = {"path": _strip_quotes,
-                         "int": int,
-                         "bool": _str_to_bool,
-                         "float": float,
-                         "string": str,
-                         "File": _strip_quotes,
-                         "map": _load_map}
-    for ftype in common.MARTIAN_FILETYPES:
-        martian_to_python[ftype] = str
-
-    return martian_to_python[martian_type.strip('[]')]
-
-
-def martian_type_to_nargs(martian_type):
-    """Get the argparse nargs parameter for a Martian type."""
-
-    if martian_type.endswith("[]"):
-        return "*"
-    else:
-        return '?'
 
 
 def load_stages():
