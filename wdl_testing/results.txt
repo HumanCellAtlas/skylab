@@ -1,0 +1,6 @@
+{
+  "outputs": {
+    "WrapperForTask.standard_output": ["user passed input: Hello, world!", "here are the environment variables", "foo"]
+  },
+  "id": "414b4105-7321-40c7-b60f-079f0c20f4be"
+}
