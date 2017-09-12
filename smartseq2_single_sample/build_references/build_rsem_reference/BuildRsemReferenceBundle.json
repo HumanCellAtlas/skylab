@@ -1,0 +1,4 @@
+{
+  "RsemRef.fasta": "gs://broad-dsde-mint-dev-teststorage/reference/hg19/Homo_sapiens_assembly19.fasta",
+  "RsemRef.gtf": "gs://broad-dsde-mint-dev-teststorage/reference/hg19/gencode.v19.annotation.gtf"
+}
