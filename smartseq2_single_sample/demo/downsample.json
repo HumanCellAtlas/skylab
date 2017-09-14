@@ -1,0 +1,5 @@
+{
+  "DownSampleBam.filename": "gs://broad-dsde-mint-dev-cromwell-execution/cromwell-executions/Ss2RsemSingleSample/eda131ff-439d-4ae1-8daf-bc845b92fd2c/call-Star/Aligned.sortedByCoord.out.bam",
+  "DownSampleBam.fraction": "0.15",
+  "DownSampleBam.chrN": "21"
+}

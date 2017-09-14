@@ -1,0 +1,36 @@
+{
+  "count.read_path": "/path/to/fastqs",
+  "count.sample_def": "sample_def.json",
+  "count.sample_id": "sample_id",
+  "count.reads_per_file": 5000000,
+  "count.primers": [
+    {
+      "name": "P5",
+      "seq": "AATGATACGGCGACCACCGAGATCT"
+    },
+    {
+      "name": "P7",
+      "seq": "CAAGCAGAAGACGGCATACGAGAT"
+    },
+    {
+      "name": "R1",
+      "seq": "ACACTCTTTCCCTACACGACG"
+    },
+    {
+      "name": "R2",
+      "seq": "GTGACTGGAGTTCAGACGTGTG"
+    },
+    {
+      "name": "switch_oligo",
+      "seq": "AAGCAGTGGTATCAACGCAGAGTACATGGG"
+    },
+    {
+      "name": "polyA",
+      "seq": "AAAAAAAAAAAAAAAAAAAA"
+    }
+  ],
+  "count.subsample_rate": 1,
+  "count.align": "{\"aligner\": \"star\", \"high_conf_mapq\": null}",
+  "count.reference_path": "/path/to/reference/dir",
+  "count.umi_min_qual_threshold": 10
+}

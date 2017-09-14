@@ -1,11 +1,11 @@
 {
-  "Ss2RsemSingleSample.output_prefix":"SRR1294876",  
-  "Ss2RsemSingleSample.fastq_read1":"gs://broad-dsde-mint-dev-teststorage/patel_ap/SRR1294876_1.fastq.gz",  
-  "Ss2RsemSingleSample.fastq_read2":"gs://broad-dsde-mint-dev-teststorage/patel_ap/SRR1294876_2.fastq.gz",
-  "Ss2RsemSingleSample.gtf":"gs://broad-dsde-mint-dev-teststorage/reference/Hg19_kco/Gencode_v19/Gencode_v19.GTF",
-  "Ss2RsemSingleSample.ref_fasta":"gs://broad-dsde-mint-dev-teststorage/reference/Hg19_kco/Hg19.fa",
-  "Ss2RsemSingleSample.ref_flat":"gs://broad-dsde-mint-dev-teststorage/reference/Hg19_kco/refFlat.txt",
-  "Ss2RsemSingleSample.rrna_interval":"gs://broad-dsde-mint-dev-teststorage/reference/Hg19_kco/hg19.rRNA.interval_list",
-  "Ss2RsemSingleSample.star_genome":"gs://broad-dsde-mint-dev-teststorage/reference/Hg19_kco/star_hg19_gencode_v19.tar.gz",
-  "Ss2RsemSingleSample.rsem_genome":"gs://broad-dsde-mint-dev-teststorage/reference/Hg19_kco/rsem_hg19_gencode_v19.tar.gz"
+  "Ss2RsemSingleSample.output_prefix": "SRR1294876",  
+  "Ss2RsemSingleSample.fastq_read1": "gs://broad-dsde-mint-dev-teststorage/patel_ap/SRR1294876_1.fastq.gz",  
+  "Ss2RsemSingleSample.fastq_read2": "gs://broad-dsde-mint-dev-teststorage/patel_ap/SRR1294876_2.fastq.gz",
+  "Ss2RsemSingleSample.gtf": "gs://broad-dsde-mint-dev-teststorage/reference/hg19/gencode.v19.annotation.gtf",
+  "Ss2RsemSingleSample.ref_fasta": "gs://broad-dsde-mint-dev-teststorage/reference/hg19/Homo_sapiens_assembly19.fasta",
+  "Ss2RsemSingleSample.ref_flat": "gs://broad-dsde-mint-dev-teststorage/reference/hg19/Homo_sapiens_assembly19.refFlat",
+  "Ss2RsemSingleSample.rrna_interval": "gs://broad-dsde-mint-dev-teststorage/reference/hg19/Homo_sapiens_assembly19.rRNA.interval_list",
+  "Ss2RsemSingleSample.star_genome": "gs://broad-dsde-mint-dev-teststorage/reference/hg19/star.tar",
+  "Ss2RsemSingleSample.rsem_genome": "gs://broad-dsde-mint-dev-teststorage/reference/hg19/rsem.tar"
 }

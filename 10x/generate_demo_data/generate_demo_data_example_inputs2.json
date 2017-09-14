@@ -1,0 +1,8 @@
+{
+  "Generate10xDemoData.gtf": "gs://broad-dsde-mint-dev-teststorage/demo/gencodev19_chr21.gtf",
+  "Generate10xDemoData.fastq_i1": "gs://broad-dsde-mint-dev-teststorage/10x/pbmc8k/fastqs_10m/pbmc8k_S1_L008_I1_001_10m.fastq.gz",
+  "Generate10xDemoData.fastq_r2": "gs://broad-dsde-mint-dev-teststorage/10x/pbmc8k/fastqs_10m/pbmc8k_S1_L008_R2_001_10m.fastq.gz",
+  "Generate10xDemoData.chromosome": "21",
+  "Generate10xDemoData.fastq_r1": "gs://broad-dsde-mint-dev-teststorage/10x/pbmc8k/fastqs_10m/pbmc8k_S1_L008_R1_001_10m.fastq.gz",
+  "Generate10xDemoData.star_genome": "gs://broad-dsde-mint-dev-teststorage/demo/star.tar.gz"
+}
