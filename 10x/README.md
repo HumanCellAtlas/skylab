@@ -6,7 +6,7 @@ following tasks:
 1. Extracts barcode information from read 1 and index read 1
 2. Aligns reads containing genomic information to a reference genome (using STAR)
 3. Tags aligned bam reads with barcode information extracted in step 1
-4. Identifies duplicate reads
+4. Marks reads that result from PCR duplication
 5. Quantifies molecule counts in each gene and cell
 6. Filters erroneous cell and molecular barcodes
 
@@ -23,7 +23,7 @@ cd skylab/10x/wdls/
 
 ## Inputs
 - `read_paths`: path to a fastq folder containing all sequencing reads for the experiment
-- `sample_def`: json file containing run information (see sample_def.json for example):  # TODO I omitted some here, should I have?
+- `sample_def`: json file containing run information (see sample_def.json for example): 
   - `sample_names`: name for experiment
   - `fastq_mode`: type of bcl demultiplexing to be done on the data
   - `read_paths`: location for fastq information #todo duplicate of above??
@@ -35,9 +35,12 @@ cd skylab/10x/wdls/
   (constructed with `skylab/10x/generate_reference_bundle.wdl`)
 
 ## Runtime Requirements
-Memory: 50 GB  # todo is this right? 
+Memory: 20 GB
+
 Processors: 1+ (supports multiprocessing)
-Disk Space: Input data size * 5 (normally approximately _ ) GB # todo marcus what's your estimate here? 
+
+Disk Space: Varies by step, but the approximate maximum is the size of one set of input fastqs 
+(R1.fastq + R2.fastq + I1.fastq) * 5 + size of reference. 
 
 # Example Data
 Example data was extracted from a public 10x human peripheral blood mononuclear cell 
