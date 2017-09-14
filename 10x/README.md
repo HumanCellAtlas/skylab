@@ -24,7 +24,7 @@ cd skylab/10x/wdls/
 ## Inputs
 - `read_paths`: path to a fastq folder containing all sequencing reads for the experiment
 - `sample_def`: json file containing run information (see sample_def.json for example): 
-  - `sample_names`: name for experiment
+  - `sample_names`: name for experiment note that this **must** be the prefix for each fastq file associated with the experiment. The suffix **must** be the normal illumina fastq file suffix which describes the lane and read information.
   - `fastq_mode`: type of bcl demultiplexing to be done on the data
   - `read_paths`: location for fastq information #todo duplicate of above??
 - `reads_per_file`: size of chunks (in reads) to create when scattering across processors
@@ -35,7 +35,7 @@ cd skylab/10x/wdls/
   (constructed with `skylab/10x/generate_reference_bundle.wdl`)
 
 ## Runtime Requirements
-- Memory: 20 GB
+- Memory: 12 GB for testing data with a single-chromosome testing index. datasets with more reads or more sequencing lanes will require more memory. Note that this pipeline automatically scales horizontally to align reads with numerous processors, and each processor must load its own STAR index. This can very quickly results in out-of-memory errors. More than 4 lanes should not be tested on a laptop, even with the testing index and more than 2 are not recommended. 
 - Processors: 1+ (supports multiprocessing)
 - Disk Space: Varies by step, but the approximate maximum is the size of one set of input fastqs 
 (R1.fastq + R2.fastq + I1.fastq) * 5 + size of reference. 
