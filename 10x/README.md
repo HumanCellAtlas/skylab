@@ -35,11 +35,9 @@ cd skylab/10x/wdls/
   (constructed with `skylab/10x/generate_reference_bundle.wdl`)
 
 ## Runtime Requirements
-Memory: 20 GB
-
-Processors: 1+ (supports multiprocessing)
-
-Disk Space: Varies by step, but the approximate maximum is the size of one set of input fastqs 
+- Memory: 20 GB
+- Processors: 1+ (supports multiprocessing)
+- Disk Space: Varies by step, but the approximate maximum is the size of one set of input fastqs 
 (R1.fastq + R2.fastq + I1.fastq) * 5 + size of reference. 
 
 # Example Data
