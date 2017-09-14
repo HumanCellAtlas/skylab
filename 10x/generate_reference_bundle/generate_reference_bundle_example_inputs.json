@@ -1,0 +1,5 @@
+{
+  "GenerateReferenceBundle.gtf": "gs://broad-dsde-mint-dev-teststorage/demo/gencodev19_chr21.gtf",
+  "GenerateReferenceBundle.fasta": "gs://broad-dsde-mint-dev-teststorage/demo/chr21.fa",
+  "GenerateReferenceBundle.reference_name": "hg19_chr21_10x_reference"
+}

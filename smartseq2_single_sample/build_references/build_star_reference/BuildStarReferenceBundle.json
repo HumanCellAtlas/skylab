@@ -1,0 +1,4 @@
+{
+  "StarRef.fasta": "gs://broad-dsde-mint-dev-teststorage/reference/hg19/Homo_sapiens_assembly19.fasta",
+  "StarRef.gtf": "gs://broad-dsde-mint-dev-teststorage/reference/hg19/gencode.v19.annotation.gtf"
+}
