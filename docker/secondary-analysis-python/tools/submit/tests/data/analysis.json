@@ -1,0 +1,77 @@
+{
+   "input_bundles" : [ "75a7f618-9adc-48af-a249-0010305160f6" ],
+   "inputs" : [
+      {
+        "name": "left_sample",
+        "checksum" : "d0f7d08f1980f7980f",
+        "value" : "bluebox://23bd7eb0-23a3-4898-b043-f7e982de281f/v1/12bd7eb0-23a3-4898-b043-f7e982de281g/v1#10x_R1.fastq.gz"
+      },
+      {
+         "name" : "right_sample",
+         "checksum" : "d0f7d18f7980f7980f",
+         "value" : "bluebox://23bd7eb0-23a3-4898-b043-f7e982de281f/v1/01bd7eb0-23a3-4898-b043-f7e982de281g/v1#10x_R2.fastq.gz"
+      },
+      {
+         "name" : "index_sample",
+         "checksum" : "d0f7d18f7980f7980f",
+         "value" : "bluebox://23bd7eb0-23a3-4898-b043-f7e982de281f/v1/01bd7eb0-23a3-4898-b043-f7e982de281g/v1#10x_I1.fastq.gz"
+      },
+      {
+         "name" : "expected_cell_count",
+         "value" : "1000"
+      }
+   ],
+   "timestamp_start_utc" : "2017-05-18T03:44:23-5:00",
+   "timestamp_stop_utc" : "2017-05-18T014:44:23-5:00",
+   "computational_method" : "https://www.dockstore.org:8443/api/ga4gh/v1/tools/quay.io%2Fhca%2Fdockstore-hca-uploader/",
+   "analysis_id" : 4342342,
+   "analysis_run_type" : "run",
+   "outputs" : [
+      {
+          "name": "aligned_bam",
+          "checksum" : "d0f7d08f7980f7910f",
+          "file_path" : "gs://43bd7eb0-23a3-4898-b043-f7e982de281a/v1/sample.bam",
+          "format" : "bam"
+      },
+      {
+          "name": "counts_matrix",
+          "checksum" : "d0f7d08f7910f7980f",
+          "format" : "counts_matrix",
+          "file_path" : "gs://43bd7eb0-23a3-4898-b043-f7e982de281a/v1/sample_counts.txt"
+      },
+      {
+          "name": "report_qc",
+          "format" : "qc_matrix",
+          "file_path" : "gs://43bd7eb0-23a3-4898-b043-f7e982de281a/v1/sample_qc.txt",
+          "checksum" : "d0f7d18f7980f7980f"
+      }
+   ],
+   "metadata_schema" : "version_232",
+   "tasks" : [
+      {
+       "stop_time" : "2017-05-18T08:44:23-5:00",
+       "start_time" : "2017-05-18T03:44:23-5:00",
+       "name" : "step_one",
+       "log_err" : "bluebox://43bd7eb0-23a3-4898-b043-f7e982de281a/v1/05bd7eb0-23a3-4898-b043-f7e982de281g/v1#10xv2_step_one.err",
+       "log_out" : "bluebox://43bd7eb0-23a3-4898-b043-f7e982de281a/v1/05bd7eb0-23a3-4898-b043-f7e982de281g/v1#10xv2_step_one.out",
+       "disk_size" : "500GB",
+       "docker_image" : "https://uri-to-docker-image",
+       "cpus" : 8,
+       "memory" : "10GB",
+       "zone" : "us-east4-a"
+      },
+      {
+       "start_utc" : "2017-05-18T08:44:23-5:00",
+       "stop_utc" : "2017-05-18T14:44:23-5:00",
+       "name" : "step_two",
+       "log_err" : "bluebox://43bd7eb0-23a3-4898-b043-f7e982de281a/v1/05bd7eb0-23a3-4898-b043-f7e982de281g/v1#10xv2_step_two.err",
+       "log_out" : "bluebox://43bd7eb0-23a3-4898-b043-f7e982de281a/v1/05bd7eb0-23a3-4898-b043-f7e982de281g/v1#10xv2_step_two.out",
+       "disk_size" : "500GB",
+       "docker_image" : "https://uri-to-docker-image",
+       "cpus" : 8,
+       "memory" : "10GB",
+       "zone" : "us-east4-a"
+      }
+   ],
+   "reference_bundle" : "bluebox://03gh7eb0-23a3-4898-b043-f7e982de281b/v1"
+}

@@ -1,26 +1,37 @@
 import "ss2_single_sample.wdl" as ss2
-import "submit_ss2_single_sample.wdl" as submit
+import "submit.wdl" as submit_wdl
 
 task GetInputs {
   String bundle_uuid
   String bundle_version
+  String dss_url
+  Int retry_seconds
+  Int timeout_seconds
 
   command <<<
     python <<CODE
     import json
     import requests
     import subprocess
+    import time
 
     # Get bundle manifest
     uuid = '${bundle_uuid}'
     version = '${bundle_version}'
     print('Getting bundle manifest for id {0}, version {1}'.format(uuid, version))
 
-    url = "https://dss.dev.data.humancellatlas.org/v1/bundles/" + uuid + "?version=" + version + "&replica=gcp&directurls=true"
-    print('GET {0}'.format(url))
-    response = requests.get(url)
-    print('{0}'.format(response.status_code))
-    print('{0}'.format(response.text))
+    url = "${dss_url}/bundles/" + uuid + "?version=" + version + "&replica=gcp&directurls=true"
+    start = time.time()
+    current = start
+    while current - start < ${timeout_seconds}:
+        print('GET {0}'.format(url))
+        response = requests.get(url)
+        print('{0}'.format(response.status_code))
+        print('{0}'.format(response.text))
+        if 200 <= response.status_code <= 299:
+            break
+        time.sleep(${retry_seconds})
+        current = time.time()
     manifest = response.json()
 
     bundle = manifest['bundle']
@@ -32,7 +43,7 @@ task GetInputs {
 
     print('Downloading assay.json')
     assay_json_uuid = name_to_meta['assay.json']['uuid']
-    url = "https://dss.dev.data.humancellatlas.org/v1/files/" + assay_json_uuid + "?replica=gcp"
+    url = "${dss_url}/files/" + assay_json_uuid + "?replica=gcp"
     print('GET {0}'.format(url))
     response = requests.get(url)
     print('{0}'.format(response.status_code))
@@ -53,7 +64,7 @@ task GetInputs {
     CODE
   >>>
   runtime {
-    docker: "humancellatlas/secondary-analysis-python"
+    docker: "humancellatlas/secondary-analysis-python:test16"
   }
   output {
     Object inputs = read_object("inputs.tsv")
@@ -64,17 +75,32 @@ workflow WrapperSs2RsemSingleSample {
   String bundle_uuid
   String bundle_version
 
+
   File gtf
   File ref_fasta
   File rrna_interval
   File ref_flat
   String star_genome
   String rsem_genome
+  String reference_bundle
+
+  # Submission
+  File format_map
+  String dss_url
+  String submit_url
+  String method
+  String schema_version
+  String run_type
+  Int retry_seconds
+  Int timeout_seconds
 
   call GetInputs as prep {
     input:
       bundle_uuid = bundle_uuid,
-      bundle_version = bundle_version
+      bundle_version = bundle_version,
+      dss_url = dss_url,
+      retry_seconds = retry_seconds,
+      timeout_seconds = timeout_seconds
   }
 
   call ss2.Ss2RsemSingleSample as analysis {
@@ -90,17 +116,66 @@ workflow WrapperSs2RsemSingleSample {
       rsem_genome = rsem_genome
   }
 
-  call submit.SubmitSs2RsemSingleSample {
+  call submit_wdl.submit {
     input:
-      bam_file = analysis.bam_file,
-      bam_trans = analysis.bam_trans,
-      rna_metrics = analysis.rna_metrics,
-      aln_metrics = analysis.aln_metrics,
-      rsem_gene_results = analysis.rsem_gene_results,
-      rsem_isoform_results = analysis.rsem_isoform_results,
-      rsem_gene_count = analysis.rsem_gene_count,
-      gene_unique_counts = analysis.gene_unique_counts,
-      exon_unique_counts = analysis.exon_unique_counts,
-      transcript_unique_counts = analysis.transcript_unique_counts
+      inputs = [
+        {
+          'name': 'fastq_read1',
+          'value': prep.inputs.fastq_1,
+        },
+        {
+          'name': 'fastq_read2',
+          'value': prep.inputs.fastq_2,
+        },
+        {
+          'name': 'output_prefix',
+          'value': prep.inputs.sample_id,
+        },
+        {
+          'name': 'gtf',
+          'value': gtf,
+        },
+        {
+          'name': 'ref_fasta',
+          'value': ref_fasta,
+        },
+        {
+          'name': 'rrna_interval',
+          'value': rrna_interval,
+        },
+        {
+          'name': 'ref_flat',
+          'value': ref_flat,
+        },
+        {
+          'name': 'star_genome',
+          'value': star_genome,
+        },
+        {
+          'name': 'rsem_genome',
+          'value': rsem_genome,
+        }
+      ],
+      outputs = [
+        analysis.bam_file,
+        analysis.bam_trans,
+        analysis.rna_metrics,
+        analysis.aln_metrics,
+        analysis.rsem_gene_results,
+        analysis.rsem_isoform_results,
+        analysis.rsem_gene_count,
+        analysis.gene_unique_counts,
+        analysis.exon_unique_counts,
+        analysis.transcript_unique_counts
+      ],
+      format_map = format_map,
+      submit_url = submit_url,
+      input_bundle_uuid = bundle_uuid,
+      reference_bundle = reference_bundle,
+      run_type = run_type,
+      schema_version = schema_version,
+      method = method,
+      retry_seconds = retry_seconds,
+      timeout_seconds = timeout_seconds
   }
 }
