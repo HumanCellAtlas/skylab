@@ -1,6 +1,6 @@
 {
-  "count.read_path": "/path/to/fastqs",
-  "count.sample_def": "sample_def.json",
+  "count.read_path": "gs://broad-dsde-mint-dev-teststorage/10x/demo/fastqs/pbmc8k_demo.tar",
+  "count.sample_def": "gs://broad-dsde-mint-dev-teststorage/10x/demo/json/sample_def.json",
   "count.sample_id": "sample_id",
   "count.reads_per_file": 5000000,
   "count.primers": [
@@ -31,6 +31,6 @@
   ],
   "count.subsample_rate": 1,
   "count.align": "{\"aligner\": \"star\", \"high_conf_mapq\": null}",
-  "count.reference_path": "/path/to/reference/dir",
+  "count.reference_path": "gs://broad-dsde-mint-dev-teststorage/reference/hg19_chr21_10x_reference.tar",
   "count.umi_min_qual_threshold": 10
 }

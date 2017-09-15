@@ -8,20 +8,17 @@ task setup_chunks {
   String sample_id
   # See the adjacent sample_def.json.
   File sample_def
-  # Path to the directory that contains the fastq files
+  # Path to the tarball that contains the fastq files
   File read_path
   # auto seems to be the only reasonable value
   String chemistry_name = "auto"
 
   command <<<
     
-    # Move reads files to the cwd so strings can point to cwd rather than the full
-    # cromwell path
-    mkdir read_path
-    for read_file in '${read_path}'/*; do
-      ln "$read_file" read_path/"$(basename $read_file)"
-    done
-     
+    # note that reads must be tar'd in a flat directory (tar -cf files.tar *) for
+    # this unpacking to function properly.
+    mkdir read_path && tar -xf ${read_path} -C read_path/
+
     # Create the args json with the arguments
     echo "{}" > _args
     echo "$(jq --arg var "$(<${sample_def})" '. + {"sample_def": $var | fromjson}' _args)" > _args
@@ -46,6 +43,8 @@ task setup_chunks {
   
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
+    memory: "2 GB"
+    disks: "local-disk 50 HDD"
   }
 
   output {
@@ -78,16 +77,20 @@ task chunk_reads_split {
     /martian/adapters/python/martian_shell.py $stage_path $stage_phase . . run_file_whatever
     
     # Break the chunks into separate files so we can scatter over them
-    jq -c '.chunks[]' _stage_defs | split -l 1 - chunk_
+    jq -c '.chunks[]' _stage_defs | split -l 1 - partition_
+
   >>>
 
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
+    memory: "30 GB"
+    disks: "local-disk 50 HDD"
+
   }
 
   output {
     File stage_defs = "_stage_defs"
-    Array[File] chunks = glob("chunk_*")
+    Array[File] chunks = glob("partition_*")
   }
 }
 
@@ -103,12 +106,7 @@ task chunk_reads_main {
 
   command <<<
     
-    # Move the reads files to a path in the cwd. Note this needs to be a hard link
-    # Martian will deference soft links.
-    mkdir read_path
-    for read_file in '${read_path}'/*; do
-      ln "$read_file" read_path/"$(basename $read_file)"
-    done
+    mkdir read_path && tar -xf ${read_path} -C read_path/
 
     # This stage is going to call an executable that writes to a "files" directory    
     mkdir files
@@ -130,10 +128,13 @@ task chunk_reads_main {
     
     # Read the out_chunks definitions into a file
     jq '.out_chunks' _outs > out_chunks.json
+
   >>>
 
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
+    memory: "30 GB"
+    disks: "local-disk 50 HDD"
   }
 
   output {
@@ -167,6 +168,8 @@ task chunk_reads_join {
 
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
+    memory: "30 GB"
+    disks: "local-disk 50 HDD"
   }
 
   output {
@@ -194,16 +197,18 @@ task extract_reads_split {
     /martian/adapters/python/martian_shell.py $stage_path $stage_phase . . run_file_whatever
 
     # Break the chunks into separate files so we can scatter over them
-    jq -c '.chunks[]' _stage_defs | split -l 1 - chunk_
+    jq -c '.chunks[]' _stage_defs | split -l 1 - partition_
   >>>
  
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
+    memory: "30 GB"
+    disks: "local-disk 50 HDD"
   }
 
   output {
     File stage_defs = "_stage_defs"
-    Array[File] chunks = glob("chunk_*")
+    Array[File] chunks = glob("partition_*")
   }
 }
 
@@ -255,6 +260,8 @@ task extract_reads_main {
 
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
+    memory: "30 GB"
+    disks: "local-disk 50 HDD"
   }
 
   output {
@@ -371,6 +378,8 @@ task extract_reads_join {
 
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
+    memory: "30 GB"
+    disks: "local-disk 50 HDD"
   }
 
   output {
@@ -396,6 +405,8 @@ task align_reads_split {
   File reference_path
   
   command <<<
+    # todo is this necessary here? is the reference itself used or just the path to it?
+    mkdir genome_reference && tar -xf ${reference_path} -C genome_reference --strip-components 1
 
     # Create the args
     echo '{"threads": 2}' > _args
@@ -404,7 +415,7 @@ task align_reads_split {
     read_groups_json='["${sep='","' read_groups}"]'
     echo "$(jq --arg var "$read_groups_json" '. + {"read_groups": ( $var | fromjson )}' _args)" > _args
     echo "$(jq --arg var "[]" '. + {"read2s": ( $var | fromjson )}' _args)" > _args
-    echo "$(jq --arg var "${reference_path}" '. + {"reference_path": $var}' _args)" > _args
+    echo "$(jq --arg var "genome_reference" '. + {"reference_path": $var}' _args)" > _args  # todo no required changes
     
     # Run martian
     mv /_jobinfo .  
@@ -413,16 +424,18 @@ task align_reads_split {
     /martian/adapters/python/martian_shell.py $stage_path $stage_phase . . run_file_whatever
 
     # Break the chunks into separate files so we can scatter over them
-    jq -c '.chunks[]' _stage_defs | split -l 1 - chunk_
+    jq -c '.chunks[]' _stage_defs | split -l 1 - partition_
   >>>
  
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
+    memory: "30 GB"
+    disks: "local-disk 50 HDD"
   }
 
   output {
     File stage_defs = "_stage_defs"
-    Array[File] chunks = glob("chunk_*")
+    Array[File] chunks = glob("partition_*")
   }
 }
 
@@ -436,11 +449,14 @@ task align_reads_main {
   File chunk
 
   command <<<
+
+    mkdir genome_reference && tar -xf ${reference_path} -C genome_reference --strip-components 1
+
     
     # Create args
     threads=$(nproc)
     echo '{"threads": '$threads', "read2_chunk": null}'  > _args
-    echo "$(jq --arg var ${reference_path} '. + {"reference_path": $var}' _args)" > _args
+    echo "$(jq --arg var genome_reference '. + {"reference_path": $var}' _args)" > _args
     echo "$(jq --arg var ${max_hits_per_read} '. + {"max_hits_per_read": ( $var | fromjson )}' _args)" > _args
     echo "$(jq --arg var "$(<${chunk})" '. |=  .+ ($var | fromjson) ' _args)" > _args
     echo "$(jq --arg var "${chunked_fastq}" '. + {"read_chunk": $var}' _args)" > _args
@@ -456,6 +472,8 @@ task align_reads_main {
 
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
+    memory: "30 GB"
+    disks: "local-disk 50 HDD"
   }
 
   output {
@@ -483,11 +501,15 @@ task attach_bcs_and_umis_main {
   File genome_output= chunk_right.right
 
   command <<<
+
+    # todo check if reference or just path is needed here.
+    mkdir genome_reference && tar -xf ${reference_path} -C genome_reference --strip-components 1
+
     # Create args. Lots of args
     echo '{"rescue_multimappers": true, "correct_barcodes": true, "paired_end": false, "skip_metrics": false, ' > _args
     echo '"barcode_confidence_threshold": 0.975, "annotation_params": null}' >> _args
     echo "$(jq --arg var "${barcode_whitelist}" '. + {"barcode_whitelist": $var}' _args)" > _args
-    echo "$(jq --arg var ${reference_path} '. + {"reference_path": $var}' _args)" > _args
+    echo "$(jq --arg var genome_reference '. + {"reference_path": $var}' _args)" > _args
     echo "$(jq --arg var ${barcode_counts} '. + {"barcode_counts": $var}' _args)" > _args
     echo "$(jq --arg var "$(<${chemistry_def})" '. + {"chemistry_def": $var | fromjson}' _args)" > _args
     bam_comments_json='["${sep='","' bam_comments}"]'
@@ -514,6 +536,8 @@ task attach_bcs_and_umis_main {
 
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
+    memory: "30 GB"
+    disks: "local-disk 50 HDD"
   }
 
   output {
@@ -540,9 +564,13 @@ task attach_bcs_and_umis_join {
   String r = "}"
 
   command <<<
+
+    # todo check if reference or just path is needed here.
+    mkdir genome_reference && tar -xf ${reference_path} -C genome_reference --strip-components 1
+
     # Create the args
     echo '{}' > _args
-    echo "$(jq --arg var ${reference_path} '. + {"reference_path": $var}' _args)" > _args
+    echo "$(jq --arg var genome_reference '. + {"reference_path": $var}' _args)" > _args
   
     # Create chunk_outs. Replace paths from the main stages with paths that are valid in
     # this join stage
@@ -579,6 +607,8 @@ task attach_bcs_and_umis_join {
 
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
+    memory: "30 GB"
+    disks: "local-disk 50 HDD"
   }
 
   output {
@@ -616,6 +646,8 @@ task bucket_by_bc_split {
  
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
+    memory: "30 GB"
+    disks: "local-disk 50 HDD"
   }
 
   output {
@@ -655,6 +687,8 @@ task bucket_by_bc_main {
 
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
+    memory: "30 GB"
+    disks: "local-disk 50 HDD"
   }
 
   output {
@@ -717,6 +751,8 @@ task sort_by_bc_main {
 
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
+    memory: "30 GB"
+    disks: "local-disk 50 HDD"
   }
 
   output {
@@ -816,6 +852,8 @@ task sort_by_bc_join {
 
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
+    memory: "30 GB"
+    disks: "local-disk 50 HDD"
   }
 
   output {
@@ -839,16 +877,18 @@ task mark_duplicates_split {
     /martian/adapters/python/martian_shell.py $stage_path $stage_phase . . run_file_whatever
 
     # Break the chunks into separate files so we can scatter over them
-    jq -c '.chunks[]' _stage_defs | split -l 1 - chunk_
+    jq -c '.chunks[]' _stage_defs | split -l 1 - partition_
   >>>
  
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
+    memory: "30 GB"
+    disks: "local-disk 50 HDD"
   }
 
   output {
     File stage_defs = "_stage_defs"
-    Array[File] chunks = glob("chunk_*")
+    Array[File] chunks = glob("partition_*")
   }
 }
 
@@ -860,9 +900,12 @@ task mark_duplicates_main {
 
   command <<<
 
+    # todo check if reference or just path is needed here.
+    mkdir genome_reference && tar -xf ${reference_path} -C genome_reference --strip-components 1
+
     echo '{}'  > _args
     echo "$(jq --arg var ${input_bam} '. + {"input": $var}' _args)" > _args
-    echo "$(jq --arg var ${reference_path} '. + {"reference_path": $var}' _args)" > _args
+    echo "$(jq --arg var genome_reference '. + {"reference_path": $var}' _args)" > _args
     echo "$(jq --arg var "$(<${align})" '. + {"align": ( $var | fromjson )}' _args)" > _args
     echo "$(jq --arg var "$(<${chunk})" '. |=  .+ ($var | fromjson) ' _args)" > _args
     
@@ -876,6 +919,8 @@ task mark_duplicates_main {
 
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
+    memory: "30 GB"
+    disks: "local-disk 50 HDD"
   }
 
   output {
@@ -921,6 +966,8 @@ task mark_duplicates_join {
   
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
+    memory: "30 GB"
+    disks: "local-disk 50 HDD"
   }
 
   output {
@@ -940,6 +987,9 @@ task count_genes_split {
 
   command <<<
 
+    # todo check if reference or just path is needed here.
+    mkdir genome_reference && tar -xf ${reference_path} -C genome_reference --strip-components 1
+
     idx=0
     linked_bam_inputs='[]'
     for bam_path in '${sep="\' \'" bam_inputs}'; do
@@ -955,7 +1005,7 @@ task count_genes_split {
     echo "$(jq --arg var "${barcode_whitelist}" '. + {"barcode_whitelist": $var}' _args)" > _args
     gem_groups_json='[${sep=',' gem_groups}]'
     echo "$(jq --arg var "$gem_groups_json" '. + {"gem_groups": ( $var | fromjson )}' _args)" > _args
-    echo "$(jq --arg var "${reference_path}" '. + {"reference_path": $var}' _args)" > _args
+    echo "$(jq --arg var "genome_reference" '. + {"reference_path": $var}' _args)" > _args
     echo "$(jq --arg var "${barcode_summary}" '. + {"barcode_summary": $var}' _args)" > _args
     echo "$(jq --arg var "$(<${chemistry_def})" '. + {"chemistry_def": $var | fromjson}' _args)" > _args
     echo "$(jq --arg var "$linked_bam_inputs" '. + {"inputs": ($var | fromjson)}' _args)" > _args
@@ -966,16 +1016,18 @@ task count_genes_split {
     /martian/adapters/python/martian_shell.py $stage_path $stage_phase . . run_file_whatever
 
     # Break the chunks into separate files so we can scatter over them
-    jq -c '.chunks[]' _stage_defs | split -l 1 - chunk_
+    jq -c '.chunks[]' _stage_defs | split -l 1 - partition_
   >>>
  
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
+    memory: "30 GB"
+    disks: "local-disk 50 HDD"
   }
 
   output {
     File stage_defs = "_stage_defs"
-    Array[File] chunks = glob("chunk_*")
+    Array[File] chunks = glob("partition_*")
   }
 }
 
@@ -992,6 +1044,9 @@ task count_genes_main {
 
   command <<<
 
+    # todo check if reference or just path is needed here.
+    mkdir genome_reference && tar -xf ${reference_path} -C genome_reference --strip-components 1
+
     idx=0
     linked_bam_inputs='[]'
     for bam_path in '${sep="\' \'" bam_inputs}'; do
@@ -1007,7 +1062,7 @@ task count_genes_main {
     echo "$(jq --arg var "${barcode_whitelist}" '. + {"barcode_whitelist": $var}' _args)" > _args
     gem_groups_json='[${sep=',' gem_groups}]'
     echo "$(jq --arg var "$gem_groups_json" '. + {"gem_groups": ( $var | fromjson )}' _args)" > _args
-    echo "$(jq --arg var "${reference_path}" '. + {"reference_path": $var}' _args)" > _args
+    echo "$(jq --arg var "genome_reference" '. + {"reference_path": $var}' _args)" > _args
     echo "$(jq --arg var "${barcode_summary}" '. + {"barcode_summary": $var}' _args)" > _args
     echo "$(jq --arg var "$(<${chemistry_def})" '. + {"chemistry_def": $var | fromjson}' _args)" > _args
     echo "$(jq --arg var "$(<${align})" '. + {"align": $var | fromjson}' _args)" > _args
@@ -1025,6 +1080,8 @@ task count_genes_main {
 
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
+    memory: "30 GB"
+    disks: "local-disk 50 HDD"
   }
 
   output {
@@ -1076,15 +1133,20 @@ task count_genes_join {
     stage_path=/cellranger/mro/stages/counter/count_genes
     stage_phase=join
     /martian/adapters/python/martian_shell.py $stage_path $stage_phase . . run_file_whatever
+
+    # tar the matrices_mex folder so it can be extracted from the task
+    tar -czf matrices_mex.tar.gz matrices_mex
   >>>
   
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
+    memory: "30 GB"
+    disks: "local-disk 50 HDD"
   }
 
   output {
     File matrices_h5 = "matrices.h5"
-    File matrices_mex = "matrices_mex"
+    File matrices_mex = "matrices_mex.tar.gz"
     File reporter_summary = "reporter_summary.json"
     File barcode_summary = "barcode_summary.h5"
   }
@@ -1126,17 +1188,23 @@ task filter_barcodes {
     stage_path=/cellranger/mro/stages/counter/filter_barcodes
     stage_phase=main
     /martian/adapters/python/martian_shell.py $stage_path $stage_phase . . run_file_whatever
+
+    # tar the filtered_matrices_mex folder so it can be extracted from the task
+    tar -czf filtered_matrices_mex.tar.gz filtered_matrices_mex
+
   >>>
   
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
+    memory: "30 GB"
+    disks: "local-disk 50 HDD"
   }
 
   output {
     File summary = "summary.json"
     File filtered_barcodes = "filtered_barcodes.csv"
     File filtered_matrices_h5 = "filtered_matrices.h5"
-    File filtered_matrices_mex = "filtered_matrices_mex"
+    File filtered_matrices_mex = "filtered_matrices_mex.tar.gz"
   }
 }
 
