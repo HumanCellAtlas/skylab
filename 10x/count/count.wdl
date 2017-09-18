@@ -1437,4 +1437,22 @@ workflow count {
       attach_bcs_summary = attach_bcs_and_umis_join.summary,
       barcode_summary = attach_bcs_and_umis_join.barcode_summary
   }
+
+  output {
+    # summarize reports was not staged, do not have:
+    # web_summary.html
+    # metrics_summary.csv
+
+    # some metrics we do have but aren't reported by cellranger:
+    File attach_bcs_and_umis_summary=attach_bcs_and_umis_join.summary
+    File filter_barcodes_summary=filter_barcodes.summary
+    File count_genes_summary=count_genes_join.reporter_summary
+    File extract_reads_summary=extract_reads_join.summary
+    File mark_duplicates_summary=mark_duplicates_join.summary
+    File raw_gene_bc_matrices_mex=count_genes_join.matrices_mex
+    File raw_gene_bc_matrices_h5=count_genes_join.matrices_h5
+    File filtered_gene_bc_matrices_mex=filter_barcodes.filtered_matrices_mex
+    File filtered_gene_bc_matrices_h5=filter_barcodes.filtered_matrices_h5
+    File bam_output=sort_by_bc_join.default
+  }
 }
