@@ -10,7 +10,7 @@ setup(name='submit',
       packages=['submit', 'tests'],
 #      package_dir={'': 'src'},
       entry_points = {
-          "console_scripts": ['hca-submit=submit:main']
+          "console_scripts": ['hca-submit=submit.submit:main']
       },
       include_package_data=True
 )
