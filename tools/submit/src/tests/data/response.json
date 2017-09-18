@@ -1,0 +1,47 @@
+{
+  "_links" : {
+    "analyses" : {
+      "href" : "http://api.ingest.dev.data.humancellatlas.org/analyses{?page,size,sort}",
+      "templated" : true,
+      "title" : "Access or create analyses. Creation can only be done inside a submission envelope"
+    },
+    "projects" : {
+      "href" : "http://api.ingest.dev.data.humancellatlas.org/projects{?page,size,sort}",
+      "templated" : true,
+      "title" : "Access or create projects. Creation can only be done inside a submission envelope"
+    },
+    "protocols" : {
+      "href" : "http://api.ingest.dev.data.humancellatlas.org/protocols{?page,size,sort}",
+      "templated" : true,
+      "title" : "Access or create protocols"
+    },
+    "bundleManifests" : {
+      "href" : "http://api.ingest.dev.data.humancellatlas.org/bundleManifests{?page,size,sort}",
+      "templated" : true,
+      "title" : "Access or create bundle manifests (describing which submitted contents went into which bundle in the datastore)"
+    },
+    "samples" : {
+      "href" : "http://api.ingest.dev.data.humancellatlas.org/samples{?page,size,sort}",
+      "templated" : true,
+      "title" : "Access or create samples. Creation can only be done inside a submission envelope"
+    },
+    "assays" : {
+      "href" : "http://api.ingest.dev.data.humancellatlas.org/assays{?page,size,sort}",
+      "templated" : true,
+      "title" : "Access or create assays. Creation can only be done inside a submission envelope"
+    },
+    "files" : {
+      "href" : "http://api.ingest.dev.data.humancellatlas.org/files{?page,size,sort}",
+      "templated" : true,
+      "title" : "Access or create, within a submission envelope, a new assay"
+    },
+    "submissionEnvelopes" : {
+      "href" : "http://api.ingest.dev.data.humancellatlas.org/submissionEnvelopes{?page,size,sort}",
+      "templated" : true,
+      "title" : "Access or create new submission envelopes"
+    },
+    "profile" : {
+      "href" : "http://api.ingest.dev.data.humancellatlas.org/profile"
+    }
+  }
+}
