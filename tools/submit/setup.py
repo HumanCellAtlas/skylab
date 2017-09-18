@@ -8,7 +8,7 @@ setup(name='submit',
       author_email='dshiga@broadinstitute.org',
       license='MIT',
       packages=['submit', 'tests'],
-      package_dir={'': 'src'},
+#      package_dir={'': 'src'},
       entry_points = {
           "console_scripts": ['hca-submit=submit:main']
       },
