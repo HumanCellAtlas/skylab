@@ -1,0 +1,34 @@
+{
+  "Wrapper10xCount.sample_def": "gs://broad-dsde-mint-dev-teststorage/10x/demo/json/sample_def.json",
+  "Wrapper10xCount.reads_per_file": 5000000,
+  "Wrapper10xCount.primers": [
+    {
+      "name": "P5",
+      "seq": "AATGATACGGCGACCACCGAGATCT"
+    },
+    {
+      "name": "P7",
+      "seq": "CAAGCAGAAGACGGCATACGAGAT"
+    },
+    {
+      "name": "R1",
+      "seq": "ACACTCTTTCCCTACACGACG"
+    },
+    {
+      "name": "R2",
+      "seq": "GTGACTGGAGTTCAGACGTGTG"
+    },
+    {
+      "name": "switch_oligo",
+      "seq": "AAGCAGTGGTATCAACGCAGAGTACATGGG"
+    },
+    {
+      "name": "polyA",
+      "seq": "AAAAAAAAAAAAAAAAAAAA"
+    }
+  ],
+  "Wrapper10xCount.subsample_rate": 1,
+  "Wrapper10xCount.align": "{\"aligner\": \"star\", \"high_conf_mapq\": null}",
+  "Wrapper10xCount.reference_path": "gs://broad-dsde-mint-dev-teststorage/reference/hg19_chr21_10x_reference.tar",
+  "Wrapper10xCount.umi_min_qual_threshold": 10
+}
