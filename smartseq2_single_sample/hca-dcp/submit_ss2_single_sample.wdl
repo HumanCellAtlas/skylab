@@ -1,12 +1,12 @@
 task submit {
-  String i
+  String submit_url
+  File analysis_json
 
-  command {
-    cat ${i} > out.txt
-    echo s >> out.txt
-  }
+  command <<<
+    submit -submit_url ${submit_url} -analysis_json_path ${analysis_json}
+  >>>
   runtime {
-    docker: "ubuntu:17.04"
+    docker: "humancellatlas/secondary-analysis-python:test_submit"
   }
   output {
     File out = "out.txt"
@@ -24,11 +24,13 @@ workflow SubmitSs2RsemSingleSample {
   File gene_unique_counts
   File exon_unique_counts
   File transcript_unique_counts
-  String i = "asdf"
+  String submit_url
+  File analysis_json
 
   call submit {
     input:
-      i = i
+      submit_url = submit_url,
+      analysis_json = analysis_json
   }
 
   output {

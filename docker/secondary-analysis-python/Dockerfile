@@ -5,3 +5,9 @@ LABEL software="Python"
 LABEL description="Python with some useful libraries"
 
 RUN pip install requests
+
+RUN mkdir /tools
+
+COPY tools /tools
+
+RUN pip install -e '/tools/submit'
