@@ -19,7 +19,7 @@ class TestService(unittest.TestCase):
     def test_get_input_bundle_uuid(self):
         with open(self.data_file('analysis.json')) as f:
             js = json.load(f)
-            self.assertEqual(submit.get_input_bundle_uuid(js), '23bd7eb0-23a3-4898-b043-f7e982de281f')
+            self.assertEqual(submit.get_input_bundle_uuid(js), '75a7f618-9adc-48af-a249-0010305160f6')
 
     def test_get_output_files(self):
         with open(self.data_file('analysis.json')) as f:

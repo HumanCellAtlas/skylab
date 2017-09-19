@@ -71,12 +71,13 @@ def get_output_files(analysis_json):
         output_ref['content'] = content
         output_refs.append(output_ref)
     return output_refs
-        
-#if __name__ == '__main__':
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-submit_url')
     parser.add_argument('-analysis_json_path')
     args = parser.parse_args()
-    #print(args.submit_url, args.analysis_json_path)
     run(args.submit_url, args.analysis_json_path)
+
+if __name__ == '__main__':
+    main()

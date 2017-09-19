@@ -1,5 +1,5 @@
 {
-   "input_bundles" : [ "bluebox://23bd7eb0-23a3-4898-b043-f7e982de281f/v1" ],
+   "input_bundles" : [ "bluebox://75a7f618-9adc-48af-a249-0010305160f6/v1" ],
    "inputs" : [
       {
         "name": "left_sample",
