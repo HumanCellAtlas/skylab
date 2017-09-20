@@ -809,44 +809,44 @@ task sort_by_bc_join {
 
   command <<<
     set -x
-    
+
     echo '{}' > _args
-    echo '[{"prefix": "AA"}, ' >> _chunk_defs
-    echo '{"prefix": "AT"}, ' >> _chunk_defs
+    echo '[{"prefix": ""}, ' >> _chunk_defs
+    echo '{"prefix": "AA"}, ' >> _chunk_defs
     echo '{"prefix": "AC"}, ' >> _chunk_defs
-    echo '{"prefix": "AG"}, ' >> _chunk_defs
-    echo '{"prefix": "TA"}, ' >> _chunk_defs
-    echo '{"prefix": "TT"}, ' >> _chunk_defs
-    echo '{"prefix": "TC"}, ' >> _chunk_defs
-    echo '{"prefix": "TG"}, ' >> _chunk_defs
-    echo '{"prefix": "CA"}, ' >> _chunk_defs
-    echo '{"prefix": "CT"}, ' >> _chunk_defs
-    echo '{"prefix": "CC"}, ' >> _chunk_defs
-    echo '{"prefix": "CG"}, ' >> _chunk_defs
-    echo '{"prefix": "GA"}, ' >> _chunk_defs
     echo '{"prefix": "GT"}, ' >> _chunk_defs
-    echo '{"prefix": "GC"}, ' >> _chunk_defs
+    echo '{"prefix": "AG"}, ' >> _chunk_defs
+    echo '{"prefix": "CC"}, ' >> _chunk_defs
+    echo '{"prefix": "CA"}, ' >> _chunk_defs
+    echo '{"prefix": "CG"}, ' >> _chunk_defs
+    echo '{"prefix": "TT"}, ' >> _chunk_defs
     echo '{"prefix": "GG"}, ' >> _chunk_defs
-    echo '{"prefix": ""}]' >> _chunk_defs
-    
-    echo '[{"default": "${sorted_AA}", "total_reads": ${total_AA}}, ' >> _chunk_outs
-    echo '{"default": "${sorted_AT}", "total_reads": ${total_AT}}, ' >> _chunk_outs
+    echo '{"prefix": "GC"}, ' >> _chunk_defs
+    echo '{"prefix": "AT"}, ' >> _chunk_defs
+    echo '{"prefix": "GA"}, ' >> _chunk_defs
+    echo '{"prefix": "TG"}, ' >> _chunk_defs
+    echo '{"prefix": "TA"}, ' >> _chunk_defs
+    echo '{"prefix": "TC"}, ' >> _chunk_defs
+    echo '{"prefix": "CT"}] ' >> _chunk_defs
+
+    echo '[{"default": "${sorted_null}", "total_reads": ${total_null}}, ' >> _chunk_outs
+    echo '{"default": "${sorted_AA}", "total_reads": ${total_AA}}, ' >> _chunk_outs
     echo '{"default": "${sorted_AC}", "total_reads": ${total_AC}}, ' >> _chunk_outs
-    echo '{"default": "${sorted_AG}", "total_reads": ${total_AG}}, ' >> _chunk_outs
-    echo '{"default": "${sorted_TA}", "total_reads": ${total_TA}}, ' >> _chunk_outs
-    echo '{"default": "${sorted_TT}", "total_reads": ${total_TT}}, ' >> _chunk_outs
-    echo '{"default": "${sorted_TC}", "total_reads": ${total_TC}}, ' >> _chunk_outs
-    echo '{"default": "${sorted_TG}", "total_reads": ${total_TG}}, ' >> _chunk_outs
-    echo '{"default": "${sorted_CA}", "total_reads": ${total_CA}}, ' >> _chunk_outs
-    echo '{"default": "${sorted_CT}", "total_reads": ${total_CT}}, ' >> _chunk_outs
-    echo '{"default": "${sorted_CC}", "total_reads": ${total_CC}}, ' >> _chunk_outs
-    echo '{"default": "${sorted_CG}", "total_reads": ${total_CG}}, ' >> _chunk_outs
-    echo '{"default": "${sorted_GA}", "total_reads": ${total_GA}}, ' >> _chunk_outs
     echo '{"default": "${sorted_GT}", "total_reads": ${total_GT}}, ' >> _chunk_outs
-    echo '{"default": "${sorted_GC}", "total_reads": ${total_GC}}, ' >> _chunk_outs
+    echo '{"default": "${sorted_AG}", "total_reads": ${total_AG}}, ' >> _chunk_outs
+    echo '{"default": "${sorted_CC}", "total_reads": ${total_CC}}, ' >> _chunk_outs
+    echo '{"default": "${sorted_CA}", "total_reads": ${total_CA}}, ' >> _chunk_outs
+    echo '{"default": "${sorted_CG}", "total_reads": ${total_CG}}, ' >> _chunk_outs
+    echo '{"default": "${sorted_TT}", "total_reads": ${total_TT}}, ' >> _chunk_outs
     echo '{"default": "${sorted_GG}", "total_reads": ${total_GG}}, ' >> _chunk_outs
-    echo '{"default": "${sorted_null}", "total_reads": ${total_null}}]' >> _chunk_outs
-    
+    echo '{"default": "${sorted_GC}", "total_reads": ${total_GC}}, ' >> _chunk_outs
+    echo '{"default": "${sorted_AT}", "total_reads": ${total_AT}}, ' >> _chunk_outs
+    echo '{"default": "${sorted_GA}", "total_reads": ${total_GA}}, ' >> _chunk_outs
+    echo '{"default": "${sorted_TG}", "total_reads": ${total_TG}}, ' >> _chunk_outs
+    echo '{"default": "${sorted_TA}", "total_reads": ${total_TA}}, ' >> _chunk_outs
+    echo '{"default": "${sorted_TC}", "total_reads": ${total_TC}}, ' >> _chunk_outs
+    echo '{"default": "${sorted_CT}", "total_reads": ${total_CT}}]' >> _chunk_outs
+
     echo '{"default": "default.bam", "total_reads": null}' > _outs
 
     mkdir files
