@@ -68,18 +68,29 @@ task create_submission {
 
 task stage_and_confirm {
   String submission_url
-  File bam_file
-  File rna_metrics 
+  Array[File] files
+  Int retry_seconds
+  Int timeout_seconds
+  String lb = "{"
+  String rb = "}"
 
   command <<<
-    submission_urn=$(submission-urn -envelope_url ${submission_url})
+    submission_urn=$(submission-urn \
+        -envelope_url ${submission_url} \
+        -retry_seconds ${retry_seconds} \
+        -timeout_seconds ${timeout_seconds})
 
-    echo "stage -d staging ${bam_file} $submission_urn"
-    stage -d staging ${bam_file} $submission_urn
-    echo "stage -d staging ${rna_metrics} $submission_urn"
-    stage -d staging ${rna_metrics} $submission_urn
+    files=( ${sep=' ' files} )
+    for f in "$${lb}files[@]${rb}"
+    do
+      echo "stage -d staging $f $submission_urn"
+      stage -d staging $f $submission_urn
+    done
 
-    confirm -envelope_url ${submission_url}
+    confirm \
+      -envelope_url ${submission_url} \
+      -retry_seconds ${retry_seconds} \
+      -timeout_seconds ${timeout_seconds}
   >>>
 
   runtime {
@@ -97,6 +108,8 @@ workflow Submit {
   String run_type
   String schema_version
   String method
+  Int retry_seconds
+  Int timeout_seconds
 
   call GetMetadata {
     input:
@@ -121,8 +134,9 @@ workflow Submit {
   call stage_and_confirm {
     input:
       submission_url = create_submission.submission_url,
-      bam_file = bam_file,
-      rna_metrics = rna_metrics
+      files = outputs,
+      retry_seconds = retry_seconds,
+      timeout_seconds = timeout_seconds
   }
 
   output {

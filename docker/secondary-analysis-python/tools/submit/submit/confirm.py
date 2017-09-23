@@ -6,17 +6,17 @@ import argparse
 import stage
 import time
 
-def run(envelope_url):
+def run(envelope_url, retry_seconds, timeout_seconds):
     start = time.time()
     current = start
-    while current - start < 120:
+    while current - start < timeout_seconds:
         print('Getting status for {}'.format(envelope_url))
         envelope_js = get_envelope_json(envelope_url)
         status = envelope_js.get('submissionState')
         print('submissionState: {}'.format(status))
         if status == 'Valid':
             break
-        time.sleep(10)
+        time.sleep(retry_seconds)
         current = time.time()
     print('Confirming submission')
     headers = {
@@ -33,8 +33,10 @@ def get_envelope_json(envelope_url):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-envelope_url')
+    parser.add_argument('-retry_seconds')
+    parser.add_argument('-timeout_seconds')
     args = parser.parse_args()
-    run(args.envelope_url)
+    run(args.envelope_url, args.retry_seconds, args.timeout_seconds)
 
 if __name__ == '__main__':
     main()
