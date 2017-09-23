@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(name='submit',
       version='1.0.0.dev1',
-      description='submit',
+      description='Utility for submitting an analysis bundle to HCA-DCP',
       url='http://github.com/HumanCellAtlas/skylab',
       author='Dave Shiga',
       author_email='dshiga@broadinstitute.org',
@@ -13,11 +13,11 @@ setup(name='submit',
       ],
       entry_points = {
           "console_scripts": [
-              'submit=submit.submit:main',
-              'analysis-json=submit.analysis_json:main',
+              'create-analysis-json=submit.create_analysis_json:main',
+              'create-envelope=submit.create_envelope:main',
+              'get-staging-urn=submit.get_staging_urn:main',
               'stage=submit.stage:run',
-              'submission-urn=submit.submission_urn:main',
-              'confirm=submit.confirm:main'
+              'confirm-submission=submit.confirm_submission:main'
           ]
       },
       include_package_data=True

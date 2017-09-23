@@ -109,16 +109,16 @@ def get_tasks(metadata):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-analysis_id')
-    parser.add_argument('-metadata_json')
-    parser.add_argument('-input_bundles')
-    parser.add_argument('-reference_bundle')
-    parser.add_argument('-run_type')
-    parser.add_argument('-method')
-    parser.add_argument('-schema_version')
-    parser.add_argument('-inputs_file')
-    parser.add_argument('-outputs_file')
-    parser.add_argument('-format_map')
+    parser.add_argument('-analysis_id', required=True)
+    parser.add_argument('-metadata_json', required=True)
+    parser.add_argument('-input_bundles', required=True)
+    parser.add_argument('-reference_bundle', required=True)
+    parser.add_argument('-run_type', required=True)
+    parser.add_argument('-method', required=True)
+    parser.add_argument('-schema_version', required=True)
+    parser.add_argument('-inputs_file', required=True)
+    parser.add_argument('-outputs_file', required=True)
+    parser.add_argument('-format_map', required=True)
     args = parser.parse_args()
     analysis = create_analysis(args.analysis_id, args.metadata_json, args.input_bundles,
         args.reference_bundle, args.run_type, args.method, args.schema_version,

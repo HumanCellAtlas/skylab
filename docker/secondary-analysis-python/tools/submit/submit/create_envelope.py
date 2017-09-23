@@ -3,7 +3,6 @@
 import requests
 import json
 import argparse
-import stage
 
 def run(submit_url, analysis_json_path):
     print('Starting submission with url: {0}'.format(submit_url))
@@ -49,13 +48,6 @@ def run(submit_url, analysis_json_path):
     for file_ref in output_files:
         response = requests.put(file_refs_url, headers = json_header, data = json.dumps(file_ref))
 
-def confirm(submission_url):
-    # 6. Confirm submission
-    confirmation_url = '{0}/{1}'.format(submission_url, 'confirmation')
-    print('Confirming submission at {0}'.format(confirmation_url))
-    response = requests.put(confirmation_url, headers = json_header)
-    print(response)
-
 def get_entity_url(js, entity):
     entity_url = js['_links'][entity]['href'].split('{')[0]
     print('Got url for {0}: {1}'.format(entity, entity_url))
@@ -83,8 +75,8 @@ def get_output_files(analysis_json):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-submit_url')
-    parser.add_argument('-analysis_json_path')
+    parser.add_argument('-submit_url', required=True)
+    parser.add_argument('-analysis_json_path', required=True)
     args = parser.parse_args()
     run(args.submit_url, args.analysis_json_path)
 

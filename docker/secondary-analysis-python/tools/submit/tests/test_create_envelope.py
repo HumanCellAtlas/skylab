@@ -6,9 +6,9 @@ import json
 #pkg_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 #sys.path.insert(0, pkg_root)
 
-import submit.submit as submit
+import submit.create_envelope as submit
 
-class TestSubmit(unittest.TestCase):
+class TestCreateEnvelope(unittest.TestCase):
 
     def test_get_entity(self):
         with open(self.data_file('response.json')) as f:

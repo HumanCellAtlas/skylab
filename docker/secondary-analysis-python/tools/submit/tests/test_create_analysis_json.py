@@ -6,9 +6,9 @@ import json
 #pkg_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 #sys.path.insert(0, pkg_root)
 
-import submit.analysis_json as aj
+import submit.create_analysis_json as aj
 
-class TestAnalysisJson(unittest.TestCase):
+class TestCreateAnalysisJson(unittest.TestCase):
 
     def test_create_inputs(self):
         inputs_file = self.data_file('inputs.tsv') 

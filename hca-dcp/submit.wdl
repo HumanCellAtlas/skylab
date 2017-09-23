@@ -43,7 +43,8 @@ task create_submission {
   String submit_url
 
   command <<<
-    analysis-json -analysis_id ${workflow_id} \
+    create-analysis-json \
+      -analysis_id ${workflow_id} \
       -metadata_json ${metadata_json} \
       -input_bundles ${bundle_uuid} \
       -reference_bundle ${reference_bundle} \
@@ -54,7 +55,9 @@ task create_submission {
       -outputs_file ${write_lines(outputs)} \
       -format_map ${format_map}
 
-    submit -submit_url ${submit_url} -analysis_json_path analysis.json
+    create-envelope \
+      -submit_url ${submit_url} \
+      -analysis_json_path analysis.json
   >>>
 
   runtime {
@@ -75,7 +78,7 @@ task stage_and_confirm {
   String rb = "}"
 
   command <<<
-    submission_urn=$(submission-urn \
+    staging_urn=$(get-staging-urn \
         -envelope_url ${submission_url} \
         -retry_seconds ${retry_seconds} \
         -timeout_seconds ${timeout_seconds})
@@ -83,11 +86,11 @@ task stage_and_confirm {
     files=( ${sep=' ' files} )
     for f in "$${lb}files[@]${rb}"
     do
-      echo "stage -d staging $f $submission_urn"
-      stage -d staging $f $submission_urn
+      echo "stage -d staging $f $staging_urn"
+      stage -d staging $f $staging_urn
     done
 
-    confirm \
+    confirm-submission \
       -envelope_url ${submission_url} \
       -retry_seconds ${retry_seconds} \
       -timeout_seconds ${timeout_seconds}
