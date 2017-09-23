@@ -15,9 +15,9 @@ Creates analysis.json file.
 
 Invoke it like this::
 
-    analysis-json
-      -analysis_id ${workflow_id}
-      -metadata_json ${metadata_json}
+    analysis-json \
+      -analysis_id ${workflow_id} \
+      -metadata_json ${metadata_json} \
       -input_bundles ${bundle_uuid} \
       -reference_bundle ${reference_bundle} \
       -run_type ${run_type} \
@@ -33,10 +33,11 @@ submit.py
 =========
 Creates submission envelope and uploads metadata.
 
-Invoke it like this:
-|    submit \  
-|      -submit_url ${submit_url} \  
-|      -analysis_json_path analysis.json  
+Invoke it like this::
+
+    submit \  
+      -submit_url ${submit_url} \  
+      -analysis_json_path analysis.json  
 
 Both arguments are required.
 
@@ -45,6 +46,7 @@ submission_urn.py
 Obtains URN needed for staging files. Queries ingest API until URN is available.
 
 Invoke it like this::
+
     submission_urn=$(submission-urn \
       -envelope_url ${submission_url} \
       -retry_seconds ${retry_seconds} \
@@ -57,7 +59,9 @@ stage.py
 Uploads files to staging area.
 
 Invoke it like this::
+
     stage $local_file_path $submission_urn
+
 Both arguments are required
 
 confirm.py
@@ -67,6 +71,7 @@ Confirms submission. This causes the ingest service to finalize the submission a
 Waits until submission status is "Valid", since submission cannot be confirmed until then.
 
 Invoke it like this::
+
     confirm \
       -envelope_url ${submission_url} \
       -retry_seconds ${retry_seconds} \
