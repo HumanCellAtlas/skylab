@@ -47,10 +47,10 @@ Obtains URN needed for staging files. Queries ingest API until URN is available.
 
 Invoke it like this::
 
-    submission_urn=$(submission-urn \
+    submission-urn \
       -envelope_url ${submission_url} \
       -retry_seconds ${retry_seconds} \
-      -timeout_seconds ${timeout_seconds}) 
+      -timeout_seconds ${timeout_seconds} > submission_urn.txt
 
 All arguments are required.
 
