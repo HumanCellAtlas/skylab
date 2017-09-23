@@ -1,5 +1,5 @@
 {
-   "input_bundles" : [ "bluebox://75a7f618-9adc-48af-a249-0010305160f6/v1" ],
+   "input_bundles" : [ "75a7f618-9adc-48af-a249-0010305160f6" ],
    "inputs" : [
       {
         "name": "left_sample",

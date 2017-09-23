@@ -8,7 +8,7 @@ import json
 
 import submit.submit as submit
 
-class TestService(unittest.TestCase):
+class TestSubmit(unittest.TestCase):
 
     def test_get_entity(self):
         with open(self.data_file('response.json')) as f:

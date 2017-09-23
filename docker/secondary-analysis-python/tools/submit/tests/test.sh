@@ -9,4 +9,4 @@ cd ../../../
 docker build -t humancellatlas/secondary-analysis-python:$tag .
 cd -
 
-docker run humancellatlas/secondary-analysis-python:$tag bash -c "python -m unittest -v tests.test_submit"
+docker run humancellatlas/secondary-analysis-python:$tag bash -c "python -m unittest discover -v tests"

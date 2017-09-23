@@ -3,6 +3,7 @@
 import requests
 import json
 import argparse
+import stage
 
 def run(submit_url, analysis_json_path):
     print('Starting submission with url: {0}'.format(submit_url))
@@ -14,16 +15,21 @@ def run(submit_url, analysis_json_path):
     # 2. Create envelope, get analysis and submission urls
     print('Creating submission envelope at {0}'.format(envelope_url))
     response = requests.post(envelope_url, '{}')
+    print(response.text)
     envelope_js = response.json()
     analyses_url = get_entity_url(envelope_js, 'analyses')
     submission_url = get_entity_url(envelope_js, 'submissionEnvelope')
+    with open('submission_url.txt', 'w') as f:
+        f.write(submission_url)
 
     # 3. Create analysis, get input bundles url, file refs url
+    analyses_url = get_entity_url(envelope_js, 'analyses')
+    submission_url = get_entity_url(envelope_js, 'submissionEnvelope')
     print('Creating analysis at {0}'.format(analyses_url))
     json_header = {'Content-type': 'application/json'}
     with open(analysis_json_path) as f:
         analysis_json_contents = json.load(f)
-    response = requests.post(analyses_url, headers = json_header, data = analysis_json_contents)
+    response = requests.put(analyses_url, headers = json_header, data = json.dumps(analysis_json_contents))
     print(response.text)
     analysis_js = response.json()
     input_bundles_url = get_entity_url(analysis_js, 'add-input-bundles')
@@ -32,15 +38,18 @@ def run(submit_url, analysis_json_path):
     # 4. Add input bundles
     print('Adding input bundles at {0}'.format(input_bundles_url))
     input_bundle_uuid = get_input_bundle_uuid(analysis_json_contents)
-    response = requests.post(input_bundles_url, data = {"bundleUuids": [input_bundle_uuid]})
-    print(response.text)
+    bundle_refs_js = json.dumps({"bundleUuids": [input_bundle_uuid]}, indent=2)
+    print(bundle_refs_js)
+    response = requests.post(input_bundles_url, headers = json_header, data = bundle_refs_js)
+    print(response.status_code, response.text)
 
     # 5. Add file references
     print('Adding file references at {0}'.format(file_refs_url))
     output_files = get_output_files(analysis_json_contents)
-    response = requests.put(file_refs_url, headers = json_header, data = output_files)
-    print(response.text)
+    for file_ref in output_files:
+        response = requests.put(file_refs_url, headers = json_header, data = json.dumps(file_ref))
 
+def confirm(submission_url):
     # 6. Confirm submission
     confirmation_url = '{0}/{1}'.format(submission_url, 'confirmation')
     print('Confirming submission at {0}'.format(confirmation_url))
@@ -54,7 +63,7 @@ def get_entity_url(js, entity):
 
 def get_input_bundle_uuid(analysis_json):
     bundle = analysis_json['input_bundles'][0]
-    uuid = bundle.split('/')[-2]
+    uuid = bundle
     print('Input bundle uuid {0}'.format(uuid))
     return uuid
 

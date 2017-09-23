@@ -12,7 +12,13 @@ setup(name='submit',
           'requests',
       ],
       entry_points = {
-          "console_scripts": ['submit=submit.submit:main']
+          "console_scripts": [
+              'submit=submit.submit:main',
+              'analysis-json=submit.analysis_json:main',
+              'stage=submit.stage:run',
+              'submission-urn=submit.submission_urn:main',
+              'confirm=submit.confirm:main'
+          ]
       },
       include_package_data=True
 )
