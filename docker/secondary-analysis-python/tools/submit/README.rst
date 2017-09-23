@@ -14,9 +14,9 @@ analysis_json.py
 Creates analysis.json file.
 
 Invoke it like this::
-    analysis-json \\
-      -analysis_id ${workflow_id} \\
-      -metadata_json ${metadata_json} \
+    analysis-json
+      -analysis_id ${workflow_id}
+      -metadata_json ${metadata_json}
       -input_bundles ${bundle_uuid} \
       -reference_bundle ${reference_bundle} \
       -run_type ${run_type} \
