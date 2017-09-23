@@ -3,6 +3,7 @@ Overview
 This package provides utilities for submitting an analysis bundle to the Human Cell Atlas Data Coordiation Platform.
 
 The steps in the submission process are as follows:
+
 * Create analysis.json
 * Create submission envelope and upload metadata
 * Get URN need to stage files
