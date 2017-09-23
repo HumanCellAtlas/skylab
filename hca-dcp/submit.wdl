@@ -1,4 +1,5 @@
-task GetMetadata {
+# Get Cromwell metadata for the workflow that produced the given output
+task get_metadata {
   String analysis_output_path
 
   command <<<
@@ -6,6 +7,7 @@ task GetMetadata {
     # Get workflow_id
     python <<CODE > workflow_id.txt
 
+    # Extract hash given a string like gs://foo/hash/call-bar/baz.txt
     url = '${analysis_output_path}'
     hash_end = url.rfind("/call-")
     hash_start = url.rfind('/', 0, hash_end) + 1
@@ -14,7 +16,7 @@ task GetMetadata {
 
     CODE
 
-    # Get metadata
+    # Get metadata from Cromwell for this workflow id
     creds=/analysis-json/cromwell_credentials.txt
     curl -u $(cut -f1 $creds):$(cut -f2 $creds) \
       --compressed \
@@ -29,6 +31,7 @@ task GetMetadata {
   }
 }
 
+# Create the submission object in ingest
 task create_submission {
   String workflow_id
   File metadata_json
@@ -43,6 +46,7 @@ task create_submission {
   String submit_url
 
   command <<<
+    # First, create the analysis.json
     create-analysis-json \
       -analysis_id ${workflow_id} \
       -metadata_json ${metadata_json} \
@@ -55,6 +59,7 @@ task create_submission {
       -outputs_file ${write_lines(outputs)} \
       -format_map ${format_map}
 
+    # Now create the submission object
     create-envelope \
       -submit_url ${submit_url} \
       -analysis_json_path analysis.json
@@ -69,20 +74,25 @@ task create_submission {
   }
 }
 
+# Stage files, then confirm submission
 task stage_and_confirm {
   String submission_url
   Array[File] files
   Int retry_seconds
   Int timeout_seconds
+  # These left and right brace definitions are a workaround so Cromwell won't
+  # interpret the bash array reference below as a WDL variable.
   String lb = "{"
   String rb = "}"
 
   command <<<
+    # Get the urn needed for staging files
     staging_urn=$(get-staging-urn \
         -envelope_url ${submission_url} \
         -retry_seconds ${retry_seconds} \
         -timeout_seconds ${timeout_seconds})
 
+    # Stage the files
     files=( ${sep=' ' files} )
     for f in "$${lb}files[@]${rb}"
     do
@@ -90,6 +100,7 @@ task stage_and_confirm {
       stage -d staging $f $staging_urn
     done
 
+    # Confirm the submission
     confirm-submission \
       -envelope_url ${submission_url} \
       -retry_seconds ${retry_seconds} \
@@ -101,7 +112,7 @@ task stage_and_confirm {
   }
 }
 
-workflow Submit {
+workflow submit {
   Array[Object] inputs
   Array[File] outputs
   File format_map
@@ -114,7 +125,7 @@ workflow Submit {
   Int retry_seconds
   Int timeout_seconds
 
-  call GetMetadata {
+  call get_metadata {
     input:
       analysis_output_path = outputs[0]
   }
@@ -129,9 +140,9 @@ workflow Submit {
       inputs = inputs,
       outputs = outputs,
       format_map = format_map,
-      metadata_json = GetMetadata.metadata,
+      metadata_json = get_metadata.metadata,
       bundle_uuid = bundle_uuid,
-      workflow_id = GetMetadata.workflow_id,
+      workflow_id = get_metadata.workflow_id,
   }
 
   call stage_and_confirm {
