@@ -32,10 +32,10 @@ submit.py
 =========
 Creates submission envelope and uploads metadata.
 
-Invoke it like this::
-    submit \
-      -submit_url ${submit_url} \
-      -analysis_json_path analysis.json
+Invoke it like this:
+|    submit \  
+|      -submit_url ${submit_url} \  
+|      -analysis_json_path analysis.json  
 
 Both arguments are required.
 
