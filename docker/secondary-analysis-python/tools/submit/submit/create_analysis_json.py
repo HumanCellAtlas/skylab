@@ -47,6 +47,9 @@ def create_inputs(inputs_file):
                 'value': value
             }
             if value.startswith('gs://'):
+                # This is a placeholder for now, since the analysis json schema requires it.
+                # In future we will either properly calculate a checksum for the file
+                # or remove it from the schema.
                 input['checksum'] = 'd0f7d08f1980f7980f'
             inputs.append(input)
     return inputs
