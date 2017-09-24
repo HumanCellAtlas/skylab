@@ -47,11 +47,11 @@ task create_submission {
 
   command <<<
     # First, create the analysis.json
+    # Note that create-analysis-json can take a comma-separated list of bundles,
+    # but current workflows only take a single input bundle
     create-analysis-json \
       -analysis_id ${workflow_id} \
       -metadata_json ${metadata_json} \
-      # create-analysis-json can take a comma-separated list of bundles,
-      # but current workflows only take a single input bundle
       -input_bundles ${input_bundle_uuid} \
       -reference_bundle ${reference_bundle} \
       -run_type ${run_type} \
