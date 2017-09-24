@@ -1,6 +1,20 @@
 #!/usr/bin/env python
 
 """
+Note:
+This is a slightly modified version of a script from the staging service repo here:
+https://github.com/HumanCellAtlas/staging-service/blob/master/scripts/stage_file.py
+
+It has been modified to facilitate calling it from our submission WDL.
+
+This was a short term solution for demo purposes but we don't want to keep two
+copies of this script in the long term. In future, we expect to delete this
+script because one of the following things will happen:
+1) We'll merge our changes into the staging service repo and delete this copy.
+OR
+2) More likely, future changes to the staging service will make this script unnecessary.
+
+
 Stage files in the HCA Staging Area
 
 Usage:
