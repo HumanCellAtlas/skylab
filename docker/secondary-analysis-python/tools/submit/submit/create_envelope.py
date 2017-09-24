@@ -28,7 +28,7 @@ def run(submit_url, analysis_json_path):
     json_header = {'Content-type': 'application/json'}
     with open(analysis_json_path) as f:
         analysis_json_contents = json.load(f)
-    response = requests.put(analyses_url, headers = json_header, data = json.dumps(analysis_json_contents))
+    response = requests.post(analyses_url, headers = json_header, data = json.dumps(analysis_json_contents))
     print(response.status_code, response.text)
     analysis_js = response.json()
     input_bundles_url = get_entity_url(analysis_js, 'add-input-bundles')
