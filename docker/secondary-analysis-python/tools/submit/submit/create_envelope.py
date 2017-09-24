@@ -5,18 +5,16 @@ import json
 import argparse
 
 def run(submit_url, analysis_json_path):
-    print('Starting submission with url: {0}'.format(submit_url))
-
     # 1. Get envelope url
+    print('Getting envelope url from {}'.format(submit_url))
     response = requests.get(submit_url)
-    check_status(response.status_code)
+    check_status(response.status_code, response.text)
     envelope_url = get_entity_url(response.json(), 'submissionEnvelopes')
 
     # 2. Create envelope, get analysis and submission urls
     print('Creating submission envelope at {0}'.format(envelope_url))
     response = requests.post(envelope_url, '{}')
-    print(response.status_code, response.text)
-    check_status(response.status_code)
+    check_status(response.status_code, response.text)
     envelope_js = response.json()
     analyses_url = get_entity_url(envelope_js, 'analyses')
     submission_url = get_entity_url(envelope_js, 'submissionEnvelope')
@@ -31,8 +29,7 @@ def run(submit_url, analysis_json_path):
     with open(analysis_json_path) as f:
         analysis_json_contents = json.load(f)
     response = requests.post(analyses_url, headers = json_header, data = json.dumps(analysis_json_contents))
-    print(response.status_code, response.text)
-    check_status(response.status_code)
+    check_status(response.status_code, response.text)
     analysis_js = response.json()
     input_bundles_url = get_entity_url(analysis_js, 'add-input-bundles')
     file_refs_url = get_entity_url(analysis_js, 'add-file-reference')
@@ -43,8 +40,7 @@ def run(submit_url, analysis_json_path):
     bundle_refs_js = json.dumps({"bundleUuids": [input_bundle_uuid]}, indent=2)
     print(bundle_refs_js)
     response = requests.put(input_bundles_url, headers = json_header, data = bundle_refs_js)
-    print(response.status_code, response.text)
-    check_status(response.status_code)
+    check_status(response.status_code, response.text)
 
     # 5. Add file references
     print('Adding file references at {0}'.format(file_refs_url))
@@ -52,26 +48,29 @@ def run(submit_url, analysis_json_path):
     for file_ref in output_files:
         print('Adding file: {}'.format(file_ref['fileName']))
         response = requests.put(file_refs_url, headers = json_header, data = json.dumps(file_ref))
-        print(response.status_code, response.text)
-        check_status(response.status_code)
+        check_status(response.status_code, response.text)
 
-def check_status(actual, expected='2xx'):
-    """Check that actual is in range 200-299 or the specified range, if given.
-    Raises a ValueError if actual is not in the expected range. Otherwise,
+def check_status(status, response_text, expected='2xx'):
+    """Check that status is in range 200-299 or the specified range, if given.
+    Raises a ValueError and prints response_text if status is not in the expected range. Otherwise,
     just returns silently.
     Args:
-        actual (int): The actual HTTP status code.
+        status (int): The actual HTTP status code.
+        response_text (str): Text to print along with status code when mismatch occurs
         expected (str): The range of acceptable values represented as a string.
     Examples:
-        check_status(404, '3xx') raises an error
-        check_Status(301, '3xx') passes
+        check_status(200, 'foo') passes
+        check_status(404, 'foo') raises error
+        check_status(301, 'bar') raises error
+        check_status(301, 'bar', '3xx') passes
     """
     first_digit = int(expected[0])
     low = first_digit * 100
     high = low + 99
-    matches = low <= actual <= high
+    matches = low <= status <= high
     if not matches:
-        raise ValueError('HTTP status code {0} is not in expected range {1}'.format(actual, expected))
+        message = 'HTTP status code {0} is not in expected range {1}. Response: {2}'.format(status, expected, response_text)
+        raise ValueError(message)
 
 def get_entity_url(js, entity):
     entity_url = js['_links'][entity]['href'].split('{')[0]

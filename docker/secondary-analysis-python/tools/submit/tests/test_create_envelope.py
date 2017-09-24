@@ -32,22 +32,24 @@ class TestCreateEnvelope(unittest.TestCase):
 
     def test_check_status(self):
         with self.assertRaises(ValueError):
-            submit.check_status(404, '2xx')
+            submit.check_status(404, 'foo')
         with self.assertRaises(ValueError):
-            submit.check_status(500, '2XX')
+            submit.check_status(500, 'foo')
+        with self.assertRaises(ValueError):
+            submit.check_status(301, 'foo')
 
         try:
-          submit.check_status(200, '2xx')
+          submit.check_status(200, 'foo')
         except ValueError as e:
             self.fail(str(e))
 
         try:
-            submit.check_status(201, '2xx')
+            submit.check_status(202, 'foo')
         except ValueError as e:
             self.fail(str(e))
-            
+
         try:
-            submit.check_status(202, '2xx')
+            submit.check_status(301, 'foo', '3xx')
         except ValueError as e:
             self.fail(str(e))
 
