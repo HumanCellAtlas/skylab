@@ -17,7 +17,7 @@ task get_metadata {
     CODE
 
     # Get metadata from Cromwell for this workflow id
-    creds=/analysis-json/cromwell_credentials.txt
+    creds=/cromwell-metadata/cromwell_credentials.txt
     curl -u $(cut -f1 $creds):$(cut -f2 $creds) \
       --compressed \
       "$(cut -f3 $creds)/api/workflows/v1/$(cat workflow_id.txt)/metadata" > metadata.json
