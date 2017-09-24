@@ -132,7 +132,7 @@ workflow WrapperSs2RsemSingleSample {
           'name': 'rsem_genome',
           'value': rsem_genome,
         }
-      ]
+      ],
       outputs = [
         Star.output_bam,
         Star.output_bam_trans,
@@ -144,10 +144,10 @@ workflow WrapperSs2RsemSingleSample {
         FeatureCountsUniqueMapping.genes,
         FeatureCountsUniqueMapping.exons,
         FeatureCountsUniqueMapping.trans
-      ]
+      ],
       format_map = format_map,
       submit_url = submit_url,
-      input_bundle_uuid = bundle_uuid
+      input_bundle_uuid = bundle_uuid,
       reference_bundle = reference_bundle,
       run_type = run_type,
       schema_version = schema_version,
