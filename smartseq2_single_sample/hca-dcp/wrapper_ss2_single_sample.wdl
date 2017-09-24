@@ -65,13 +65,24 @@ workflow WrapperSs2RsemSingleSample {
   String bundle_uuid
   String bundle_version
 
-  String dss_url
+
   File gtf
   File ref_fasta
   File rrna_interval
   File ref_flat
   String star_genome
   String rsem_genome
+  String reference_bundle
+
+  # Submission
+  File format_map
+  String dss_url
+  String submit_url
+  String method
+  String schema_version
+  String run_type
+  Int retry_seconds
+  Int timeout_seconds
 
   call GetInputs as prep {
     input:
@@ -134,16 +145,16 @@ workflow WrapperSs2RsemSingleSample {
         }
       ],
       outputs = [
-        Star.output_bam,
-        Star.output_bam_trans,
-        CollectRnaSeqMetrics.rna_metrics,
-        CollectAlignmentSummaryMetrics.alignment_metrics,
-        RsemExpression.rsem_gene,
-        RsemExpression.rsem_transc,
-        RsemExpression.rsem_gene_count,
-        FeatureCountsUniqueMapping.genes,
-        FeatureCountsUniqueMapping.exons,
-        FeatureCountsUniqueMapping.trans
+        analysis.output_bam,
+        analysis.output_bam_trans,
+        analysis.rna_metrics,
+        analysis.alignment_metrics,
+        analysis.rsem_gene,
+        analysis.rsem_transc,
+        analysis.rsem_gene_count,
+        analysis.genes,
+        analysis.exons,
+        analysis.trans
       ],
       format_map = format_map,
       submit_url = submit_url,
