@@ -1,6 +1,6 @@
 Overview
 ========
-This package provides utilities for submitting an analysis bundle to the Human Cell Atlas Data Coordiation Platform.
+This package provides utilities for submitting an analysis bundle to the Human Cell Atlas Data Coordination Platform.
 
 The steps in the submission process are as follows:
 

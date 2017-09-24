@@ -35,7 +35,7 @@ task get_metadata {
 task create_submission {
   String workflow_id
   File metadata_json
-  String bundle_uuid
+  String input_bundle_uuid
   String reference_bundle
   String run_type
   String method
@@ -50,7 +50,9 @@ task create_submission {
     create-analysis-json \
       -analysis_id ${workflow_id} \
       -metadata_json ${metadata_json} \
-      -input_bundles ${bundle_uuid} \
+      # create-analysis-json can take a comma-separated list of bundles,
+      # but current workflows only take a single input bundle
+      -input_bundles ${input_bundle_uuid} \
       -reference_bundle ${reference_bundle} \
       -run_type ${run_type} \
       -method ${method} \
@@ -117,7 +119,7 @@ workflow submit {
   Array[File] outputs
   File format_map
   String submit_url
-  String bundle_uuid
+  String input_bundle_uuid
   String reference_bundle
   String run_type
   String schema_version
@@ -141,7 +143,7 @@ workflow submit {
       outputs = outputs,
       format_map = format_map,
       metadata_json = get_metadata.metadata,
-      bundle_uuid = bundle_uuid,
+      input_bundle_uuid = input_bundle_uuid,
       workflow_id = get_metadata.workflow_id,
   }
 
