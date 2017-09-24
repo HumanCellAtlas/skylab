@@ -68,7 +68,7 @@ task create_submission {
   >>>
 
   runtime {
-    docker: "humancellatlas/secondary-analysis-python:test7"
+    docker: "humancellatlas/secondary-analysis-python:test8"
   }
   output {
     File analysis_json = "analysis.json"
@@ -110,7 +110,7 @@ task stage_and_confirm {
   >>>
 
   runtime {
-    docker: "humancellatlas/secondary-analysis-python:test7"
+    docker: "humancellatlas/secondary-analysis-python:test8"
   }
 }
 
