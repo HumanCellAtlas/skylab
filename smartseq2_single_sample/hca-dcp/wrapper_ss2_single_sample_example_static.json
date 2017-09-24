@@ -8,7 +8,7 @@
   "WrapperSs2RsemSingleSample.reference_bundle": "bf51d668-3e14-4843-9bc7-5d676fdf0e01",
   "WrapperSs2RsemSingleSample.format_map": "gs://broad-dsde-mint-dev-teststorage/format_map_example.json",
   "WrapperSs2RsemSingleSample.submit_url": "http://api.ingest.staging.data.humancellatlas.org/",
-  "WrapperSs2RsemSingleSample.dss_url": "https://dss.dev.data.humancellatlas.org/v1",
+  "WrapperSs2RsemSingleSample.dss_url": "https://dss.staging.data.humancellatlas.org/v1",
   "WrapperSs2RsemSingleSample.method": "Ss2RsemSingleSample",
   "WrapperSs2RsemSingleSample.schema_version": "v3",
   "WrapperSs2RsemSingleSample.run_type": "run",
