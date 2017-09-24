@@ -145,16 +145,16 @@ workflow WrapperSs2RsemSingleSample {
         }
       ],
       outputs = [
-        analysis.output_bam,
-        analysis.output_bam_trans,
+        analysis.bam_file,
+        analysis.bam_trans,
         analysis.rna_metrics,
-        analysis.alignment_metrics,
-        analysis.rsem_gene,
-        analysis.rsem_transc,
+        analysis.aln_metrics,
+        analysis.rsem_gene_results,
+        analysis.rsem_isoform_results,
         analysis.rsem_gene_count,
-        analysis.genes,
-        analysis.exons,
-        analysis.trans
+        analysis.gene_unique_counts,
+        analysis.exon_unique_counts,
+        analysis.transcript_unique_counts
       ],
       format_map = format_map,
       submit_url = submit_url,
