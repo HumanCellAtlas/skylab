@@ -58,15 +58,6 @@ def create_outputs(outputs_file, format_map):
     with open(format_map) as f:
         extension_to_format = json.load(f)
 
-    def get_format(path):
-        for ext in extension_to_format:
-            if path.endswith(ext):
-                format = extension_to_format[ext]
-                print(format)
-                return format
-        print('Warning: no known format matches file {}'.format(path))
-        return 'unknown'
-
     outputs = []
     with open(outputs_file) as f:
         for line in f:
@@ -74,10 +65,19 @@ def create_outputs(outputs_file, format_map):
             d = {
               'file_path': path,
               'name': path.split('/')[-1],
-              'format': get_format(path)
+              'format': get_format(path, extension_to_format)
             }
             outputs.append(d)
     return outputs
+
+def get_format(path, extension_to_format):
+    for ext in extension_to_format:
+        if path.endswith(ext):
+            format = extension_to_format[ext]
+            print(format)
+            return format
+    print('Warning: no known format matches file {}'.format(path))
+    return 'unknown'
 
 def get_input_bundles(input_bundles_string):
     input_bundles = input_bundles_string.split(',')

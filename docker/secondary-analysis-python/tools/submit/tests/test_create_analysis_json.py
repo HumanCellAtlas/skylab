@@ -70,6 +70,13 @@ class TestCreateAnalysisJson(unittest.TestCase):
             self.assertEqual(first_task['disk_size'], 'local-disk 10 HDD')
             self.assertEqual(first_task['docker_image'], 'humancellatlas/picard')
 
+    def test_get_format(self):
+        self.assertEqual(aj.get_format('asdf', {}), 'unknown')
+        self.assertEqual(aj.get_format('asdf.bam', {'.bam': 'bam'}), 'bam')
+        self.assertEqual(aj.get_format('asdf.txt', {'.bam': 'bam'}), 'unknown')
+        self.assertEqual(aj.get_format('asdf.bam', {'.bam': 'bam', '_metrics': 'metrics'}), 'bam')
+        self.assertEqual(aj.get_format('asdf.foo_metrics', {'.bam': 'bam', '_metrics': 'metrics'}), 'metrics')
+
     def data_file(self, file_name):
             return os.path.split(__file__)[0] + '/data/'  + file_name
 
