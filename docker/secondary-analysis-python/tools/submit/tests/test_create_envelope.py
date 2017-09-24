@@ -30,6 +30,27 @@ class TestCreateEnvelope(unittest.TestCase):
             self.assertEqual(outputs[0]['content']['name'], 'sample.bam')
             self.assertEqual(outputs[0]['content']['format'], 'bam')
 
+    def test_check_status(self):
+        with self.assertRaises(ValueError):
+            submit.check_status(404, '2xx')
+        with self.assertRaises(ValueError):
+            submit.check_status(500, '2XX')
+
+        try:
+          submit.check_status(200, '2xx')
+        except ValueError as e:
+            self.fail(str(e))
+
+        try:
+            submit.check_status(201, '2xx')
+        except ValueError as e:
+            self.fail(str(e))
+            
+        try:
+            submit.check_status(202, '2xx')
+        except ValueError as e:
+            self.fail(str(e))
+
     def data_file(self, file_name):
         return os.path.split(__file__)[0] + '/data/'  + file_name
 

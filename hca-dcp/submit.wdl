@@ -68,7 +68,7 @@ task create_submission {
   >>>
 
   runtime {
-    docker: "humancellatlas/secondary-analysis-python:test8"
+    docker: "humancellatlas/secondary-analysis-python:test15"
   }
   output {
     File analysis_json = "analysis.json"
@@ -88,6 +88,8 @@ task stage_and_confirm {
   String rb = "}"
 
   command <<<
+    set -e
+
     # Get the urn needed for staging files
     staging_urn=$(get-staging-urn \
         -envelope_url ${submission_url} \
@@ -98,8 +100,8 @@ task stage_and_confirm {
     files=( ${sep=' ' files} )
     for f in "$${lb}files[@]${rb}"
     do
-      echo "stage -d staging $f $staging_urn"
-      stage -d staging $f $staging_urn
+      echo "stage $f $staging_urn"
+      stage $f $staging_urn
     done
 
     # Confirm the submission
@@ -110,7 +112,7 @@ task stage_and_confirm {
   >>>
 
   runtime {
-    docker: "humancellatlas/secondary-analysis-python:test8"
+    docker: "humancellatlas/secondary-analysis-python:test15"
   }
 }
 

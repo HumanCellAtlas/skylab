@@ -8,7 +8,7 @@ import time
 def run(envelope_url, retry_seconds, timeout_seconds):
     start = time.time()
     current = start
-    while current - start < timeout_seconds:
+    while True:
         print('Getting status for {}'.format(envelope_url))
         envelope_js = get_envelope_json(envelope_url)
         status = envelope_js.get('submissionState')
@@ -17,6 +17,9 @@ def run(envelope_url, retry_seconds, timeout_seconds):
             break
         time.sleep(retry_seconds)
         current = time.time()
+        if current - start >= timeout_seconds:
+            message = 'Timed out while waiting for Valid status. Timeout seconds: {}'.format(timeout_seconds)
+            raise ValueError(message)
     confirm(envelope_url)
 
 def confirm(envelope_url):
@@ -35,8 +38,8 @@ def get_envelope_json(envelope_url):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-envelope_url', required=True)
-    parser.add_argument('-retry_seconds', required=True)
-    parser.add_argument('-timeout_seconds', required=True)
+    parser.add_argument('-retry_seconds', type=int, required=True)
+    parser.add_argument('-timeout_seconds', type=int, required=True)
     args = parser.parse_args()
     run(args.envelope_url, args.retry_seconds, args.timeout_seconds)
 
