@@ -64,6 +64,8 @@ def create_outputs(outputs_file, format_map):
                 format = extension_to_format[ext]
                 print(format)
                 return format
+        print('Warning: no known format matches file {}'.format(path))
+        return 'unknown'
 
     outputs = []
     with open(outputs_file) as f:
