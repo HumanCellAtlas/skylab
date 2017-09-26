@@ -1216,6 +1216,26 @@ task filter_barcodes {
   }
 }
 
+task get_trimmed_and_aligned {
+    Array[File] trimmed_seqs
+    File genome_output
+    Array[Int] gem_groups
+
+    command <<<
+    >>>
+
+    runtime {
+        docker: "marcusczi/cellranger_clean:cromwell"
+        memory: "30 GB"
+        disks: "local-disk 50 HDD"
+    }
+
+    output {
+      Array[Pair[File, File]] trimmed_and_aligned  =  zip(trimmed_seqs, genome_output)
+      Array[Pair[Int, Pair[File, File]]] gem_group_trimmed_and_aligned  =  zip(gem_groups, trimmed_and_aligned)
+    }
+}
+
 workflow count {
 
   File sample_def
@@ -1312,10 +1332,14 @@ workflow count {
     }
   }
 
-  Array[Pair[File, File]] trimmed_and_aligned  =  zip(extract_reads_join.trimmed_seqs, align_reads_main.genome_output)
-  Array[Pair[Int, Pair[File, File]]] gem_group_trimmed_and_aligned  =  zip(extract_reads_join.gem_groups, trimmed_and_aligned)
+  call get_trimmed_and_aligned {
+    input:
+      trimmed_seqs = extract_reads_join.trimmed_seqs,
+      genome_output = align_reads_main.genome_output,
+      gem_groups = extract_reads_join.gem_groups
+  }
 
-  scatter(chunk in gem_group_trimmed_and_aligned) {
+  scatter(chunk in get_trimmed_and_aligned.gem_group_trimmed_and_aligned) {
     call attach_bcs_and_umis_main {
       input:
         reference_path = reference_path,
