@@ -41,10 +41,10 @@ task GetInputs {
 
     # Parse inputs from assay_json and write to inputs.tsv file
     sample_id = assay_json['sample_id']
-    lane = assay_json['seq']['lanes'][0]
-    r1 = [name_to_meta[lane['r1']]['url']]
-    r2 = [name_to_meta[lane['r2']]['url']]
-    i1 = [name_to_meta[lane['i1']]['url']]
+    lanes = assay_json['seq']['lanes']
+    r1 = [name_to_meta[lane['r1']]['url'] for lane in lanes]
+    r2 = [name_to_meta[lane['r2']]['url'] for lane in lanes]
+    i1 = [name_to_meta[lane['i1']]['url'] for lane in lanes]
 
     print('Creating input map')
     with open('inputs.tsv', 'w') as f:
