@@ -1218,7 +1218,7 @@ task filter_barcodes {
 
 task get_trimmed_and_aligned {
     Array[File] trimmed_seqs
-    File genome_output
+    Array[File] genome_output
     Array[Int] gem_groups
 
     command <<<

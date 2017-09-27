@@ -5,12 +5,15 @@ task GetInputs {
   String bundle_uuid
   String bundle_version
   String dss_url
+  Int retry_seconds
+  Int timeout_seconds
 
   command <<<
     python <<CODE
     import json
     import requests
     import subprocess
+    import time
 
     # Get bundle manifest
     uuid = '${bundle_uuid}'
@@ -18,10 +21,17 @@ task GetInputs {
     print('Getting bundle manifest for id {0}, version {1}'.format(uuid, version))
 
     url = "${dss_url}/bundles/" + uuid + "?version=" + version + "&replica=gcp&directurls=true"
-    print('GET {0}'.format(url))
-    response = requests.get(url)
-    print('{0}'.format(response.status_code))
-    print('{0}'.format(response.text))
+    start = time.time()
+    current = start
+    while current - start < ${timeout_seconds}:
+        print('GET {0}'.format(url))
+        response = requests.get(url)
+        print('{0}'.format(response.status_code))
+        print('{0}'.format(response.text))
+        if 200 <= response.status_code <= 299:
+            break
+        time.sleep(${retry_seconds})
+        current = time.time()
     manifest = response.json()
 
     bundle = manifest['bundle']
@@ -88,7 +98,9 @@ workflow WrapperSs2RsemSingleSample {
     input:
       bundle_uuid = bundle_uuid,
       bundle_version = bundle_version,
-      dss_url = dss_url
+      dss_url = dss_url,
+      retry_seconds = retry_seconds,
+      timeout_seconds = timeout_seconds
   }
 
   call ss2.Ss2RsemSingleSample as analysis {

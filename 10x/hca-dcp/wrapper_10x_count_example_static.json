@@ -30,5 +30,14 @@
   "Wrapper10xCount.subsample_rate": 1,
   "Wrapper10xCount.align": "{\"aligner\": \"star\", \"high_conf_mapq\": null}",
   "Wrapper10xCount.reference_path": "gs://broad-dsde-mint-dev-teststorage/reference/hg19_chr21_10x_reference.tar",
-  "Wrapper10xCount.umi_min_qual_threshold": 10
+  "Wrapper10xCount.umi_min_qual_threshold": 10,
+  "Wrapper10xCount.reference_bundle": "bf51d668-3e14-4843-9bc7-5d676fdf0e01",
+  "Wrapper10xCount.format_map": "gs://broad-dsde-mint-dev-teststorage/format_map_example.json",
+  "Wrapper10xCount.submit_url": "http://api.ingest.staging.data.humancellatlas.org/",
+  "Wrapper10xCount.dss_url": "https://dss.staging.data.humancellatlas.org/v1",
+  "Wrapper10xCount.method": "10xCount",
+  "Wrapper10xCount.schema_version": "v3",
+  "Wrapper10xCount.run_type": "run",
+  "Wrapper10xCount.retry_seconds": 10,
+  "Wrapper10xCount.timeout_seconds": 600
 }
