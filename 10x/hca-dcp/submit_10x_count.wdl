@@ -2,8 +2,7 @@ task submit {
   String i
 
   command {
-    cat ${i} > out.txt
-    echo s >> out.txt
+    echo ${i} >> out.txt
   }
   runtime {
     docker: "ubuntu:17.04"
