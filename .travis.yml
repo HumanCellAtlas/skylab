@@ -1,0 +1,43 @@
+language: python
+
+python:
+    - "2.7"
+
+before_install:
+    - sudo apt-get -qq update
+    - sudo apt-get install -y openjdk-8-jre-headless
+
+install:
+    - wget https://wiki.dnanexus.com/images/files/dx-toolkit-current-ubuntu-14.04-amd64.tar.gz
+    - tar xf dx-toolkit-current-ubuntu-14.04-amd64.tar.gz 
+    - source dx-toolkit/environment
+    - wget https://github.com/dnanexus-rnd/dxWDL/releases/download/0.46/dxWDL-0.46.jar
+
+script:
+    - dx login --token "$DX_TOKEN" --noprojects && dx select "$DX_PROJECT"
+    - date_stamp="$(TZ=":US/Pacific" date +"%Y-%b-%d-%H-%M-%S")"
+    - dx mkdir "$date_stamp"
+    - workflow_id=$(java -jar dxWDL-0.46.jar compile smartseq2_single_sample/ss2_single_sample.wdl -destination "$DX_PROJECT":/"$date_stamp")
+    - >
+        analysis_id=$(dx run "$workflow_id" --yes --folder "$DX_PROJECT":/"$date_stamp" --brief -istage_0.fastq_read1=file-F7FxyyQ03bypfYvp1QPqXP7Y
+        -istage_0.fastq_read2=file-F7Fxyyj03byQ4F4z1Q7jkJ5F
+        -istage_0.gtf=file-F7Fxyy803byQ4F4z1Q7jkJ59
+        -istage_0.ref_fasta=file-F7Fxyx803byV6xvf1PZyzv5z
+        -istage_0.rrna_interval=file-F7Fxyy803bykQjFB1Pj3FV4b
+        -istage_0.ref_flat=file-F7Fxyz003byYVBkP1PzZ9B87
+        -istage_0.star_genome=file-F7FxyzQ03bypbvg11V4ZkXGJ
+        -istage_0.output_prefix="smartseq2_portability_test"
+        -istage_0.rsem_genome=file-F7Fxyz803byQ4F4z1Q7jkJ5J)
+    - while [ $(dx describe "$analysis_id" --json | jq  -r .state) = in_progress ]; do echo "I'm not dead!"; sleep 30; done
+    - dx wait "$analysis_id"
+    - metrics_hash=$(dx download $(dx describe "$analysis_id" --json | jq -r '.output."stage_6.aln_metrics"."$dnanexus_link"') -o - | tail -n +6 | md5sum | awk '{print $1}')
+    - test $metrics_hash = 3e42c0c7864e462173990f01afdb0a57
+
+env:
+    global:
+        - secure: "pkN4+Fm4+i8B5kLjlTccYr0/L6MeZfR9XoTN55Slu3hSmoG4xvc2QvhH4PcpJurKXbYNLYTSildfGHepounUsVsym5h2WjhikLj9bxVUwo/QlKhO2T175k8/H5fJn30ZG14cgjOwLjLtEmrY2OezPb87vFF/hxUhHerq+E6XkLjSLZtNrBQt34c7LfBWIollevaLFfGQel5zUjqcU7hZtmHDig3IxnMADXyYXTfsZf3vEV/PXsAmGnGY0U1PbUqacJTtJBrdJJiqjpLKhrtM+S7xv2KmcXqQqCeZ0693GsMYjl7qG5Iw7twH1muucOQKwJYY0ZjY/RBkZe/xTr8sBFFDhBxvrphoPjPJmJgTnbXdXC+XtpmpQpSQHAOYX1yathkJzb7FvYKmeeBRG8795rDwAz+7iuHBItdTYq/p3Rj7DIR4UUAzWMgiIfdbRI+T0M1FXJGpo7k63KGeUpqpS/ekWbW9qYPbTxGfDrR+qqz9RwTkZzs1WCIJl1lbmu0NFTbL32bbMhCdwTusK2CPlvNsQHX1j0GVKtOrbFYgFcUQEFLL0oweJyu1OK2Mt/gXpLlmc09Ljbv99EuAAsrH9kspu+HkP0+F+uWOXdpXSa/f8FsfzP3uchbJpabvcs0xVGbX2H+B//CnyhruTMoGMtB4MVMiycltVpSJpb41oTk="
+        - secure: "D/V7q8hHlbqxLTALyvmX4Uj8CrxnHvXC0F1627+fvnpEJud8KrKyIixu2VUYSO4rJePALEqiBkA7+v5+/IMKzb55HlRdmaRG4LNQQ5DLw7I8XlHKL0n0RGjh0PmDnfgUSy20gDVXmuEJQoq/elgILgg9qefuohewNtALx9jgMCl4OtEbmnMJIJsqZVA2bXAHs6Kwt0CsoI8tQGRmRwfAg/SY+KKhHxqqfX7xPmiJ/2/pYy62FfkN+mKiSAusiyJKYqQ92KE6HhD8X1RfOGc+n+6lU9KaIdxXOQR3usEuuwwEZlIJDKj2HnzwkqegLn8xdea9EWkhl1zQxjo8GI/AwsagjRQKuZkaxAsFg748AuwcXDRwEt1s5SEcQIJr4cPwR7b5biHXDnxsLVLXTVUL7GVy/DryOl/JZ138GFOuUB0Rm7WEmM3CD8227XHukHh6YeLnvaGnMbTyRB+t0d71/fgzDmzaQWobosjI/sXJ+1zvEq0unt3bvNlYrsS/nyl2Q/u0Cb7RT84RDcQPIpCbFs1tKJeiUyTg5GfUGCANKf1R02gwtWrbWW2udLORBlzqLelMJ+F+QCC68dljfsuuEAXMrSM53yqiCh5clAO1GPjCue90zIGbYW4Cg+Gefq/QGEUortNjznZ1wND9UWNn75sYoapYW/w9QVeh4LsFl9k="
+
+branches:
+    only:
+        - mk_travis_dnanexus
