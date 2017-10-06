@@ -138,6 +138,30 @@ task chunk_reads_main {
     # Read the out_chunks definitions into a file
     jq '.out_chunks' _outs > out_chunks.json
 
+    # Here, out_chunks.json has a bunch of information about each of the fastq chunks that it's created,
+    # including the fastq files associated with each chunk. For 10x v2 chemistry, there are three files
+    # for each chunk, and they'll have names like R1-0001.fastq, R2-0001.fastq, etc. This command first
+    # gets all the file sets for each chunk by applying a compound filter to each element in the array
+    # in out_chunks.json. The filter first gets the value associates with the read_chunks key. Then it
+    # converts that JSON object into an array of objects with keys "key" and "value". Then it gets the
+    # "value" field in each of those and concatenates them with a space. So you start with something
+    # like
+    # [{"reads_chunks": {"R1": "path/to/R1_1.fastq", "R2": "path/to/R2_1.fastq", "II": "path/to/I1_1.fastq"}},
+    #  {"reads_chunks": {"R1": "path/to/R1_2.fastq", "R2": "path/to/R2_2.fastq", "I1": "path/to/I1_2.fastq"}}, ...]
+    # and you get a file like
+    # path/to/R1_1.fastq path/to/R2_1.fastq path/to/I1_1.fastq
+    # path/to/R1_2.fastq path/to/R2_2.fastq path/to/I1_2.fastq
+    jq -r  'map(.read_chunks | to_entries | map(.value)) | map(join(" ")) | .[]' out_chunks.json > chunk_filenames.lines
+
+    # With that newly created file, we're going to tar up all the files on each line. So we iterate over
+    # each line in the file and pass that to tar. I think we need to make sure that files stay in the same
+    # order as there were in the out_chunks.json, so we zero pad a counter that we iterate with each new
+    # file.
+    i=1
+    while read line; do
+        tar czvf fastq_chunk_$(printf "%04d" $i).tar.gz $line; i=$((i + 1));
+    done < chunk_filenames.lines
+
   >>>
 
   runtime {
@@ -148,20 +172,27 @@ task chunk_reads_main {
 
   output {
     File outs = "_outs"
-    Array[File] fastq_chunks = glob("files/*.fastq")
+    Array[File] fastq_chunks = glob("fastq_chunk_*.tar.gz")
   }
 }
 
 task chunk_reads_join {
-  # Array of outs objects from the chunk_reads_main steps. All this step is doing
-  # is joining some dicts together.
+  # Array of outs objects from the chunk_reads_main steps. These are dicts that contain
+  # information about each of the chunked fastq
   Array[File] outs
+  # Each chunk_reads_main creates an array of tarballs. Each tarball contains an R1, R2, and I1
+  # fastq file. This step is going to flatten the nested array produced by scattering the
+  # chunk_reads_main tasks.
+  Array[Array[File]] fastq_chunks
+
+  String l = "{"
+  String r = "}"
 
   command <<<
     
     # Create the args
     echo "{}" > _args
-    ehco "{}" > _chunk_defs
+    echo "{}" > _chunk_defs
     jq -s '.' '${sep="\' \'" outs}' > _chunk_outs
     echo '{"out_chunks": null}' > _outs
     
@@ -173,6 +204,35 @@ task chunk_reads_join {
     
     # Write out_chunks to their own file
     jq '.out_chunks' _outs > out_chunks.json
+
+    # Here we want to flatten an Array[Array[File]] into an Array[File]. So, we will iterate
+    # over every file and write its path to a new file so we can use read_lines to create an
+    # array.
+    # fastq_array is an Array type, so to use it we have to use a WDL "sep". But each element
+    # is going to be a WDL array literal, which is a JSON array. So we'll have to iterate over
+    # the JSON arrays too.
+
+    # This creates a bash array whose elements are JSON arrays. Separating with single quotes
+    # keeps bash from trying anything funny. None of your business, bash.
+    fastq_array=('${sep="\' \'" fastq_chunks}')
+    i=1
+
+    # Now we iterate over each element in the array, which is a string that can be parsed
+    # as a JSON array. We have to use the special l and r variables so cromwelldoesn't try to
+    # parse this as WDL. None of your business, cromwell.
+    for fastq_set in "$${l}fastq_array[@]${r}"; do
+        # We need to put each set of files in its own directory because they all have the same
+        # name.
+        mkdir "$i"
+        # This just passes the JSON array through jq to turn it into a bash iterable
+        for fastq in $(echo "$fastq_set" | jq -r 'join(" ")'); do
+            # I guess it's necessary to create a link in the cwd. Just using the input
+            # path doesn't work.
+            ln "$fastq" "$i"/"$(basename $fastq)"
+            echo "$i"/"$(basename $fastq)" >> flattened_fastq.lines
+        done
+        i=$((i + 1))
+    done
   >>>
 
   runtime {
@@ -183,6 +243,7 @@ task chunk_reads_join {
 
   output {
     File out_chunks = "out_chunks.json"
+    Array[File] flattened_fastq_chunks = read_lines("flattened_fastq.lines")
   }
 }
 
@@ -234,16 +295,12 @@ task extract_reads_main {
   # Primers defined in the input to the workflow
   Array[Map[String, String]] primers
 
-  Array[File] fastq_chunks
+  File fastq_chunk
   File chunk
- 
+
   command <<<
-    
-    # Move the fastq chuks to cwd/files. That's how they're referenced in the out_chunks json
-    mkdir files
-    for fastq_chunk in ${sep=" " fastq_chunks}; do
-      ln "$fastq_chunk" files/"$(basename $fastq_chunk)"
-    done
+
+    tar xvf '${fastq_chunk}'
 
     # Create the _args 
     echo '{"rna_read_length": null, "initial_read": null, "skip_metrics": false}' > _args
@@ -1259,7 +1316,8 @@ workflow count {
 
   call chunk_reads_join {
     input:
-      outs = chunk_reads_main.outs
+      outs = chunk_reads_main.outs,
+      fastq_chunks = chunk_reads_main.fastq_chunks
   }
 
   call extract_reads_split {
@@ -1268,7 +1326,7 @@ workflow count {
       barcode_whitelist = setup_chunks.barcode_whitelist
   }
 
-  scatter(split_pair in zip(extract_reads_split.chunks, chunk_reads_main.fastq_chunks)) {
+  scatter(split_pair in zip(extract_reads_split.chunks, chunk_reads_join.flattened_fastq_chunks)) {
       call extract_reads_main {
         input:
           out_chunks = chunk_reads_join.out_chunks,
@@ -1278,7 +1336,7 @@ workflow count {
           subsample_rate = subsample_rate,
           chemistry_def = setup_chunks.chemistry_def,
           chunk = split_pair.left,
-          fastq_chunks = split_pair.right
+          fastq_chunk = split_pair.right
     }
   }
 
