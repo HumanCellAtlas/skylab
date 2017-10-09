@@ -25,7 +25,7 @@ task setup_chunks {
 
     # Create the args json with the arguments
     echo "{}" > _args
-    echo "$(jq --arg var "$(<${sample_def})" '. + {"sample_def": $var | fromjson}' _args)" > _args
+    echo "$(jq --slurpfile var "${sample_def}" '. + {"sample_def": $var | .[]}' _args)" > _args
     echo "$(jq --arg var "${chemistry_name}" '. + {"chemistry_name": $var}' _args)" > _args
     echo "$(jq --arg var "${sample_id}" '. + {"sample_id": $var}' _args)" > _args
     echo "$(jq --arg var null '. + {"custom_chemistry_def": $var | fromjson}' _args)" > _args
@@ -71,7 +71,7 @@ task chunk_reads_split {
    	
     # Create the _args 
     echo "{}" > _args
-    echo "$(jq --arg var "$(<${chunks_setup})" '. + {"chunks": $var | fromjson}' _args)" > _args
+    echo "$(jq --slurpfile var "${chunks_setup}" '. + {"chunks": $var |.[] }' _args)" > _args
     echo "$(jq --arg var ${reads_per_file} '. + {"reads_per_file": $var | fromjson}' _args)" > _args
     
     # Run the stage via martian_shell
@@ -122,9 +122,9 @@ task chunk_reads_main {
 
     # Create the args object
     echo "{}" > _args
-    echo "$(jq --arg var "$(<${chunks})" '. + {"chunks": $var | fromjson}' _args)" > _args
+    echo "$(jq --slurpfile var "${chunks}" '. + {"chunks": ($var | .[])}' _args)" > _args
     echo "$(jq --arg var ${reads_per_file} '. + {"reads_per_file": $var | fromjson}' _args)" > _args
-    echo "$(jq --arg var "$(<${chunk})" '. |=  .+ ($var | fromjson) ' _args)" > _args
+    echo "$(jq --slurpfile var "${chunk}" '. |=  .+ ($var | .[])' _args)" > _args
    
     # Create the outs object
     echo '{"out_chunks": null}' > _outs
@@ -257,7 +257,7 @@ task extract_reads_split {
   command <<<
     # Create the _args 
     echo '{"initial_reads": null}' > _args
-    echo "$(jq --arg var "$(<${out_chunks})" '. + {"chunks": $var | fromjson}' _args)" > _args
+    echo "$(jq --slurpfile var "${out_chunks}" '. + {"chunks": ($var | .[])}' _args)" > _args
     echo "$(jq --arg var "${barcode_whitelist}" '. + {"barcode_whitelist": $var}' _args)" > _args
     
     # Run via martian_shell
@@ -304,13 +304,13 @@ task extract_reads_main {
 
     # Create the _args 
     echo '{"rna_read_length": null, "initial_read": null, "skip_metrics": false}' > _args
-    echo "$(jq --arg var "$(<${out_chunks})" '. + {"chunks": $var | fromjson}' _args)" > _args
-    echo "$(jq --arg var "$(<${chemistry_def})" '. + {"chemistry_def": $var | fromjson}' _args)" > _args
+    echo "$(jq --slurpfile var "${out_chunks}" '. + {"chunks": ($var | .[])}' _args)" > _args
+    echo "$(jq --slurpfile var "${chemistry_def}" '. + {"chemistry_def": ($var | .[])}' _args)" > _args
     echo "$(jq --arg var "${barcode_whitelist}" '. + {"barcode_whitelist": $var}' _args)" > _args
     echo "$(jq --arg var ${reads_per_file} '. + {"reads_per_file": $var | fromjson}' _args)" > _args
     echo "$(jq --arg var ${subsample_rate} '. + {"subsample_rate": $var | fromjson}' _args)" > _args
     echo "$(jq --arg var '[${sep="," primers}]' '. + {"primers": $var | fromjson}' _args)" > _args
-    echo "$(jq --arg var "$(<${chunk})" '. |=  .+ ($var | fromjson) ' _args)" > _args
+    echo "$(jq --slurpfile var "${chunk}" '. |=  .+ ($var | .[])' _args)" > _args
     
     # Create the _outs
     echo '{"chunked_reporter": "chunked_reporter.pickle", "summary": "summary.json", "barcode_counts": "barcode_counts.json", ' > _outs
@@ -367,7 +367,7 @@ task extract_reads_join {
     echo '{}' > _args
     echo "$(jq --arg var "${barcode_whitelist}" '. + {"barcode_whitelist": $var}' _args)" > _args
     echo "$(jq --arg var '${align}' '. + {"align": $var | fromjson}' _args)" > _args
-    echo "$(jq --arg var "$(<${chemistry_def})" '. + {"chemistry_def": $var | fromjson}' _args)" > _args
+    echo "$(jq --slurpfile var "${chemistry_def}" '. + {"chemistry_def": ($var | .[])}' _args)" > _args
    
     # Create chunk_defs
     jq '.chunks' '${stage_defs}' > _chunk_defs
@@ -523,7 +523,7 @@ task align_reads_main {
     echo '{"threads": '$threads', "read2_chunk": null}'  > _args
     echo "$(jq --arg var genome_reference '. + {"reference_path": $var}' _args)" > _args
     echo "$(jq --arg var ${max_hits_per_read} '. + {"max_hits_per_read": ( $var | fromjson )}' _args)" > _args
-    echo "$(jq --arg var "$(<${chunk})" '. |=  .+ ($var | fromjson) ' _args)" > _args
+    echo "$(jq --slurpfile var "${chunk}" '. |=  .+ ($var | .[]) ' _args)" > _args
     echo "$(jq --arg var "${chunked_fastq}" '. + {"read_chunk": $var}' _args)" > _args
     
     # Create outs
@@ -576,7 +576,7 @@ task attach_bcs_and_umis_main {
     echo "$(jq --arg var "${barcode_whitelist}" '. + {"barcode_whitelist": $var}' _args)" > _args
     echo "$(jq --arg var genome_reference '. + {"reference_path": $var}' _args)" > _args
     echo "$(jq --arg var ${barcode_counts} '. + {"barcode_counts": $var}' _args)" > _args
-    echo "$(jq --arg var "$(<${chemistry_def})" '. + {"chemistry_def": $var | fromjson}' _args)" > _args
+    echo "$(jq --slurpfile var "${chemistry_def}" '. + {"chemistry_def": $var | .[] }' _args)" > _args
     bam_comments_json='["${sep='","' bam_comments}"]'
     echo "$(jq --arg var "$bam_comments_json" '. + {"bam_comments": ( $var | fromjson )}' _args)" > _args
     gem_groups_json='[${sep=',' gem_groups}]'
@@ -733,7 +733,7 @@ task bucket_by_bc_main {
     # Create the args. cellranger hard codes nbases to 2
     echo '{"nbases": 2}' >  _args
     echo "$(jq --arg var "${chunk_input}" '. + {"chunk_input": $var}' _args)" > _args
-    echo "$(jq --arg var "$(<${read_groups})" '. + {"read_groups": ( $var | fromjson )}' _args)" > _args
+    echo "$(jq --slurpfile var "${read_groups}" '. + {"read_groups": ( $var | .[] )}' _args)" > _args
 
     mkdir files
 
@@ -971,8 +971,8 @@ task mark_duplicates_main {
     echo '{}'  > _args
     echo "$(jq --arg var ${input_bam} '. + {"input": $var}' _args)" > _args
     echo "$(jq --arg var genome_reference '. + {"reference_path": $var}' _args)" > _args
-    echo "$(jq --arg var "$(<${align})" '. + {"align": ( $var | fromjson )}' _args)" > _args
-    echo "$(jq --arg var "$(<${chunk})" '. |=  .+ ($var | fromjson) ' _args)" > _args
+    echo "$(jq --slurpfile var "${align}" '. + {"align": ( $var | .[] )}' _args)" > _args
+    echo "$(jq --slurpfile var "${chunk}" '. |=  .+ ($var | .[]) ' _args)" > _args
     
     echo '{"chunked_reporter": "chunked_reporter.pickle", "output": "output.bam", "summary": "summary.json"}' > _outs
 
@@ -1072,7 +1072,7 @@ task count_genes_split {
     echo "$(jq --arg var "$gem_groups_json" '. + {"gem_groups": ( $var | fromjson )}' _args)" > _args
     echo "$(jq --arg var "genome_reference" '. + {"reference_path": $var}' _args)" > _args
     echo "$(jq --arg var "${barcode_summary}" '. + {"barcode_summary": $var}' _args)" > _args
-    echo "$(jq --arg var "$(<${chemistry_def})" '. + {"chemistry_def": $var | fromjson}' _args)" > _args
+    echo "$(jq --slurpfile var "${chemistry_def}" '. + {"chemistry_def": $var | .[]}' _args)" > _args
     echo "$(jq --arg var "$linked_bam_inputs" '. + {"inputs": ($var | fromjson)}' _args)" > _args
 
     mv /_jobinfo .  
@@ -1129,10 +1129,10 @@ task count_genes_main {
     echo "$(jq --arg var "$gem_groups_json" '. + {"gem_groups": ( $var | fromjson )}' _args)" > _args
     echo "$(jq --arg var "genome_reference" '. + {"reference_path": $var}' _args)" > _args
     echo "$(jq --arg var "${barcode_summary}" '. + {"barcode_summary": $var}' _args)" > _args
-    echo "$(jq --arg var "$(<${chemistry_def})" '. + {"chemistry_def": $var | fromjson}' _args)" > _args
-    echo "$(jq --arg var "$(<${align})" '. + {"align": $var | fromjson}' _args)" > _args
+    echo "$(jq --slurpfile var "${chemistry_def}" '. + {"chemistry_def": $var | .[]}' _args)" > _args
+    echo "$(jq --slurpfile var "${align}" '. + {"align": $var | .[]}' _args)" > _args
     echo "$(jq --arg var "$linked_bam_inputs" '. + {"inputs": ($var | fromjson)}' _args)" > _args
-    echo "$(jq --arg var "$(<${chunk})" '. |=  .+ ($var | fromjson) ' _args)" > _args
+    echo "$(jq --slurpfile var "${chunk}" '. |=  .+ ($var | .[]) ' _args)" > _args
     
     echo '{"chunked_reporter": "chunked_reporter.pickle", "matrices_h5": "matrices.h5"}' > _outs
 
@@ -1173,7 +1173,7 @@ task count_genes_join {
     # Create args
     echo '{}' > _args
     gem_groups_json='[${sep=',' gem_groups}]'
-    echo "$(jq --arg var "$(<${chemistry_def})" '. + {"chemistry_def": $var | fromjson}' _args)" > _args
+    echo "$(jq --slurpfile var "${chemistry_def}" '. + {"chemistry_def": $var | .[]}' _args)" > _args
     echo "$(jq --arg var "$gem_groups_json" '. + {"gem_groups": ( $var | fromjson )}' _args)" > _args
     echo "$(jq --arg var "${sample_id}" '. + {"sample_id": $var}' _args)" > _args
     
@@ -1241,7 +1241,7 @@ task filter_barcodes {
     echo "$(jq --arg var "${barcode_whitelist}" '. + {"barcode_whitelist": $var}' _args)" > _args
     gem_groups_json='[${sep=',' gem_groups}]'
     echo "$(jq --arg var "$gem_groups_json" '. + {"gem_groups": ( $var | fromjson )}' _args)" > _args
-    echo "$(jq --arg var "$(<${chemistry_def})" '. + {"chemistry_def": $var | fromjson}' _args)" > _args
+    echo "$(jq --slurpfile var "${chemistry_def}" '. + {"chemistry_def": $var | .[]}' _args)" > _args
     echo "$(jq --arg var "${barcode_summary}" '. + {"barcode_summary": $var}' _args)" > _args
     
 
