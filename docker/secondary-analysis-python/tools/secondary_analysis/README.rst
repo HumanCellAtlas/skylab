@@ -1,6 +1,7 @@
 Overview
 ========
-This package provides utilities for submitting an analysis bundle to the Human Cell Atlas Data Coordination Platform.
+This package provides utilities for retrieving files from the data storage service for the Human Cell Atlas, and for
+submitting an analysis bundle to the Human Cell Atlas Data Coordination Platform.
 
 The steps in the submission process are as follows:
 
@@ -17,16 +18,16 @@ Creates analysis.json file.
 Invoke it like this::
 
     create-analysis-json \
-      -analysis_id ${workflow_id} \
-      -metadata_json ${metadata_json} \
-      -input_bundles ${bundle_uuid} \
-      -reference_bundle ${reference_bundle} \
-      -run_type ${run_type} \
-      -method ${method} \
-      -schema_version ${schema_version} \
-      -inputs_file ${write_objects(inputs)} \
-      -outputs_file ${write_lines(outputs)} \
-      -format_map ${format_map}
+      --analysis_id ${workflow_id} \
+      --metadata_json ${metadata_json} \
+      --input_bundles ${bundle_uuid} \
+      --reference_bundle ${reference_bundle} \
+      --run_type ${run_type} \
+      --method ${method} \
+      --schema_version ${schema_version} \
+      --inputs_file ${write_objects(inputs)} \
+      --outputs_file ${write_lines(outputs)} \
+      --format_map ${format_map}
 
 All arguments are required.
 
@@ -37,8 +38,8 @@ Creates submission envelope and uploads metadata.
 Invoke it like this::
 
     create-envelope \  
-      -submit_url ${submit_url} \  
-      -analysis_json_path analysis.json  
+      --submit_url ${submit_url} \
+      --analysis_json_path analysis.json
 
 Both arguments are required.
 
@@ -54,9 +55,9 @@ needed to stage files.
 Invoke it like this::
 
     get-staging-urn \
-      -envelope_url ${submission_url} \
-      -retry_seconds ${retry_seconds} \
-      -timeout_seconds ${timeout_seconds} > submission_urn.txt
+      --envelope_url ${submission_url} \
+      --retry_seconds ${retry_seconds} \
+      --timeout_seconds ${timeout_seconds} > submission_urn.txt
 
 envelope_url is required
 
@@ -79,8 +80,8 @@ Waits until submission status is "Valid", since submission cannot be confirmed u
 Invoke it like this::
 
     confirm-submission \
-      -envelope_url ${submission_url} \
-      -retry_seconds ${retry_seconds} \
-      -timeout_seconds ${timeout_seconds}
+      --envelope_url ${submission_url} \
+      --retry_seconds ${retry_seconds} \
+      --timeout_seconds ${timeout_seconds}
 
 envelope_url is required

@@ -1,5 +1,5 @@
 import unittest
-import submit.get_staging_urn as gsu
+import secondary_analysis.get_staging_urn as gsu
 
 class TestGetStagingUrn(unittest.TestCase):
 

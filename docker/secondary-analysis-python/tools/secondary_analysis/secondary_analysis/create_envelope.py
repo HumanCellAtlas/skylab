@@ -97,8 +97,8 @@ def get_output_files(analysis_json):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-submit_url', required=True)
-    parser.add_argument('-analysis_json_path', required=True)
+    parser.add_argument('--submit_url', required=True)
+    parser.add_argument('--analysis_json_path', required=True)
     args = parser.parse_args()
     run(args.submit_url, args.analysis_json_path)
 
