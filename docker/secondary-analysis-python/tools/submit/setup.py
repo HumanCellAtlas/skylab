@@ -6,7 +6,7 @@ setup(name='submit',
       url='http://github.com/HumanCellAtlas/skylab',
       author='Dave Shiga',
       author_email='dshiga@broadinstitute.org',
-      license='MIT',
+      license='BSD 3-clause "New" or "Revised" License',
       packages=['submit', 'tests'],
       install_requires=[
           'requests',
