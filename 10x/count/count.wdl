@@ -185,8 +185,9 @@ task chunk_reads_join {
   Array[File] outs
   # Each chunk_reads_main creates an array of tarballs. Each tarball contains an R1, R2, and I1
   # fastq file. This step is going to flatten the nested array produced by scattering the
-  # chunk_reads_main tasks.
-  Array[Array[File]] fastq_chunks
+  # chunk_reads_main tasks. But! we can just manipulate the paths as strings so we don't have
+  # to localize the files to this instance.
+  Array[Array[String]] fastq_chunks
 
   String l = "{"
   String r = "}"
@@ -208,33 +209,20 @@ task chunk_reads_join {
     # Write out_chunks to their own file
     jq '.out_chunks' _outs > out_chunks.json
 
-    # Here we want to flatten an Array[Array[File]] into an Array[File]. So, we will iterate
-    # over every file and write its path to a new file so we can use read_lines to create an
-    # array.
-    # fastq_array is an Array type, so to use it we have to use a WDL "sep". But each element
-    # is going to be a WDL array literal, which is a JSON array. So we'll have to iterate over
-    # the JSON arrays too.
+    # Here we want to flatten an Array[Array[String]] into an Array[String]. So, we will iterate
+    # over every array and write each string to a file that we can read with read_lines.
 
     # This creates a bash array whose elements are JSON arrays. Separating with single quotes
     # keeps bash from trying anything funny. None of your business, bash.
     fastq_array=('${sep="\' \'" fastq_chunks}')
-    i=1
 
     # Now we iterate over each element in the array, which is a string that can be parsed
-    # as a JSON array. We have to use the special l and r variables so cromwelldoesn't try to
+    # as a JSON array. We have to use the special l and r variables so cromwell doesn't try to
     # parse this as WDL. None of your business, cromwell.
     for fastq_set in "$${l}fastq_array[@]${r}"; do
-        # We need to put each set of files in its own directory because they all have the same
-        # name.
-        mkdir "$i"
-        # This just passes the JSON array through jq to turn it into a bash iterable
         for fastq in $(echo "$fastq_set" | jq -r 'join(" ")'); do
-            # I guess it's necessary to create a link in the cwd. Just using the input
-            # path doesn't work.
-            ln "$fastq" "$i"/"$(basename $fastq)"
-            echo "$i"/"$(basename $fastq)" >> flattened_fastq.lines
+          echo "$fastq" >> flattened_fastq.lines
         done
-        i=$((i + 1))
     done
   >>>
 
@@ -247,7 +235,7 @@ task chunk_reads_join {
 
   output {
     File out_chunks = "out_chunks.json"
-    Array[File] flattened_fastq_chunks = read_lines("flattened_fastq.lines")
+    Array[String] flattened_fastq_chunks = read_lines("flattened_fastq.lines")
   }
 }
 
