@@ -48,7 +48,8 @@ task setup_chunks {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "2 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 1
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -88,7 +89,8 @@ task chunk_reads_split {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -167,7 +169,8 @@ task chunk_reads_main {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -238,7 +241,8 @@ task chunk_reads_join {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -273,7 +277,8 @@ task extract_reads_split {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -327,7 +332,8 @@ task extract_reads_main {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -445,7 +451,8 @@ task extract_reads_join {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -496,7 +503,7 @@ task align_reads_split {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -537,8 +544,9 @@ task align_reads_main {
 
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
-    memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    memory: "60 GB"
+    cpu: 16
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -602,7 +610,8 @@ task attach_bcs_and_umis_main {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -673,7 +682,8 @@ task attach_bcs_and_umis_join {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -711,8 +721,9 @@ task bucket_by_bc_split {
  
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
-    memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    memory: "60 GB"
+    cpu: 16
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -752,8 +763,9 @@ task bucket_by_bc_main {
 
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
-    memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    memory: "120 GB"
+    cpu: 32
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -817,7 +829,8 @@ task sort_by_bc_main {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -918,7 +931,8 @@ task sort_by_bc_join {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -948,7 +962,8 @@ task mark_duplicates_split {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -985,7 +1000,8 @@ task mark_duplicates_main {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -1032,7 +1048,8 @@ task mark_duplicates_join {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -1087,7 +1104,8 @@ task count_genes_split {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -1146,7 +1164,8 @@ task count_genes_main {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -1206,7 +1225,8 @@ task count_genes_join {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -1262,7 +1282,8 @@ task filter_barcodes {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
