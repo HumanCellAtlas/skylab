@@ -6,17 +6,17 @@ The steps in the submission process are as follows:
 
 * Create analysis.json
 * Create submission envelope and upload metadata
-* Get URN need to stage files
+* Get URN needed to stage files
 * Stage files
 * Confirm submission
 
-analysis_json.py
-================
+create_analysis_json.py
+=======================
 Creates analysis.json file.
 
 Invoke it like this::
 
-    analysis-json \
+    create-analysis-json \
       -analysis_id ${workflow_id} \
       -metadata_json ${metadata_json} \
       -input_bundles ${bundle_uuid} \
@@ -30,30 +30,35 @@ Invoke it like this::
 
 All arguments are required.
 
-submit.py
-=========
+create_envelope.py
+==================
 Creates submission envelope and uploads metadata.
 
 Invoke it like this::
 
-    submit \  
+    create-envelope \  
       -submit_url ${submit_url} \  
       -analysis_json_path analysis.json  
 
 Both arguments are required.
 
-submission_urn.py
-=================
+get_staging_urn.py
+==================
 Obtains URN needed for staging files. Queries ingest API until URN is available.
+The URN (Uniform Resource Name) is a long string that looks like this:
+hca:sta:aws:staging:{short hash}:{long hash}
+
+It gets decoded by stage.py to extract the staging location and credentials
+needed to stage files.
 
 Invoke it like this::
 
-    submission-urn \
+    get-staging-urn \
       -envelope_url ${submission_url} \
       -retry_seconds ${retry_seconds} \
       -timeout_seconds ${timeout_seconds} > submission_urn.txt
 
-All arguments are required.
+envelope_url is required
 
 stage.py
 ========
@@ -65,17 +70,17 @@ Invoke it like this::
 
 Both arguments are required
 
-confirm.py
-==========
+confirm_submission.py
+=====================
 Confirms submission. This causes the ingest service to finalize the submission and create a bundle in the storage service.
 
 Waits until submission status is "Valid", since submission cannot be confirmed until then.
 
 Invoke it like this::
 
-    confirm \
+    confirm-submission \
       -envelope_url ${submission_url} \
       -retry_seconds ${retry_seconds} \
       -timeout_seconds ${timeout_seconds}
 
-All arguments are required
+envelope_url is required

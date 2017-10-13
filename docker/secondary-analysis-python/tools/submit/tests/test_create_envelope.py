@@ -1,10 +1,6 @@
 import unittest
 import os
-import sys
 import json
-
-#pkg_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-#sys.path.insert(0, pkg_root)
 
 import submit.create_envelope as submit
 
@@ -30,7 +26,7 @@ class TestCreateEnvelope(unittest.TestCase):
             self.assertEqual(outputs[0]['content']['name'], 'sample.bam')
             self.assertEqual(outputs[0]['content']['format'], 'bam')
 
-    def test_check_status(self):
+    def test_check_status_bad_codes(self):
         with self.assertRaises(ValueError):
             submit.check_status(404, 'foo')
         with self.assertRaises(ValueError):
@@ -38,6 +34,7 @@ class TestCreateEnvelope(unittest.TestCase):
         with self.assertRaises(ValueError):
             submit.check_status(301, 'foo')
 
+    def test_check_status_acceptable_codes(self):
         try:
           submit.check_status(200, 'foo')
         except ValueError as e:

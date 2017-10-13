@@ -17,18 +17,16 @@ def run(submit_url, analysis_json_path):
     check_status(response.status_code, response.text)
     envelope_js = response.json()
     analyses_url = get_entity_url(envelope_js, 'analyses')
+    print('Creating analysis at {0}'.format(analyses_url))
     submission_url = get_entity_url(envelope_js, 'submissionEnvelope')
     with open('submission_url.txt', 'w') as f:
         f.write(submission_url)
 
     # 3. Create analysis, get input bundles url, file refs url
-    analyses_url = get_entity_url(envelope_js, 'analyses')
-    submission_url = get_entity_url(envelope_js, 'submissionEnvelope')
-    print('Creating analysis at {0}'.format(analyses_url))
     json_header = {'Content-type': 'application/json'}
     with open(analysis_json_path) as f:
         analysis_json_contents = json.load(f)
-    response = requests.post(analyses_url, headers = json_header, data = json.dumps(analysis_json_contents))
+    response = requests.post(analyses_url, headers=json_header, data=json.dumps(analysis_json_contents))
     check_status(response.status_code, response.text)
     analysis_js = response.json()
     input_bundles_url = get_entity_url(analysis_js, 'add-input-bundles')
@@ -39,7 +37,7 @@ def run(submit_url, analysis_json_path):
     input_bundle_uuid = get_input_bundle_uuid(analysis_json_contents)
     bundle_refs_js = json.dumps({"bundleUuids": [input_bundle_uuid]}, indent=2)
     print(bundle_refs_js)
-    response = requests.put(input_bundles_url, headers = json_header, data = bundle_refs_js)
+    response = requests.put(input_bundles_url, headers=json_header, data=bundle_refs_js)
     check_status(response.status_code, response.text)
 
     # 5. Add file references
@@ -47,7 +45,7 @@ def run(submit_url, analysis_json_path):
     output_files = get_output_files(analysis_json_contents)
     for file_ref in output_files:
         print('Adding file: {}'.format(file_ref['fileName']))
-        response = requests.put(file_refs_url, headers = json_header, data = json.dumps(file_ref))
+        response = requests.put(file_refs_url, headers=json_header, data=json.dumps(file_ref))
         check_status(response.status_code, response.text)
 
 def check_status(status, response_text, expected='2xx'):
@@ -90,10 +88,10 @@ def get_output_files(analysis_json):
         output_ref = {}
         file_name = o['file_path'].split('/')[-1] 
         output_ref['fileName'] = file_name
-        content = {}
-        content['name'] = file_name
-        content['format'] = o['format']
-        output_ref['content'] = content
+        output_ref['content'] = {
+            'name': file_name,
+            'format': o['format']
+        }
         output_refs.append(output_ref)
     return output_refs
 

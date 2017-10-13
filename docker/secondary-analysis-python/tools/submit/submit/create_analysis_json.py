@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 
-import requests
 import json
 import argparse
-from collections import OrderedDict
 
 def create_analysis(analysis_id, metadata_file, input_bundles_string, reference_bundle,
         run_type, method, schema_version, inputs_file, outputs_file, format_map):
@@ -19,18 +17,19 @@ def create_analysis(analysis_id, metadata_file, input_bundles_string, reference_
 
     input_bundles = get_input_bundles(input_bundles_string)
 
-    analysis = {}
-    analysis['analysis_id'] = analysis_id
-    analysis['analysis_run_type'] = 'run'
-    analysis['reference_bundle'] = reference_bundle
-    analysis['computational_method'] = method
-    analysis['input_bundles'] = input_bundles
-    analysis['timestamp_start_utc'] = start
-    analysis['timestamp_stop_utc'] = end
-    analysis['metadata_schema'] = schema_version
-    analysis['tasks'] = tasks
-    analysis['inputs'] = inputs
-    analysis['outputs'] = outputs
+    analysis = {
+        'analysis_id': analysis_id,
+        'analysis_run_type': run_type,
+        'reference_bundle': reference_bundle,
+        'computational_method': method,
+        'input_bundles': input_bundles,
+        'timestamp_start_utc': start,
+        'timestamp_stop_utc': end,
+        'metadata_schema': schema_version,
+        'tasks': tasks,
+        'inputs': inputs,
+        'outputs': outputs
+    }
 
     return analysis
 
@@ -92,38 +91,41 @@ def get_start_end(metadata):
 
 def get_tasks(metadata):
     calls = metadata['calls']
+
     out_tasks = []
     for long_task_name in calls:
-        out_task = {}
         task_name = long_task_name.split('.')[-1]
         task = calls[long_task_name][0]
-        out_task['name'] = task_name
         runtime = task['runtimeAttributes']
-        out_task['cpus'] = int(runtime['cpu'])
-        out_task['memory'] = runtime['memory']
-        out_task['disk_size'] = runtime['disks']
-        out_task['docker_image'] = runtime['docker']
-        out_task['zone'] = runtime['zones']
-        out_task['start_time'] = task['start']
-        out_task['stop_time'] = task['end']
-        out_task['log_out'] = task['stdout']
-        out_task['log_err'] = task['stderr']
+
+        out_task = {
+            'name': task_name,
+            'cpus': int(runtime['cpu']),
+            'memory': runtime['memory'],
+            'disk_size': runtime['disks'],
+            'docker_image': runtime['docker'],
+            'zone': runtime['zones'],
+            'start_time': task['start'],
+            'stop_time': task['end'],
+            'log_out': task['stdout'],
+            'log_err': task['stderr']
+        }
         out_tasks.append(out_task)
     sorted_out_tasks = sorted(out_tasks, key=lambda k: k['name'])
     return sorted_out_tasks
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-analysis_id', required=True)
-    parser.add_argument('-metadata_json', required=True)
-    parser.add_argument('-input_bundles', required=True)
-    parser.add_argument('-reference_bundle', required=True)
-    parser.add_argument('-run_type', required=True)
-    parser.add_argument('-method', required=True)
-    parser.add_argument('-schema_version', required=True)
-    parser.add_argument('-inputs_file', required=True)
-    parser.add_argument('-outputs_file', required=True)
-    parser.add_argument('-format_map', required=True)
+    parser.add_argument('-analysis_id', required=True, help='Cromwell workflow id')
+    parser.add_argument('-metadata_json', required=True, help='JSON obtained from calling Cromwell metadata endpoint for this workflow id')
+    parser.add_argument('-input_bundles', required=True, help='The DSS bundles used as inputs for the workflow')
+    parser.add_argument('-reference_bundle', required=True, help='To refer to the DSS resource bundle used for this workflow, once such things exist')
+    parser.add_argument('-run_type', required=True, help='Should always be "run" for now, may be "copy-forward" in some cases in future')
+    parser.add_argument('-method', required=True, help='Supposed to be method store url, for now can be url for wdl in skylab')
+    parser.add_argument('-schema_version', required=True, help='The metadata schema version that this analysis.json conforms to')
+    parser.add_argument('-inputs_file', required=True, 'Path to tsv containing info about inputs')
+    parser.add_argument('-outputs_file', required=True, 'Path to json file containing info about outputs')
+    parser.add_argument('-format_map', required=True, 'JSON file providing map of file extensions to formats')
     args = parser.parse_args()
     analysis = create_analysis(args.analysis_id, args.metadata_json, args.input_bundles,
         args.reference_bundle, args.run_type, args.method, args.schema_version,

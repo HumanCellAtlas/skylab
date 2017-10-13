@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 
 import requests
-import json
 import argparse
 import time
 
 def run(envelope_url, retry_seconds, timeout_seconds):
     start = time.time()
-    current = start
     urn = None
     while True:
         envelope_js = get_envelope_json(envelope_url)
@@ -34,15 +32,13 @@ def get_staging_urn(envelope_js):
     if not location:
         return None
     urn = location.get('value')
-    if not urn:
-        return None
     return urn
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-envelope_url', required=True)
-    parser.add_argument('-retry_seconds', type=int, required=True)
-    parser.add_argument('-timeout_seconds', type=int, required=True)
+    parser.add_argument('-retry_seconds', type=int, default=10)
+    parser.add_argument('-timeout_seconds', type=int, default=600)
     args = parser.parse_args()
     run(args.envelope_url, args.retry_seconds, args.timeout_seconds)
 
