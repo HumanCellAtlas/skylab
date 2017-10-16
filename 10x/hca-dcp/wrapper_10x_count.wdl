@@ -23,6 +23,7 @@ task GetInputs {
     url = "${dss_url}/bundles/" + uuid + "?version=" + version + "&replica=gcp&directurls=true"
     start = time.time()
     current = start
+    # We retry in a loop because of intermittent 5xx errors from dss
     while current - start < ${timeout_seconds}:
         print('GET {0}'.format(url))
         response = requests.get(url)
@@ -37,11 +38,11 @@ task GetInputs {
     bundle = manifest['bundle']
     uuid_to_url = {}
     name_to_meta = {}
-    url_to_name_all = {}
+    url_to_name = {}
     for f in bundle['files']:
         uuid_to_url[f['uuid']] = f['url']
         name_to_meta[f['name']] = f
-        url_to_name_all[f['url']] = f['name']
+        url_to_name[f['url']] = f['name']
 
     print('Downloading assay.json')
     assay_json_uuid = name_to_meta['assay.json']['uuid']
@@ -58,13 +59,6 @@ task GetInputs {
     r1 = [name_to_meta[lane['r1']]['url'] for lane in lanes]
     r2 = [name_to_meta[lane['r2']]['url'] for lane in lanes]
     i1 = [name_to_meta[lane['i1']]['url'] for lane in lanes]
-    url_to_name = {}
-    for i in r1:
-        url_to_name[i] = url_to_name_all[i]
-    for i in r2:
-        url_to_name[i] = url_to_name_all[i]
-    for i in i1:
-        url_to_name[i] = url_to_name_all[i]
 
     with open('lanes.txt', 'w') as f:
         for i in range(len(lanes)):
@@ -148,11 +142,27 @@ task inputs_for_submit {
   Array[Object] primers
 
   command <<<
-    primers_file="${write_objects(primers)}"
-    mv $primers_file primers.tsv
-
     python <<CODE
+    import json
+
+    print('primers')
+    primers = []
+    with open('${write_objects(primers)}') as f:
+        header = f.readline().strip().split('\t')
+        for line in f:
+            values = line.strip().split('\t')
+            primer = {}
+            for i, key in enumerate(header):
+                primer[key] = values[i]
+            primers.append(primer)
+
     inputs = []
+    input = {
+        'name': 'primers',
+        'value': json.dumps(primers)
+    }
+    inputs.append(input)
+
     print('other inputs')
     with open('${write_objects(other_inputs)}') as f:
         keys = f.readline().strip().split('\t')
@@ -205,7 +215,6 @@ task inputs_for_submit {
   }
   output {
     File inputs = "inputs.tsv"
-    File primers_tsv = "primers.tsv"
   }
 }
 
@@ -242,6 +251,11 @@ workflow Wrapper10xCount {
       timeout_seconds = timeout_seconds
   }
 
+  # Cellranger code in 10x count wdl requires files to be named a certain way.
+  # To accommodate that, rename_files copies the blue box files into the
+  # cromwell execution bucket but with the names cellranger expects.
+  # Putting this in its own task lets us take advantage of automatic localizing
+  # and delocalizing by Cromwell/JES to actually read and write stuff in buckets.
   scatter(i in GetInputs.lanes) {
     call rename_files as prep {
       input:
@@ -270,7 +284,6 @@ workflow Wrapper10xCount {
   }
 
   String sample_id = GetInputs.inputs.sample_id
-  File primers_tsv = inputs_for_submit.primers_tsv
 
   call inputs_for_submit {
     input:
@@ -312,15 +325,21 @@ workflow Wrapper10xCount {
 
   Array[Object] inputs = read_objects(inputs_for_submit.inputs)
 
+  # 10x count wdl has multiple summary outputs with the same file name.
+  # However, when submitting files back to ingest, each must be uniqely named.
+  # For now, we are only including one of the summary files.
+  # Later, we should rename things either in the 10x count wdl or here
+  # so we can submit everything. Keeping the extra summary files commented out
+  # here so we remember to fix this later.
   call submit_wdl.submit {
     input:
       inputs = inputs,
       outputs = [
 #        analysis.attach_bcs_and_umis_summary,
 #        analysis.filter_barcodes_summary,
-        analysis.count_genes_summary,
 #        analysis.extract_reads_summary,
 #        analysis.mark_duplicates_summary,
+        analysis.count_genes_summary,
         analysis.raw_gene_bc_matrices_mex,
         analysis.raw_gene_bc_matrices_h5,
         analysis.filtered_gene_bc_matrices_mex,
