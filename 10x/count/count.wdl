@@ -25,7 +25,7 @@ task setup_chunks {
 
     # Create the args json with the arguments
     echo "{}" > _args
-    echo "$(jq --arg var "$(<${sample_def})" '. + {"sample_def": $var | fromjson}' _args)" > _args
+    echo "$(jq --slurpfile var "${sample_def}" '. + {"sample_def": $var | .[]}' _args)" > _args
     echo "$(jq --arg var "${chemistry_name}" '. + {"chemistry_name": $var}' _args)" > _args
     echo "$(jq --arg var "${sample_id}" '. + {"sample_id": $var}' _args)" > _args
     echo "$(jq --arg var null '. + {"custom_chemistry_def": $var | fromjson}' _args)" > _args
@@ -48,7 +48,8 @@ task setup_chunks {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "2 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 1
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -71,7 +72,7 @@ task chunk_reads_split {
    	
     # Create the _args 
     echo "{}" > _args
-    echo "$(jq --arg var "$(<${chunks_setup})" '. + {"chunks": $var | fromjson}' _args)" > _args
+    echo "$(jq --slurpfile var "${chunks_setup}" '. + {"chunks": $var |.[] }' _args)" > _args
     echo "$(jq --arg var ${reads_per_file} '. + {"reads_per_file": $var | fromjson}' _args)" > _args
     
     # Run the stage via martian_shell
@@ -88,7 +89,8 @@ task chunk_reads_split {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -122,9 +124,9 @@ task chunk_reads_main {
 
     # Create the args object
     echo "{}" > _args
-    echo "$(jq --arg var "$(<${chunks})" '. + {"chunks": $var | fromjson}' _args)" > _args
+    echo "$(jq --slurpfile var "${chunks}" '. + {"chunks": ($var | .[])}' _args)" > _args
     echo "$(jq --arg var ${reads_per_file} '. + {"reads_per_file": $var | fromjson}' _args)" > _args
-    echo "$(jq --arg var "$(<${chunk})" '. |=  .+ ($var | fromjson) ' _args)" > _args
+    echo "$(jq --slurpfile var "${chunk}" '. |=  .+ ($var | .[])' _args)" > _args
    
     # Create the outs object
     echo '{"out_chunks": null}' > _outs
@@ -167,7 +169,8 @@ task chunk_reads_main {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -182,8 +185,9 @@ task chunk_reads_join {
   Array[File] outs
   # Each chunk_reads_main creates an array of tarballs. Each tarball contains an R1, R2, and I1
   # fastq file. This step is going to flatten the nested array produced by scattering the
-  # chunk_reads_main tasks.
-  Array[Array[File]] fastq_chunks
+  # chunk_reads_main tasks. But! we can just manipulate the paths as strings so we don't have
+  # to localize the files to this instance.
+  Array[Array[String]] fastq_chunks
 
   String l = "{"
   String r = "}"
@@ -205,45 +209,33 @@ task chunk_reads_join {
     # Write out_chunks to their own file
     jq '.out_chunks' _outs > out_chunks.json
 
-    # Here we want to flatten an Array[Array[File]] into an Array[File]. So, we will iterate
-    # over every file and write its path to a new file so we can use read_lines to create an
-    # array.
-    # fastq_array is an Array type, so to use it we have to use a WDL "sep". But each element
-    # is going to be a WDL array literal, which is a JSON array. So we'll have to iterate over
-    # the JSON arrays too.
+    # Here we want to flatten an Array[Array[String]] into an Array[String]. So, we will iterate
+    # over every array and write each string to a file that we can read with read_lines.
 
     # This creates a bash array whose elements are JSON arrays. Separating with single quotes
     # keeps bash from trying anything funny. None of your business, bash.
     fastq_array=('${sep="\' \'" fastq_chunks}')
-    i=1
 
     # Now we iterate over each element in the array, which is a string that can be parsed
-    # as a JSON array. We have to use the special l and r variables so cromwelldoesn't try to
+    # as a JSON array. We have to use the special l and r variables so cromwell doesn't try to
     # parse this as WDL. None of your business, cromwell.
     for fastq_set in "$${l}fastq_array[@]${r}"; do
-        # We need to put each set of files in its own directory because they all have the same
-        # name.
-        mkdir "$i"
-        # This just passes the JSON array through jq to turn it into a bash iterable
         for fastq in $(echo "$fastq_set" | jq -r 'join(" ")'); do
-            # I guess it's necessary to create a link in the cwd. Just using the input
-            # path doesn't work.
-            ln "$fastq" "$i"/"$(basename $fastq)"
-            echo "$i"/"$(basename $fastq)" >> flattened_fastq.lines
+          echo "$fastq" >> flattened_fastq.lines
         done
-        i=$((i + 1))
     done
   >>>
 
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
     File out_chunks = "out_chunks.json"
-    Array[File] flattened_fastq_chunks = read_lines("flattened_fastq.lines")
+    Array[String] flattened_fastq_chunks = read_lines("flattened_fastq.lines")
   }
 }
 
@@ -257,7 +249,7 @@ task extract_reads_split {
   command <<<
     # Create the _args 
     echo '{"initial_reads": null}' > _args
-    echo "$(jq --arg var "$(<${out_chunks})" '. + {"chunks": $var | fromjson}' _args)" > _args
+    echo "$(jq --slurpfile var "${out_chunks}" '. + {"chunks": ($var | .[])}' _args)" > _args
     echo "$(jq --arg var "${barcode_whitelist}" '. + {"barcode_whitelist": $var}' _args)" > _args
     
     # Run via martian_shell
@@ -273,7 +265,8 @@ task extract_reads_split {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -304,13 +297,13 @@ task extract_reads_main {
 
     # Create the _args 
     echo '{"rna_read_length": null, "initial_read": null, "skip_metrics": false}' > _args
-    echo "$(jq --arg var "$(<${out_chunks})" '. + {"chunks": $var | fromjson}' _args)" > _args
-    echo "$(jq --arg var "$(<${chemistry_def})" '. + {"chemistry_def": $var | fromjson}' _args)" > _args
+    echo "$(jq --slurpfile var "${out_chunks}" '. + {"chunks": ($var | .[])}' _args)" > _args
+    echo "$(jq --slurpfile var "${chemistry_def}" '. + {"chemistry_def": ($var | .[])}' _args)" > _args
     echo "$(jq --arg var "${barcode_whitelist}" '. + {"barcode_whitelist": $var}' _args)" > _args
     echo "$(jq --arg var ${reads_per_file} '. + {"reads_per_file": $var | fromjson}' _args)" > _args
     echo "$(jq --arg var ${subsample_rate} '. + {"subsample_rate": $var | fromjson}' _args)" > _args
     echo "$(jq --arg var '[${sep="," primers}]' '. + {"primers": $var | fromjson}' _args)" > _args
-    echo "$(jq --arg var "$(<${chunk})" '. |=  .+ ($var | fromjson) ' _args)" > _args
+    echo "$(jq --slurpfile var "${chunk}" '. |=  .+ ($var | .[])' _args)" > _args
     
     # Create the _outs
     echo '{"chunked_reporter": "chunked_reporter.pickle", "summary": "summary.json", "barcode_counts": "barcode_counts.json", ' > _outs
@@ -327,7 +320,8 @@ task extract_reads_main {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -367,7 +361,7 @@ task extract_reads_join {
     echo '{}' > _args
     echo "$(jq --arg var "${barcode_whitelist}" '. + {"barcode_whitelist": $var}' _args)" > _args
     echo "$(jq --arg var '${align}' '. + {"align": $var | fromjson}' _args)" > _args
-    echo "$(jq --arg var "$(<${chemistry_def})" '. + {"chemistry_def": $var | fromjson}' _args)" > _args
+    echo "$(jq --slurpfile var "${chemistry_def}" '. + {"chemistry_def": ($var | .[])}' _args)" > _args
    
     # Create chunk_defs
     jq '.chunks' '${stage_defs}' > _chunk_defs
@@ -445,7 +439,8 @@ task extract_reads_join {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -496,7 +491,7 @@ task align_reads_split {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -523,7 +518,7 @@ task align_reads_main {
     echo '{"threads": '$threads', "read2_chunk": null}'  > _args
     echo "$(jq --arg var genome_reference '. + {"reference_path": $var}' _args)" > _args
     echo "$(jq --arg var ${max_hits_per_read} '. + {"max_hits_per_read": ( $var | fromjson )}' _args)" > _args
-    echo "$(jq --arg var "$(<${chunk})" '. |=  .+ ($var | fromjson) ' _args)" > _args
+    echo "$(jq --slurpfile var "${chunk}" '. |=  .+ ($var | .[]) ' _args)" > _args
     echo "$(jq --arg var "${chunked_fastq}" '. + {"read_chunk": $var}' _args)" > _args
     
     # Create outs
@@ -537,8 +532,9 @@ task align_reads_main {
 
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
-    memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    memory: "60 GB"
+    cpu: 16
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -576,7 +572,7 @@ task attach_bcs_and_umis_main {
     echo "$(jq --arg var "${barcode_whitelist}" '. + {"barcode_whitelist": $var}' _args)" > _args
     echo "$(jq --arg var genome_reference '. + {"reference_path": $var}' _args)" > _args
     echo "$(jq --arg var ${barcode_counts} '. + {"barcode_counts": $var}' _args)" > _args
-    echo "$(jq --arg var "$(<${chemistry_def})" '. + {"chemistry_def": $var | fromjson}' _args)" > _args
+    echo "$(jq --slurpfile var "${chemistry_def}" '. + {"chemistry_def": $var | .[] }' _args)" > _args
     bam_comments_json='["${sep='","' bam_comments}"]'
     echo "$(jq --arg var "$bam_comments_json" '. + {"bam_comments": ( $var | fromjson )}' _args)" > _args
     gem_groups_json='[${sep=',' gem_groups}]'
@@ -602,7 +598,8 @@ task attach_bcs_and_umis_main {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -673,7 +670,8 @@ task attach_bcs_and_umis_join {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -711,8 +709,9 @@ task bucket_by_bc_split {
  
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
-    memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    memory: "60 GB"
+    cpu: 16
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -733,7 +732,7 @@ task bucket_by_bc_main {
     # Create the args. cellranger hard codes nbases to 2
     echo '{"nbases": 2}' >  _args
     echo "$(jq --arg var "${chunk_input}" '. + {"chunk_input": $var}' _args)" > _args
-    echo "$(jq --arg var "$(<${read_groups})" '. + {"read_groups": ( $var | fromjson )}' _args)" > _args
+    echo "$(jq --slurpfile var "${read_groups}" '. + {"read_groups": ( $var | .[] )}' _args)" > _args
 
     mkdir files
 
@@ -752,8 +751,9 @@ task bucket_by_bc_main {
 
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
-    memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    memory: "120 GB"
+    cpu: 32
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -817,7 +817,8 @@ task sort_by_bc_main {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -918,7 +919,8 @@ task sort_by_bc_join {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -948,7 +950,8 @@ task mark_duplicates_split {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -971,8 +974,8 @@ task mark_duplicates_main {
     echo '{}'  > _args
     echo "$(jq --arg var ${input_bam} '. + {"input": $var}' _args)" > _args
     echo "$(jq --arg var genome_reference '. + {"reference_path": $var}' _args)" > _args
-    echo "$(jq --arg var "$(<${align})" '. + {"align": ( $var | fromjson )}' _args)" > _args
-    echo "$(jq --arg var "$(<${chunk})" '. |=  .+ ($var | fromjson) ' _args)" > _args
+    echo "$(jq --slurpfile var "${align}" '. + {"align": ( $var | .[] )}' _args)" > _args
+    echo "$(jq --slurpfile var "${chunk}" '. |=  .+ ($var | .[]) ' _args)" > _args
     
     echo '{"chunked_reporter": "chunked_reporter.pickle", "output": "output.bam", "summary": "summary.json"}' > _outs
 
@@ -985,7 +988,8 @@ task mark_duplicates_main {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -1032,7 +1036,8 @@ task mark_duplicates_join {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -1072,7 +1077,7 @@ task count_genes_split {
     echo "$(jq --arg var "$gem_groups_json" '. + {"gem_groups": ( $var | fromjson )}' _args)" > _args
     echo "$(jq --arg var "genome_reference" '. + {"reference_path": $var}' _args)" > _args
     echo "$(jq --arg var "${barcode_summary}" '. + {"barcode_summary": $var}' _args)" > _args
-    echo "$(jq --arg var "$(<${chemistry_def})" '. + {"chemistry_def": $var | fromjson}' _args)" > _args
+    echo "$(jq --slurpfile var "${chemistry_def}" '. + {"chemistry_def": $var | .[]}' _args)" > _args
     echo "$(jq --arg var "$linked_bam_inputs" '. + {"inputs": ($var | fromjson)}' _args)" > _args
 
     mv /_jobinfo .  
@@ -1087,7 +1092,8 @@ task count_genes_split {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -1129,10 +1135,10 @@ task count_genes_main {
     echo "$(jq --arg var "$gem_groups_json" '. + {"gem_groups": ( $var | fromjson )}' _args)" > _args
     echo "$(jq --arg var "genome_reference" '. + {"reference_path": $var}' _args)" > _args
     echo "$(jq --arg var "${barcode_summary}" '. + {"barcode_summary": $var}' _args)" > _args
-    echo "$(jq --arg var "$(<${chemistry_def})" '. + {"chemistry_def": $var | fromjson}' _args)" > _args
-    echo "$(jq --arg var "$(<${align})" '. + {"align": $var | fromjson}' _args)" > _args
+    echo "$(jq --slurpfile var "${chemistry_def}" '. + {"chemistry_def": $var | .[]}' _args)" > _args
+    echo "$(jq --slurpfile var "${align}" '. + {"align": $var | .[]}' _args)" > _args
     echo "$(jq --arg var "$linked_bam_inputs" '. + {"inputs": ($var | fromjson)}' _args)" > _args
-    echo "$(jq --arg var "$(<${chunk})" '. |=  .+ ($var | fromjson) ' _args)" > _args
+    echo "$(jq --slurpfile var "${chunk}" '. |=  .+ ($var | .[]) ' _args)" > _args
     
     echo '{"chunked_reporter": "chunked_reporter.pickle", "matrices_h5": "matrices.h5"}' > _outs
 
@@ -1146,7 +1152,8 @@ task count_genes_main {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -1173,7 +1180,7 @@ task count_genes_join {
     # Create args
     echo '{}' > _args
     gem_groups_json='[${sep=',' gem_groups}]'
-    echo "$(jq --arg var "$(<${chemistry_def})" '. + {"chemistry_def": $var | fromjson}' _args)" > _args
+    echo "$(jq --slurpfile var "${chemistry_def}" '. + {"chemistry_def": $var | .[]}' _args)" > _args
     echo "$(jq --arg var "$gem_groups_json" '. + {"gem_groups": ( $var | fromjson )}' _args)" > _args
     echo "$(jq --arg var "${sample_id}" '. + {"sample_id": $var}' _args)" > _args
     
@@ -1206,7 +1213,8 @@ task count_genes_join {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
@@ -1241,7 +1249,7 @@ task filter_barcodes {
     echo "$(jq --arg var "${barcode_whitelist}" '. + {"barcode_whitelist": $var}' _args)" > _args
     gem_groups_json='[${sep=',' gem_groups}]'
     echo "$(jq --arg var "$gem_groups_json" '. + {"gem_groups": ( $var | fromjson )}' _args)" > _args
-    echo "$(jq --arg var "$(<${chemistry_def})" '. + {"chemistry_def": $var | fromjson}' _args)" > _args
+    echo "$(jq --slurpfile var "${chemistry_def}" '. + {"chemistry_def": $var | .[]}' _args)" > _args
     echo "$(jq --arg var "${barcode_summary}" '. + {"barcode_summary": $var}' _args)" > _args
     
 
@@ -1262,7 +1270,8 @@ task filter_barcodes {
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
     memory: "30 GB"
-    disks: "local-disk 50 HDD"
+    cpu: 8
+    disks: "local-disk 1000 HDD"
   }
 
   output {
