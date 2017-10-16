@@ -1,0 +1,25 @@
+{
+  "submit.inputs": [
+    {
+      "name": "fastq_read1",
+      "value": "gs://foo/path/read1.fastq.gz"
+    },
+    {
+      "name": "test_int",
+      "value": "123"
+    }
+  ],
+  "submit.outputs": [
+    "gs://foo/Aligned.sortedByCoord.out.bam",
+    "gs://foo/GSM1957573_rna_metrics"
+  ],
+  "submit.input_bundle_uuid": "274e8e51-76b7-4fe6-b766-65df0a4e85bb",
+  "submit.reference_bundle": "bf51d668-3e14-4843-9bc7-5d676fdf0e01",
+  "submit.format_map": "gs://foo/format_map.json",
+  "submit.submit_url": "http://api.ingest.staging.data.humancellatlas.org/",
+  "submit.method": "Ss2RsemSingleSample",
+  "submit.schema_version": "v3",
+  "submit.run_type": "run",
+  "submit.retry_seconds": 10,
+  "submit.timeout_seconds": 120
+}

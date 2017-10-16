@@ -1,0 +1,2 @@
+gs://foo/call-Star/Aligned.sortedByCoord.out.bam
+gs://foo/GSM1957573_rna_metrics

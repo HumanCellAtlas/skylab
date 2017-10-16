@@ -1,0 +1,5 @@
+name	value
+fastq_read1	gs://broad-dsde-mint-dev-teststorage/path/read1.fastq.gz
+fastq_read2	gs://broad-dsde-mint-dev-teststorage/path/read2.fastq.gz
+output_prefix	GSM1957573
+test_int	123
