@@ -387,7 +387,7 @@ task extract_reads_join {
     jq -s '.' '${sep="\' \'" outs}' > _chunk_outs
   
     # Create outs
-    echo '{"summary": "summary.json", "barcode_counts": "barcode_counts.json", "reads": null, ' > _outs
+    echo '{"summary": "extract_reads_summary.json", "barcode_counts": "barcode_counts.json", "reads": null, ' > _outs
     echo '"reads2": null, "trimmed_seqs": "trimmed_seqs", "gem_groups": null, "read_groups": null, ' >> _outs
     echo '"align": null, "bam_comments": null}' >> _outs
     
@@ -444,7 +444,7 @@ task extract_reads_join {
   }
 
   output {
-    File summary = "summary.json"
+    File summary = "extract_reads_summary.json"
     File barcode_counts = "barcode_counts.json"
     File out_align = "align.json"
     Array[File] reads = glob("reads/*")
@@ -652,7 +652,7 @@ task attach_bcs_and_umis_join {
     jq -s '.' '${sep="\' \'" outs}' > _chunk_outs
 
     # Create the outs
-    echo '{"summary": "summary.json", "barcode_summary": "barcode_summary.h5", "num_alignments": null}' > _outs
+    echo '{"summary": "attach_bcs_and_umis_summary.json", "barcode_summary": "barcode_summary.h5", "num_alignments": null}' > _outs
     
     # Create a dummy _chunk_defs. Stage doesn't use it, but the file has to be there.
     echo '{}' > _chunk_defs
@@ -675,7 +675,7 @@ task attach_bcs_and_umis_join {
   }
 
   output {
-    File summary = "summary.json"
+    File summary = "attach_bcs_and_umis_summary.json"
     File barcode_summary = "barcode_summary.h5"
     Array[Int] num_alignments = read_lines("num_alignments.lines")
   }
@@ -977,7 +977,7 @@ task mark_duplicates_main {
     echo "$(jq --slurpfile var "${align}" '. + {"align": ( $var | .[] )}' _args)" > _args
     echo "$(jq --slurpfile var "${chunk}" '. |=  .+ ($var | .[]) ' _args)" > _args
     
-    echo '{"chunked_reporter": "chunked_reporter.pickle", "output": "output.bam", "summary": "summary.json"}' > _outs
+    echo '{"chunked_reporter": "chunked_reporter.pickle", "output": "output.bam", "summary": "mark_duplicates_summary.json"}' > _outs
 
     mv /_jobinfo .  
     stage_path=/cellranger/mro/stages/counter/mark_duplicates
@@ -1012,7 +1012,7 @@ task mark_duplicates_join {
     echo '{}' > _args
     echo '{}' > _chunk_defs
 
-    echo '{"chunked_reporter": "chunked_reporter.pickle", "output": "output.bam", "summary": "summary.json"}' > _outs
+    echo '{"chunked_reporter": "chunked_reporter.pickle", "output": "output.bam", "summary": "mark_duplicates_summary.json"}' > _outs
 
     # Create chunk_outs
     bam_array=('${sep="\' \'" output_bam_from_mains}')
@@ -1041,7 +1041,7 @@ task mark_duplicates_join {
   }
 
   output {
-    File summary = "summary.json"
+    File summary = "mark_duplicates_summary.json"
   }
 }
 
@@ -1254,7 +1254,7 @@ task filter_barcodes {
     
 
     # Create outs
-    echo '{"summary": "summary.json", "filtered_barcodes": "filtered_barcodes.csv", ' >> _outs
+    echo '{"summary": "filter_barcodes_summary.json", "filtered_barcodes": "filtered_barcodes.csv", ' >> _outs
     echo '"filtered_matrices_h5": "filtered_matrices.h5", "filtered_matrices_mex": "filtered_matrices_mex"}' >> _outs
 
     mv /_jobinfo .  
@@ -1275,7 +1275,7 @@ task filter_barcodes {
   }
 
   output {
-    File summary = "summary.json"
+    File summary = "filter_barcodes_summary.json"
     File filtered_barcodes = "filtered_barcodes.csv"
     File filtered_matrices_h5 = "filtered_matrices.h5"
     File filtered_matrices_mex = "filtered_matrices_mex.tar.gz"
