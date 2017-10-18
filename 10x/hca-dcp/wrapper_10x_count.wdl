@@ -335,10 +335,10 @@ workflow Wrapper10xCount {
     input:
       inputs = inputs,
       outputs = [
-#        analysis.attach_bcs_and_umis_summary,
-#        analysis.filter_barcodes_summary,
-#        analysis.extract_reads_summary,
-#        analysis.mark_duplicates_summary,
+        analysis.attach_bcs_and_umis_summary,
+        analysis.filter_barcodes_summary,
+        analysis.extract_reads_summary,
+        analysis.mark_duplicates_summary,
         analysis.count_genes_summary,
         analysis.raw_gene_bc_matrices_mex,
         analysis.raw_gene_bc_matrices_h5,
