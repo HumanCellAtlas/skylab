@@ -79,8 +79,10 @@ task RsemExpression {
 task CollectAlignmentSummaryMetrics {
   File aligned_bam
   File ref_genome_fasta
-  String output_filename
+  String output_prefix
   
+  String output_filename = "${output_prefix}_alignment_metrics"
+
   command {
     java -Xmx10g -jar /usr/picard/picard.jar CollectAlignmentSummaryMetrics \
       VALIDATION_STRINGENCY=SILENT \
@@ -104,9 +106,11 @@ task CollectRnaSeqMetrics {
   File aligned_bam
   File ref_genome_fasta
   File rrna_interval
-  String output_filename
+  String output_prefix
   File ref_flat
   
+  String output_filename = "${output_prefix}_rna_metrics"
+
   command {
     java -Xmx10g -jar /usr/picard/picard.jar  CollectRnaSeqMetrics \
       VALIDATION_STRINGENCY=SILENT \
@@ -135,9 +139,9 @@ workflow Ss2RsemSingleSample {
   File ref_fasta
   File rrna_interval
   File ref_flat
-  String star_genome
+  File star_genome
   String output_prefix
-  String rsem_genome
+  File rsem_genome
   
   call Star {
     input:
@@ -166,7 +170,7 @@ workflow Ss2RsemSingleSample {
       aligned_bam=Star.output_bam,
       ref_genome_fasta=ref_fasta,
       rrna_interval = rrna_interval,
-      output_filename = "${output_prefix}_rna_metrics",
+      output_prefix = output_prefix,
       ref_flat= ref_flat
   }
 
@@ -174,7 +178,7 @@ workflow Ss2RsemSingleSample {
     input:
       aligned_bam = Star.output_bam,
       ref_genome_fasta = ref_fasta,
-      output_filename ="${output_prefix}_alignment_metrics"
+      output_prefix = output_prefix
   }
 
   output {
