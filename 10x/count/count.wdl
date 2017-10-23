@@ -23,6 +23,9 @@ task setup_chunks {
         mv $fastq_file read_path/
     done
 
+    # get total input file sizes:
+    ls -l read_path/*.fastq.gz | awk '{ total += $5 }; END { print total / 1073741824 }' > fq_size.txt
+
     # Create the args json with the arguments
     echo "{}" > _args
     echo "$(jq --slurpfile var "${sample_def}" '. + {"sample_def": $var | .[]}' _args)" > _args
@@ -43,19 +46,24 @@ task setup_chunks {
     jq '.chunks' _outs > chunks.json
     jq '.chemistry_def' _outs > chemistry_def.json
     jq -r '.barcode_whitelist' _outs > barcode_whitelist.string
+
   >>>
   
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
-    memory: "2 GB"
+    memory: "3.75 GB"
     cpu: 1
-    disks: "local-disk 1000 HDD"
+    # disks must be >= input file size, which are typically ~ 100-200gb. We request a larger amount
+    # here because it allows us some wiggle room and the task runs quite quickly. It would be
+    # very unusual to see 10x runs with > 250gb input size.
+    disks: "local-disk 500 HDD"
   }
 
   output {
     File chunks_setup = "chunks.json"
     File chemistry_def = "chemistry_def.json"
     String barcode_whitelist = read_string("barcode_whitelist.string")
+    Int input_file_size = ceil(read_float("fq_size.txt"))
   }
 }
 
@@ -88,9 +96,9 @@ task chunk_reads_split {
 
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
-    memory: "30 GB"
-    cpu: 8
-    disks: "local-disk 1000 HDD"
+    memory: "3.75 GB"
+    cpu: 1
+    disks: "local-disk 1 HDD"
   }
 
   output {
@@ -110,6 +118,11 @@ task chunk_reads_main {
   Array[File] r1
   Array[File] r2
   Array[File] i1
+
+  # calculate disk usage
+  # minimum of 1gb for sundry non-fastq files, plus allow 4x input fastq size
+  Int input_file_size
+  Int required_disk_size = 1 + input_file_size * 4
 
   command <<<
 
@@ -168,9 +181,9 @@ task chunk_reads_main {
 
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
-    memory: "30 GB"
-    cpu: 8
-    disks: "local-disk 1000 HDD"
+    memory: "3.75 GB"
+    cpu: 1
+    disks: "local-disk ${required_disk_size} HDD"
   }
 
   output {
@@ -228,9 +241,9 @@ task chunk_reads_join {
 
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
-    memory: "30 GB"
-    cpu: 8
-    disks: "local-disk 1000 HDD"
+    memory: "3.75 GB"
+    cpu: 1
+    disks: "local-disk 1 HDD"
   }
 
   output {
@@ -264,9 +277,9 @@ task extract_reads_split {
  
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
-    memory: "30 GB"
-    cpu: 8
-    disks: "local-disk 1000 HDD"
+    memory: "3.75 GB"
+    cpu: 1
+    disks: "local-disk 1 HDD"
   }
 
   output {
@@ -290,6 +303,13 @@ task extract_reads_main {
 
   File fastq_chunk
   File chunk
+
+  # calculate disk size
+  # use a minimum of 1 gb, then allow 20% of the input fastq size. This is likely an over-estimate
+  # as this task gets scattered, however there was some variability in the disk usage across tasks
+  # so I increased it to be careful.
+  Int input_file_size
+  Int required_disk_size = 1 + ceil(input_file_size * 0.2)
 
   command <<<
 
@@ -319,9 +339,9 @@ task extract_reads_main {
 
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
-    memory: "30 GB"
-    cpu: 8
-    disks: "local-disk 1000 HDD"
+    memory: "7.5 GB"
+    cpu: 2
+    disks: "local-disk ${required_disk_size} HDD"
   }
 
   output {
@@ -354,6 +374,11 @@ task extract_reads_join {
   # as WDL
   String l = "{"
   String r = "}"
+
+  # get required disk size
+  # minimum on 1gb for sundry non-fastq files, plus allow for 4.5x input fastq size.
+  Int input_file_size
+  Int required_disk_size = 1 + ceil(input_file_size * 4.5)
 
   command <<<
 
@@ -438,9 +463,9 @@ task extract_reads_join {
 
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
-    memory: "30 GB"
-    cpu: 8
-    disks: "local-disk 1000 HDD"
+    memory: "3.75 GB"
+    cpu: 1
+    disks: "local-disk ${required_disk_size} HDD"
   }
 
   output {
@@ -464,6 +489,14 @@ task align_reads_split {
   Array[String] read_paths
   Array[String] read_groups
   File reference_path
+
+  # get required disk size
+  # minimum of 1 gb, plus the size of the reference with 20% added wiggle room (1.2) and
+  # 20% of the input fastq file size. This task is scattered, but there was variability in the size
+  # of the scattered files, so the 20% request produces a safe size.
+  Int input_file_size
+  Int required_disk_size = 1 + ceil(size(reference_path, "G") * 1.2 + (input_file_size * 0.2))
+
   
   command <<<
     # todo is this necessary here? is the reference itself used or just the path to it?
@@ -490,8 +523,9 @@ task align_reads_split {
  
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
-    memory: "30 GB"
-    disks: "local-disk 1000 HDD"
+    memory: "3.75 GB"
+    cpu: 1
+    disks: "local-disk ${required_disk_size} HDD"
   }
 
   output {
@@ -508,6 +542,14 @@ task align_reads_main {
   File chunked_fastq
   # The chunk definition produced by align_reads_split
   File chunk
+
+  # get required disk size
+  # minimum of 1 gb, plus the size of the reference with 20% added wiggle room (1.2) and
+  # 20% of the input fastq file size. This task is scattered, but there was variability in the size
+  # of the scattered files, so the 20% request produces a safe size.
+  Int input_file_size
+  Int required_disk_size = 1 + ceil(size(reference_path, "G") * 1.2 + (input_file_size * 0.2))
+
 
   command <<<
 
@@ -532,9 +574,9 @@ task align_reads_main {
 
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
-    memory: "60 GB"
-    cpu: 16
-    disks: "local-disk 1000 HDD"
+    memory: "30 GB"
+    cpu: 8
+    disks: "local-disk ${required_disk_size} HDD"
   }
 
   output {
@@ -560,6 +602,13 @@ task attach_bcs_and_umis_main {
   Pair[File, File] chunk_right = chunk.right
   File trimmed_seqs = chunk_right.left
   File genome_output= chunk_right.right
+
+  # get required disk size
+  # minimum of 1 gb, plus the size of the reference with 20% added wiggle room (1.2) and
+  # 3 times the input fastq size
+  Int input_file_size
+  Int required_disk_size = 1 + ceil(size(reference_path, "G") * 1.2 + (input_file_size * 3))
+
 
   command <<<
 
@@ -597,9 +646,9 @@ task attach_bcs_and_umis_main {
 
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
-    memory: "30 GB"
-    cpu: 8
-    disks: "local-disk 1000 HDD"
+    memory: "7.5 GB"
+    cpu: 1
+    disks: "local-disk ${required_disk_size} HDD"
   }
 
   output {
@@ -624,6 +673,12 @@ task attach_bcs_and_umis_join {
   # Needed to work with bash arrays
   String l = "{"
   String r = "}"
+
+  # get required disk size
+  # minimum of 1 gb, plus the size of the reference with 20% added wiggle room (1.2) and
+  # 3 times the input fastq size
+  Int input_file_size
+  Int required_disk_size = 1 + ceil(size(reference_path, "G") * 1.2 + (input_file_size * 3))
 
   command <<<
 
@@ -669,9 +724,9 @@ task attach_bcs_and_umis_join {
 
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
-    memory: "30 GB"
-    cpu: 8
-    disks: "local-disk 1000 HDD"
+    memory: "7.5 GB"
+    cpu: 2
+    disks: "local-disk ${required_disk_size} HDD"
   }
 
   output {
@@ -687,6 +742,12 @@ task bucket_by_bc_split {
   Array[File] inputs
   # The alignment counts produced by all the attach_umis_and_bcs main steps
   Array[Int] num_alignments
+
+  # calculate disk requirements
+  # minimum of 1 gb for sundry non-fastq files plus 4 times the input fastq size
+  Int input_file_size
+  Int required_disk_size = 1 + (input_file_size * 4)
+
 
   command <<<
     
@@ -709,9 +770,9 @@ task bucket_by_bc_split {
  
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
-    memory: "60 GB"
-    cpu: 16
-    disks: "local-disk 1000 HDD"
+    memory: "7.5 GB"
+    cpu: 2
+    disks: "local-disk ${required_disk_size} HDD"
   }
 
   output {
@@ -725,10 +786,13 @@ task bucket_by_bc_main {
   File chunk_input
   # json with a list of the read groups
   File read_groups
-  
+
+  Int input_file_size
+  # minimum of 1 gb for sundry non-fastq files plus the input fastq size
+  Int required_disk_size = 1 + input_file_size
 
   command <<<
-    
+
     # Create the args. cellranger hard codes nbases to 2
     echo '{"nbases": 2}' >  _args
     echo "$(jq --arg var "${chunk_input}" '. + {"chunk_input": $var}' _args)" > _args
@@ -751,9 +815,9 @@ task bucket_by_bc_main {
 
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
-    memory: "120 GB"
-    cpu: 32
-    disks: "local-disk 1000 HDD"
+    memory: "7.5 GB"
+    cpu: 2
+    disks: "local-disk ${required_disk_size} HDD"
   }
 
   output {
@@ -786,7 +850,12 @@ task sort_by_bc_main {
   # A set of BAM from the bucket_by_bc steps. So this would be a list of "bc_AT.bam" files,
   # for example
   Array[File] bucketed_bams
-  
+
+  # calculate disk requirements
+  # minimum of 1 gb for sundry non-fastq files plus 3 times the input fastq size
+  Int input_file_size
+  Int required_disk_size = 1 + (input_file_size * 3)
+
   command <<<
     # All the files have the same name, so move the bucketed bams to cwd with unique names
     idx=0
@@ -816,9 +885,9 @@ task sort_by_bc_main {
 
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
-    memory: "30 GB"
-    cpu: 8
-    disks: "local-disk 1000 HDD"
+    memory: "7.5 GB"
+    cpu: 2
+    disks: "local-disk ${required_disk_size} HDD"
   }
 
   output {
@@ -864,6 +933,11 @@ task sort_by_bc_join {
   Int total_GC
   Int total_GG
   Int total_null
+
+  # calculate disk size
+  # minimum of 1 gb plus 4 * input fastq file size
+  Int input_file_size
+  Int required_disk_size = 1 + (input_file_size * 4)
 
   command <<<
     set -x
@@ -918,9 +992,9 @@ task sort_by_bc_join {
 
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
-    memory: "30 GB"
-    cpu: 8
-    disks: "local-disk 1000 HDD"
+    memory: "7.5 GB"
+    cpu: 2
+    disks: "local-disk ${required_disk_size} HDD"
   }
 
   output {
@@ -932,6 +1006,11 @@ task sort_by_bc_join {
 # See https://github.com/10XGenomics/cellranger/blob/master/mro/stages/counter/mark_duplicates/__init__.py
 task mark_duplicates_split {
   File input_bam
+
+  # calculate disk requirements
+  # minimum of 1 gb plus 3 times input fastq file size
+  Int input_file_size
+  Int required_disk_size = 1 + (input_file_size * 3)
   
   command <<<
     # Create args
@@ -949,9 +1028,9 @@ task mark_duplicates_split {
  
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
-    memory: "30 GB"
-    cpu: 8
-    disks: "local-disk 1000 HDD"
+    memory: "7.5 GB"
+    cpu: 2
+    disks: "local-disk ${required_disk_size} HDD"
   }
 
   output {
@@ -965,6 +1044,12 @@ task mark_duplicates_main {
   File align
   File reference_path
   File chunk
+
+  # get required disk size
+  # minimum of 1gb plus size of reference with 20% wiggle room plus two times input fastq file size
+  Int input_file_size
+  Int required_disk_size = 1 + ceil(size(reference_path, "G") * 1.2 + (input_file_size * 2))
+
 
   command <<<
 
@@ -987,9 +1072,9 @@ task mark_duplicates_main {
 
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
-    memory: "30 GB"
-    cpu: 8
-    disks: "local-disk 1000 HDD"
+    memory: "3.75 GB"
+    cpu: 1
+    disks: "local-disk ${required_disk_size} HDD"
   }
 
   output {
@@ -1006,6 +1091,12 @@ task mark_duplicates_join {
   
   String l = "{"
   String r = "}"
+
+  # get required disk size
+  # minimum of 1 gb plus double the input file size
+  Int input_file_size
+  Int required_disk_size = 1 + (input_file_size * 2)
+
   
   command <<<
 
@@ -1035,9 +1126,9 @@ task mark_duplicates_join {
   
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
-    memory: "30 GB"
-    cpu: 8
-    disks: "local-disk 1000 HDD"
+    memory: "3.75 GB"
+    cpu: 1
+    disks: "local-disk ${required_disk_size} HDD"
   }
 
   output {
@@ -1053,6 +1144,11 @@ task count_genes_split {
   File reference_path
   File barcode_summary
   File chemistry_def
+
+  # get required disk size
+  # minimum of 1 plus reference and 20% wiggle room plus double the input fastq file size
+  Int input_file_size
+  Int required_disk_size = 1 + ceil(size(reference_path, "G") * 1.2 + (input_file_size * 2))
 
 
   command <<<
@@ -1091,9 +1187,9 @@ task count_genes_split {
  
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
-    memory: "30 GB"
-    cpu: 8
-    disks: "local-disk 1000 HDD"
+    memory: "3.75 GB"
+    cpu: 1
+    disks: "local-disk ${required_disk_size} HDD"
   }
 
   output {
@@ -1112,6 +1208,11 @@ task count_genes_main {
   File chemistry_def
   File chunk
   File align
+
+  # get required disk size
+  # minimum of 1 plus reference with 20% wiggle room and double the input file size
+  Int input_file_size
+  Int required_disk_size = 1 + ceil(size(reference_path, "G") * 1.2 + (input_file_size * 2))
 
   command <<<
 
@@ -1151,9 +1252,9 @@ task count_genes_main {
 
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
-    memory: "30 GB"
-    cpu: 8
-    disks: "local-disk 1000 HDD"
+    memory: "3.75 GB"
+    cpu: 1
+    disks: "local-disk ${required_disk_size} HDD"
   }
 
   output {
@@ -1174,6 +1275,12 @@ task count_genes_join {
   
   String l = "{"
   String r = "}"
+
+  # get required disk size
+  # minimum of 1 gb plus input fastq file size
+  Int input_file_size
+  Int required_disk_size = 1 + input_file_size
+
 
   command <<<
 
@@ -1212,9 +1319,9 @@ task count_genes_join {
   
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
-    memory: "30 GB"
-    cpu: 8
-    disks: "local-disk 1000 HDD"
+    memory: "3.75 GB"
+    cpu: 1
+    disks: "local-disk ${required_disk_size} HDD"
   }
 
   output {
@@ -1269,9 +1376,9 @@ task filter_barcodes {
   
   runtime {
     docker: "marcusczi/cellranger_clean:cromwell"
-    memory: "30 GB"
-    cpu: 8
-    disks: "local-disk 1000 HDD"
+    memory: "3.75 GB"
+    cpu: 1
+    disks: "local-disk 5 HDD"
   }
 
   output {
@@ -1287,13 +1394,20 @@ task get_trimmed_and_aligned {
     Array[File] genome_output
     Array[Int] gem_groups
 
+    # get required disk size
+    # minimum of 1gb plus double the input file size
+    Int input_file_size
+    Int required_disk_size = 1 + input_file_size * 2
+
+
     command <<<
     >>>
 
     runtime {
         docker: "marcusczi/cellranger_clean:cromwell"
-        memory: "30 GB"
-        disks: "local-disk 50 HDD"
+        memory: "3.75 GB"
+        cpu: 1
+        disks: "local-disk ${required_disk_size} HDD"
     }
 
     output {
@@ -1339,7 +1453,8 @@ workflow count {
         reads_per_file = reads_per_file,
         r1 = r1,
         r2 = r2,
-        i1 = i1
+        i1 = i1,
+        input_file_size = setup_chunks.input_file_size
     }
   }
 
@@ -1365,7 +1480,8 @@ workflow count {
           subsample_rate = subsample_rate,
           chemistry_def = setup_chunks.chemistry_def,
           chunk = split_pair.left,
-          fastq_chunk = split_pair.right
+          fastq_chunk = split_pair.right,
+          input_file_size = setup_chunks.input_file_size
     }
   }
 
@@ -1379,14 +1495,16 @@ workflow count {
       reads_from_mains = extract_reads_main.reads,
       trimmed_seqs_from_mains = extract_reads_main.trimmed_seqs,
       chunked_reporter_from_mains = extract_reads_main.chunked_reporter,
-      barcode_counts_from_mains = extract_reads_main.barcode_counts
+      barcode_counts_from_mains = extract_reads_main.barcode_counts,
+      input_file_size = setup_chunks.input_file_size
   }
 
   call align_reads_split {
     input:
       read_groups = extract_reads_join.read_groups,
       read_paths = extract_reads_join.read_paths,
-      reference_path = reference_path
+      reference_path = reference_path,
+      input_file_size = setup_chunks.input_file_size
   }
 
   scatter(split_pair in zip(align_reads_split.chunks, extract_reads_join.reads)) {
@@ -1395,7 +1513,8 @@ workflow count {
         reference_path = reference_path,
         chunk = split_pair.left,
         chunked_fastq = split_pair.right,
-        max_hits_per_read = -1
+        max_hits_per_read = -1,
+        input_file_size = setup_chunks.input_file_size
     }
   }
 
@@ -1403,7 +1522,8 @@ workflow count {
     input:
       trimmed_seqs = extract_reads_join.trimmed_seqs,
       genome_output = align_reads_main.genome_output,
-      gem_groups = extract_reads_join.gem_groups
+      gem_groups = extract_reads_join.gem_groups,
+      input_file_size = setup_chunks.input_file_size
   }
 
   scatter(chunk in get_trimmed_and_aligned.gem_group_trimmed_and_aligned) {
@@ -1416,7 +1536,8 @@ workflow count {
         umi_min_qual_threshold = umi_min_qual_threshold,
         barcode_counts = extract_reads_join.barcode_counts,
         chunk = chunk,
-        bam_comments = extract_reads_join.bam_comments 
+        bam_comments = extract_reads_join.bam_comments,
+        input_file_size = setup_chunks.input_file_size
     }
   }
 
@@ -1426,40 +1547,43 @@ workflow count {
       num_alignments_from_mains = attach_bcs_and_umis_main.num_alignments,
       output_from_mains = attach_bcs_and_umis_main.output_bam,
       chunked_reporter_from_mains = attach_bcs_and_umis_main.chunked_reporter,
-      outs = attach_bcs_and_umis_main.outs
+      outs = attach_bcs_and_umis_main.outs,
+      input_file_size = setup_chunks.input_file_size
   }
 
   call bucket_by_bc_split {
     input:
       inputs = attach_bcs_and_umis_main.output_bam,
-      num_alignments = attach_bcs_and_umis_main.num_alignments
+      num_alignments = attach_bcs_and_umis_main.num_alignments,
+      input_file_size = setup_chunks.input_file_size
   }
 
   scatter(chunk_input in attach_bcs_and_umis_main.output_bam) {
     call bucket_by_bc_main {
       input:
         chunk_input = chunk_input,
-        read_groups = bucket_by_bc_split.read_groups
+        read_groups = bucket_by_bc_split.read_groups,
+        input_file_size = setup_chunks.input_file_size
     }
   }
   
-  call sort_by_bc_main as sort_AA { input: bucketed_bams = bucket_by_bc_main.AA_bam }
-  call sort_by_bc_main as sort_AT { input: bucketed_bams = bucket_by_bc_main.AT_bam }
-  call sort_by_bc_main as sort_AG { input: bucketed_bams = bucket_by_bc_main.AG_bam }
-  call sort_by_bc_main as sort_AC { input: bucketed_bams = bucket_by_bc_main.AC_bam }
-  call sort_by_bc_main as sort_TA { input: bucketed_bams = bucket_by_bc_main.TA_bam }
-  call sort_by_bc_main as sort_TT { input: bucketed_bams = bucket_by_bc_main.TT_bam }
-  call sort_by_bc_main as sort_TG { input: bucketed_bams = bucket_by_bc_main.TG_bam }
-  call sort_by_bc_main as sort_TC { input: bucketed_bams = bucket_by_bc_main.TC_bam }
-  call sort_by_bc_main as sort_GA { input: bucketed_bams = bucket_by_bc_main.GA_bam }
-  call sort_by_bc_main as sort_GT { input: bucketed_bams = bucket_by_bc_main.GT_bam }
-  call sort_by_bc_main as sort_GG { input: bucketed_bams = bucket_by_bc_main.GG_bam }
-  call sort_by_bc_main as sort_GC { input: bucketed_bams = bucket_by_bc_main.GC_bam }
-  call sort_by_bc_main as sort_CA { input: bucketed_bams = bucket_by_bc_main.CA_bam }
-  call sort_by_bc_main as sort_CT { input: bucketed_bams = bucket_by_bc_main.CT_bam }
-  call sort_by_bc_main as sort_CG { input: bucketed_bams = bucket_by_bc_main.CG_bam }
-  call sort_by_bc_main as sort_CC { input: bucketed_bams = bucket_by_bc_main.CC_bam }
-  call sort_by_bc_main as sort_null { input: bucketed_bams = bucket_by_bc_main.null_bam }
+  call sort_by_bc_main as sort_AA { input: bucketed_bams = bucket_by_bc_main.AA_bam, input_file_size = setup_chunks.input_file_size }
+  call sort_by_bc_main as sort_AT { input: bucketed_bams = bucket_by_bc_main.AT_bam, input_file_size = setup_chunks.input_file_size }
+  call sort_by_bc_main as sort_AG { input: bucketed_bams = bucket_by_bc_main.AG_bam, input_file_size = setup_chunks.input_file_size }
+  call sort_by_bc_main as sort_AC { input: bucketed_bams = bucket_by_bc_main.AC_bam, input_file_size = setup_chunks.input_file_size }
+  call sort_by_bc_main as sort_TA { input: bucketed_bams = bucket_by_bc_main.TA_bam, input_file_size = setup_chunks.input_file_size }
+  call sort_by_bc_main as sort_TT { input: bucketed_bams = bucket_by_bc_main.TT_bam, input_file_size = setup_chunks.input_file_size }
+  call sort_by_bc_main as sort_TG { input: bucketed_bams = bucket_by_bc_main.TG_bam, input_file_size = setup_chunks.input_file_size }
+  call sort_by_bc_main as sort_TC { input: bucketed_bams = bucket_by_bc_main.TC_bam, input_file_size = setup_chunks.input_file_size }
+  call sort_by_bc_main as sort_GA { input: bucketed_bams = bucket_by_bc_main.GA_bam, input_file_size = setup_chunks.input_file_size }
+  call sort_by_bc_main as sort_GT { input: bucketed_bams = bucket_by_bc_main.GT_bam, input_file_size = setup_chunks.input_file_size }
+  call sort_by_bc_main as sort_GG { input: bucketed_bams = bucket_by_bc_main.GG_bam, input_file_size = setup_chunks.input_file_size }
+  call sort_by_bc_main as sort_GC { input: bucketed_bams = bucket_by_bc_main.GC_bam, input_file_size = setup_chunks.input_file_size }
+  call sort_by_bc_main as sort_CA { input: bucketed_bams = bucket_by_bc_main.CA_bam, input_file_size = setup_chunks.input_file_size }
+  call sort_by_bc_main as sort_CT { input: bucketed_bams = bucket_by_bc_main.CT_bam, input_file_size = setup_chunks.input_file_size }
+  call sort_by_bc_main as sort_CG { input: bucketed_bams = bucket_by_bc_main.CG_bam, input_file_size = setup_chunks.input_file_size }
+  call sort_by_bc_main as sort_CC { input: bucketed_bams = bucket_by_bc_main.CC_bam, input_file_size = setup_chunks.input_file_size }
+  call sort_by_bc_main as sort_null { input: bucketed_bams = bucket_by_bc_main.null_bam, input_file_size = setup_chunks.input_file_size }
   
   call sort_by_bc_join {
     input:
@@ -1472,12 +1596,14 @@ workflow count {
       total_TA = sort_TA.total_reads, total_TT = sort_TT.total_reads, total_TC = sort_TC.total_reads, total_TG = sort_TG.total_reads,
       total_CA = sort_CA.total_reads, total_CT = sort_CT.total_reads, total_CC = sort_CC.total_reads, total_CG = sort_CG.total_reads,
       total_GA = sort_GA.total_reads, total_GT = sort_GT.total_reads, total_GC = sort_GC.total_reads, total_GG = sort_GG.total_reads,
-      total_null = sort_null.total_reads
+      total_null = sort_null.total_reads,
+      input_file_size = setup_chunks.input_file_size
   }
 
   call mark_duplicates_split {
     input:
-      input_bam = sort_by_bc_join.default
+      input_bam = sort_by_bc_join.default,
+      input_file_size = setup_chunks.input_file_size
   }
   
   scatter(chunk in mark_duplicates_split.chunks) {
@@ -1486,7 +1612,8 @@ workflow count {
         input_bam = sort_by_bc_join.default,
         chunk = chunk,
         align = extract_reads_join.out_align,
-        reference_path = reference_path
+        reference_path = reference_path,
+        input_file_size = setup_chunks.input_file_size
     }
   }
 
@@ -1494,7 +1621,8 @@ workflow count {
     input:
       output_bam_from_mains = mark_duplicates_main.output_bam,
       chunked_reporter_from_mains = mark_duplicates_main.chunked_reporter,
-      outs = mark_duplicates_main.out
+      outs = mark_duplicates_main.out,
+      input_file_size = setup_chunks.input_file_size
   }
 
   call count_genes_split {
@@ -1504,7 +1632,8 @@ workflow count {
       gem_groups = extract_reads_join.gem_groups,
       reference_path = reference_path,
       barcode_summary = attach_bcs_and_umis_join.barcode_summary,
-      chemistry_def = setup_chunks.chemistry_def
+      chemistry_def = setup_chunks.chemistry_def,
+      input_file_size = setup_chunks.input_file_size
   }
 
   scatter(chunk in count_genes_split.chunks) {
@@ -1517,7 +1646,8 @@ workflow count {
       barcode_summary = attach_bcs_and_umis_join.barcode_summary,
       chemistry_def = setup_chunks.chemistry_def,
       chunk = chunk,
-      align = extract_reads_join.out_align
+      align = extract_reads_join.out_align,
+      input_file_size = setup_chunks.input_file_size
     }
   }
 
@@ -1528,7 +1658,8 @@ workflow count {
       chemistry_def = setup_chunks.chemistry_def,
       gem_groups = extract_reads_join.gem_groups,
       sample_id = sample_id,
-      outs = count_genes_main.outs
+      outs = count_genes_main.outs,
+      input_file_size = setup_chunks.input_file_size
   }
   
   call filter_barcodes {
