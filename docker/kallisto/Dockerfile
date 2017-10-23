@@ -7,13 +7,24 @@ LABEL maintainer="Ambrose J. Carr <acarr@broadinstitute.org>" \
   website="https://pachterlab.github.io/kallisto"
 
 RUN apt update && apt install -y \
-  curl
+  g++ \
+  cmake \
+  curl \
+  libhdf5-dev \
+  samtools
 
-# download and install the kallisto binary, keep the license
-RUN curl -L -o kallisto_linux-v0.43.1.tar.gz \
-  https://github.com/pachterlab/kallisto/releases/download/v0.43.1/kallisto_linux-v0.43.1.tar.gz && \
-  tar -xzf kallisto_linux-v0.43.1.tar.gz && \
-  cp kallisto_linux-v0.43.1/kallisto /usr/local/bin/ && \
-  cp kallisto_linux-v0.43.1/license.txt . && \
-  rm kallisto_linux-v0.43.1.tar.gz && \
-  rm -r kallisto_linux-v0.43.1
+RUN mv /usr/include/hdf5/serial/* /usr/include/
+
+# download, make and install the kallisto binary
+RUN curl -L -o kallisto-0.43.1.tar.gz \
+  https://github.com/pachterlab/kallisto/archive/v0.43.1.tar.gz && \
+  tar -xzf kallisto-0.43.1.tar.gz && \
+  cd kallisto-0.43.1/ && \
+  mkdir build && \
+  cd build && \
+  cmake .. && \
+  make && \
+  make install && \
+  cd / && \
+  rm -r kallisto-0.43.1 && \
+  rm kallisto-0.43.1.tar.gz
