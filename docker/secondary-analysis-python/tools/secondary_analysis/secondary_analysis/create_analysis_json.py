@@ -116,16 +116,16 @@ def get_tasks(metadata):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-analysis_id', required=True, help='Cromwell workflow id')
-    parser.add_argument('-metadata_json', required=True, help='JSON obtained from calling Cromwell metadata endpoint for this workflow id')
-    parser.add_argument('-input_bundles', required=True, help='The DSS bundles used as inputs for the workflow')
-    parser.add_argument('-reference_bundle', required=True, help='To refer to the DSS resource bundle used for this workflow, once such things exist')
-    parser.add_argument('-run_type', required=True, help='Should always be "run" for now, may be "copy-forward" in some cases in future')
-    parser.add_argument('-method', required=True, help='Supposed to be method store url, for now can be url for wdl in skylab')
-    parser.add_argument('-schema_version', required=True, help='The metadata schema version that this analysis.json conforms to')
-    parser.add_argument('-inputs_file', required=True, 'Path to tsv containing info about inputs')
-    parser.add_argument('-outputs_file', required=True, 'Path to json file containing info about outputs')
-    parser.add_argument('-format_map', required=True, 'JSON file providing map of file extensions to formats')
+    parser.add_argument('--analysis_id', required=True, help='Cromwell workflow id')
+    parser.add_argument('--metadata_json', required=True, help='JSON obtained from calling Cromwell metadata endpoint for this workflow id')
+    parser.add_argument('--input_bundles', required=True, help='The DSS bundles used as inputs for the workflow')
+    parser.add_argument('--reference_bundle', required=True, help='To refer to the DSS resource bundle used for this workflow, once such things exist')
+    parser.add_argument('--run_type', required=True, help='Should always be "run" for now, may be "copy-forward" in some cases in future')
+    parser.add_argument('--method', required=True, help='Supposed to be method store url, for now can be url for wdl in skylab')
+    parser.add_argument('--schema_version', required=True, help='The metadata schema version that this analysis.json conforms to')
+    parser.add_argument('--inputs_file', required=True, help='Path to tsv containing info about inputs')
+    parser.add_argument('--outputs_file', required=True, help='Path to json file containing info about outputs')
+    parser.add_argument('--format_map', required=True, help='JSON file providing map of file extensions to formats')
     args = parser.parse_args()
     analysis = create_analysis(args.analysis_id, args.metadata_json, args.input_bundles,
         args.reference_bundle, args.run_type, args.method, args.schema_version,

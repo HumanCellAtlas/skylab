@@ -2,7 +2,7 @@ import unittest
 import os
 import json
 
-import submit.create_envelope as submit
+import secondary_analysis.create_envelope as submit
 
 class TestCreateEnvelope(unittest.TestCase):
 

@@ -1,6 +1,7 @@
 import "ss2_single_sample.wdl" as ss2
 import "submit.wdl" as submit_wdl
 
+
 task GetInputs {
   String bundle_uuid
   String bundle_version
@@ -10,51 +11,26 @@ task GetInputs {
 
   command <<<
     python <<CODE
-    import json
-    import requests
-    import subprocess
-    import time
+    from secondary_analysis import utils
 
     # Get bundle manifest
     uuid = '${bundle_uuid}'
     version = '${bundle_version}'
+    dss_url = '${dss_url}'
+    retry_seconds = ${retry_seconds}
+    timeout_seconds = ${timeout_seconds}
     print('Getting bundle manifest for id {0}, version {1}'.format(uuid, version))
-
-    url = "${dss_url}/bundles/" + uuid + "?version=" + version + "&replica=gcp&directurls=true"
-    start = time.time()
-    current = start
-    while current - start < ${timeout_seconds}:
-        print('GET {0}'.format(url))
-        response = requests.get(url)
-        print('{0}'.format(response.status_code))
-        print('{0}'.format(response.text))
-        if 200 <= response.status_code <= 299:
-            break
-        time.sleep(${retry_seconds})
-        current = time.time()
-    manifest = response.json()
-
-    bundle = manifest['bundle']
-    uuid_to_url = {}
-    name_to_meta = {}
-    for f in bundle['files']:
-        uuid_to_url[f['uuid']] = f['url']
-        name_to_meta[f['name']] = f
+    manifest_files = utils.get_manifest_files(uuid, version, dss_url, timeout_seconds, retry_seconds)
 
     print('Downloading assay.json')
-    assay_json_uuid = name_to_meta['assay.json']['uuid']
-    url = "${dss_url}/files/" + assay_json_uuid + "?replica=gcp"
-    print('GET {0}'.format(url))
-    response = requests.get(url)
-    print('{0}'.format(response.status_code))
-    print('{0}'.format(response.text))
-    assay_json = response.json()
-    sample_id = assay_json['sample_id']
+    assay_json_uuid = manifest_files['name_to_meta']['assay.json']['uuid']
+    assay_json = utils.get_file_by_uuid(assay_json_uuid, dss_url)
 
+    sample_id = assay_json['sample_id']
     fastq_1_name = assay_json['seq']['lanes'][0]['r1']
     fastq_2_name = assay_json['seq']['lanes'][0]['r2']
-    fastq_1_url = name_to_meta[fastq_1_name]['url']
-    fastq_2_url = name_to_meta[fastq_2_name]['url']
+    fastq_1_url = manifest_files['name_to_meta'][fastq_1_name]['url']
+    fastq_2_url = manifest_files['name_to_meta'][fastq_2_name]['url']
 
     print('Creating input map')
     with open('inputs.tsv', 'w') as f:
@@ -74,7 +50,6 @@ task GetInputs {
 workflow WrapperSs2RsemSingleSample {
   String bundle_uuid
   String bundle_version
-
 
   File gtf
   File ref_fasta

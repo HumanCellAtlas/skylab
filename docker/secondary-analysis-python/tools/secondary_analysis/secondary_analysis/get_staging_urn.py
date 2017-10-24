@@ -36,9 +36,9 @@ def get_staging_urn(envelope_js):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-envelope_url', required=True)
-    parser.add_argument('-retry_seconds', type=int, default=10)
-    parser.add_argument('-timeout_seconds', type=int, default=600)
+    parser.add_argument('--envelope_url', required=True)
+    parser.add_argument('--retry_seconds', type=int, default=10)
+    parser.add_argument('--timeout_seconds', type=int, default=600)
     args = parser.parse_args()
     run(args.envelope_url, args.retry_seconds, args.timeout_seconds)
 

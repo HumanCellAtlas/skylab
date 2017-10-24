@@ -2,7 +2,7 @@ import unittest
 import os
 import json
 
-import submit.create_analysis_json as analysis_json
+import secondary_analysis.create_analysis_json as analysis_json
 
 class TestCreateAnalysisJson(unittest.TestCase):
 

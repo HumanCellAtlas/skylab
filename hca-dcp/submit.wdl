@@ -50,21 +50,21 @@ task create_submission {
     # Note that create-analysis-json can take a comma-separated list of bundles,
     # but current workflows only take a single input bundle
     create-analysis-json \
-      -analysis_id ${workflow_id} \
-      -metadata_json ${metadata_json} \
-      -input_bundles ${input_bundle_uuid} \
-      -reference_bundle ${reference_bundle} \
-      -run_type ${run_type} \
-      -method ${method} \
-      -schema_version ${schema_version} \
-      -inputs_file ${write_objects(inputs)} \
-      -outputs_file ${write_lines(outputs)} \
-      -format_map ${format_map}
+      --analysis_id ${workflow_id} \
+      --metadata_json ${metadata_json} \
+      --input_bundles ${input_bundle_uuid} \
+      --reference_bundle ${reference_bundle} \
+      --run_type ${run_type} \
+      --method ${method} \
+      --schema_version ${schema_version} \
+      --inputs_file ${write_objects(inputs)} \
+      --outputs_file ${write_lines(outputs)} \
+      --format_map ${format_map}
 
     # Now create the submission object
     create-envelope \
-      -submit_url ${submit_url} \
-      -analysis_json_path analysis.json
+      --submit_url ${submit_url} \
+      --analysis_json_path analysis.json
   >>>
 
   runtime {
@@ -92,9 +92,9 @@ task stage_and_confirm {
 
     # Get the urn needed for staging files
     staging_urn=$(get-staging-urn \
-        -envelope_url ${submission_url} \
-        -retry_seconds ${retry_seconds} \
-        -timeout_seconds ${timeout_seconds})
+        --envelope_url ${submission_url} \
+        --retry_seconds ${retry_seconds} \
+        --timeout_seconds ${timeout_seconds})
 
     # Stage the files
     files=( ${sep=' ' files} )
@@ -106,9 +106,9 @@ task stage_and_confirm {
 
     # Confirm the submission
     confirm-submission \
-      -envelope_url ${submission_url} \
-      -retry_seconds ${retry_seconds} \
-      -timeout_seconds ${timeout_seconds}
+      --envelope_url ${submission_url} \
+      --retry_seconds ${retry_seconds} \
+      --timeout_seconds ${timeout_seconds}
   >>>
 
   runtime {
