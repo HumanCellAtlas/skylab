@@ -1,7 +1,7 @@
 task BuildStarReference{
   File ref_fasta
   File gtf_file
-  
+  String ref_name
   command {
     mkdir star
     STAR --runMode genomeGenerate \
@@ -10,10 +10,10 @@ task BuildStarReference{
       --sjdbGTFfile ${gtf_file} \
       --sjdbOverhang 100 \
       --runThreadN 16
-    tar -cvf star.tar star
+    tar -cvf "${ref_name}.tar" star
   }
   output {
-    File starRef = "star.tar"
+    File starRef = "${ref_name}.tar"
   }
   runtime {
     docker:"humancellatlas/star_dev:v1"
@@ -27,11 +27,13 @@ task BuildStarReference{
 workflow StarRef {
   File fasta
   File gtf
-  
+  String ref_name
+
   call BuildStarReference {
     input:
       ref_fasta = fasta,
-      gtf_file = gtf
+      gtf_file = gtf,
+      ref_name = ref_name
   }
   output {
     File star_ref = BuildStarReference.starRef
