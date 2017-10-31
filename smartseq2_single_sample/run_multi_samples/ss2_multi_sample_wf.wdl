@@ -7,7 +7,7 @@ task GatherMetricsToTable {
     python /tools/scripts/parse_picard.py -I ${write_lines(input_metrics_list)} -T "table" -O "${output_filename}"
   }
   runtime {
-    docker: "humancellatlas/python3-application:v0.1"
+    docker: "humancellatlas/python3-application:0.1.0"
     memory: "2 GB"
     disks: "local-disk 10 HDD"
   }

@@ -31,7 +31,7 @@ task Star {
     File output_bam_trans = "Aligned.toTranscriptome.out.bam"
   }
   runtime {
-    docker:"humancellatlas/star_dev:v1"
+    docker:"humancellatlas/star_dev:2.5.3a"
     memory: "40 GB"
     disks :"local-disk 100 HDD"
     cpu: "8"
@@ -49,7 +49,7 @@ task FeatureCountsUniqueMapping {
     featureCounts -s 0 -t exon -g exon_id -p -B -C -a ${gtf} -o "${fc_out}.exon.unq.counts.txt" ${aligned_bam}
   }
   runtime {
-    docker:"humancellatlas/star_dev:v1"
+    docker:"humancellatlas/star_dev:2.5.3a"
     memory: "4 GB"
     disks: "local-disk 50 HDD"
   }
@@ -71,7 +71,7 @@ task FeatureCountsMultiMapping {
     featureCounts  -s 0 -t exon -g exon_id -p -M  -O -a ${gtf} -o "${fc_out}.exon.mult.counts.txt" ${aligned_bam}
   }
   runtime {
-    docker: "humancellatlas/star_dev:v1"
+    docker: "humancellatlas/star_dev:2.5.3a"
     memory: "4 GB"
     disks: "local-disk 50 HDD"
   }
@@ -95,7 +95,7 @@ task RsemExpression {
     cut -f 1,4,5 "${rsem_out}.genes.results" >"${rsem_out}.gene.expected_counts"
   }
   runtime {
-    docker: "humancellatlas/rsem"
+    docker: "humancellatlas/rsem:v1.3.0"
     memory: "4 GB"
     disks: "local-disk 50 HDD"
     cpu: "4"
@@ -211,7 +211,7 @@ task CollectMetricsBySample {
     python /tools/scripts/parse_picard.py -I ${write_lines(input_metrics_list)} -T "sample" -O "${output_filename}"
   }
   runtime {
-    docker: "humancellatlas/python3-application:v0.1"
+    docker: "humancellatlas/python3-application:0.1.0"
     memory: "2 GB"
     disk: "local-disk 10 HDD"
   }

@@ -24,7 +24,7 @@ task Star {
     File output_bam_trans="Aligned.toTranscriptome.out.bam"
   }
   runtime {
-    docker:"humancellatlas/star_dev:v1"
+    docker:"humancellatlas/star_dev:2.5.3a"
     memory: "40 GB"
     disks :"local-disk 100 HDD"
   }
@@ -41,7 +41,7 @@ task FeatureCountsUniqueMapping {
     featureCounts -s 0 -t exon -g exon_id -p -B -C -a ${gtf} -o "${fc_out}.exon.counts.txt" ${aligned_bam}
   }
   runtime {
-    docker:"humancellatlas/star_dev:v1"
+    docker:"humancellatlas/star_dev:2.5.3a"
     memory: "15 GB"
     disks :"local-disk 50 HDD"
   }
@@ -65,7 +65,7 @@ task RsemExpression {
     cut -f 1,4,5 "${rsem_out}.genes.results" >"${rsem_out}.gene.expected_counts"
   }
   runtime {
-    docker: "humancellatlas/rsem"
+    docker: "humancellatlas/rsem:v1.3.0"
     memory: "10 GB"
     disks: "local-disk 100 HDD"
   }
@@ -94,7 +94,7 @@ task CollectAlignmentSummaryMetrics {
     File alignment_metrics ="${output_filename}"
   }
   runtime {
-    docker:"humancellatlas/picard"
+    docker:"humancellatlas/picard:2.10.10"
     memory:"10 GB"
     disks: "local-disk 10 HDD"
   }
@@ -122,7 +122,7 @@ task CollectRnaSeqMetrics {
     File rna_metrics="${output_filename}"
   }
   runtime {
-    docker:"humancellatlas/picard"
+    docker:"humancellatlas/picard:2.10.10"
     memory:"10 GB"
     disks: "local-disk 10 HDD"
   }

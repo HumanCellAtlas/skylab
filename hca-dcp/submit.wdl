@@ -23,7 +23,7 @@ task get_metadata {
       "$(cut -f3 $creds)/api/workflows/v1/$(cat workflow_id.txt)/metadata" > metadata.json
   >>>
   runtime {
-    docker: "gcr.io/broad-dsde-mint-dev/cromwell-metadata:test1"
+    docker: "gcr.io/broad-dsde-mint-dev/cromwell-metadata:0.1.0"
   }
   output {
     File metadata = "metadata.json"
@@ -68,7 +68,7 @@ task create_submission {
   >>>
 
   runtime {
-    docker: "humancellatlas/secondary-analysis-python:test16"
+    docker: "humancellatlas/secondary-analysis-python:0.1.1"
   }
   output {
     File analysis_json = "analysis.json"
@@ -112,7 +112,7 @@ task stage_and_confirm {
   >>>
 
   runtime {
-    docker: "humancellatlas/secondary-analysis-python:test16"
+    docker: "humancellatlas/secondary-analysis-python:0.1.1"
   }
 }
 
