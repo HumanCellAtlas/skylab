@@ -68,11 +68,12 @@ function copy_to_bucket()
 function make_zip_file()
 {
   stage_dir=$1
+  alt_wdl_name=$2
   cd $stage_dir
   if [ -e dependencies.zip ]; then
     rm dependencies.zip
   fi
-  zip dependencies.zip analysis.wdl submit.wdl
+  zip dependencies.zip analysis.wdl submit.wdl $alt_wdl_name
   cd -
 }
 
@@ -85,13 +86,14 @@ local_infra_dir=$skylab_root/10x/hca-dcp
 analysis_dir=$skylab_root/10x/count
 mkdir -p $stage_dir
 cp $analysis_dir/count.wdl $stage_dir/analysis.wdl
+cp $analysis_dir/count.wdl $stage_dir/
 cp $skylab_root/hca-dcp/submit.wdl $stage_dir
 cp $local_infra_dir/wrapper_10x_count.wdl $stage_dir/wrapper.wdl
 cp $local_infra_dir/wrapper_10x_count_example_static.json $stage_dir/static_inputs.json
 cp $local_infra_dir/10x_options.json $stage_dir/options.json
 
 # Make zip file
-make_zip_file $stage_dir
+make_zip_file $stage_dir count.wdl
 
 # Copy files to bucket
 copy_to_bucket $bucket 10x $tenx_dir $infra_dir $stage_dir
@@ -105,13 +107,14 @@ local_infra_dir=$skylab_root/smartseq2_single_sample/hca-dcp
 analysis_dir=$skylab_root/smartseq2_single_sample
 mkdir -p $stage_dir
 cp $analysis_dir/ss2_single_sample.wdl $stage_dir/analysis.wdl
+cp $analysis_dir/ss2_single_sample.wdl $stage_dir/
 cp $skylab_root/hca-dcp/submit.wdl $stage_dir
 cp $local_infra_dir/wrapper_ss2_single_sample.wdl $stage_dir/wrapper.wdl
 cp $local_infra_dir/wrapper_ss2_single_sample_example_static.json $stage_dir/static_inputs.json
 cp $local_infra_dir/ss2_options.json $stage_dir/options.json
 
 # Make zip file
-make_zip_file $stage_dir
+make_zip_file $stage_dir ss2_single_sample.wdl
 
 # Copy files to bucket
 copy_to_bucket $bucket ss2 $ss2_dir $infra_dir $stage_dir
