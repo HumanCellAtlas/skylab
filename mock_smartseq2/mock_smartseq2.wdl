@@ -14,7 +14,7 @@ task calc_expression {
     echo "Wrote qc matrix"
   }
   runtime {
-    docker: "humancellatlas/rsem"
+    docker: "humancellatlas/rsem:v1.3.0"
     memory: "2 GB"
     disks: "local-disk 10 HDD"
   }

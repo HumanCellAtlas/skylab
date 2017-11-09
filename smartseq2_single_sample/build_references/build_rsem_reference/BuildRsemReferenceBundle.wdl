@@ -11,7 +11,7 @@ task BuildRsemReference {
     File rsemRef = "rsem.tar"
   }
   runtime {
-    docker: "humancellatlas/rsem"
+    docker: "humancellatlas/rsem:v1.3.0"
     memory: "10 GB"
     disks: "local-disk 100 HDD"
   }

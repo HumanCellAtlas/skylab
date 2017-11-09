@@ -16,7 +16,7 @@ task BuildStarReference{
     File starRef = "${ref_name}.tar"
   }
   runtime {
-    docker:"humancellatlas/star_dev:v1"
+    docker:"humancellatlas/star:2.5.3a"
     memory: "50 GB"
     disks :"local-disk 100 HDD"
     cpu:"16"
