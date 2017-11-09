@@ -24,7 +24,6 @@ DBSNP_RELEASE=$2
 SNP_FILE=snp${DBSNP_RELEASE}Common.txt
 UCSC_COMMON_SNP=http://hgdownload.cse.ucsc.edu/goldenPath/hg38/database/${SNP_FILE}
 HISAT2_DIR='/opt/tools/hisat2-2.1.0'
-HISAT2_REF_OUT=$3
 get() {
 	file=$1
 	if ! wget --version >/dev/null 2>/dev/null ; then
@@ -104,15 +103,10 @@ if [ ! -f $GTF_FILE ] ; then
        ${HISAT2_EXON_SCRIPT} ${GTF_FILE} > genome.exon
 fi
 
-if [ ! -d $HISAT2_REF_OUT ];then
-	mkdir ${HISAT2_REF_OUT}
-fi
-CMD="${HISAT2_BUILD_EXE} -p 4 genome.fa --snp genome.snp --haplotype genome.haplotype --ss genome.ss --exon genome.exon ${HISAT2_REF_OUT}/genome_snp_tran"
+CMD="${HISAT2_BUILD_EXE} -p 8 genome.fa --snp genome.snp --haplotype genome.haplotype --ss genome.ss --exon genome.exon genome_snp_tran"
 echo Running $CMD
 if $CMD ; then
 	echo "genome index built; you may remove fasta files"
 else
 	echo "Index building failed; see error message"
 fi
-
-tar -zcvf ${HISAT_REF_OUT}.tar.gz ${HISAT2_REF_OUT}
