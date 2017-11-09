@@ -11,7 +11,7 @@ WORKDIR /opt/tools
 
 RUN \
   apt update && \ 
-  apt install -y liblzma-dev libbz2-dev cmake automake curl libboost-all-dev wget build-essential gcc-multilib zlib1g-dev libxml2-dev libncurses5-dev zip unzip
+  apt install -y liblzma-dev libbz2-dev cmake automake curl libboost-all-dev wget build-essential gcc-multilib zlib1g-dev libxml2-dev libncurses5-dev zip unzip samtools
   
 RUN \
   wget -c ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/downloads/hisat2-2.1.0-source.zip && \
