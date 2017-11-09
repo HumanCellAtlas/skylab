@@ -9,9 +9,9 @@ This pipeline performs the following tasks:
 Use git clone `git clone git@github.com:HumanCellAtlas/skylab.git`
 # Requirements
 ## Dockers
-- STAR(2_5_3a) docker: `humancellatlas/star_dev:v1`
-- Picard(2.10.10) docker: `humancellatlas/picard`
-- RSEM docker: `humancellatlas/rsem`
+- STAR(2_5_3a) docker: `humancellatlas/star:2.5.3a`
+- Picard(2.10.10) docker: `humancellatlas/picard:2.10.10`
+- RSEM docker: `humancellatlas/rsem:v1.3.0`
 ## Genome Reference
 Generated genome index files using instructions, seen in [STAR Manual](https://github.com/alexdobin/STAR/blob/master/doc/STARmanual.pdf) and [Build RSEM index](http://deweylab.biostat.wisc.edu/rsem/rsem-prepare-reference.html). The genome indexes and referenece files saved to google buckets and need only be generated once for each genome/annotaition combination. Other annotation files required are:
 - refFlat

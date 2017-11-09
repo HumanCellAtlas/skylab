@@ -15,8 +15,8 @@ This workflow is for running SmartSeq RNA-Seq pipeline through batch of scRNA-Se
 Use git clone `git clone git@github.com:HumanCellAtlas/skylab.git`
 ## Requirements
 ### Dockers
-- STAR(2_5_3a) docker: `humancellatlas/star_dev:v1`
-- RSEM docker: `humancellatlas/rsem`
+- STAR(2_5_3a) docker: `humancellatlas/star:2.5.3a`
+- RSEM docker: `humancellatlas/rsem:v1.3.0`
 - Picard docker: `broadinstitute/genomes-in-the-cloud:2.3.1-1504795437`
 ### Reference Genome And Gene Annotaiton
  - Star reference indexes `star.tar`

@@ -31,7 +31,7 @@ task Star {
     File output_bam_trans = "Aligned.toTranscriptome.out.bam"
   }
   runtime {
-    docker:"humancellatlas/star_dev:2.5.3a"
+    docker:"humancellatlas/star:2.5.3a"
     memory: "40 GB"
     disks :"local-disk 100 HDD"
     cpu: "8"
@@ -49,7 +49,7 @@ task FeatureCountsUniqueMapping {
     featureCounts -s 0 -t exon -g exon_id -p -B -C -a ${gtf} -o "${fc_out}.exon.unq.counts.txt" ${aligned_bam}
   }
   runtime {
-    docker:"humancellatlas/star_dev:2.5.3a"
+    docker:"humancellatlas/star:2.5.3a"
     memory: "4 GB"
     disks: "local-disk 50 HDD"
   }
@@ -71,7 +71,7 @@ task FeatureCountsMultiMapping {
     featureCounts  -s 0 -t exon -g exon_id -p -M  -O -a ${gtf} -o "${fc_out}.exon.mult.counts.txt" ${aligned_bam}
   }
   runtime {
-    docker: "humancellatlas/star_dev:2.5.3a"
+    docker: "humancellatlas/star:2.5.3a"
     memory: "4 GB"
     disks: "local-disk 50 HDD"
   }

@@ -18,7 +18,7 @@ cd skylab/10x/generate_reference_bundle
 
 # Requirements
 ## Dockers
-- STAR v2_5_3a docker: `humancellatlas/star_dev:2.5.3a`
+- STAR v2_5_3a docker: `humancellatlas/star:2.5.3a`
 - python 3 scientific docker: `humancellatlas/python3-scientific:0.1.0`
 
 ## File Inputs
