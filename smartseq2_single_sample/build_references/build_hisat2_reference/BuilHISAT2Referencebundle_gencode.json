@@ -1,0 +1,5 @@
+{
+  "HISAT2Ref.dbsnp_version": "150",
+  "HISAT2Ref.gtf_version": "27",
+  "HISAT2Ref.ref_name": "hisat2_gencode_snp"
+}
