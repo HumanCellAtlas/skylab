@@ -20,4 +20,4 @@ RUN \
   make && \
   cp hisat2* /usr/local/bin
 
-COPY  ./make_grch38_snp_tran_ensembl.sh hisat2-2.1.0
+COPY  ./make_grch38_snp_tran_*.sh hisat2-2.1.0/
