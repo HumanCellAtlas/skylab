@@ -96,12 +96,16 @@ task stage_and_confirm {
         --retry_seconds ${retry_seconds} \
         --timeout_seconds ${timeout_seconds})
 
+    # Select staging area
+    echo "hca upload select $staging_urn"
+    hca upload select $staging_urn
+
     # Stage the files
     files=( ${sep=' ' files} )
     for f in "$${lb}files[@]${rb}"
     do
-      echo "stage $f $staging_urn"
-      stage $f $staging_urn
+      echo "hca upload file $f"
+      hca upload file $f
     done
 
     # Confirm the submission
