@@ -6,8 +6,13 @@ workflow test_hisat2 {
   File fq2
   String ref_name
   String output_name
-
-  call hisat2.HISAT2 as test_hisat2 {
+ 
+  call hisat2.hisat2_inspect_index as test_hisat2_inspect {
+    input:
+      hisat2_ref = hisat2_ref,
+      ref_name = ref_name
+  }
+  call hisat2.HISAT2PE as test_hisat2_pe {
     input:
       hisat2_ref = hisat2_ref,
       fq1 = fq1,
@@ -15,9 +20,21 @@ workflow test_hisat2 {
       ref_name = ref_name,
       output_name = output_name 
     }
-  output {
-    File logFile = test_hisat2.logfile
-    File metfile = test_hisat2.metfile
-    File bamfile = test_hisat2.output_bam
+  call hisat2.HISAT2SE as test_hisat2_se {
+    input:
+      hisat2_ref = hisat2_ref,
+      fq = fq1,
+      ref_name = ref_name,
+      output_name = output_name
   }
+  output {
+    File logFile_pe = test_hisat2_pe.logfile
+    File metfile_pe = test_hisat2_pe.metfile
+    File bamfile_pe = test_hisat2_pe.output_bam
+    File logFile_se = test_hisat2_se.logfile
+    File metfile_se = test_hisat2_se.metfile
+    File bamfile_se = test_hisat2_se.output_bam
+    File inspectlog = test_hisat2_inspect.logfile
+  }
+
 }
