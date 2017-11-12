@@ -12,5 +12,5 @@ WORKDIR /tools
 
 RUN cd secondary_analysis && pip install .
 
-# Install hca-cli for submit.wdl
-RUN pip install hca==2.3.0
+# Install the latest hca-cli for submit.wdl
+RUN pip install hca
