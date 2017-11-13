@@ -214,6 +214,9 @@ workflow Wrapper10xCount {
   Int retry_seconds
   Int timeout_seconds
 
+  # Set Runtime Environment
+  String runtime_enviroånment
+
   call GetInputs {
     input:
       bundle_uuid = bundle_uuid,
@@ -320,6 +323,7 @@ workflow Wrapper10xCount {
       schema_version = schema_version,
       method = method,
       retry_seconds = retry_seconds,
-      timeout_seconds = timeout_seconds
+      timeout_seconds = timeout_seconds,
+      runtime_environment = runtime_environment
   }
 }

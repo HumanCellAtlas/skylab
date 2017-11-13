@@ -13,5 +13,6 @@
   "WrapperSs2RsemSingleSample.schema_version": "v3",
   "WrapperSs2RsemSingleSample.run_type": "run",
   "WrapperSs2RsemSingleSample.retry_seconds": 10,
-  "WrapperSs2RsemSingleSample.timeout_seconds": 120
+  "WrapperSs2RsemSingleSample.timeout_seconds": 120,
+  "WrapperSs2RsemSingleSample.runtime_environment": "dev"
 }

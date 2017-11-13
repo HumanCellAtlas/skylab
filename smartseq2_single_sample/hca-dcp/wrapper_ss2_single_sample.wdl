@@ -69,6 +69,9 @@ workflow WrapperSs2RsemSingleSample {
   Int retry_seconds
   Int timeout_seconds
 
+  # Set Runtime Environment
+  String runtime_environment
+
   call GetInputs as prep {
     input:
       bundle_uuid = bundle_uuid,
@@ -151,6 +154,7 @@ workflow WrapperSs2RsemSingleSample {
       schema_version = schema_version,
       method = method,
       retry_seconds = retry_seconds,
-      timeout_seconds = timeout_seconds
+      timeout_seconds = timeout_seconds,
+      runtime_environment = runtime_environment
   }
 }

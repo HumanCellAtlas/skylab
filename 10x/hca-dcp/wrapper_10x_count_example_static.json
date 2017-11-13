@@ -39,5 +39,6 @@
   "Wrapper10xCount.schema_version": "v3",
   "Wrapper10xCount.run_type": "run",
   "Wrapper10xCount.retry_seconds": 10,
-  "Wrapper10xCount.timeout_seconds": 600
+  "Wrapper10xCount.timeout_seconds": 600,
+  "Wrapper10xCount.runtime_environment": "dev"
 }
