@@ -215,7 +215,7 @@ workflow Wrapper10xCount {
   Int timeout_seconds
 
   # Set Runtime Environment
-  String runtime_enviroånment
+  String runtime_environment
 
   call GetInputs {
     input:
