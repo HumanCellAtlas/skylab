@@ -1,5 +1,5 @@
 # Build HISAT2 Reference
-Create a HISAT2 index for genome+snp+exon+splicing. HISAT2 provides script to build index with Ensembl or RefSeq index. We modify this script to incorporate with Gencode reference. 
+Create a HISAT2 index to incorporate genome+snp+exon+splicing. HISAT2 provides script to build index with Ensembl or RefSeq index. We modify this script to incorporate with Gencode reference. 
 
 # Input
 ## Genome Reference 
