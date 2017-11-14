@@ -1,8 +1,8 @@
 task BuildHISAT2reference{
-  String ref_name
-  String gtf_version
-  String dbsnp_version
-
+  String ref_name ## name of the tar.gz file without tar.gz suffix
+  String gtf_version  ## the actually number of gencode, ex.  27
+  String dbsnp_version ## dbsnp version, integer num, ex 150
+  
   command {
     /opt/tools/hisat2-2.1.0/make_grch38_snp_tran_gencode.sh ${gtf_version} ${dbsnp_version} 
     mkdir ${ref_name}
