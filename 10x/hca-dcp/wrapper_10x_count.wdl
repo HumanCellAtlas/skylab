@@ -63,7 +63,7 @@ task GetInputs {
     CODE
   >>>
   runtime {
-    docker: "humancellatlas/secondary-analysis-python:0.1.2"
+    docker: "humancellatlas/secondary-analysis-python:0.1.4"
   }
   output {
     Array[File] r1 = read_lines("r1.tsv")
@@ -97,7 +97,7 @@ task rename_files {
     CODE
   >>>
   runtime {
-    docker: "humancellatlas/secondary-analysis-python:0.1.2"
+    docker: "humancellatlas/secondary-analysis-python:0.1.4"
   }
   output {
     File r1_new = "${r1_name}"
@@ -183,7 +183,7 @@ task inputs_for_submit {
     CODE
   >>>
   runtime {
-    docker: "humancellatlas/secondary-analysis-python:0.1.2"
+    docker: "humancellatlas/secondary-analysis-python:0.1.4"
   }
   output {
     File inputs = "inputs.tsv"
@@ -214,7 +214,7 @@ workflow Wrapper10xCount {
   Int retry_seconds
   Int timeout_seconds
 
-  # Set Runtime Environment
+  # Set runtime environment such as "dev" or "staging" or "prod" so submit task could choose proper docker image to use
   String runtime_environment
 
   call GetInputs {

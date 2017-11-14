@@ -21,12 +21,10 @@ task get_metadata {
     creds=/cromwell-metadata/cromwell_credentials.txt
     curl -u $(cut -f1 $creds):$(cut -f2 $creds) \
       --compressed \
-      "$(cut -f3 $creds)/api/workflows/v1/$(cat workflow_id.txt)/metadata" > metadata.json
+      "https://cromwell.mint-${runtime_environment}.broadinstitute.org/api/workflows/v1/$(cat workflow_id.txt)/metadata" > metadata.json
   >>>
   runtime {
-    docker: if runtime_environment == "dev" then "gcr.io/broad-dsde-mint-dev/cromwell-metadata:0.1.0"
-            else if runtime_environment == "staging" then "gcr.io/broad-dsde-mint-staging/cromwell-metadata:0.1.0"
-            else "We cannot recognize the environment: " + runtime_environment
+    docker: "gcr.io/broad-dsde-${runtime_environment}/cromwell-metadata:0.1.1"
   }
   output {
     File metadata = "metadata.json"
@@ -71,7 +69,7 @@ task create_submission {
   >>>
 
   runtime {
-    docker: "humancellatlas/secondary-analysis-python:0.1.3"
+    docker: "humancellatlas/secondary-analysis-python:0.1.4"
   }
   output {
     File analysis_json = "analysis.json"
@@ -115,7 +113,7 @@ task stage_and_confirm {
   >>>
 
   runtime {
-    docker: "humancellatlas/secondary-analysis-python:0.1.3"
+    docker: "humancellatlas/secondary-analysis-python:0.1.4"
   }
 }
 
