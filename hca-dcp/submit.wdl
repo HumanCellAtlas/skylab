@@ -24,7 +24,7 @@ task get_metadata {
       "https://cromwell.mint-${runtime_environment}.broadinstitute.org/api/workflows/v1/$(cat workflow_id.txt)/metadata" > metadata.json
   >>>
   runtime {
-    docker: "gcr.io/broad-dsde-${runtime_environment}/cromwell-metadata:0.1.1"
+    docker: "gcr.io/broad-dsde-mint-${runtime_environment}/cromwell-metadata:0.1.1"
   }
   output {
     File metadata = "metadata.json"
