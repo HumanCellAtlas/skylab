@@ -21,5 +21,6 @@
   "submit.schema_version": "v3",
   "submit.run_type": "run",
   "submit.retry_seconds": 10,
-  "submit.timeout_seconds": 120
+  "submit.timeout_seconds": 120,
+  "submit.runtime_environment": "dev"
 }

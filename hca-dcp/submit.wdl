@@ -1,6 +1,7 @@
 # Get Cromwell metadata for the workflow that produced the given output
 task get_metadata {
   String analysis_output_path
+  String runtime_environment
 
   command <<<
 
@@ -20,10 +21,10 @@ task get_metadata {
     creds=/cromwell-metadata/cromwell_credentials.txt
     curl -u $(cut -f1 $creds):$(cut -f2 $creds) \
       --compressed \
-      "$(cut -f3 $creds)/api/workflows/v1/$(cat workflow_id.txt)/metadata" > metadata.json
+      "https://cromwell.mint-${runtime_environment}.broadinstitute.org/api/workflows/v1/$(cat workflow_id.txt)/metadata" > metadata.json
   >>>
   runtime {
-    docker: "gcr.io/broad-dsde-mint-dev/cromwell-metadata:0.1.0"
+    docker: "gcr.io/broad-dsde-mint-${runtime_environment}/cromwell-metadata:0.1.1"
   }
   output {
     File metadata = "metadata.json"
@@ -68,7 +69,7 @@ task create_submission {
   >>>
 
   runtime {
-    docker: "humancellatlas/secondary-analysis-python:0.1.3"
+    docker: "humancellatlas/secondary-analysis-python:0.1.4"
   }
   output {
     File analysis_json = "analysis.json"
@@ -112,7 +113,7 @@ task stage_and_confirm {
   >>>
 
   runtime {
-    docker: "humancellatlas/secondary-analysis-python:0.1.3"
+    docker: "humancellatlas/secondary-analysis-python:0.1.4"
   }
 }
 
@@ -126,12 +127,14 @@ workflow submit {
   String run_type
   String schema_version
   String method
+  String runtime_environment
   Int retry_seconds
   Int timeout_seconds
 
   call get_metadata {
     input:
-      analysis_output_path = outputs[0]
+      analysis_output_path = outputs[0],
+      runtime_environment = runtime_environment
   }
 
   call create_submission {
@@ -146,7 +149,7 @@ workflow submit {
       format_map = format_map,
       metadata_json = get_metadata.metadata,
       input_bundle_uuid = input_bundle_uuid,
-      workflow_id = get_metadata.workflow_id,
+      workflow_id = get_metadata.workflow_id
   }
 
   call stage_and_confirm {

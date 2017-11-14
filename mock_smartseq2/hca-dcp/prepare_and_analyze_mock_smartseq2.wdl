@@ -67,7 +67,7 @@ task GetInputs {
     CODE
   >>>
   runtime {
-    docker: "humancellatlas/secondary-analysis-python:0.1.2"
+    docker: "humancellatlas/secondary-analysis-python:0.1.4"
   }
   output {
     Object inputs = read_object("inputs.tsv")

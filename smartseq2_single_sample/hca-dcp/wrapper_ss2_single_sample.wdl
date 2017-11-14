@@ -40,7 +40,7 @@ task GetInputs {
     CODE
   >>>
   runtime {
-    docker: "humancellatlas/secondary-analysis-python:0.1.2"
+    docker: "humancellatlas/secondary-analysis-python:0.1.4"
   }
   output {
     Object inputs = read_object("inputs.tsv")
@@ -68,6 +68,9 @@ workflow WrapperSs2RsemSingleSample {
   String run_type
   Int retry_seconds
   Int timeout_seconds
+
+  # Set runtime environment such as "dev" or "staging" or "prod" so submit task could choose proper docker image to use
+  String runtime_environment
 
   call GetInputs as prep {
     input:
@@ -151,6 +154,7 @@ workflow WrapperSs2RsemSingleSample {
       schema_version = schema_version,
       method = method,
       retry_seconds = retry_seconds,
-      timeout_seconds = timeout_seconds
+      timeout_seconds = timeout_seconds,
+      runtime_environment = runtime_environment
   }
 }
