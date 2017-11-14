@@ -4,7 +4,7 @@ task BuildHISAT2reference{
   String dbsnp_version ## dbsnp version, integer num, ex 150
   
   command {
-    /opt/tools/hisat2-2.1.0/make_grch38_snp_tran_gencode.sh ${gtf_version} ${dbsnp_version} 
+    make_grch38_snp_tran_gencode.sh ${gtf_version} ${dbsnp_version} 
     mkdir ${ref_name}
     cp *.ht2 ${ref_name}
     tar -zcvf "${ref_name}.tar.gz" "${ref_name}"
