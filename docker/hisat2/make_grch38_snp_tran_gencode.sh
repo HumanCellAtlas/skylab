@@ -12,9 +12,15 @@
 # since alignments to those sequences are the most useful.  To change
 # which categories are built by this script, edit the CHRS_TO_INDEX
 # variable below.
+# 
+# Nov 2017
+# modified to build gencode+dbsnp reference index
 #
+# INPUT:
+# GENCODE_RELEASE: gencode version number without 'v', ex 27
+# DBSNP_RELEASE: dnsnp verison number, ex 150
 
-GENCODE_RELEASE=$1
+GENCODE_RELEASE=$1 
 GENCODE_BASE=ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_human/release_${GENCODE_RELEASE}/
 GTF_FILE=gencode.v${GENCODE_RELEASE}.annotation.gtf
 GENCODE_FASTA=ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_human/release_${GENCODE_RELEASE}/GRCh38.primary_assembly.genome.fa.gz
@@ -89,6 +95,7 @@ fi
 if [ ! -f $SNP_FILE ] ; then
        get ${UCSC_COMMON_SNP}.gz || (echo "Error getting ${UCSC_COMMON_SNP}" && exit 1)
        gunzip ${SNP_FILE}.gz || (echo "Error unzipping ${SNP_FILE}" && exit 1)
+       ## for gencode, do NOT need to strip off chr
        ##awk 'BEGIN{OFS="\t"} {if($2 ~ /^chr/) {$2 = substr($2, 4)}; if($2 == "M") {$2 = "MT"} print}' ${SNP_FILE} > ${SNP_FILE}.tmp
        ##mv ${SNP_FILE}.tmp ${SNP_FILE}
        ${HISAT2_SNP_SCRIPT} genome.fa ${SNP_FILE} genome
