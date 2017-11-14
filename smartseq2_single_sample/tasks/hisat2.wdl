@@ -1,3 +1,4 @@
+## paired-end alignment
 task HISAT2PE {
   File hisat2_ref
   File fq1
@@ -7,7 +8,7 @@ task HISAT2PE {
   
   command {
     tar -zxvf "${hisat2_ref}"
-    /opt/tools/hisat2-2.1.0/hisat2 -t \
+    hisat2 -t \
       -x ${ref_name}/genome_snp_tran \
       -1 "${fq1}" \
       -2 "${fq2}" \
@@ -28,7 +29,7 @@ task HISAT2PE {
     File output_bam = "${output_name}.bam"
   }
 }
-
+## single end alignment
 task HISAT2SE {
   File hisat2_ref
   File fq
@@ -37,7 +38,7 @@ task HISAT2SE {
   
   command {
     tar -zxvf "${hisat2_ref}"
-    /opt/tools/hisat2-2.1.0/hisat2 -t \
+    hisat2 -t \
       -x ${ref_name}/genome_snp_tran \
       -U ${fq} \
       --new-summary --summary-file "${output_name}.log" \
@@ -57,13 +58,14 @@ task HISAT2SE {
     File output_bam = "${output_name}.bam"
   }
 }
+## run inspection on hisat2 built reference index
 task hisat2_inspect_index {
   File hisat2_ref
   String ref_name
 
   command {
     tar -zxvf "${hisat2_ref}"
-    /opt/tools/hisat2-2.1.0/hisat2-inspect --ss --snp \
+    hisat2-inspect --ss --snp \
      -s ${ref_name}/genome_snp_tran > hisat2_inspect.log
   }
   runtime {

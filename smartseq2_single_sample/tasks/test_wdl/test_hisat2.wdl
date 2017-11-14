@@ -6,12 +6,13 @@ workflow test_hisat2 {
   File fq2
   String ref_name
   String output_name
- 
+  ## to inspect reference build, such as reference, num of exon, num of snps and num of splicing
   call hisat2.hisat2_inspect_index as test_hisat2_inspect {
     input:
       hisat2_ref = hisat2_ref,
       ref_name = ref_name
   }
+  ## run paired-end reads with HISAT2
   call hisat2.HISAT2PE as test_hisat2_pe {
     input:
       hisat2_ref = hisat2_ref,
@@ -20,6 +21,7 @@ workflow test_hisat2 {
       ref_name = ref_name,
       output_name = output_name 
     }
+  ## Run single end reads with HISAT2
   call hisat2.HISAT2SE as test_hisat2_se {
     input:
       hisat2_ref = hisat2_ref,
