@@ -1,6 +1,5 @@
 FROM ubuntu:17.04
-MAINTAINER Jishu Xu <jishuxu@broadinstitute.org>
-
+LABEL MAINTAINER="Jishu Xu <jishuxu@broadinstitute.org>"
 LABEL software="HISAT2"
 LABEL version="2-2.1.0"
 LABEL description="RNA-seq aligner"
@@ -21,3 +20,4 @@ RUN \
   cp hisat2* /usr/local/bin
 
 COPY  ./make_grch38_snp_tran_*.sh hisat2-2.1.0/
+ENV PATH="/opt/tools/hisat2-2.1.0:${PATH}"

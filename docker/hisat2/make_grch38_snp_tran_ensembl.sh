@@ -13,7 +13,9 @@
 # since alignments to those sequences are the most useful.  To change
 # which categories are built by this script, edit the CHRS_TO_INDEX
 # variable below.
-#
+# INPUT:
+# ENSEMBL_RELEASE: release version , ex 90
+# DBSNP_RELEASE : release version of dbsnp, ex 150
 
 ENSEMBL_RELEASE=$1
 ENSEMBL_GRCh38_BASE=ftp://ftp.ensembl.org/pub/release-${ENSEMBL_RELEASE}/fasta/homo_sapiens/dna
