@@ -1,6 +1,6 @@
 FROM python:2.7
 
-LABEL maintainer="Dave Shiga <dshiga@broadinstitute.org>" \
+LABEL maintainer="Mint Team <mintteam@broadinstitute.org>" \
   software="Python" \
   description="Python2.7 with some useful libraries used for secondary-analysis-python application"
 
