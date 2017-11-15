@@ -11,7 +11,7 @@ task GetInputs {
 
   command <<<
     python <<CODE
-    from secondary_analysis import utils
+    from pipeline_tools import utils
 
     # Get bundle manifest
     uuid = '${bundle_uuid}'
@@ -40,7 +40,7 @@ task GetInputs {
     CODE
   >>>
   runtime {
-    docker: "humancellatlas/secondary-analysis-python:0.1.4"
+    docker: "humancellatlas/pipeline-tools:0.1.4"
   }
   output {
     Object inputs = read_object("inputs.tsv")
