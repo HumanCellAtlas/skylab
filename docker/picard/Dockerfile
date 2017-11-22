@@ -13,3 +13,13 @@ ENV version 2.10.10
 
 WORKDIR /usr/picard
 ADD https://github.com/broadinstitute/picard/releases/download/${version}/picard.jar ./picard.jar
+
+# Install R dependencies for Picard
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y r-base
+
+RUN echo "r <- getOption('repos'); r['CRAN'] <- 'http://cran.us.r-project.org'; options(repos = r);" > ~/.Rprofile
+RUN Rscript -e "install.packages('reshape')"
+RUN Rscript -e "install.packages('gplots')"
+RUN Rscript -e "install.packages('ggplot2')"
