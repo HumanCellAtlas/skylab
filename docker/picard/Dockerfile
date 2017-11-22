@@ -7,4 +7,5 @@ LABEL maintainer="Jishu Xu <jishuxu@broadinstitute.org>" \
   website="http://broadinstitute.github.io/picard"
 
 ENV version 2.10.10
-ADD https://github.com/broadinstitute/picard/releases/download/${version}/picard.jar .
+WORKDIR /usr/picard
+ADD https://github.com/broadinstitute/picard/releases/download/${version}/picard.jar ./picard.jar
