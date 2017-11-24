@@ -16,7 +16,7 @@ ADD https://github.com/broadinstitute/picard/releases/download/${version}/picard
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y r-base
-a
+
 RUN echo "r <- getOption('repos'); r['CRAN'] <- 'http://cran.us.r-project.org'; options(repos = r);" > ~/.Rprofile
 RUN Rscript -e "install.packages('reshape')"
 RUN Rscript -e "install.packages('gplots')"
