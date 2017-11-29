@@ -10,7 +10,7 @@ workflow star_mkref {
       fasta_file = fasta_file,
       annotation_file = annotation_file
   }
-  
+
   output {
     File genome = StarMkref.genome
   }

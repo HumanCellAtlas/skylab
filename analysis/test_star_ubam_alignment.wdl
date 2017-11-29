@@ -6,7 +6,7 @@ import "Attach10xBarcodes.wdl" as attach
 workflow test_ubam_alignment {
   File r1  # forward fastq file; contains umi, cell barcode
   File r2  # reverse fastq file; contains alignable genomic information
-  File i7  # index fastq file; contains sample barcode
+  File i1  # index fastq file; contains sample barcode
   String sample_name  # name of sample matching this file, inserted into read group header
   File tar_star_reference  # tarball containing star reference.
 
@@ -19,7 +19,7 @@ workflow test_ubam_alignment {
   call attach.Attach10xBarcodes {
     input:
       r1 = r1,
-      i7 = i7,
+      i7 = i1,
       u2 = FastqToUBam.bam
   }
 

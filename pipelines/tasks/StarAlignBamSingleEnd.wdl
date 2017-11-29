@@ -34,7 +34,7 @@ task StarAlignBamSingleEnd {
   }
 
   output {
-    File bam = "Aligned.out.bam"
+    File bam_output = "Aligned.out.bam"
     File alignment_log = "Log.final.out"
   }
 

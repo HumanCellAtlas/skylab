@@ -4,7 +4,7 @@ task CollectMultipleMetrics {
   String output_filename
   
   command {
-    java -Xmx4g -jar picard.jar CollectMultipleMetrics \
+    java -Xmx4g -jar /usr/picard/picard.jar CollectMultipleMetrics \
       VALIDATION_STRINGENCY=SILENT \
       METRIC_ACCUMULATION_LEVEL=ALL_READS \
       INPUT=${aligned_bam} \
@@ -17,7 +17,7 @@ task CollectMultipleMetrics {
       REFERENCE_SEQUENCE=${ref_genome_fasta} \
       ASSUME_SORTED=true
 
-      tar -cvf "${output_file}.tar" ${output_file}.*.txt
+      tar -cvf "${output_filename}.tar" ${output_filename}.*.txt
   }
   runtime {
     docker:"humancellatlas/picard:2.10.10"
