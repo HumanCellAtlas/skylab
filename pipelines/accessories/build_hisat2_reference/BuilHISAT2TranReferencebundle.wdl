@@ -15,8 +15,8 @@ task BuildHISAT2Trans {
     gffread -w transcriptome.fa -g genome.fa transcripts.gtf
     ##building index
     hisat2-build -p 8 transcriptome.fa ${ref_name}
-		mkdir ${ref_name}
-		mv *.ht2 ${ref_name}
+    mkdir ${ref_name}
+    mv *.ht2 ${ref_name}
     tar -zcvf "${ref_name}.tar.gz" "${ref_name}"
   }
   runtime {
@@ -28,7 +28,7 @@ task BuildHISAT2Trans {
   output {
     File hisat2Ref = "${ref_name}.tar.gz"
   }
-  }
+}
 workflow HISAT2Ref {
   String ref_name
   String gtf_version
@@ -36,8 +36,7 @@ workflow HISAT2Ref {
   call BuildHISAT2Trans {
     input:
       ref_name = ref_name,
-      gtf_version = gtf_version,
-			
+      gtf_version = gtf_version		
   }
   output {
     File hisat2_ref = BuildHISAT2Trans.hisat2Ref

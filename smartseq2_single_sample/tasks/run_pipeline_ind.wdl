@@ -2,7 +2,7 @@ import "star_pipeline.wdl" as run_star
 import "hisat2_pipeline.wdl" as run_hisat2
 import "hisat2_rsem_pipeline.wdl" as run_hisat2_rsem
 import "kallisto_pipeline.wdl" as run_kallisto
-
+## this workflow will only run on pipeline based on workflow_name: star,hisat2, hisat2rsem
 workflow run_pipelines {
 
   ## load annotation
@@ -18,7 +18,7 @@ workflow run_pipelines {
   File kallisto_ref_index
   ##ref index name
   File hisat2_ref_name
-  File hsiat2_ref_trans_name
+  File hisat2_ref_trans_name
   ## array of string represents featuretypes
   Array[String] featureType = ['exon','gene','transcript']
   ##samples
@@ -42,7 +42,7 @@ workflow run_pipelines {
         ref_flat = gene_ref_flat,
         star_genome = star_ref_index,
         rsem_genome = rsem_ref_index,
-        samplename = sraIDs[idx],
+        sample_name = sraIDs[idx],
         output_prefix = sraIDs[idx]     
     }
 }
@@ -58,7 +58,7 @@ workflow run_pipelines {
         ref_flat = gene_ref_flat,
         hisat2_ref = hisat2_ref_index,
         hisat2_ref_name = hisat2_ref_name,
-        samplename = sraIDs[idx],
+        sample_name = sraIDs[idx],
         output_prefix = sraIDs[idx]
     }
 }
@@ -68,10 +68,10 @@ workflow run_pipelines {
         fastq_read1 = sra_dir+'/'+sraIDs[idx]+"_1.fastq.gz", 
         fastq_read2 = sra_dir+'/'+sraIDs[idx]+"_2.fastq.gz", 
         hisat2_ref_trans = hisat2_ref_trans_index,
-        hisat2_ref_name_trans = hsiat2_ref_trans_name,
+        hisat2_ref_trans_name = hisat2_ref_trans_name,
         rsem_genome = rsem_ref_index,
         output_prefix = sraIDs[idx],
-        samplename = sraIDs[idx]
+        sample_name = sraIDs[idx]
     }
 }
   if(workflow_name == "Kallisto" ) {
@@ -80,7 +80,7 @@ workflow run_pipelines {
         fastq1 = sra_dir+'/'+sraIDs[idx]+"_1.fastq.gz",
         fastq2 = sra_dir+'/'+sraIDs[idx]+"_2.fastq.gz",
         ref_genome = kallisto_ref_index,
-        samplename = sraIDs[idx]
+        sample_name = sraIDs[idx]
     }
   }
 }

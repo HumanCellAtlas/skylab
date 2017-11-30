@@ -14,8 +14,8 @@ workflow RunHisat2Pipeline {
   File hisat2_ref
   String output_prefix
   String hisat2_ref_name
-  String samplename
-  Array[String] featureType = ['exon','gene','transcript']
+  String sample_name
+  Array[String] featuretype = ['exon','gene','transcript']
   
   call hisat2.HISAT2PE as Hisat2 {
     input:
@@ -23,7 +23,7 @@ workflow RunHisat2Pipeline {
       fq1 = fastq_read1,
       fq2 = fastq_read2,
       ref_name = hisat2_ref_name,
-      samplename = samplename,
+      sample_name = sample_name,
       output_name = output_prefix
   }
   call picard.CollectMultipleMetrics {
@@ -31,7 +31,7 @@ workflow RunHisat2Pipeline {
       aligned_bam = Hisat2.output_bam,
       ref_genome_fasta = ref_fasta,
       output_filename = output_prefix
-    }
+  }
   call picard.CollectRnaMetrics {
     input:
       aligned_bam = Hisat2.output_bam,
@@ -39,33 +39,33 @@ workflow RunHisat2Pipeline {
       rrna_interval = rrna_interval,
       output_filename = output_prefix,
       stranded = stranded
-    }
+  }
   call picard.CollectDuplicationMetrics {
     input:
       aligned_bam = Hisat2.output_bam,
       output_filename = output_prefix
-    }
+  }
   call featurecounts.FeatureCountsUniqueMapping {
     input:
       aligned_bam = Hisat2.output_bam,
       gtf = gtf, 
       fc_out = output_prefix
-    }
+  }
   call featurecounts.FeatureCountsMultiMapping {
     input:
       aligned_bam = Hisat2.output_bam,
       gtf = gtf,
       fc_out = output_prefix
-    }
-  scatter (ftype in featureType) {
+  }
+  scatter (ftype in featuretype) {
     call htseq.htseq_count {
       input:
         aligned_bam = Hisat2.output_bam,
         gtf = gtf,
         featuretype = ftype,
         output_filename = output_prefix
-      }
     }
+  }
   output {
     File aligned_bam = Hisat2.output_bam
     File metfile = Hisat2.metfile
@@ -97,5 +97,5 @@ workflow RunHisat2Pipeline {
     File mult_genes_counts = FeatureCountsMultiMapping.genes
     File mult_trans_counts = FeatureCountsMultiMapping.trans
     Array[File] htseq_counts = htseq_count.counts
-    }
+  }
 }

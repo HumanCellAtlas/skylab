@@ -5,7 +5,7 @@
   "RunHisat2Pipeline.hisat2_ref_name_trans": "gencode_v27_trans_rsem",
   "RunHisat2Pipeline.gtf": "gs://broad-dsde-mint-dev-teststorage/reference/GRCh38_Gencode/gencode.v27.primary_assembly.annotation.gtf",
   "RunHisat2Pipeline.output_prefix": "SRR1295163",
-  "RunHisat2Pipeline.samplename": "SRR1295163",
+  "RunHisat2Pipeline.sample_name": "SRR1295163",
   "RunHisat2Pipeline.rsem_genome": "gs://broad-dsde-mint-dev-teststorage/reference/rsem_ref/gencode_v27_primary.tar",
   "RunHisat2Pipeline.stranded": "NONE",
   "RunHisat2Pipeline.fastq_read1": "gs://broad-dsde-mint-dev-teststorage/patel_ap/SRR1295163_1.fastq.gz",

@@ -1,36 +1,36 @@
 FROM ubuntu:17.04
-MAINTAINER Jishu Xu <jishuxu@broadinstitute.org>
-LABEL software="rsem"
-LABEL version="1.3.0"
-LABEL description="RNA-seq gene expression quantification tools"
-LABEL website="https://deweylab.github.io/RSEM/"
+LABEL maintainer=" Jishu Xu <jishuxu@broadinstitute.org> " \
+      software="rsem" \
+      version="1.3.0" \
+      description="RNA-seq gene expression quantification tools" \
+      website="https://deweylab.github.io/RSEM/" \
 
 WORKDIR /usr/local/
 
 RUN apt-get update
 # Install compiler, perl , R and stuff
 RUN apt-get update --fix-missing && \
-	apt-get install -y \
-	build-essential \
-	gcc-multilib \
-	apt-utils \
-	zlib1g-dev \
-	libxml2-dev \
-	curl \
-	wget \
-	git \
-	perl \
-	perl-base \
-	libbz2-dev \
-	cmake automake \
-	libboost-all-dev \
-	libncurses5-dev \
-	r-base \
-	r-base-core \
-	r-base-dev \
-	libncurses5-dev \
-	bowtie \
-	bowtie2 
+  apt-get install -y \
+  build-essential \
+  gcc-multilib \
+  apt-utils \
+  zlib1g-dev \
+  libxml2-dev \
+  curl \
+  wget \
+  git \
+  perl \
+  perl-base \
+  libbz2-dev \
+  cmake automake \
+  libboost-all-dev \
+  libncurses5-dev \
+  r-base \
+  r-base-core \
+  r-base-dev \
+  libncurses5-dev \
+  bowtie \
+  bowtie2 
 
 # Compile and install STAR
 WORKDIR /usr/local

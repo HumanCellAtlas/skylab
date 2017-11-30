@@ -13,7 +13,7 @@ task RsemExpression {
   runtime {
     docker: "humancellatlas/rsem:1.3.0"
     memory: "3.75 GB"
-    disks: "local-disk 10 HDD"
+    disks: "local-disk 50 HDD"
     cpu: "4"
   }
   output {
@@ -24,6 +24,6 @@ task RsemExpression {
     File rsem_cnt = "${rsem_out}.stat/${rsem_out}.cnt"
     File rsem_model = "${rsem_out}.stat/${rsem_out}.model"
     File rsem_theta = "${rsem_out}.stat/${rsem_out}.theta"
-   }
+  }
 }
 

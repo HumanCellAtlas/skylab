@@ -15,4 +15,3 @@ RUN pip3 install \
     scipy==0.18.1 \
     sctools==0.1.4 \
     tables==3.4.2
-
