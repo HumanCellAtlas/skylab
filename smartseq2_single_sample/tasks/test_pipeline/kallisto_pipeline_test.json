@@ -1,0 +1,5 @@
+{
+  "RunKallisto.fastq1": "gs://broad-dsde-mint-dev-teststorage/patel_ap/SRR1295163_1.fastq.gz",
+  "RunKallisto.fastq2": "gs://broad-dsde-mint-dev-teststorage/patel_ap/SRR1295163_2.fastq.gz",
+  "RunKallisto.ref_genome": "gs://broad-dsde-mint-dev-teststorage/reference/kallisto/GRCH38/k21/kallisto.idx"
+}

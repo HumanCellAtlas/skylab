@@ -1,4 +1,5 @@
 {
-  "RsemRef.fasta": "gs://broad-dsde-mint-dev-teststorage/reference/hg19/Homo_sapiens_assembly19.fasta",
-  "RsemRef.gtf": "gs://broad-dsde-mint-dev-teststorage/reference/hg19/gencode.v19.annotation.gtf"
+  "RsemRef.fasta": "gs://broad-dsde-mint-dev-teststorage/reference/GRCh38_Gencode/GRCh38.primary_assembly.genome.fa",
+  "RsemRef.gtf": "gs://broad-dsde-mint-dev-teststorage/reference/GRCh38_Gencode/gencode.v27.primary_assembly.annotation.gtf",
+  "RsemRef.ref_name":"gencode_v27_primary"
 }
