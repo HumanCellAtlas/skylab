@@ -6,6 +6,7 @@ LABEL maintainer="Ambrose J. Carr <acarr@broadinstitute.org>" \
 
 RUN pip3 install \
     crimson==0.3.0 \
+  	HTSeq==0.9.0 \
     matplotlib==2.1.0 \
     numpy==1.12.0 \
     pandas==0.20.3 \
@@ -14,3 +15,4 @@ RUN pip3 install \
     scipy==0.18.1 \
     sctools==0.1.4 \
     tables==3.4.2
+

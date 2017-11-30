@@ -1,0 +1,5 @@
+{
+  "project":"mint-pipeline-dev",
+  "pipeline":"scrnaseq",
+  "name":"pipeline"
+}

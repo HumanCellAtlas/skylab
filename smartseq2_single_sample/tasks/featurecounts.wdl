@@ -4,12 +4,12 @@ task FeatureCountsUniqueMapping {
   String fc_out
   
   command {
-    featureCounts -T 4  -s 0 -t exon -g gene_id -p -B -C -a "${gtf}" -o "${fc_out}.gene.unq.counts.txt" "${aligned_bam}"
-    featureCounts -T 4  -s 0 -t exon -g transcript_id -p -B -C -a "${gtf}" -o "${fc_out}.transcript.unq.counts.txt" "${aligned_bam}"
-    featureCounts -T 4  -s 0 -t exon -g exon_id -p -B -C -a "${gtf}" -o "${fc_out}.exon.unq.counts.txt" "${aligned_bam}"
+    featureCounts -T 1  -s 0 -t exon -g gene_id -p -B -C -a "${gtf}" -o "${fc_out}.gene.unq.counts.txt" "${aligned_bam}"
+    featureCounts -T 1  -s 0 -t exon -g transcript_id -p -B -C -a "${gtf}" -o "${fc_out}.transcript.unq.counts.txt" "${aligned_bam}"
+    featureCounts -T 1  -s 0 -t exon -g exon_id -p -B -C -a "${gtf}" -o "${fc_out}.exon.unq.counts.txt" "${aligned_bam}"
   }
   runtime {
-    docker:"humancellatlas/star_dev:2.5.3a"
+    docker:"humancellatlas/subread:1.6.0"
     memory: "3.75 GB"
     disks: "local-disk 10 HDD"
     cpu: "1"
@@ -27,12 +27,12 @@ task FeatureCountsMultiMapping {
   String fc_out
 
   command {
-    featureCounts -T 4 -s 0 -t exon -g gene_id -p -M -O -a "${gtf}" -o "${fc_out}.gene.mult.counts.txt" "${aligned_bam}"
-    featureCounts -T 4 -s 0 -t exon -g transcript_id -p -M -O -a "${gtf}" -o "${fc_out}.transcript.mult.counts.txt" "${aligned_bam}"
-    featureCounts -T 4 -s 0 -t exon -g exon_id -p -M  -O -a "${gtf}" -o "${fc_out}.exon.mult.counts.txt" "${aligned_bam}"
+    featureCounts -T 1 -s 0 -t exon -g gene_id -p -M -O -a "${gtf}" -o "${fc_out}.gene.mult.counts.txt" "${aligned_bam}"
+    featureCounts -T 1 -s 0 -t exon -g transcript_id -p -M -O -a "${gtf}" -o "${fc_out}.transcript.mult.counts.txt" "${aligned_bam}"
+    featureCounts -T 1 -s 0 -t exon -g exon_id -p -M  -O -a "${gtf}" -o "${fc_out}.exon.mult.counts.txt" "${aligned_bam}"
   }
   runtime {
-    docker: "humancellatlas/star_dev:2.5.3a"
+    docker: "humancellatlas/subread:1.6.0"
     memory: "3.75 GB"
     disks: "local-disk 10 HDD"
     cpu: "1"
