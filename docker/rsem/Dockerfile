@@ -9,28 +9,28 @@ WORKDIR /usr/local/
 
 RUN apt-get update
 # Install compiler, perl , R and stuff
-RUN apt-get update --fix-missing \
-    && apt-get install -y \
-        build-essential \
-        gcc-multilib \
-        apt-utils \
-        zlib1g-dev \
-        libxml2-dev \
-        curl \
-        wget \
-		git \
-		perl \
-		perl-base \
-        libbz2-dev \
-        cmake automake \
-        libboost-all-dev \
-        libncurses5-dev \
-        r-base \
-        r-base-core \
-        r-base-dev \
-        libncurses5-dev \
-		bowtie \
-		bowtie2 
+RUN apt-get update --fix-missing && \
+	apt-get install -y \
+	build-essential \
+	gcc-multilib \
+	apt-utils \
+	zlib1g-dev \
+	libxml2-dev \
+	curl \
+	wget \
+	git \
+	perl \
+	perl-base \
+	libbz2-dev \
+	cmake automake \
+	libboost-all-dev \
+	libncurses5-dev \
+	r-base \
+	r-base-core \
+	r-base-dev \
+	libncurses5-dev \
+	bowtie \
+	bowtie2 
 
 # Compile and install STAR
 WORKDIR /usr/local
@@ -41,7 +41,6 @@ RUN cp STAR /usr/local/bin
 
 # Install RSEM 
 WORKDIR /usr/local/
-RUN pwd
 RUN git clone https://github.com/deweylab/RSEM.git
 WORKDIR /usr/local/RSEM
 RUN git checkout v1.3.0

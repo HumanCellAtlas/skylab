@@ -63,7 +63,7 @@ task HISAT2rsem {
   runtime {
     docker:"humancellatlas/hisat2:2-2.1.0"
     memory:"5 GB"
-    disks: "local-disk 25 HDD"
+    disks: "local-disk 50 HDD"
     cpu: "4"
   }
   output {

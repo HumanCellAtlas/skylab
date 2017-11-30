@@ -28,7 +28,7 @@ task StarPE {
     
   }
   runtime {
-    docker:"humancellatlas/star:2.5.3a"
+    docker:"humancellatlas/star:2.5.3a-1.0.0"
     memory: "40 GB"
     disks :"local-disk 100 HDD"
     cpu: "8"
@@ -73,7 +73,7 @@ task StarSE {
 
   }
   runtime {
-    docker:"humancellatlas/star:2.5.3a"
+    docker:"humancellatlas/star:2.5.3a-1.0.0"
     memory: "40 GB"
     disks :"local-disk 100 HDD"
     cpu: "8"

@@ -7,22 +7,22 @@ LABEL website="http://subread.sourceforge.net/"
 
 # Install compiler 
 RUN apt-get update --fix-missing \
-    && apt-get install -y \
-        build-essential \
-        gcc-multilib \
-        apt-utils \
-        zlib1g-dev \
-        libxml2-dev \
-        curl \
-		wget \
-		libbz2-dev \
-		cmake automake \
-		libboost-all-dev \
-		libncurses5-dev \
-		r-base \
-		r-base-core \
-		r-base-dev \
-        libncurses5-dev
+	&& apt-get install -y \
+	build-essential \
+	gcc-multilib \
+	apt-utils \
+	zlib1g-dev \
+	libxml2-dev \
+	curl \
+	wget \
+	libbz2-dev \
+	cmake automake \
+	libboost-all-dev \
+	libncurses5-dev \
+	r-base \
+	r-base-core \
+	r-base-dev \
+	libncurses5-dev
         
       
 # Install subread 
