@@ -21,7 +21,6 @@ task CollectMultipleMetrics {
       PROGRAM=CollectQualityYieldMetrics \
       REFERENCE_SEQUENCE="${ref_genome_fasta}" \
       ASSUME_SORTED=true
-
   }
   runtime {
     docker:"humancellatlas/picard:2.10.10-7ab16db"
@@ -65,7 +64,7 @@ task CollectRnaMetrics {
       RIBOSOMAL_INTERVALS="${rrna_interval}" \
       STRAND_SPECIFICITY=${stranded} \
       CHART_OUTPUT="${output_filename}.rna.coverage.pdf"
-    }
+  }
   runtime {
     docker:"humancellatlas/picard:2.10.10-7ab16db"
     memory:"3.75 GB"

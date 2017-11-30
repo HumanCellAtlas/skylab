@@ -104,6 +104,42 @@ task QuantPairedEnd {
   }
 }
 
+task QuantPairedEndNoBam {
+  # run kallisto quant on paired fastq reads from a single cell
+  # kallisto quant pseudo-aligns to the transcriptome, and using the identified k-equivalence
+  # classes, runs a quantification algorithm to estimate TPM for each transcript.
+
+  File r1  # forward read
+  File r2
+  File index  # kallisto index, output of Kallisto.Mkref task
+  String sample_name
+  
+  command {
+    kallisto quant \
+      --index "${index}" \
+      --output-dir . \
+      --bootstrap-samples 100 \
+      --threads 4 \
+      "${r1}" "${r2}" 
+    mv abundance.h5 "${sample_name}.abundance.h5"
+    mv abundance.tsv "${sample_name}.abundance.tsv"
+    mv run_info.json "${sample_name}.run_info.json"
+  }
+
+  runtime {
+    docker: "humancellatlas/kallisto:0.43.1"
+    cpu: 4  # note that only 1 thread is supported by pseudobam
+    memory: "16 GB"
+    disks: "local-disk 100 HDD"
+  }
+
+  output {
+    File abundance_h5 = "${sample_name}.abundance.h5"
+    File abundance_tsv = "${sample_name}.abundance.tsv"
+    File log = "${sample_name}.run_info.json"
+  }
+}
+
 
 task PseudoSingleEnd {
   # run the kallisto pseudo-alignment algorithm on single-ended fastq data from a single cell to

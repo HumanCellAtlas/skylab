@@ -54,7 +54,6 @@ task StarSE {
 
   command {
     tar -xvf ${star_genome}
-
     STAR  --readFilesIn ${input_fastq_read} \
       --genomeDir ./star \
       --quantMode TranscriptomeSAM \

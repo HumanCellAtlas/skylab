@@ -7,16 +7,16 @@ workflow RunHisat2RsemPipeline {
   File hisat2_ref_trans
   File rsem_genome
   String output_prefix
-  String hisat2_ref_name_trans
-  String samplename
+  String hisat2_ref_trans_name
+  String sample_name
   
   call hisat2.HISAT2rsem as Hisat2Trans {
     input:
       hisat2_ref = hisat2_ref_trans,
       fq1 = fastq_read1,
       fq2 = fastq_read2,
-      ref_name = hisat2_ref_name_trans,
-      samplename = samplename,
+      ref_name = hisat2_ref_trans_name,
+      sample_name = sample_name,
       output_name = output_prefix
     }
   call rsem.RsemExpression as Rsem {

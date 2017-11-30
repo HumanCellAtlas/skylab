@@ -11,7 +11,7 @@ task FeatureCountsUniqueMapping {
   runtime {
     docker:"humancellatlas/subread:1.6.0"
     memory: "3.75 GB"
-    disks: "local-disk 10 HDD"
+    disks: "local-disk 100 HDD"
     cpu: "1"
   }
   output {
@@ -34,7 +34,7 @@ task FeatureCountsMultiMapping {
   runtime {
     docker: "humancellatlas/subread:1.6.0"
     memory: "3.75 GB"
-    disks: "local-disk 10 HDD"
+    disks: "local-disk 100 HDD"
     cpu: "1"
   }
   output {

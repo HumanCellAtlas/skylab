@@ -1,5 +1,5 @@
 {
   "project":"mint-pipeline-dev",
-  "pipeline":"scrnaseq",
+  "pipeline":"ss2",
   "name":"pipeline"
 }

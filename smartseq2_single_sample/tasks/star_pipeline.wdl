@@ -14,7 +14,7 @@ workflow RunStarPipeline {
   File ref_flat 
   File star_genome
   File rsem_genome
-  String samplename
+  String sample_name
   String output_prefix
   Array[String] featureType = ['exon','gene','transcript']
 	
@@ -25,9 +25,9 @@ workflow RunStarPipeline {
       gtf = gtf,
       star_genome = star_genome,
       sample_tag = output_prefix,
-      pu_tag = samplename,
-      lib_tag = samplename,
-      id_tag = samplename
+      pu_tag = sample_name,
+      lib_tag = sample_name,
+      id_tag = sample_name
   }
   call picard.CollectMultipleMetrics {
     input:
@@ -53,19 +53,19 @@ workflow RunStarPipeline {
       trans_aligned_bam = Star.output_bam_trans,
       rsem_genome = rsem_genome,
       rsem_out = output_prefix
-   }
+  }
   call featurecounts.FeatureCountsUniqueMapping {
     input:
       aligned_bam = Star.output_bam,
       gtf = gtf, 
       fc_out = output_prefix
-   }
-   call featurecounts.FeatureCountsMultiMapping {
+  }
+  call featurecounts.FeatureCountsMultiMapping {
     input:
       aligned_bam = Star.output_bam,
       gtf = gtf,
       fc_out = output_prefix
-    }
+  }
   scatter (ftype in featureType) {
     call htseq.htseq_count {
       input:
@@ -73,8 +73,8 @@ workflow RunStarPipeline {
         gtf = gtf,
         featuretype = ftype,
         output_filename = output_prefix
-     }
     }
+  }
   output {
     File aligned_bam = Star.output_bam
     File aligned_trans_bam = Star.output_bam_trans
@@ -116,5 +116,5 @@ workflow RunStarPipeline {
     File rsem_model_log = Rsem.rsem_model
     File rsem_theta_log = Rsem.rsem_theta
     Array[File] htseq_counts = htseq_count.counts
-   }
+  }
 }

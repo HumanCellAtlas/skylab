@@ -20,7 +20,7 @@ task BuildHISAT2forRSEM {
   output {
     File hisat2Ref = "${ref_name}.tar.gz"
   }
-  }
+}
 workflow HISAT2Ref {
   String ref_name
   File  rsem_index
@@ -28,8 +28,7 @@ workflow HISAT2Ref {
   call BuildHISAT2forRSEM {
     input:
       ref_name = ref_name,
-      rsem_index = rsem_index
-			
+      rsem_index = rsem_index			
   }
   output {
     File hisat2_ref = BuildHISAT2forRSEM.hisat2Ref

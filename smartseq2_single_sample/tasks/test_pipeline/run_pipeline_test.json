@@ -1,6 +1,6 @@
 {
   "run_pipelines.gtffile": "gs://broad-dsde-mint-dev-teststorage/reference/GRCh38_Gencode/gencode.v27.primary_assembly.annotation.gtf",
-  "run_pipelines.hsiat2_ref_trans_name": "gencode_v27_trans_rsem",
+  "run_pipelines.hisat2_ref_trans_name": "gencode_v27_trans_rsem",
   "run_pipelines.kallisto_ref_index": "gs://broad-dsde-mint-dev-teststorage/reference/kallisto/GRCH38/k21/kallisto.idx",
   "run_pipelines.rrna_intervals": "gs://broad-dsde-mint-dev-teststorage/reference/gencode.v27.rRNA.interval_list",
   "run_pipelines.star_ref_index": "gs://broad-dsde-mint-dev-teststorage/reference/GRCh38_Gencode/GRCh38_GencodeV27_Primary.tar",

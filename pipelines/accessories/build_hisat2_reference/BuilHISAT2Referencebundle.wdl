@@ -18,7 +18,7 @@ task BuildHISAT2reference{
   output {
     File hisat2Ref = "${ref_name}.tar.gz"
   }
-  }
+}
 
 workflow HISAT2Ref {
   String ref_name
