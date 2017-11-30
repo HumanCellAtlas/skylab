@@ -9,10 +9,10 @@ RUN mkdir -p /opt/tools/
 WORKDIR /opt/tools
 
 RUN \
-  apt update && \ 
-  apt install -y \
+ apt update && \ 
+ apt install -y \
 	liblzma-dev \
-	libbz2-dev \
+  libbz2-dev \
 	cmake \
 	automake \
 	curl \
@@ -22,13 +22,13 @@ RUN \
 	gcc-multilib \
 	zlib1g-dev \
 	libxml2-dev \
-	libncurses5-dev \	
+	libncurses5-dev \
 	zip unzip \
 	samtools \
 	git \
 	r-base \
 	r-base-core \
-    r-base-dev
+	r-base-dev
   
 RUN \
   wget -c ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/downloads/hisat2-2.1.0-source.zip && \

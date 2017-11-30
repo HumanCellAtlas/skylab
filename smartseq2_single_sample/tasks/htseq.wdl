@@ -14,9 +14,9 @@ task htseq_count {
     }
   runtime {
     docker:"humancellatlas/python3-scientific:0.1.1"
-    memory: "3.75 GB"
+    memory: "7.5 GB"
     disks: "local-disk 50 HDD"
-    cpu: "1"
+    cpu: "2"
    }
   output {
     File counts = "${output_filename}.${featuretype}.htseq.count.txt"	
