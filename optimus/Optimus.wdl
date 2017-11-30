@@ -17,14 +17,16 @@ workflow Optimus {
   File tar_star_reference  # star reference
   File annotations_gtf  # gtf containing annotations for gene tagging
   File ref_genome_fasta  # genome fasta file
-  String sample_name  # name of sample matching this file, inserted into read group header
+  String sample_id  # name of sample matching this file, inserted into read group header
+  String fastq_suffix = ""  # when running in green box, need to add ".gz" for picard to detect
 
   # this scatters matched [r1, r2, i1] fastq arrays
   scatter (fastqs in fastq_inputs) {
     call fq2bam.FastqToUBam {
       input:
         fastq_file = fastqs[1],
-        sample_name = sample_name
+        sample_id = sample_id,
+        fastq_suffix = fastq_suffix
     }
 
     call attach.Attach10xBarcodes {
@@ -63,7 +65,7 @@ workflow Optimus {
     input:
       aligned_bam = MergeBam.bam_output,
       ref_genome_fasta = ref_genome_fasta,
-      output_filename = sample_name
+      output_filename = sample_id
   }
 
   output {

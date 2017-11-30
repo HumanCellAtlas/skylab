@@ -1,17 +1,22 @@
 
 task FastqToUBam {
   File fastq_file  # input fastq file
-  String sample_name  # name of sample matching this file, inserted into read group header
+  String sample_id  # name of sample matching this file, inserted into read group header
+
+  # a suffix to add to the fastq file; useful with mangled file IDs, since picard requires that
+  # the file end in .gz or it will not detect the gzipping.
+  String fastq_suffix = ""
 
   # estimate that bam is approximately equal in size to fastq, add 20% buffer
   Int estimated_disk_required = ceil(size(fastq_file, "G") * 2.2)
 
   command {
+    mv "${fastq_file}" "${fastq_file}""${fastq_suffix}"  # add suffix; does nothing if not provided
     java -Xmx2g -jar /usr/picard/picard.jar FastqToSam \
-      FASTQ="${fastq_file}" \
+      FASTQ="${fastq_file}""${fastq_suffix}" \
       SORT_ORDER=unsorted \
       OUTPUT=bamfile.bam \
-      SAMPLE_NAME="${sample_name}"
+      SAMPLE_NAME="${sample_id}"
   }
   
   runtime {

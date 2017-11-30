@@ -13,5 +13,5 @@ RUN pip3 install \
     pysam==0.12.0.1 \
     requests==2.18.4 \
     scipy==0.18.1 \
-    sctools==0.1.4 \
+    sctools==0.1.6 \
     tables==3.4.2

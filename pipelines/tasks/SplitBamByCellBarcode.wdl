@@ -12,7 +12,7 @@ task SplitBamByCellBarcode {
   }
   
   runtime {
-    docker: "humancellatlas/python3-scientific:0.1.3"
+    docker: "humancellatlas/python3-scientific:0.1.5"
     cpu: 1
     memory: "3.75 GB"
     disks: "local-disk 100 HDD"
