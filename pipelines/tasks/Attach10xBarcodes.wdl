@@ -22,7 +22,7 @@ task Attach10xBarcodes {
   }
   
   runtime {
-    docker: "humancellatlas/python3-scientific:0.1.3"
+    docker: "humancellatlas/python3-scientific:0.1.5"
     cpu: 2
     memory: "7.5 GB"
     disks: "local-disk ${estimated_required_disk} HDD"
