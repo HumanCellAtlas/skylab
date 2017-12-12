@@ -1,0 +1,20 @@
+{
+ "TestOptimusScientific.fastq_inputs": [
+    [
+      "gs://broad-dsde-mint-dev-teststorage/10x/demo/fastqs/pbmc8k_S1_L007_R1_001.fastq.gz",
+      "gs://broad-dsde-mint-dev-teststorage/10x/demo/fastqs/pbmc8k_S1_L007_R2_001.fastq.gz",
+      "gs://broad-dsde-mint-dev-teststorage/10x/demo/fastqs/pbmc8k_S1_L007_I1_001.fastq.gz"
+    ],
+    [
+      "gs://broad-dsde-mint-dev-teststorage/10x/demo/fastqs/pbmc8k_S1_L007_R1_001.fastq.gz",
+      "gs://broad-dsde-mint-dev-teststorage/10x/demo/fastqs/pbmc8k_S1_L007_R2_001.fastq.gz",
+      "gs://broad-dsde-mint-dev-teststorage/10x/demo/fastqs/pbmc8k_S1_L007_I1_001.fastq.gz"
+    ]
+  ],
+  "TestOptimusScientific.whitelist": "gs://broad-dsde-mint-dev-teststorage/10x/whitelist/737K-august-2016.txt",
+  "TestOptimusScientific.tar_star_reference": "gs://broad-dsde-mint-dev-teststorage/demo/star.tar",
+  "TestOptimusScientific.sample_id": "pbmc_scientific_test",
+  "TestOptimusScientific.annotations_gtf": "gs://broad-dsde-mint-dev-teststorage/reference/hg19_ds/GSM1629193_hg19_ERCC.gtf.gz",
+  "TestOptimusScientific.ref_genome_fasta": "gs://broad-dsde-mint-dev-teststorage/demo/chr21.fa",
+  "TestOptimusScientific.expected_number_bam_records": 24000
+}
