@@ -14,6 +14,40 @@ load('cnts.RData')
 load('tpm.RData')
 load('~/Documents/HCA/pipeline_test/metrics/metrics.RData')
 
+## plot function
+
+sumBiotype<-function(x,labelname,ratio){
+  x.miRNA<-x$miRNA+x$misc_RNA+x$snoRNA+x$snRNA
+  x.pseudo<-x$pseudogene+x$transcribed_processed_pseudogene+x$translated_processed_pseudogene+x$processed_pseudogene+x$transcribed_unprocessed_pseudogene+x$unprocessed_pseudogene
+  x.protein_coding<-x$protein_coding
+  x.antisense<-x$antisense_RNA
+  x.lncRNA<-x$lincRNA
+  if(ratio == 'ratio'){
+    x.others<- 1- (x.pseudo+x.protein_coding+x.antisense+x.lncRNA+x.miRNA)
+  }else{
+    x.tot<-apply(x,1,sum)
+    x.others<- x.tot- (x.pseudo+x.protein_coding+x.antisense+x.lncRNA+x.miRNA)
+  }
+  d1<-data.frame('Discordant Genes'=rep(labelname,nrow(x)),'misc_RNA'=x.miRNA,'protein_coding'=x.protein_coding,'pseudo'=x.pseudo,'linRNA'=x.lncRNA,'antisensse_RNA'=x.antisense,'others'=x.others)
+  m1<-apply(d1[,-1],2,mean,na.rm=T)
+  s1<-apply(d1[,-1],2,sd,na.rm=T)
+  mdd<-data.frame('discordance'=rep(label,6),'mean'=m1,'sd'=s1,'biotype'=names(m1))
+  return(mdd)
+}
+plotBarplot<-function(mdd,labels){
+  
+  p<- ggplot(mdd, aes(x=biotype, y=mean, fill=discordance)) + geom_bar(stat="identity", color="black", position=position_dodge()) 
+  p<-p+geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2,position=position_dodge(.9)) 
+  p<-p+xlab(labels[['xlab']])+ylab(labels[['ylab']])+ggtitle(labels[['title']])
+  p<-p+theme(plot.title = element_text(hjust = 0.5,size=20,face='bold'))
+  p<-p+theme(legend.position="top")
+  p<-p+theme(axis.title.x = element_text(color='black',size=18,face='bold'),axis.title.y = element_text(size=15,color='black',face='bold'))
+  p<-p+theme(axis.text.y = element_text(color='black',size=18,face='bold'),axis.text.x = element_text(color='black',size=15,face='bold'))
+  p<-p+theme(legend.text=element_text(size=15,face='bold'),legend.title =element_text(size=15,face='bold') )+scale_fill_discrete(name = labels[['legend']])
+  return(p)
+}
+
+
 ## ------------------------------------------------------------------------
 metadata$AvgSpotLen_l<-paste(metadata$AvgSpotLen_l,'bp',sep='')
 nalist<-which(metadata$patient_id == "")
@@ -82,68 +116,25 @@ for(n  in c(5,10,50,100))
 {
   x<-subset(star.rr,star.drop$cutoff ==n)
   y<-subset(hisat2.rr,hisat2.drop$cutoff ==n)
-  x.miRNA<-x$miRNA+x$misc_RNA+x$snoRNA+x$snRNA
-  y.miRNA<-y$miRNA+y$misc_RNA+y$snoRNA+y$snRNA
-  x.pseudo<-x$pseudogene+x$transcribed_processed_pseudogene+x$translated_processed_pseudogene+x$processed_pseudogene+x$transcribed_unprocessed_pseudogene+x$unprocessed_pseudogene
-  y.pseudo<-y$pseudogene+y$transcribed_processed_pseudogene+y$translated_processed_pseudogene+y$processed_pseudogene+y$transcribed_unprocessed_pseudogene+y$unprocessed_pseudogene
-  x.protein_coding<-x$protein_coding
-  y.protein_coding<-y$protein_coding
-  x.antisense<-x$antisense_RNA
-  y.antisense<-y$antisense_RNA
-  x.lncRNA<-x$lincRNA
-  y.lncRNA<-y$lincRNA
-  x.others<- 1- (x.pseudo+x.protein_coding+x.antisense+x.lncRNA+x.miRNA)
-  y.others<- 1- (y.pseudo+y.protein_coding+y.antisense+y.lncRNA+y.miRNA)
-  d1<-data.frame('Discordant Genes'=rep('I',nrow(x)),'misc_RNA'=x.miRNA,'protein_coding'=x.protein_coding,'pseudo'=x.pseudo,'linRNA'=x.lncRNA,'antisensse_RNA'=x.antisense,'others'=x.others)
-  d2<-data.frame('Discordant Genes'=rep('II',nrow(x)),'misc_RNA'=y.miRNA,'protein_coding'=y.protein_coding,'pseudo'=y.pseudo,'linRNA'=y.lncRNA,'antisensse_RNA'=y.antisense,'others'=y.others)
-  m1<-apply(d1[,-1],2,mean,na.rm=T)
-  m2<-apply(d2[,-1],2,mean,na.rm=T)
-  s1<-apply(d1[,-1],2,sd,na.rm=T)
-  s2<-apply(d2[,-1],2,sd,na.rm=T)
-  mdd<-data.frame('discordance'=c(rep('I',6),rep('II',6)),'mean'=c(m1,m2),'sd'=c(s1,s2),'biotype'=c(names(m1),names(m2)))
-  p<- ggplot(mdd, aes(x=biotype, y=mean, fill=discordance)) + geom_bar(stat="identity", color="black", position=position_dodge()) 
-  p<-p+geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2,position=position_dodge(.9)) 
-  p<-p+xlab('Biotype')+ylab('Avg % of discordant genes in each biotype groups')+ggtitle(paste('Genes Biotype(TPM < ',n,' )',sep=''))
-  p<-p+theme(plot.title = element_text(hjust = 0.5,size=20,face='bold'))
-  p<-p+theme(legend.position="top")
-  p<-p+theme(axis.title.x = element_text(color='black',size=18,face='bold'),axis.title.y = element_text(size=15,color='black',face='bold'))
-  p<-p+theme(axis.text.y = element_text(color='black',size=18,face='bold'),axis.text.x = element_text(color='black',size=15,face='bold'))
-  p<-p+theme(legend.text=element_text(size=15,face='bold'),legend.title =element_text(size=15,face='bold') )+scale_fill_discrete(name = "Discordent Gene Groups")
-  
-  
+  m1<-sumBiotype(x,'I','ratio')
+  m2<-sumBiotype(y,'II','ratio')
+  mdd<-rbind(m1,m2)
+  labels<-list('xlab'= 'Biotype',
+               'ylab'= "Avg % of discordant genes in each biotype groups",
+               'title'= paste('TPM <',n,sep=''),
+               'legend'='Discordance Group')
+  plotBarplot(mdd,labels)
   ## total number
   x<-subset(star.dis,star.drop$cutoff ==n)
   y<-subset(hisat2.dis,hisat2.drop$cutoff ==n)
-  x.tot<-apply(x,1,sum)
-  y.tot<-apply(y,1,sum)
-  x.miRNA<-x$miRNA+x$misc_RNA+x$snoRNA+x$snRNA
-  y.miRNA<-y$miRNA+y$misc_RNA+y$snoRNA+y$snRNA
-  x.pseudo<-x$pseudogene+x$transcribed_processed_pseudogene+x$translated_processed_pseudogene+x$processed_pseudogene+x$transcribed_unprocessed_pseudogene+x$unprocessed_pseudogene
-  y.pseudo<-y$pseudogene+y$transcribed_processed_pseudogene+y$translated_processed_pseudogene+y$processed_pseudogene+y$transcribed_unprocessed_pseudogene+y$unprocessed_pseudogene
-  x.protein_coding<-x$protein_coding
-  y.protein_coding<-y$protein_coding
-  x.antisense<-x$antisense_RNA
-  y.antisense<-y$antisense_RNA
-  x.lncRNA<-x$lincRNA
-  y.lncRNA<-y$lincRNA
-  x.others<- x.tot- (x.pseudo+x.protein_coding+x.antisense+x.lncRNA+x.miRNA)
-  y.others<- y.tot- (y.pseudo+y.protein_coding+y.antisense+y.lncRNA+y.miRNA)
-  d1<-data.frame('Discordant Genes'=rep('I',nrow(x)),'misc_RNA'=x.miRNA,'protein_coding'=x.protein_coding,'pseudo'=x.pseudo,'linRNA'=x.lncRNA,'antisensse_RNA'=x.antisense,'others'=x.others)
-  d2<-data.frame('Discordant Genes'=rep('II',nrow(x)),'misc_RNA'=y.miRNA,'protein_coding'=y.protein_coding,'pseudo'=y.pseudo,'linRNA'=y.lncRNA,'antisensse_RNA'=y.antisense,'others'=y.others)
-  m1<-apply(d1[,-1],2,mean,na.rm=T)
-  m2<-apply(d2[,-1],2,mean,na.rm=T)
-  s1<-apply(d1[,-1],2,sd,na.rm=T)
-  s2<-apply(d2[,-1],2,sd,na.rm=T)
-  mdd<-data.frame('discordance'=c(rep('I',6),rep('II',6)),'mean'=c(m1,m2),'sd'=c(s1,s2),'biotype'=c(names(m1),names(m2)))
-  p<- ggplot(mdd, aes(x=biotype, y=mean, fill=discordance)) + geom_bar(stat="identity", color="black", position=position_dodge()) 
-  p<-p+geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2,position=position_dodge(.9)) 
-  p<-p+xlab('Biotype')+ylab('Avg # of discordant genes in each biotype groups')+ggtitle(paste('Genes Biotype(TPM < ',n,' )',sep=''))
-  p<-p+theme(plot.title = element_text(hjust = 0.5,size=20,face='bold'))
-  p<-p+theme(legend.position="top")
-  p<-p+theme(axis.title.x = element_text(color='black',size=18,face='bold'),axis.title.y = element_text(size=15,color='black',face='bold'))
-  p<-p+theme(axis.text.y = element_text(color='black',size=18,face='bold'),axis.text.x = element_text(color='black',size=15,face='bold'))
-  p<-p+theme(legend.text=element_text(size=15,face='bold'),legend.title =element_text(size=15,face='bold') )+scale_fill_discrete(name = "Discordent Gene Groups")
-  
+  m1<-sumBiotype(x,'I','total')
+  m2<-sumBiotype(y,'I','total')
+  mdd<-rbind(m1,m2)
+  labels<-list('xlab'= 'Biotype',
+               'ylab'= "Avg # of discordant genes in each biotype groups",
+               'title'= paste('TPM <',n,sep=''),
+               'legend'='Discordance Group')
+  plotBarplot(mdd,labels)
 }
 
 
@@ -185,7 +176,7 @@ stats.lab<-data.frame(stats.lab)
 outdata<-cbind(stats.lab,as.data.frame(stats))
 
 ## ------------------------------------------------------------------------
-##barplot with error bar 
+##
 star.drop<-subset(outdata,outdata$aligner == 'star')
 hisat2.drop<-subset(outdata,outdata$aligner == "hisat2")
 star.tot<-apply(star.drop[,-c(1:2)],1,sum)
@@ -206,66 +197,25 @@ if(length(rmlist)>0){
 x<-star.rr
 y<-hisat2.rr
 ## group biotypes into protein_coding, pseudo gene, miscRNA, lincRNA groups.
-x.miRNA<-x$miRNA+x$misc_RNA+x$snoRNA+x$snRNA
-y.miRNA<-y$miRNA+y$misc_RNA+y$snoRNA+y$snRNA
-x.pseudo<-x$pseudogene+x$transcribed_processed_pseudogene+x$translated_processed_pseudogene+x$processed_pseudogene+x$transcribed_unprocessed_pseudogene+x$unprocessed_pseudogene
-y.pseudo<-y$pseudogene+y$transcribed_processed_pseudogene+y$translated_processed_pseudogene+y$processed_pseudogene+y$transcribed_unprocessed_pseudogene+y$unprocessed_pseudogene
-x.protein_coding<-x$protein_coding
-y.protein_coding<-y$protein_coding
-x.antisense<-x$antisense_RNA
-y.antisense<-y$antisense_RNA
-x.lncRNA<-x$lincRNA
-y.lncRNA<-y$lincRNA
-x.others<- 1- (x.pseudo+x.protein_coding+x.antisense+x.lncRNA+x.miRNA)
-y.others<- 1- (y.pseudo+y.protein_coding+y.antisense+y.lncRNA+y.miRNA)
-d1<-data.frame('Discordant Genes'=rep('I',nrow(x)),'misc_RNA'=x.miRNA,'protein_coding'=x.protein_coding,'pseudo'=x.pseudo,'linRNA'=x.lncRNA,'antisensse_RNA'=x.antisense,'others'=x.others)
-d2<-data.frame('Discordant Genes'=rep('II',nrow(x)),'misc_RNA'=y.miRNA,'protein_coding'=y.protein_coding,'pseudo'=y.pseudo,'linRNA'=y.lncRNA,'antisensse_RNA'=y.antisense,'others'=y.others)
-m1<-apply(d1[,-1],2,mean,na.rm=T)
-m2<-apply(d2[,-1],2,mean,na.rm=T)
-s1<-apply(d1[,-1],2,sd,na.rm=T)
-s2<-apply(d2[,-1],2,sd,na.rm=T)
-mdd<-data.frame('discordance'=c(rep('I',6),rep('II',6)),'mean'=c(m1,m2),'sd'=c(s1,s2),'biotype'=c(names(m1),names(m2)))
-p<- ggplot(mdd, aes(x=biotype, y=mean, fill=discordance)) + geom_bar(stat="identity", color="black", position=position_dodge()) 
-p<-p+geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2,position=position_dodge(.9)) 
-p<-p+xlab('Biotype')+ylab('Avg % of discordant genes in each biotype groups')+ggtitle(paste('Biotype of discordance genes',sep=''))
-p<-p+theme(plot.title = element_text(hjust = 0.5,size=20,face='bold'))
-p<-p+theme(legend.position="top")
-p<-p+theme(axis.title.x = element_text(color='black',size=18,face='bold'),axis.title.y = element_text(size=15,color='black',face='bold'))
-p<-p+theme(axis.text.y = element_text(color='black',size=18,face='bold'),axis.text.x = element_text(color='black',size=15,face='bold'))
-p<-p+theme(legend.text=element_text(size=15,face='bold'),legend.title =element_text(size=15,face='bold') )+scale_fill_discrete(name = "Discordent Gene Groups")
-
-
+m1<-sumBiotype(x,'I','ratio')
+m2<-sumBiotype(y,'II','ratio')
+mdd<-rbind(m1,m2)
+labels<-list('xlab'= 'Biotype',
+             'ylab'= "Avg % of discordant genes in each biotype groups",
+             'title'= paste('TPM <5',sep=''),
+             'legend'='Discordance Group')
+plotBarplot(mdd,labels)
 ## total number
-x<-star.dis
-y<-hisat2.dis
-x.tot<-apply(x,1,sum)
-y.tot<-apply(y,1,sum)
-## group biotypes into protein_coding, pseudo gene, miscRNA, lincRNA groups.
-x.miRNA<-x$miRNA+x$misc_RNA+x$snoRNA+x$snRNA
-y.miRNA<-y$miRNA+y$misc_RNA+y$snoRNA+y$snRNA
-x.pseudo<-x$pseudogene+x$transcribed_processed_pseudogene+x$translated_processed_pseudogene+x$processed_pseudogene+x$transcribed_unprocessed_pseudogene+x$unprocessed_pseudogene
-y.pseudo<-y$pseudogene+y$transcribed_processed_pseudogene+y$translated_processed_pseudogene+y$processed_pseudogene+y$transcribed_unprocessed_pseudogene+y$unprocessed_pseudogene
-x.protein_coding<-x$protein_coding
-y.protein_coding<-y$protein_coding
-x.antisense<-x$antisense_RNA
-y.antisense<-y$antisense_RNA
-x.lncRNA<-x$lincRNA
-y.lncRNA<-y$lincRNA
-x.others<- x.tot- (x.pseudo+x.protein_coding+x.antisense+x.lncRNA+x.miRNA)
-y.others<- y.tot- (y.pseudo+y.protein_coding+y.antisense+y.lncRNA+y.miRNA)
-d1<-data.frame('Discordant Genes'=rep('I',nrow(x)),'misc_RNA'=x.miRNA,'protein_coding'=x.protein_coding,'pseudo'=x.pseudo,'linRNA'=x.lncRNA,'antisensse_RNA'=x.antisense,'others'=x.others)
-d2<-data.frame('Discordant Genes'=rep('II',nrow(x)),'misc_RNA'=y.miRNA,'protein_coding'=y.protein_coding,'pseudo'=y.pseudo,'linRNA'=y.lncRNA,'antisensse_RNA'=y.antisense,'others'=y.others)
-m1<-apply(d1[,-1],2,mean,na.rm=T)
-m2<-apply(d2[,-1],2,mean,na.rm=T)
-s1<-apply(d1[,-1],2,sd,na.rm=T)
-s2<-apply(d2[,-1],2,sd,na.rm=T)
-mdd<-data.frame('discordance'=c(rep('I',6),rep('II',6)),'mean'=c(m1,m2),'sd'=c(s1,s2),'biotype'=c(names(m1),names(m2)))
-p<- ggplot(mdd, aes(x=biotype, y=mean, fill=discordance)) + geom_bar(stat="identity", color="black", position=position_dodge()) 
-p<-p+geom_errorbar(aes(ymin=mean-sd, ymax=mean+sd), width=.2,position=position_dodge(.9)) 
-p<-p+xlab('Biotype')+ylab('Avg # of discordant genes in each biotype groups')+ggtitle(paste('Biotype of discorance genes',sep=''))
-p<-p+theme(plot.title = element_text(hjust = 0.5,size=20,face='bold'))
-p<-p+theme(legend.position="top")
-p<-p+theme(axis.title.x = element_text(color='black',size=18,face='bold'),axis.title.y = element_text(size=15,color='black',face='bold'))
-p<-p+theme(axis.text.y = element_text(color='black',size=18,face='bold'),axis.text.x = element_text(color='black',size=15,face='bold'))
-p<-p+theme(legend.text=element_text(size=15,face='bold'),legend.title =element_text(size=15,face='bold') )+scale_fill_discrete(name = "Discordent Gene Groups")
+x<-subset(star.dis,star.drop$cutoff ==n)
+y<-subset(hisat2.dis,hisat2.drop$cutoff ==n)
+m1<-sumBiotype(x,'I','total')
+m2<-sumBiotype(y,'I','total')
+mdd<-rbind(m1,m2)
+labels<-list('xlab'= 'Biotype',
+             'ylab'= "Avg # of discordant genes in each biotype groups",
+             'title'= paste('TPM <5 ',sep=''),
+             'legend'='Discordance Group')
+plotBarplot(mdd,labels)
+
+
 
