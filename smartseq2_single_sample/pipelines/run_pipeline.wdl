@@ -2,7 +2,7 @@ import "star_pipeline.wdl" as run_star
 import "hisat2_pipeline.wdl" as run_hisat2
 import "hisat2_rsem_pipeline.wdl" as run_hisat2_rsem
 import "kallisto_pipeline.wdl" as run_kallisto
-
+import "analysis.wdl" as analysis 
 workflow run_pipelines {
 
   # load annotation

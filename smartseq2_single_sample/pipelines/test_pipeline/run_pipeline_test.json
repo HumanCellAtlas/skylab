@@ -12,5 +12,6 @@
   "run_pipelines.hisat2_ref_name": "genome_snp_tran",
   "run_pipelines.stranded":"NONE",
   "run_pipelines.sra_dir":"gs://broad-dsde-mint-dev-teststorage/patel_ap",
-  "run_pipelines.sampleinfo": "gs://broad-dsde-mint-dev-teststorage/patel_ap/SRR_Acc_List.txt"
+  "run_pipelines.sampleinfo": "gs://broad-dsde-mint-dev-teststorage/patel_ap/SRR_Acc_List.txt",
+	"run_pipelines.workflow_name": "HISAT2Rsem"
 }

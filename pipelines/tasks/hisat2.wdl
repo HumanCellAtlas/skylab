@@ -52,9 +52,10 @@ task HISAT2rsem {
       --rg PL:ILLUMINA --rg PU:${sample_name} \
       --new-summary --summary-file ${output_name}.log \
       --met-file ${output_name}.hisat2.met.txt --met 5 \
-      -k 10 \
-      --secondary \
       --no-mixed \
+      --mp 1,1 \
+      --np 1 \
+      --score-min L,0,-0.1 \
       --no-softclip \
       --no-discordant \
       --rdg 99999999,99999999 \
@@ -66,7 +67,7 @@ task HISAT2rsem {
   runtime {
     docker:"humancellatlas/hisat2:2-2.1.0"
     memory:"5 GB"
-    disks: "local-disk 50 HDD"
+    disks: "local-disk 100 HDD"
     cpu: "4"
   }
   output {
