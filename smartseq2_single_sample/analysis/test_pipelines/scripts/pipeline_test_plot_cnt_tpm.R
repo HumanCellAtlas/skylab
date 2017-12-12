@@ -29,14 +29,14 @@ for(bname in names(cnts)){
 ## ------------------------------------------------------------------------
 for(cc in c(0,5,10,50,100)){
   cname<-paste('gt',cc,'cnt',sep='')
-p<-ggplot(data=tot,aes_string(x=cname,colour='pipeline'))+geom_density(alpha=0.5)
-p<-p+theme(legend.position="top")
-p<-p+theme(plot.title = element_text(hjust = 0.5,size=20,face='bold'))
-p<-p+theme(axis.title.x = element_text(color='black',size=15,face='bold'),axis.title.y = element_text(size=15,color='black',face='bold'))
-p<-p+theme(axis.text.y = element_text(color='black',size=15,face='bold'),axis.text.x = element_text(color='black',size=15,face='bold'))
-p<-p+theme(legend.text=element_text(size=10,face='bold'),legend.title = element_blank())
-p<-p+xlab('# of Detected Genes')+ylab('Density')+ggtitle(paste('# of genes with counts >',cc,sep=' ' ))
-p
+  p<-ggplot(data=tot,aes_string(x=cname,colour='pipeline'))+geom_density(alpha=0.5)
+  p<-p+theme(legend.position="top")
+  p<-p+theme(plot.title = element_text(hjust = 0.5,size=20,face='bold'))
+  p<-p+theme(axis.title.x = element_text(color='black',size=15,face='bold'),axis.title.y = element_text(size=15,color='black',face='bold'))
+  p<-p+theme(axis.text.y = element_text(color='black',size=15,face='bold'),axis.text.x = element_text(color='black',size=15,face='bold'))
+  p<-p+theme(legend.text=element_text(size=10,face='bold'),legend.title = element_blank())
+  p<-p+xlab('# of Detected Genes')+ylab('Density')+ggtitle(paste('# of genes with counts >',cc,sep=' ' ))
+  p
 }
 
 ## ------------------------------------------------------------------------
@@ -57,14 +57,14 @@ for(bname in names(cnts)){
 ## ------------------------------------------------------------------------
 for(cc in c(0,5,10,50,100)){
   cname<-paste('gt',cc,'tpm',sep='')
-p<-ggplot(data=tpmstats,aes_string(x=cname,colour='pipeline'))+geom_density(alpha=0.5)
-p<-p+theme(legend.position="top")
-p<-p+theme(plot.title = element_text(hjust = 0.5,size=20,face='bold'))
-p<-p+theme(axis.title.x = element_text(color='black',size=15,face='bold'),axis.title.y = element_text(size=15,color='black',face='bold'))
-p<-p+theme(axis.text.y = element_text(color='black',size=15,face='bold'),axis.text.x = element_text(color='black',size=15,face='bold'))
-p<-p+theme(legend.text=element_text(size=10,face='bold'),legend.title = element_blank())
-p<-p+xlab('# of Detected Genes')+ylab('Density')+ggtitle(paste('# of genes with TPM >',cc,sep=' ' ))
-p
-
+  p<-ggplot(data=tpmstats,aes_string(x=cname,colour='pipeline'))+geom_density(alpha=0.5)
+  p<-p+theme(legend.position="top")
+  p<-p+theme(plot.title = element_text(hjust = 0.5,size=20,face='bold'))
+  p<-p+theme(axis.title.x = element_text(color='black',size=15,face='bold'),axis.title.y = element_text(size=15,color='black',face='bold'))
+  p<-p+theme(axis.text.y = element_text(color='black',size=15,face='bold'),axis.text.x = element_text(color='black',size=15,face='bold'))
+  p<-p+theme(legend.text=element_text(size=10,face='bold'),legend.title = element_blank())
+  p<-p+xlab('# of Detected Genes')+ylab('Density')+ggtitle(paste('# of genes with TPM >',cc,sep=' ' ))
+  p
+  
 }
 
