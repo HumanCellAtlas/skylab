@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 CROMWELL_USER=$1
 CROMWELL_PASSWORD=$2
 CROMWELL_URL=$3

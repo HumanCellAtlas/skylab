@@ -7,10 +7,10 @@ docker_image=broadinstitute/dsde-toolbox:latest
 
 echo $(ls ${working_dir}/test/config)
 
-printf "pulling docker image ${docker_image}"
+echo "pulling docker image ${docker_image}"
 docker pull "${docker_image}"
 
-printf "Creating Cromwell config\n"
+echo "Creating Cromwell config"
 docker run --rm -v ${working_dir}:/working \
     -e VAULT_TOKEN=${vault_token} \
     -e INPUT_PATH=/working/test/config \

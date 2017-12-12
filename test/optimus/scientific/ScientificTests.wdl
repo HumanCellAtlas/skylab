@@ -5,9 +5,13 @@
 task TestBamRecordNumber {
   File bam
   Int expected_records
-  Int required_disk = ceil(size(bam, "G") * 2)
+  Int required_disk = ceil(size(bam, "G") * 1.2)
 
   command {
+
+    # catch uncommon errors
+    -eo pipefail
+
     N_RECORDS=$(samtools view "${bam}" | wc -l)
     if [ $N_RECORDS != "${expected_records}" ]; then
         >&2 echo "Number of records in the pipeline output ($N_RECORDS) did not match the expected number (${expected_records})"

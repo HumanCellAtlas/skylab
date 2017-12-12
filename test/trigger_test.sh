@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 # NOTE: this script will execute from the repository root when called on jenkins
 
 VAULT_TOKEN=$1
@@ -18,7 +20,7 @@ CROMWELL_SECRETS="${WD}/test/cromwell-secrets.json"
 CROMWELL_USER=$(cat "${CROMWELL_SECRETS}" | jq -r .cromwell_user)
 CROMWELL_PASSWORD=$(cat "${CROMWELL_SECRETS}" | jq -r .cromwell_password)
 
-OPTIONS_FILE="https://raw.githubusercontent.com/HumanCellAtlas/skylab/ajc-pr-test/test/options.json"
+OPTIONS_FILE="https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/test/options.json"
 CROMWELL_URL="https://cromwell.mint-dev.broadinstitute.org"
 
 echo "Running test"

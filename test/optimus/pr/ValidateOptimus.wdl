@@ -10,18 +10,19 @@ task ValidateOptimus {
       String expected_matrix_hash
       String expected_matrix_summary_hash
       String expected_picard_metrics_hash
-      # # these are also inputs; lets leave them alone until flattening is in WDL
-      # Array[Array[File]] tag_gene_exon_log
-      # Array[Array[File]] umi_metrics
-      # Array[Array[File]] duplicate_metrics
 
   command <<<
 
+    # catch intermittent failures
+    set -eo pipefail
+
     # calculate hashes; awk is used to extract the hash from the md5sum output that contains both
     # a hash and the filename that was passed
-    bam_hash=$(samtools view "${bam}" | md5sum | awk '{print $1}')
     matrix_hash=$(md5sum "${matrix}" | awk '{print $1}')
     matrix_summary_hash=$(md5sum "${matrix_summary}" | awk '{print $1}')
+
+    # calculate hash as above, but ignore run-specific bam headers
+    bam_hash=$(samtools view "${bam}" | md5sum | awk '{print $1}')
 
     # the picard metrics are contained in a .tar.gz file; in addition to the above processing,
     # this unzips the archive, and parses it with awk to remove all the run-specific comment lines (#)

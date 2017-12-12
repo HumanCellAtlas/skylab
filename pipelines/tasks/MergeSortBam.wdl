@@ -1,5 +1,5 @@
 
-task MergeBam {
+task MergeSortBam {
   Array[Array[File]] bam_inputs
 
   command {
