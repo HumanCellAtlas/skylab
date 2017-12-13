@@ -12,7 +12,7 @@ genes<-subset(gtf_gencode,gtf_gencode$type == "gene")
 #load cnt and tpm data
 load('cnts.RData')
 load('tpm.RData')
-load('~/Documents/HCA/pipeline_test/metrics/metrics.RData')
+load('metrics.RData')
 
 ## plot function
 
@@ -31,7 +31,7 @@ sumBiotype<-function(x,labelname,ratio){
   d1<-data.frame('Discordant Genes'=rep(labelname,nrow(x)),'misc_RNA'=x.miRNA,'protein_coding'=x.protein_coding,'pseudo'=x.pseudo,'linRNA'=x.lncRNA,'antisensse_RNA'=x.antisense,'others'=x.others)
   m1<-apply(d1[,-1],2,mean,na.rm=T)
   s1<-apply(d1[,-1],2,sd,na.rm=T)
-  mdd<-data.frame('discordance'=rep(label,6),'mean'=m1,'sd'=s1,'biotype'=names(m1))
+  mdd<-data.frame('discordance'=rep(labelname,6),'mean'=m1,'sd'=s1,'biotype'=names(m1))
   return(mdd)
 }
 plotBarplot<-function(mdd,labels){
@@ -66,13 +66,13 @@ for(n in c(5,10,50,100)){
   star<-db[['star']]
   biolist<-list()
   hisat2<-db[['hisat2']]
-  l1<-match(as.matrix(sraIDs[,1]),colnames(star))
-  l2<-match(as.matrix(sraIDs[,1]),colnames(hisat2))
+  l1<-match(as.matrix(sraIDs),colnames(star))
+  l2<-match(as.matrix(sraIDs),colnames(hisat2))
   star.dd<-star[,l1]
   hisat2.dd<-hisat2[,l2]
   star.lab<-star[,c(1)]
   hisat2.lab<-hisat2[,c(1)]
-  for(ss in sraIDs[,1]){
+  for(ss in sraIDs){
     ##print(ss)
     x1<-star.dd[,ss]
     x2<-hisat2.dd[,ss]
@@ -128,7 +128,7 @@ for(n  in c(5,10,50,100))
   x<-subset(star.dis,star.drop$cutoff ==n)
   y<-subset(hisat2.dis,hisat2.drop$cutoff ==n)
   m1<-sumBiotype(x,'I','total')
-  m2<-sumBiotype(y,'I','total')
+  m2<-sumBiotype(y,'II','total')
   mdd<-rbind(m1,m2)
   labels<-list('xlab'= 'Biotype',
                'ylab'= "Avg # of discordant genes in each biotype groups",
@@ -148,14 +148,14 @@ n2<-20
 star<-db[['star']]
 biolist<-list()
 hisat2<-db[['hisat2']]
-l1<-match(as.matrix(sraIDs[,1]),colnames(star))
-l2<-match(as.matrix(sraIDs[,1]),colnames(hisat2))
+l1<-match(as.matrix(sraIDs),colnames(star))
+l2<-match(as.matrix(sraIDs),colnames(hisat2))
 star.dd<-star[,l1]
 hisat2.dd<-hisat2[,l2]
 star.lab<-star[,c(1)]
 hisat2.lab<-hisat2[,c(1)]
 ## pairwise and sample to sample 
-for(ss in sraIDs[,1]){
+for(ss in sraIDs){
   ##print(ss)
   x1<-star.dd[,ss]
   x2<-hisat2.dd[,ss]
@@ -209,13 +209,14 @@ plotBarplot(mdd,labels)
 x<-subset(star.dis,star.drop$cutoff ==n)
 y<-subset(hisat2.dis,hisat2.drop$cutoff ==n)
 m1<-sumBiotype(x,'I','total')
-m2<-sumBiotype(y,'I','total')
+m2<-sumBiotype(y,'II','total')
 mdd<-rbind(m1,m2)
 labels<-list('xlab'= 'Biotype',
              'ylab'= "Avg # of discordant genes in each biotype groups",
              'title'= paste('TPM <5 ',sep=''),
              'legend'='Discordance Group')
 plotBarplot(mdd,labels)
+
 
 
 
