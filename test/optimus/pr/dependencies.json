@@ -1,5 +1,5 @@
 {
-  "Optimus.wdl": "https://raw.githubusercontent.com/HumanCellAtlas/skylab/ajc-test-pr-test2/optimus/Optimus.wdl",
+  "Optimus.wdl": "https://raw.githubusercontent.com/HumanCellAtlas/skylab/ajc-test-pr-test-2/optimus/Optimus.wdl",
   "ValidateOptimus.wdl": "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/test/optimus/pr/ValidateOptimus.wdl",
   "AlignTagCorrectUmis.wdl": "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/optimus/AlignTagCorrectUmis.wdl",
   "StarAlignBamSingleEnd.wdl": "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/pipelines/tasks/StarAlignBamSingleEnd.wdl",
