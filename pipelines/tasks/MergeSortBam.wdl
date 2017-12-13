@@ -1,10 +1,11 @@
 
-task MergeBam {
+task MergeSortBam {
   Array[Array[File]] bam_inputs
 
   command {
     flat_inputs=$(python -c "print '${sep=' ' bam_inputs}'.replace('[', '').replace(']', '')")
-    samtools merge out.bam $flat_inputs
+    samtools merge -c -p out.bam $flat_inputs
+    samtools sort -o out_sorted.bam out.bam
   }
   
   runtime {
@@ -15,6 +16,6 @@ task MergeBam {
   }
   
   output {
-    File bam_output = "out.bam"
+    File bam_output = "out_sorted.bam"
   }
 }

@@ -1,0 +1,14 @@
+{
+  "Optimus.wdl": "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/optimus/Optimus.wdl",
+  "ScientificTests.wdl": "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/test/optimus/scientific/ScientificTests.wdl",
+  "AlignTagCorrectUmis.wdl": "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/optimus/AlignTagCorrectUmis.wdl",
+  "StarAlignBamSingleEnd.wdl": "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/pipelines/tasks/StarAlignBamSingleEnd.wdl",
+  "FastqToUBam.wdl": "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/pipelines/tasks/FastqToUBam.wdl",
+  "Attach10xBarcodes.wdl": "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/pipelines/tasks/Attach10xBarcodes.wdl",
+  "SplitBamByCellBarcode.wdl": "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/pipelines/tasks/SplitBamByCellBarcode.wdl",
+  "TagGeneExon.wdl": "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/pipelines/tasks/TagGeneExon.wdl",
+  "CorrectUmiMarkDuplicates.wdl": "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/pipelines/tasks/CorrectUmiMarkDuplicates.wdl",
+  "CollectMultiplePicardMetrics.wdl": "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/pipelines/tasks/CollectMultiplePicardMetrics.wdl",
+  "MergeSortBam.wdl": "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/pipelines/tasks/MergeSortBam.wdl",
+  "CreateCountMatrix.wdl": "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/pipelines/tasks/CreateCountMatrix.wdl"
+}

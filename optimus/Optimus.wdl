@@ -2,7 +2,7 @@ import "FastqToUBam.wdl" as fq2bam
 import "Attach10xBarcodes.wdl" as attach
 import "SplitBamByCellBarcode.wdl" as split
 import "CollectMultiplePicardMetrics.wdl" as collect
-import "MergeBam.wdl" as merge
+import "MergeSortBam.wdl" as merge
 import "CreateCountMatrix.wdl" as count
 import "AlignTagCorrectUmis.wdl" as AlignTagCorrectUmis
 
@@ -50,7 +50,7 @@ workflow Optimus {
     }
   }
 
-  call merge.MergeBam {
+  call merge.MergeSortBam {
     input:
       bam_inputs = AlignTagCorrectUmis.bam_outputs
   }
