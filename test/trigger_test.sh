@@ -9,8 +9,6 @@ INPUTS_JSON=$2
 WDL_FILE=$3
 DEPENDENCIES_JSON=$4
 WD=$(pwd)
-echo $(ls)
-echo ${WD}
 
 echo "Rendering templates"
 bash ${WD}/test/config/render-ctmpls.sh "dev" "${VAULT_TOKEN}"
@@ -25,9 +23,9 @@ CROMWELL_URL="https://cromwell.mint-dev.broadinstitute.org"
 
 echo "Running test"
 docker run --rm \
-  -v ${WD}/test:/test \
+  -v ${WD}:/working \
   humancellatlas/cromwell-tools:1.0.1 \
-  /test/test_cromwell_workflow.sh \
+  /working/test/test_cromwell_workflow.sh \
     "${CROMWELL_USER}" \
     "${CROMWELL_PASSWORD}" \
     "${CROMWELL_URL}" \
