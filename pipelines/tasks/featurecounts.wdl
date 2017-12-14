@@ -9,7 +9,7 @@ task FeatureCountsUniqueMapping {
     featureCounts -T 1  -s 0 -t exon -g exon_id -p -B -C -a "${gtf}" -o "${fc_out}.exon.unq.counts.txt" "${aligned_bam}"
   }
   runtime {
-    docker:"humancellatlas/subread:1.6.0"
+    docker:"quay.io/humancellatlas/secondary-analysis-subread:1.6.0"
     memory: "3.75 GB"
     disks: "local-disk 100 HDD"
     cpu: "1"
@@ -32,7 +32,7 @@ task FeatureCountsMultiMapping {
     featureCounts -T 1 -s 0 -t exon -g exon_id -p -M  -O -a "${gtf}" -o "${fc_out}.exon.mult.counts.txt" "${aligned_bam}"
   }
   runtime {
-    docker: "humancellatlas/subread:1.6.0"
+    docker: "quay.io/humancellatlas/secondary-analysis-subread:1.6.0"
     memory: "3.75 GB"
     disks: "local-disk 100 HDD"
     cpu: "1"

@@ -14,7 +14,7 @@ task Mkref {
   }
 
   runtime {
-    docker: "humancellatlas/kallisto:0.43.1"
+    docker: "quay.io/humancellatlas/secondary-analysis-kallisto:0.43.1"
     cpu: 4
     memory: "16 GB"
     disks: "local-disk 150 HDD"
@@ -54,7 +54,7 @@ task QuantSingleEnd {
   }
 
   runtime {
-    docker: "humancellatlas/kallisto:0.43.1"
+    docker: "quay.io/humancellatlas/secondary-analysis-kallisto:0.43.1"
     cpu: 4  # note that only 1 thread is supported by pseudobam
     memory: "16 GB"
     disks: "local-disk 100 HDD"
@@ -90,7 +90,7 @@ task QuantPairedEnd {
   }
 
   runtime {
-    docker: "humancellatlas/kallisto:0.43.1"
+    docker: "quay.io/humancellatlas/secondary-analysis-kallisto:0.43.1"
     cpu: 4  # note that only 1 thread is supported by pseudobam
     memory: "16 GB"
     disks: "local-disk 100 HDD"
@@ -127,7 +127,7 @@ task QuantPairedEndNoBam {
   }
 
   runtime {
-    docker: "humancellatlas/kallisto:0.43.1"
+    docker: "quay.io/humancellatlas/secondary-analysis-kallisto:0.43.1"
     cpu: 4  # note that only 1 thread is supported by pseudobam
     memory: "16 GB"
     disks: "local-disk 100 HDD"
@@ -164,7 +164,7 @@ task PseudoSingleEnd {
   }
 
   runtime {
-    docker: "humancellatlas/kallisto:0.43.1"
+    docker: "quay.io/humancellatlas/secondary-analysis-kallisto:0.43.1"
     cpu: 4  # note that only 1 thread is supported by pseudobam
     memory: "16 GB"
     disks: "local-disk 100 HDD"
@@ -204,7 +204,7 @@ task PseudoSingleEndUMI {
   }
 
   runtime {
-    docker: "humancellatlas/kallisto:0.43.1"
+    docker: "quay.io/humancellatlas/secondary-analysis-kallisto:0.43.1"
     cpu: 4
     memory: "16 GB"
     disks: "local-disk ${disks} HDD"
