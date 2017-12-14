@@ -11,7 +11,7 @@ task RsemExpression {
     cut -f 1,4,5 "${rsem_out}.genes.results" >"${rsem_out}.gene.expected_counts"
   }
   runtime {
-    docker: "humancellatlas/rsem:1.3.0"
+    docker: "quay.io/humancellatlas/secondary-analysis-rsem:1.3.0"
     memory: "3.75 GB"
     disks: "local-disk 50 HDD"
     cpu: "4"
