@@ -1,14 +1,14 @@
 {
-  "Optimus.wdl": "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/optimus/Optimus.wdl",
-  "ValidateOptimus.wdl": "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/test/optimus/pr/ValidateOptimus.wdl",
-  "AlignTagCorrectUmis.wdl": "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/optimus/AlignTagCorrectUmis.wdl",
-  "StarAlignBamSingleEnd.wdl": "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/pipelines/tasks/StarAlignBamSingleEnd.wdl",
-  "FastqToUBam.wdl": "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/pipelines/tasks/FastqToUBam.wdl",
-  "Attach10xBarcodes.wdl": "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/pipelines/tasks/Attach10xBarcodes.wdl",
-  "SplitBamByCellBarcode.wdl": "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/pipelines/tasks/SplitBamByCellBarcode.wdl",
-  "TagGeneExon.wdl": "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/pipelines/tasks/TagGeneExon.wdl",
-  "CorrectUmiMarkDuplicates.wdl": "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/pipelines/tasks/CorrectUmiMarkDuplicates.wdl",
-  "CollectMultiplePicardMetrics.wdl": "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/pipelines/tasks/CollectMultiplePicardMetrics.wdl",
-  "MergeSortBam.wdl": "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/pipelines/tasks/MergeSortBam.wdl",
-  "CreateCountMatrix.wdl": "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/pipelines/tasks/CreateCountMatrix.wdl"
+  "Optimus.wdl": "/working/optimus/Optimus.wdl",
+  "ValidateOptimus.wdl": "/working/test/optimus/pr/ValidateOptimus.wdl",
+  "AlignTagCorrectUmis.wdl": "/working/optimus/AlignTagCorrectUmis.wdl",
+  "StarAlignBamSingleEnd.wdl": "/working/pipelines/tasks/StarAlignBamSingleEnd.wdl",
+  "FastqToUBam.wdl": "/working/pipelines/tasks/FastqToUBam.wdl",
+  "Attach10xBarcodes.wdl": "/working/pipelines/tasks/Attach10xBarcodes.wdl",
+  "SplitBamByCellBarcode.wdl": "/working/pipelines/tasks/SplitBamByCellBarcode.wdl",
+  "TagGeneExon.wdl": "/working/pipelines/tasks/TagGeneExon.wdl",
+  "CorrectUmiMarkDuplicates.wdl": "/working/pipelines/tasks/CorrectUmiMarkDuplicates.wdl",
+  "CollectMultiplePicardMetrics.wdl": "/working/pipelines/tasks/CollectMultiplePicardMetrics.wdl",
+  "MergeSortBam.wdl": "/working/pipelines/tasks/MergeSortBam.wdl",
+  "CreateCountMatrix.wdl": "/working/pipelines/tasks/CreateCountMatrix.wdl"
 }
