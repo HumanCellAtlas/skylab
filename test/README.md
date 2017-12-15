@@ -23,12 +23,6 @@ In the event that a PR produces a desirable scientific change, the PR test will 
 
 More complex tests may require different inputs, but the expected values should always be parameterized in the `test_inputs.json` files to facilitate easy updating. 
 
-**This branch currently fails PR tests**
-The final commit in this PR causes the tests to fail, as it updates the targets to master (which don't exist yet). The previous commit resulted in a successful test.
-
-**This PR adds a few scientific modifications to Optimus**
-It changes the way alignment is done in order to output a bam file that is deterministic, and identical after sorting & filtering run headers. 
-
 **Jenkins Testing details**
 
 The jenkins job executes as follows: 
