@@ -36,10 +36,12 @@ RUN apt update && apt install -y \
   	libboost-all-dev \
 	libbz2-dev \
 	liblzma-dev \
+	lsb-release \
 	r-base \
   	r-base-core \
   	r-base-dev \
 	samtools \
+	sudo \
 	wget \
 	zlib1g-dev
 
@@ -57,6 +59,7 @@ RUN pip3 install \
     tables==3.4.2 \
     google-cloud-storage \
     git+git://github.com/HumanCellAtlas/pipeline-tools.git
+
 # Fix cannot import name 'opentype' error
 RUN pip3 install --upgrade google-auth-oauthlib
 
@@ -68,14 +71,17 @@ RUN Rscript -e "install.packages('ggplot2')"
 RUN Rscript -e "install.packages('googleCloudStorageR')"
 
 # Mount Google Cloud secret key
-ADD broad-dsde-mint-dev-ed8cc09c48e5.json /usr/secrets/broad-dsde-mint-dev-ed8cc09c48e5.json
+ADD broad-dsde-mint-dev-testR.json /usr/secrets/broad-dsde-mint-dev-testR.json
 
 # Set the environment variable for Python
-ENV GOOGLE_APPLICATION_CREDENTIALS=/usr/secrets/broad-dsde-mint-dev-ed8cc09c48e5.json
+ENV GOOGLE_APPLICATION_CREDENTIALS=/usr/secrets/broad-dsde-mint-dev-testR.json
 
 # Set the environment variable for R
-ENV GCS_AUTH_FILE=/usr/secrets/broad-dsde-mint-dev-ed8cc09c48e5.json
+ENV GCS_AUTH_FILE=$GOOGLE_APPLICATION_CREDENTIALS
 
+# Install gcloud components
+RUN curl -sSL https://sdk.cloud.google.com > /tmp/gcl && bash /tmp/gcl --install-dir=/usr/gcloud --disable-prompts
 
-
-
+# Configure gcloud
+ENV PATH $PATH:/usr/gcloud/google-cloud-sdk/bin
+RUN gcloud auth activate-service-account --key-file=$GCS_AUTH_FILE
