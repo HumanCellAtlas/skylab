@@ -2,7 +2,7 @@ task CollectMultipleMetrics {
   File aligned_bam
   File ref_genome_fasta
   String output_filename
-  
+  Int disk_size 
   command {
     java -Xmx6g -jar /usr/picard/picard.jar CollectMultipleMetrics \
       VALIDATION_STRINGENCY=SILENT \
@@ -25,7 +25,8 @@ task CollectMultipleMetrics {
   runtime {
     docker:"quay.io/humancellatlas/secondary-analysis-picard:2.10.10-7ab16db"
     memory:"7.5 GB"
-    disks: "local-disk 50 HDD"
+    disks: "local-disk " + disk_size + " HDD"
+    preemptible: 5
   }
   output {
     File alignment_summary_metrics = "${output_filename}.alignment_summary_metrics.txt"
@@ -54,7 +55,9 @@ task CollectRnaMetrics {
   File rrna_interval
   String output_filename
   String stranded
+  Int disk_size
   command{
+    set -e
     java -Xmx3g -jar /usr/picard/picard.jar CollectRnaSeqMetrics \
       VALIDATION_STRINGENCY=SILENT \
       METRIC_ACCUMULATION_LEVEL=ALL_READS \
@@ -64,24 +67,27 @@ task CollectRnaMetrics {
       RIBOSOMAL_INTERVALS="${rrna_interval}" \
       STRAND_SPECIFICITY=${stranded} \
       CHART_OUTPUT="${output_filename}.rna.coverage.pdf"
+    touch "${output_filename}.rna.coverage.pdf"
   }
   runtime {
     docker:"quay.io/humancellatlas/secondary-analysis-picard:2.10.10-7ab16db"
     memory:"3.75 GB"
-    disks: "local-disk 10 HDD"
+    disks: "local-disk " + disk_size + " HDD"
+    preemptible: 5
   }
   output {
     File rna_metrics = "${output_filename}.rna_metrics.txt"
-    File rna_coverage = "${output_filename}.rna.coverage.pdf"
+    File rna_coverage_pdf = "${output_filename}.rna.coverage.pdf"
   }
 }
-
+## Here are use  -XX:ParallelGCThreads=2 to run MarkDuplication on mutlple
+## thread. 
 task CollectDuplicationMetrics {
   File aligned_bam
   String output_filename
-
+  Int disk_size
   command {
-    java -Xmx6g -jar /usr/picard/picard.jar  MarkDuplicates \
+    java -Xmx6g -XX:ParallelGCThreads=2  -jar /usr/picard/picard.jar  MarkDuplicates \
        VALIDATION_STRINGENCY=SILENT  \
        INPUT=${aligned_bam} \
        OUTPUT="${output_filename}.MarkDuplicated.bam" \
@@ -92,11 +98,12 @@ task CollectDuplicationMetrics {
   runtime {
     docker: "quay.io/humancellatlas/secondary-analysis-picard:2.10.10-7ab16db"
     memory: "7.5 GB"
-    disks: "local-disk 50 HDD"
+    cpu: "2"
+    disks: "local-disk " + disk_size + " HDD"
+    preemptible: 5
   }
   output {
     File dedup_metrics = "${output_filename}.duplicate_metrics.txt"
-    File dedup_bamfile = "${output_filename}.MarkDuplicated.bam"
   }
 }
 
