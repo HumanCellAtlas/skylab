@@ -50,26 +50,26 @@ workflow Optimus {
     }
   }
 
-  call merge.MergeSortBam {
+  call merge.MergeSortBamFiles {
     input:
       bam_inputs = AlignTagCorrectUmis.bam_outputs
   }
 
   call count.DropSeqToolsDigitalExpression {
     input:
-      bam_input = MergeSortBam.bam_output,
+      bam_input = MergeSortBamFiles.output_bam,
       whitelist = whitelist
   }
 
   call collect.CollectMultipleMetrics {
     input:
-      aligned_bam = MergeSortBam.bam_output,
+      aligned_bam = MergeSortBamFiles.output_bam,
       ref_genome_fasta = ref_genome_fasta,
       output_filename = sample_id
   }
 
   output {
-      File bam = MergeSortBam.bam_output
+      File bam = MergeSortBamFiles.output_bam
       File matrix = DropSeqToolsDigitalExpression.matrix_output
       File matrix_summary = DropSeqToolsDigitalExpression.matrix_summary
       Array[Array[File]] tag_gene_exon_log = AlignTagCorrectUmis.tag_gene_exon_log
