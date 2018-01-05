@@ -4,19 +4,38 @@
 ## -k --secondary to output multiple mapping reads. --keep 10 will output up to 10 multiple mapping reads, which is default in HISAT2
 task HISAT2PE {
   File hisat2_ref
-  File fq1
-  File fq2
+  File fq1  # gz forward fastq file
+  File fq2  # gz reverse fastq file
   String ref_name
   String output_name
   String sample_name
   Int disk_size
   command {
+    # Note that files MUST be gzipped or the module will not function properly
+    # This will be addressed in the future either by a change in how Hisat2 functions or a more
+    # robust test for compression type.
+
     set -e
-    tar -zxvf "${hisat2_ref}"
+
+    # fix names if necessary.
+    if [ "${fq1}" != *.fastq.gz ]; then
+        FQ1=${fq1}.fastq.gz
+        mv ${fq1} ${fq1}.fastq.gz
+    else
+        FQ1=${fq1}
+    fi
+    if [ "${fq2}" != *.fastq.gz ]; then
+        FQ2=${fq2}.fastq.gz
+        mv ${fq2} ${fq2}.fastq.gz
+    else
+        FQ2=${fq2}
+    fi
+
+   tar -zxvf "${hisat2_ref}"
     hisat2 -t \
       -x ${ref_name}/${ref_name} \
-      -1 ${fq1} \
-      -2 ${fq2} \
+      -1 $FQ1 \
+      -2 $FQ2 \
       --rg-id=${sample_name} --rg SM:${sample_name} --rg LB:${sample_name} \
       --rg PL:ILLUMINA --rg PU:${sample_name} \
       --new-summary --summary-file ${output_name}.log \
@@ -58,11 +77,27 @@ task HISAT2rsem {
   Int disk_size
   command {
     set -e
-    tar -zxvf "${hisat2_ref}" 
+
+    # fix names if necessary.
+    if [ "${fq1}" != *.fastq.gz ]; then
+        FQ1=${fq1}.fastq.gz
+        mv ${fq1} ${fq1}.fastq.gz
+    else
+        FQ1=${fq1}
+    fi
+
+    if [ "${fq2}" != *.fastq.gz ]; then
+        FQ2=${fq2}.fastq.gz
+        mv ${fq2} ${fq2}.fastq.gz
+    else
+        FQ2=${fq2}
+    fi
+
+    tar -zxvf "${hisat2_ref}"
     hisat2 -t \
       -x ${ref_name}/${ref_name} \
-      -1 ${fq1} \
-      -2 ${fq2} \
+      -1 $FQ1 \
+      -2 $FQ2 \
       --rg-id=${sample_name} --rg SM:${sample_name} --rg LB:${sample_name} \
       --rg PL:ILLUMINA --rg PU:${sample_name} \
       --new-summary --summary-file ${output_name}.log \
