@@ -39,7 +39,7 @@ workflow SmartSeq2SingleCell {
       hisat2_ref = hisat2_ref_index,
       hisat2_ref_name = hisat2_ref_name,
       sample_name = sample_name,
-      output_prefix = output_name
+      output_prefix = output_name + "_qc"
       
   }
 
@@ -50,7 +50,7 @@ workflow SmartSeq2SingleCell {
       hisat2_ref_trans = hisat2_ref_trans_index,
       hisat2_ref_trans_name = hisat2_ref_trans_name,
       rsem_genome = rsem_ref_index,
-      output_prefix = output_name,
+      output_prefix = output_name + "_rsem",
       sample_name = sample_name
   }
 
