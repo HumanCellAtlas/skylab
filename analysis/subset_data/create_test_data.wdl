@@ -134,7 +134,7 @@ task SplitBam {
     java -Xmx3g -jar /root/picard.jar SplitBamByTags \
     T=${sep=" T=" barcode_tags_to_split_by} \
     Q=${sep=" Q=" quality_tags_to_split_by} \
-    ${separator}${default="" sep=" S=" separators_to_split_by} \ # Default separator is ""
+    ${separator}${default="" sep=" S=" separators_to_split_by} \ 
     I=${subset_bam} \
     O=split
   }
