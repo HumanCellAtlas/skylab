@@ -5,4 +5,9 @@ jobs:
             - image: circleci/python:3.6.1
         steps:
             - checkout
-            - run: echo "hello world"
+            - run:
+                command: |
+                    python3 -m venv venv
+                    . venv/bin/activate
+                    pip install requests
+                    python test/run_portability_test.py --test-directories test/smartseq2_single_sample/pr/ test/optimus/pr
