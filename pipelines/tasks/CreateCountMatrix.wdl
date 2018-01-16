@@ -1,9 +1,8 @@
-# AUTHOR: 
-# Created on 2017/11/22
 
 task DropSeqToolsDigitalExpression {
   File bam_input
   File whitelist
+  Int estimated_required_disk = ceil((size(bam_input, "G") + size(whitelist, "G")) * 4.0) + 1
 
   command {
     DigitalExpression \
@@ -20,8 +19,8 @@ task DropSeqToolsDigitalExpression {
   runtime {
     docker: "humancellatlas/dropseqtools:1.12"
     cpu: 1
-    memory: "3.75 GB"
-    disks: "local-disk 100 HDD"
+    memory: "7.5 GB"
+    disks: "local-disk ${estimated_required_disk} HDD"
   }
   
   output {

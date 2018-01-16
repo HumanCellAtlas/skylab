@@ -1,21 +1,28 @@
 
-task MergeSortBam {
+task MergeSortBamFiles {
   Array[Array[File]] bam_inputs
+  Int disk_size = 500
+  Int compression_level = 5
 
   command {
-    flat_inputs=$(python -c "print '${sep=' ' bam_inputs}'.replace('[', '').replace(']', '')")
-    samtools merge -c -p out.bam $flat_inputs
-    samtools sort -o out_sorted.bam out.bam
+    input_line=$(python -c "print(' INPUT='.join('${sep=' ' bam_inputs}'.replace('[', '').replace(']', '').replace(',', '').split()))")
+
+    echo $input_line
+    java -Dsamjdk.compression_level=${compression_level} -Xms7000m -jar /usr/gitc/picard.jar \
+      MergeSamFiles \
+      USE_THREADING=true \
+      SORT_ORDER=coordinate \
+      INPUT=$input_line \
+      OUTPUT=merged.bam \
   }
-  
+
   runtime {
-    docker: "humancellatlas/samtools:1.3.1"
+    memory: "7.5 GB"
     cpu: 1
-    memory: "3.75 GB"
-    disks: "local-disk 100 HDD"
+    disks: "local-disk ${disk_size} HDD"
+    docker: "us.gcr.io/broad-gotc-prod/genomes-in-the-cloud:2.3.3-1513176735"
   }
-  
   output {
-    File bam_output = "out_sorted.bam"
+    File output_bam = "merged.bam"
   }
 }

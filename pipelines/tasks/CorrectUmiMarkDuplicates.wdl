@@ -1,14 +1,19 @@
 
 task CorrectUmiMarkDuplicates {
   File bam_input
+  # mark duplicates swaps a large amount of data to disk, has high disk requirements.
+  Int estimated_required_disk = ceil(size(bam_input, "G") * 6)
 
   command {
-    java -Xmx3g -jar /usr/picard/picard.jar SortSam \
+    java -Xmx7g -jar /usr/picard/picard.jar SortSam \
       SORT_ORDER=coordinate \
       I=${bam_input} \
       O=sorted.bam
 
-    java -Xmx3g -jar /usr/picard/picard.jar UmiAwareMarkDuplicatesWithMateCigar \
+    # recover disk space
+    rm ${bam_input}
+
+    java -Xmx7g -jar /usr/picard/picard.jar UmiAwareMarkDuplicatesWithMateCigar \
       MAX_EDIT_DISTANCE_TO_JOIN=1 \
       UMI_METRICS_FILE=umi_metrics.txt \
       UMI_TAG_NAME=UR \
@@ -22,8 +27,8 @@ task CorrectUmiMarkDuplicates {
   runtime {
     docker: "humancellatlas/picard:2.10.10"
     cpu: 1
-    memory: "3.75 GB"
-    disks: "local-disk 100 HDD"
+    memory: "7.5 GB"
+    disks: "local-disk ${estimated_required_disk} HDD"
   }
   
   output {

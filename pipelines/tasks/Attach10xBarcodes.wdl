@@ -10,7 +10,7 @@ task Attach10xBarcodes {
   # estimate disk requirements
   Float bam_size = size(u2, "G")
   Float fastq_size = size(r1, "G") + size(i1, "G")
-  Int estimated_required_disk = ceil(fastq_size + bam_size * 2.2)
+  Int estimated_required_disk = ceil(fastq_size + bam_size * 2.5)
 
   command {
     Attach10xBarcodes \
