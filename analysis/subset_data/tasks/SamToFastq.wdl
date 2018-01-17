@@ -16,6 +16,6 @@ task SamToFastq {
     memory: "3 GB"
   }
   output {
-    File fastq = "${output_basename}.fastq"
+    File fastq = "${output_basename}.fastq.gz"
   }
 }
