@@ -1,0 +1,9 @@
+{
+  "ss2_single_sample.wdl": "/working/smartseq2_single_sample/ss2_single_sample.wdl",
+  "ValidateSmartSeq2SingleCell.wdl": "/working/test/smartseq2_single_sample/pr/ValidateSmartSeq2SingleCell.wdl",
+  "hisat2_QC_pipeline.wdl": "/working/smartseq2_single_sample/pipelines/hisat2_QC_pipeline.wdl",
+  "hisat2_rsem_pipeline.wdl": "/working/smartseq2_single_sample/pipelines/hisat2_rsem_pipeline.wdl",
+  "hisat2.wdl": "/working/pipelines/tasks/hisat2.wdl",
+  "picard.wdl": "/working/pipelines/tasks/picard.wdl",
+  "rsem.wdl": "/working/pipelines/tasks/rsem.wdl"
+}
