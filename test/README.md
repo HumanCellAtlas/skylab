@@ -1,4 +1,4 @@
-**Scientific and PR testing infrastructure to Skylab.**
+**Scientific and PR testing infrastructure in Skylab.**
 
 Both tests share the same infrastructure, and follow the portability spec; the WDLs in this PR represent a cromwell test case for the [portability test](https://docs.google.com/document/d/1ghLoHMbKOPsndA1WgdSAHm5X82p86ryLBiAt1hz6HuI/edit); they are just missing a docker environment to run the WDLs in. 
 
@@ -10,8 +10,8 @@ The scientific test is designed to answer the question: "Is the pipeline perform
 All files added in this PR are contained within the test directory. 
 - `tests/trigger_test.sh` triggers tests to run within the `humancellatlas/cromwell-tools` docker. This is the test called by Jenkins, and it takes parameters: inputs, wdl, and dependencies. It is designed to trigger tests in the form of WDL workflows. 
 - `tests/test_cromwell_workflow.sh` is called by `tests/trigger_test.sh` within the cromwell-tools docker. It calls the provided wdl, waits for it to finish, and checks it's success state. 
-- The scientific and PR tests both contain an "infrastructure wdl" which is composed of two parts:
-  - The pipeline workflow, which is imported and run to completion without call caching. 
+- The scientific and PR tests both contain an "infrastructure wdl" which follows the form `test_${PIPELINE_FOLDER_NAME}_PR` and is composed of two parts:
+  - The pipeline workflow, which is imported and run to completion with call caching, which allows the test to run quickly when nothing has changed that would modify the pipeline. 
   - The checker workflow, which, given the outputs of the just-run pipeline, tests them either against the expected outputs (PR) or a range of acceptable outputs (scientific) 
 
 The tests are designed so that any failure results in `exit 1` within the workflow, after the reason is logged to stderr. If a workflow fails due to a result not matching expectations, the result will be logged in the stderr produced by the checker task. If a workflow fails due to not running properly, the user will need to go find the part of the workflow that failed. The jenkins job and cromwell backend will both log the workflow ID so that it is easy to go back and find the failed workflow. 
@@ -28,9 +28,10 @@ More complex tests may require different inputs, but the expected values should 
 The jenkins job executes as follows: 
 ```bash
 VAULT_TOKEN=$(cat /etc/vault-token-dsde)
-INPUTS_JSON="https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/test/optimus/pr/test_inputs.json"
-WDL_FILE="/working/test/optimus/pr/TestOptimusPR.wdl"
-DEPENDENCIES_JSON="/working/test/optimus/pr/dependencies.json"
+PIPELINE_FOLDER_NAME=<optimus|smartseq2_single_sample>
+INPUTS_JSON="https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/test/${PIPELINE_FOLDER_NAME}/pr/test_inputs.json"
+WDL_FILE="/working/test/${PIPELINE_FOLDER_NAME}/pr/Test${PIPELINE_FOLDER_NAME}_PR.wdl"
+DEPENDENCIES_JSON="/working/test/${PIPELINE_FOLDER_NAME}/pr/dependencies.json"
 bash ./test/trigger_test.sh $VAULT_TOKEN $INPUTS_JSON $WDL_FILE $DEPENDENCIES_JSON
 ```
 
