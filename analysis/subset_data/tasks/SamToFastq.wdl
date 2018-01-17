@@ -7,7 +7,7 @@ task SamToFastq {
   command {
     java -Xms2g -jar /root/picard.jar SamToFastq \
     I=${input_bam} \
-    F=${output_basename}.fastq
+    F=${output_basename}.fastq.gz
   }
   runtime {
     docker: "jsotobroad/gold_data:1.0"
