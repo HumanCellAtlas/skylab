@@ -1,8 +1,0 @@
-{
-  "test_hisat2.output_name": "SRR1295364_gencode",
-  "test_hisat2.sample_name":"SRR1295364",
-  "test_hisat2.ref_name" : "gencode_v27_trans",
-  "test_hisat2.hisat2_ref": "gs://broad-dsde-mint-dev-teststorage/reference/HISAT2/gencode_v27_trans.tar.gz",
-  "test_hisat2.fq1": "gs://broad-dsde-mint-dev-teststorage/patel_ap/SRR1295364_1.fastq.gz",
-  "test_hisat2.fq2": "gs://broad-dsde-mint-dev-teststorage/patel_ap/SRR1295364_2.fastq.gz"
-}
