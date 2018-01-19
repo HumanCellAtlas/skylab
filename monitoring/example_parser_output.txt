@@ -1,5 +1,0 @@
-file monitoring/example_monitoring.log
-max memory usage (MB): 126
-available memory (MB): 1700
-max disk usage (KB): 23048
-available disk space (KB): 10190136
