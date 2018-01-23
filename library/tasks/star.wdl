@@ -30,7 +30,7 @@ task StarPE {
   runtime {
     docker:"quay.io/humancellatlas/secondary-analysis-star:2.5.3a-1.0.0"
     memory: "40 GB"
-    disks :"local-disk 100 HDD"
+    disks :"local-disk 200 HDD"
     cpu: "8"
   }
   output {

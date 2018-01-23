@@ -11,6 +11,6 @@
   "run_pipelines.gene_ref_flat": "gs://broad-dsde-mint-dev-teststorage/reference/GRCh38_gencode.v27.refFlat.txt",
   "run_pipelines.hisat2_ref_name": "genome_snp_tran",
   "run_pipelines.stranded":"NONE",
-  "run_pipelines.sra_dir":"gs://broad-dsde-mint-dev-teststorage/patel_ap",
-  "run_pipelines.sample_info": "gs://broad-dsde-mint-dev-teststorage/patel_ap/SRR_Acc_List_1_10.txt"
+  "run_pipelines.sra_dir":"gs://broad-dsde-mint-dev-teststorage/sloan_sa_astrocytes",
+  "run_pipelines.sample_info": "gs://broad-dsde-mint-dev-teststorage/sloan_sa_astrocytes/SRR_Acc_List_sloan_sa.txt"
 }

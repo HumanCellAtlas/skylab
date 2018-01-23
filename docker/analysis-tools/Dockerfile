@@ -85,3 +85,12 @@ RUN curl -sSL https://sdk.cloud.google.com > /tmp/gcl && bash /tmp/gcl --install
 # Configure gcloud
 ENV PATH $PATH:/usr/gcloud/google-cloud-sdk/bin
 RUN gcloud auth activate-service-account --key-file=$GCS_AUTH_FILE
+# add cromwell json
+ADD broad-dsde-mint-cromwell.json /usr/secrets/broad-dsde-mint-cromwell.json 
+
+RUN wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.8.2-1/sratoolkit.2.8.2-1-ubuntu64.tar.gz \
+	&& tar -zxvf sratoolkit.2.8.2-1-ubuntu64.tar.gz \
+	&& cp -r  sratoolkit.2.8.2-1-ubuntu64/ /usr/local/
+ENV PATH /usr/local/sratoolkit.2.8.2-1-ubuntu64/bin:$PATH
+
+RUN pip3 install ipython
