@@ -1,4 +1,4 @@
-FROM ubuntu:zesty
+FROM ubuntu:16.04
 
 LABEL maintainer="Ambrose J. Carr <acarr@broadinstitute.org>" \
   software="kallisto" \
