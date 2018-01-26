@@ -1,9 +1,9 @@
-FROM ubuntu:17.04
+FROM ubuntu:16.04
 LABEL maintainer=" Jishu Xu <jishuxu@broadinstitute.org>" \
       software="subread package" \
       version="1.6.0" \
       description="RNA-seq high-performance read alignment, quantification and mutation discovery" \
-      website="http://subread.sourceforge.net/" \
+      website="http://subread.sourceforge.net/"
 
 # Install compiler 
 RUN apt-get update --fix-missing \

@@ -1,9 +1,9 @@
-FROM ubuntu:17.04
+FROM ubuntu:16.04
 LABEL maintainer=" Jishu Xu <jishuxu@broadinstitute.org> " \
       software="rsem" \
       version="1.3.0" \
       description="RNA-seq gene expression quantification tools" \
-      website="https://deweylab.github.io/RSEM/" \
+      website="https://deweylab.github.io/RSEM/"
 
 WORKDIR /usr/local/
 

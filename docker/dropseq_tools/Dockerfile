@@ -1,4 +1,4 @@
-FROM java:openjdk-8-jre
+FROM openjdk:8-jre
 
 LABEL maintainer="Ambrose J. Carr <acarr@broadinstitute.org>" \
   software="dropseqtools" \

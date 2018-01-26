@@ -1,4 +1,4 @@
-FROM ubuntu:17.04
+FROM ubuntu:16.04
 LABEL MAINTAINER="Jishu Xu <jishuxu@broadinstitute.org>"
 LABEL software="HISAT2"
 LABEL version="2-2.1.0"
