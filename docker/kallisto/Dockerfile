@@ -10,7 +10,10 @@ RUN apt update && apt install -y \
   g++ \
   cmake \
   curl \
-  libhdf5-dev \
+  libhdf5-dev
+
+# Install samtools dependencies
+RUN apt install -y \
   libncurses5-dev \
   openssl \
   liblzma-dev \

@@ -28,7 +28,6 @@ RUN apt-get update --fix-missing && \
   r-base \
   r-base-core \
   r-base-dev \
-  libncurses5-dev \
   bowtie \
   bowtie2 
 
@@ -47,4 +46,3 @@ RUN git checkout v1.3.0
 RUN make 
 RUN make ebseq
 ENV PATH /usr/local/RSEM:$PATH
-

@@ -8,7 +8,8 @@ RUN mkdir build
 WORKDIR build 
 # install additional python packages
 #Install wget, unzip
-RUN apt update && apt install -y liblzma-dev \
+RUN apt update && apt install -y \
+  liblzma-dev \
   libbz2-dev \
   cmake automake \
   curl \

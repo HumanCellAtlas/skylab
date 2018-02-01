@@ -10,7 +10,10 @@ RUN apt update && apt install -y \
   g++ \
   cmake \
   curl \
-  git \
+  git
+
+# Install samtools dependencies
+RUN apt install -y \
   libncurses5-dev \
   openssl \
   liblzma-dev \
@@ -26,7 +29,6 @@ RUN git clone https://github.com/alexdobin/STAR.git && \
   cp ./LICENSE .. && \
   cd .. && \
   rm -rf STAR
-
 
 # Install samtools
 WORKDIR /usr/local/samtools

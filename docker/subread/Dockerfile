@@ -6,8 +6,7 @@ LABEL maintainer=" Jishu Xu <jishuxu@broadinstitute.org>" \
       website="http://subread.sourceforge.net/"
 
 # Install compiler 
-RUN apt-get update --fix-missing \
-  && apt-get install -y \
+RUN apt-get update --fix-missing && apt-get install -y \
   build-essential \
   gcc-multilib \
   apt-utils \
@@ -21,9 +20,7 @@ RUN apt-get update --fix-missing \
   libncurses5-dev \
   r-base \
   r-base-core \
-  r-base-dev \
-  libncurses5-dev
-        
+  r-base-dev
       
 # Install subread 
 WORKDIR /usr/local/ 
@@ -35,4 +32,3 @@ RUN make -f Makefile.Linux
 ENV PATH /usr/local/subread-${VERSION}-source/bin/:$PATH
 # Cleanup
 RUN apt-get clean
-
