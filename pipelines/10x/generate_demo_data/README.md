@@ -18,8 +18,8 @@ cd skylab/10x/generate_reference_bundle
 
 # Requirements
 ## Dockers
-- STAR v2_5_3a docker: `humancellatlas/star:2.5.3a`
-- python 3 scientific docker: `humancellatlas/python3-scientific:0.1.0`
+- STAR v2_5_3a docker: `quay.io/humancellatlas/secondary-analysis-star:v0.2.2-2.5.3a-1.0.0`
+- python 3 scientific docker: `quay.io/humancellatlas/secondary-analysis-python3-scientific:0.1.5`
 
 ## File Inputs
 - `fastq_r1`: fastq read 1 for a 10x experiment

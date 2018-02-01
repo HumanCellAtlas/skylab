@@ -29,7 +29,7 @@ task StarAlignSubset {
     File output_bam = "Aligned.out.bam"
   }
   runtime {
-    docker: "humancellatlas/star:2.5.3a"
+    docker: "quay.io/humancellatlas/secondary-analysis-star:v0.2.2-2.5.3a-1.0.0"
     memory: "8 GB"  # not used locally
     disks: "local-disk 220 HDD"  # 80G fastq, 32G reference bundle, 80G bam, 15% overflow (30G)
   }
@@ -61,7 +61,7 @@ task ExtractIndicesSpecificChromosomeAlignments {
     File output_indices_json = "indices.json"
   }
   runtime {
-    docker: "humancellatlas/python3-scientific:0.1.0"
+    docker: "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.1.5"
     memory: "2 GB"
     disks: "local-disk 220 HDD"
   }
@@ -109,7 +109,7 @@ task SubsetFastqFromIndices {
     CODE
   >>>
   runtime {
-    docker: "humancellatlas/python3-scientific:0.1.0"
+    docker: "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.1.5"
     memory: "2 GB"
     disks: "local-disk 220 HDD"
   }

@@ -10,7 +10,7 @@ task BuildHISAT2reference{
     tar -zcvf "${ref_name}.tar.gz" "${ref_name}"
   }
   runtime {
-    docker:"humancellatlas/hisat2:2-2.1.0"
+    docker:"quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
     memory: "240 GB"
     disks: "local-disk 100 HDD"
     cpu: "16"

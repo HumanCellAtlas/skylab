@@ -29,7 +29,7 @@ task RsemExpression {
       "${rsem_out}" 
   }
   runtime {
-    docker: "quay.io/humancellatlas/secondary-analysis-rsem:1.3.0"
+    docker: "quay.io/humancellatlas/secondary-analysis-rsem:v0.2.2-1.3.0"
     memory: "3.75 GB"
     disks: "local-disk " + disk_size + " HDD"
     cpu: "4"

@@ -20,7 +20,7 @@ task FastqToUBam {
   }
   
   runtime {
-    docker: "humancellatlas/picard:2.10.10"
+    docker: "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
     cpu: 1
     memory: "2.5 GB"
     disks: "local-disk ${estimated_disk_required} HDD"

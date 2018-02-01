@@ -4,7 +4,7 @@ task StarMkref {
   File annotation_file  # gtf annotation file
 
   # optionally, use a different version of star
-  String star_docker_image = "humancellatlas/star:2.5.3a-40ead6e"
+  String star_docker_image = "quay.io/humancellatlas/secondary-analysis-star:v0.2.2-2.5.3a-40ead6e"
   
   command {
     mkdir genome

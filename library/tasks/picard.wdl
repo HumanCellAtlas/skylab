@@ -23,7 +23,7 @@ task CollectMultipleMetrics {
       ASSUME_SORTED=true
   }
   runtime {
-    docker:"quay.io/humancellatlas/secondary-analysis-picard:2.10.10-7ab16db"
+    docker:"quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
     memory:"7.5 GB"
     disks: "local-disk " + disk_size + " HDD"
     preemptible: 5
@@ -70,7 +70,7 @@ task CollectRnaMetrics {
     touch "${output_filename}.rna.coverage.pdf"
   }
   runtime {
-    docker:"quay.io/humancellatlas/secondary-analysis-picard:2.10.10-7ab16db"
+    docker:"quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
     memory:"3.75 GB"
     disks: "local-disk " + disk_size + " HDD"
     preemptible: 5
@@ -96,7 +96,7 @@ task CollectDuplicationMetrics {
        REMOVE_DUPLICATES=false
   }
   runtime {
-    docker: "quay.io/humancellatlas/secondary-analysis-picard:2.10.10-7ab16db"
+    docker: "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
     memory: "7.5 GB"
     cpu: "2"
     disks: "local-disk " + disk_size + " HDD"

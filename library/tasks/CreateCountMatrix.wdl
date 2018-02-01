@@ -17,7 +17,7 @@ task DropSeqToolsDigitalExpression {
   }
   
   runtime {
-    docker: "humancellatlas/dropseqtools:1.12"
+    docker: "quay.io/humancellatlas/secondary-analysis-dropseqtools:v0.2.2-1.12"
     cpu: 1
     memory: "7.5 GB"
     disks: "local-disk ${estimated_required_disk} HDD"

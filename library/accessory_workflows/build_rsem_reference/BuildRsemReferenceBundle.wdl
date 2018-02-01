@@ -8,7 +8,7 @@ task BuildRsemReference {
     tar -cvf ${ref_name}.tar rsem/
   }
   runtime {
-    docker: "humancellatlas/rsem:v1.3.0"
+    docker: "quay.io/humancellatlas/secondary-analysis-rsem:v0.2.2-1.3.0"
     memory: "10 GB"
     disks: "local-disk 100 HDD"
   }

@@ -33,7 +33,7 @@ task ValidateSmartSeq2SingleCell {
   >>>
   
   runtime {
-    docker: "ubuntu:zesty"
+    docker: "ubuntu:16.04"
     cpu: 1
     memory: "3.75 GB"
     disks: "local-disk 10 HDD"

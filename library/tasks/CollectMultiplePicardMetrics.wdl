@@ -19,7 +19,7 @@ task CollectMultipleMetrics {
       tar -czvf "${output_filename}.tar.gz" "${output_filename}"*
   }
   runtime {
-    docker:"humancellatlas/picard:2.10.10"
+    docker:"quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
     memory:"3.75 GB"
     disks: "local-disk ${estimated_required_disks} HDD"
   }
