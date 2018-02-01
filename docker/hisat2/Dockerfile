@@ -1,4 +1,4 @@
-FROM ubuntu:17.04
+FROM ubuntu:16.04
 LABEL MAINTAINER="Jishu Xu <jishuxu@broadinstitute.org>"
 LABEL software="HISAT2"
 LABEL version="2-2.1.0"
@@ -17,6 +17,7 @@ RUN \
   automake \
   curl \
   libboost-all-dev \
+  libcurl4-openssl-dev \
   wget \
   build-essential \	
   gcc-multilib \
@@ -24,7 +25,6 @@ RUN \
   libxml2-dev \
   libncurses5-dev \
   zip unzip \
-  samtools \
   git \
   r-base \
   r-base-core \
@@ -40,6 +40,17 @@ RUN \
 COPY  ./make_grch38_snp_tran_*.sh hisat2-2.1.0/
 # set ENV PATH, run hisat2 by type 'HISAT2' from cmd
 ENV PATH="/opt/tools/hisat2-2.1.0:${PATH}"
+
+# Install samtools
+WORKDIR /usr/local/samtools
+ADD https://github.com/samtools/samtools/releases/download/1.6/samtools-1.6.tar.bz2 .
+
+RUN tar -xvf samtools-1.6.tar.bz2 && \
+    rm samtools-1.6.tar.bz2 && \
+    cd samtools-1.6 && \
+    ./configure --prefix=/usr && \
+    make && \
+    make install
 
 # gffread is gtf/gtt tools 
 WORKDIR /opt/tools/gffread

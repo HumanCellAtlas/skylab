@@ -47,7 +47,7 @@ task HISAT2PE {
     samtools sort -@ 4 -O bam -o "${output_name}.bam" "${output_name}.sam" 
   }
   runtime {
-    docker:"quay.io/humancellatlas/secondary-analysis-hisat2:2-2.1.0"
+    docker:"quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
     memory:"5 GB"
     disks: "local-disk " + disk_size + " HDD"
     cpu: "4"
@@ -118,7 +118,7 @@ task HISAT2rsem {
     samtools view -bS  "${output_name}.sam" > "${output_name}.bam"
   }
   runtime {
-    docker:"quay.io/humancellatlas/secondary-analysis-hisat2:2-2.1.0"
+    docker:"quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
     memory:"5 GB"
     disks: "local-disk " + disk_size + " HDD"
     cpu: "4"
@@ -153,7 +153,7 @@ task HISAT2SE {
     samtools sort -@ 4 -O bam -o "${output_name}.bam" "${output_name}.sam"
   }
   runtime {
-    docker:"quay.io/humancellatlas/secondary-analysis-hisat2:2-2.1.0"
+    docker:"quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
     memory:"5 GB"
     disks: "local-disk " + disk_size + " HDD"
     cpu: "4"
@@ -177,7 +177,7 @@ task hisat2_inspect_index {
        -s ${ref_name}/${ref_name} > hisat2_inspect.log
     }
   runtime {
-    docker:"quay.io/humancellatlas/secondary-analysis-hisat2:2-2.1.0"
+    docker:"quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
     memory:"3 GB"
     disks: "local-disk " + disk_size + " HDD"
     cpu: "1"

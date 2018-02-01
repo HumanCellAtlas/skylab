@@ -25,7 +25,7 @@ task StarAlignFastqSingleEnd {
   }
 
   runtime {
-    docker: "humancellatlas/star:2.5.3a-40ead6e"
+    docker: "quay.io/humancellatlas/secondary-analysis-star:v0.2.2-2.5.3a-40ead6e"
     cpu: 16
     memory: "30 GB"
     disks: "local-disk ${estimated_disk_required} SSD"

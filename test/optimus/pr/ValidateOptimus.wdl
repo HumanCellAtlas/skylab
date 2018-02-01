@@ -55,7 +55,7 @@ task ValidateOptimus {
   >>>
   
   runtime {
-    docker: "humancellatlas/samtools:1.3.1"
+    docker: "quay.io/humancellatlas/secondary-analysis-samtools:v0.2.2-1.6"
     cpu: 1
     memory: "3.75 GB"
     disks: "local-disk ${required_disk} HDD"

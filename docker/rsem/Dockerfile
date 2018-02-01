@@ -1,9 +1,9 @@
-FROM ubuntu:17.04
+FROM ubuntu:16.04
 LABEL maintainer=" Jishu Xu <jishuxu@broadinstitute.org> " \
       software="rsem" \
       version="1.3.0" \
       description="RNA-seq gene expression quantification tools" \
-      website="https://deweylab.github.io/RSEM/" \
+      website="https://deweylab.github.io/RSEM/"
 
 WORKDIR /usr/local/
 
@@ -28,7 +28,6 @@ RUN apt-get update --fix-missing && \
   r-base \
   r-base-core \
   r-base-dev \
-  libncurses5-dev \
   bowtie \
   bowtie2 
 
@@ -47,4 +46,3 @@ RUN git checkout v1.3.0
 RUN make 
 RUN make ebseq
 ENV PATH /usr/local/RSEM:$PATH
-

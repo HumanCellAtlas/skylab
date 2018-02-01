@@ -13,7 +13,7 @@ task htseq_count {
       > "${output_filename}.${featuretype}.htseq.count.txt"
   }
   runtime {
-    docker:"quay.io/humancellatlas/secondary-analysis-python3-scientific:0.1.1"
+    docker:"quay.io/humancellatlas/secondary-analysis-python3-scientific:0.1.5"
     memory: "7.5 GB"
     disks: "local-disk 100 HDD"
     cpu: "2"

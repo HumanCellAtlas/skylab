@@ -1,4 +1,4 @@
-FROM ubuntu:zesty
+FROM ubuntu:16.04
 
 LABEL maintainer="Ambrose J. Carr <acarr@broadinstitute.org>" \
   software="STAR" \
@@ -7,8 +7,20 @@ LABEL maintainer="Ambrose J. Carr <acarr@broadinstitute.org>" \
   website="https://github.com/alexdobin/STAR"
 
 RUN apt update && apt install -y \
-  git \
-  samtools
+  g++ \
+  cmake \
+  curl \
+  git
+
+# Install samtools dependencies
+RUN apt install -y \
+  libncurses5-dev \
+  openssl \
+  liblzma-dev \
+  libbz2-dev \
+  bzip2 \
+  libcurl4-openssl-dev \
+  libssl-dev
 
 RUN git clone https://github.com/alexdobin/STAR.git && \
   cd STAR && \
@@ -17,3 +29,14 @@ RUN git clone https://github.com/alexdobin/STAR.git && \
   cp ./LICENSE .. && \
   cd .. && \
   rm -rf STAR
+
+# Install samtools
+WORKDIR /usr/local/samtools
+ADD https://github.com/samtools/samtools/releases/download/1.6/samtools-1.6.tar.bz2 .
+
+RUN tar -xvf samtools-1.6.tar.bz2 && \
+    rm samtools-1.6.tar.bz2 && \
+    cd samtools-1.6 && \
+    ./configure --prefix=/usr && \
+    make && \
+    make install

@@ -71,10 +71,10 @@ RUN Rscript -e "install.packages('ggplot2')"
 RUN Rscript -e "install.packages('googleCloudStorageR')"
 
 # Mount Google Cloud secret key
-ADD broad-dsde-mint-dev-testR.json /usr/secrets/broad-dsde-mint-dev-testR.json
+ADD broad-dsde-mint-dev-analysis-tools.json /usr/secrets/broad-dsde-mint-dev-analysis-tools.json
 
 # Set the environment variable for Python
-ENV GOOGLE_APPLICATION_CREDENTIALS=/usr/secrets/broad-dsde-mint-dev-testR.json
+ENV GOOGLE_APPLICATION_CREDENTIALS=/usr/secrets/broad-dsde-mint-dev-analysis-tools.json
 
 # Set the environment variable for R
 ENV GCS_AUTH_FILE=$GOOGLE_APPLICATION_CREDENTIALS
@@ -85,3 +85,13 @@ RUN curl -sSL https://sdk.cloud.google.com > /tmp/gcl && bash /tmp/gcl --install
 # Configure gcloud
 ENV PATH $PATH:/usr/gcloud/google-cloud-sdk/bin
 RUN gcloud auth activate-service-account --key-file=$GCS_AUTH_FILE
+
+# Add Cromwell Credentials
+ADD broad-dsde-mint-dev-cromwell.json /usr/secrets/broad-dsde-mint-dev-cromwell.json
+
+RUN wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.8.2-1/sratoolkit.2.8.2-1-ubuntu64.tar.gz \
+	&& tar -zxvf sratoolkit.2.8.2-1-ubuntu64.tar.gz \
+	&& cp -r  sratoolkit.2.8.2-1-ubuntu64/ /usr/local/
+ENV PATH /usr/local/sratoolkit.2.8.2-1-ubuntu64/bin:$PATH
+
+RUN pip3 install ipython

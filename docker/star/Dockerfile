@@ -1,4 +1,4 @@
-FROM ubuntu:17.04
+FROM ubuntu:16.04
 LABEL maintainer=" Jishu Xu <jishuxu@broadinstitute.org> "\
       software="STAR" \
       version="2.5.3a" \
@@ -8,7 +8,8 @@ RUN mkdir build
 WORKDIR build 
 # install additional python packages
 #Install wget, unzip
-RUN apt update && apt install -y liblzma-dev \
+RUN apt update && apt install -y \
+  liblzma-dev \
   libbz2-dev \
   cmake automake \
   curl \
