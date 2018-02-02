@@ -1,10 +1,11 @@
-import "hisat2.wdl" as hisat2
-import "picard.wdl" as picard
+import "Hisat2.wdl" as Hisat2WDL
+import "Picard.wdl" as PicardWDL
+
 ## QC pipeline
 ## HISAT2 as aligner to align reads to genome reference
 ## output: genome reference aligned bam file 
 ## Picard will produce a set of QC metricss
-## output: a set of metrics files. 
+## output: a set of metrics files.
 workflow RunHisat2Pipeline {
   File fastq_read1
   File fastq_read2
@@ -25,7 +26,7 @@ workflow RunHisat2Pipeline {
   Int? increase_disk_size
   Int additional_disk = select_first([increase_disk_size, 10])
  
-  call hisat2.HISAT2PE as Hisat2 {
+  call Hisat2WDL.Hisat2PE as Hisat2 {
     input:
       hisat2_ref = hisat2_ref,
       fq1 = fastq_read1,
@@ -38,14 +39,15 @@ workflow RunHisat2Pipeline {
   
   Float bam_size = size(Hisat2.output_bam, "GB")
   
-  call picard.CollectMultipleMetrics {
+  call PicardWDL.CollectMultipleMetrics {
     input:
       aligned_bam = Hisat2.output_bam,
       ref_genome_fasta = ref_fasta,
       output_filename = output_prefix,
       disk_size = ceil(bam_size + reference_bundle_size + additional_disk)
   }
-  call picard.CollectRnaMetrics {
+
+  call PicardWDL.CollectRnaMetrics {
     input:
       aligned_bam = Hisat2.output_bam,
       ref_flat = ref_flat,
@@ -54,7 +56,8 @@ workflow RunHisat2Pipeline {
       stranded = stranded,
       disk_size = ceil(bam_size + reference_bundle_size + additional_disk)
   }
-  call picard.CollectDuplicationMetrics {
+
+  call PicardWDL.CollectDuplicationMetrics {
     input:
       aligned_bam = Hisat2.output_bam,
       output_filename = output_prefix,
