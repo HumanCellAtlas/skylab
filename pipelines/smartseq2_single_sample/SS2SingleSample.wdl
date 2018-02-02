@@ -26,7 +26,7 @@
 
 ##### Runtime Attributes ######
 ## ** This will change quite a bit i believe when the new spec of WDL comes out (WDL SPEC 3) but we should define all values we care about
-	## ** even if they are the default values.  e.g. write `cpu: 1` instead of leaving it out because its the default.
+## ** even if they are the default values.  e.g. write `cpu: 1` instead of leaving it out because its the default.
 
 ##### Comment Rules ######
 ## **  Should comments have one or two `##` before a comment.  Maybe two for workflow or task descriptions and one for any other kind of comment?
@@ -68,7 +68,7 @@ workflow SmartSeq2SingleCell {
   File fastq1
   File fastq2
 
-  call RunHisatQCWDL.RunHisat2Pipeline as QC {
+  call RunHisatQCWDL.RunHisat2Pipeline as QC {  ## ** Should callign a subworkflow be aliased some suffix or prefix so its easier to know when we're dealing with a workflow as opposed to a task?
     input:
       fastq_read1 = fastq1,
       fastq_read2 = fastq2, 
@@ -83,6 +83,10 @@ workflow SmartSeq2SingleCell {
       output_prefix = output_name + "_qc"
   }
 
+  ## ** We should also figure out what we want the balance to be between moving stuff to subworkflows or getting rid of
+  ## ** them and moving that functionality up a level.  In this case do we like that QC and DATA are two different workflows
+  ## ** or would we rather move whats in those two wdls into here.  A good question to ask might be "Will we ever run
+  ## ** this subwokflow on its own?" If not, maybe it shouldnt be its own workflow?
   call RunHisatRSEMWDL.RunHisat2RsemPipeline as Data {
     input:
       fastq_read1 = fastq1, 
