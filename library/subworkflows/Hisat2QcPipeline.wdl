@@ -1,7 +1,7 @@
 import "Hisat2.wdl" as Hisat2WDL
 import "Picard.wdl" as PicardWDL
 
-## QC pipeline
+## QC pipeline  ## ** there should still be a `\n` between imports and comments above workflow definitions
 ## HISAT2 as aligner to align reads to genome reference
 ## output: genome reference aligned bam file 
 ## Picard will produce a set of QC metricss
@@ -18,7 +18,7 @@ workflow RunHisat2Pipeline {
   String output_prefix
   String hisat2_ref_name
   String sample_name
-  ## variables to estimate disk size
+  # variables to estimate disk size
   Float hisat2_ref_size = size(hisat2_ref, "GB")
   Float fastq_size = size(fastq_read1, "GB") + size(fastq_read2, "GB")
   Float reference_bundle_size = size(ref_fasta, "GB") + size(ref_flat, "GB") + size(rrna_interval, "GB") + size(gtf, "GB")

@@ -25,8 +25,8 @@ task CollectMultipleMetrics {
   }
 
   runtime {
-    docker:"quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
-    memory:"7.5 GB"
+    docker: "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
+    memory: "7.5 GB"
     disks: "local-disk " + disk_size + " HDD"
     preemptible: 5
   }
@@ -75,8 +75,8 @@ task CollectRnaMetrics {
   }
 
   runtime {
-    docker:"quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
-    memory:"3.75 GB"
+    docker: "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
+    memory: "3.75 GB"
     disks: "local-disk " + disk_size + " HDD"
     preemptible: 5
   }

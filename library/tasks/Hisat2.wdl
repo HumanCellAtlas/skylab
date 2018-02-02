@@ -48,8 +48,8 @@ task Hisat2PE {
   }
 
   runtime {
-    docker:"quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
-    memory:"5 GB"
+    docker: "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
+    memory: "5 GB"
     disks: "local-disk " + disk_size + " HDD"
     cpu: "4"
     preemptible: 5
@@ -122,8 +122,8 @@ task Hisat2Rsem {
   }
 
   runtime {
-    docker:"quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
-    memory:"5 GB"
+    docker: "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
+    memory: "5 GB"
     disks: "local-disk " + disk_size + " HDD"
     cpu: "4"
     preemptible: 5
@@ -160,21 +160,21 @@ task Hisat2SE {
   }
 
   runtime {
-    docker:"quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
-    memory:"5 GB"
+    docker: "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
+    memory: "5 GB"
     disks: "local-disk " + disk_size + " HDD"
     cpu: "4"
     preemptible: 5
   }
 
   output {
-    File logfile ="${output_name}.log"
-    File metfile ="${output_name}.hisat2.met.txt"
+    File logfile = "${output_name}.log"
+    File metfile = "${output_name}.hisat2.met.txt"
     File output_bam = "${output_name}.bam"
   }
  }
 
-## run inspection on hisat2 built reference index
+## run inspection on hisat2 built reference index  ## ** there should be a new line (like here) between end of task definition and descriptions of the next task definition
 task Hisat2InspectIndex {
   File hisat2_ref
   String ref_name
@@ -188,14 +188,14 @@ task Hisat2InspectIndex {
   }
 
   runtime {
-    docker:"quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
-    memory:"3 GB"
+    docker: "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
+    memory: "3 GB"
     disks: "local-disk " + disk_size + " HDD"
     cpu: "1"
     preemptible: 5
   }
 
   output {
-    File logfile ="hisat2_inspect.log"
+    File logfile = "hisat2_inspect.log"
   }
 }

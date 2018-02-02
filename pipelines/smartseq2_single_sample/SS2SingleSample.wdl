@@ -10,17 +10,26 @@
 ## ** New lines between blocks in tasks
 ## ** New line variable declarations that you want to group
 ## ** New line between imports and workflow definition
-## ** No new lines at the start or end of any workflow/call/task definition
+## ** No new lines at the start or end of any workflow/call/task definition block
 ## ** No need for having two new lines anywhere
 ## ** No new lines at the start of any blocks
 
 ##### Spacing Rules #####
 ## ** Space before `{` characters
 ## ** Space after `,` characters
-## ** Space before and after operators e.g. `+`,
+## ** Space before and after operators e.g. `+`, `=`
+## ** Space after `:` character in runtime block
+## ** Space after `#` when creating a comment (or `##` if we decide thats our comment definer)
 
-#### Tab vs Space for Indents #####
-## ** always use spaces? I think whats most frequently used is whenever you want to indent you use 2 spaces but we should decide what works best for us.
+##### Tab vs Space for Indents ######
+## ** Always use spaces? I think whats most frequently used is whenever you want to indent you use 2 spaces but we should decide what works best for us.
+
+##### Runtime Attributes ######
+## ** This will change quite a bit i believe when the new spec of WDL comes out (WDL SPEC 3) but we should define all values we care about
+	## ** even if they are the default values.  e.g. write `cpu: 1` instead of leaving it out because its the default.
+
+##### Comment Rules ######
+## **  Should comments have one or two `##` before a comment.  Maybe two for workflow or task descriptions and one for any other kind of comment?
 
 import "Hisat2QcPipeline.wdl" as RunHisatQCWDL  ## ** Should import alias follow some kind of pattern like ending in "WDL" or something else
 import "Hisat2RsemPipeline.wdl" as RunHisatRSEMWDL
@@ -31,6 +40,8 @@ import "Hisat2RsemPipeline.wdl" as RunHisatRSEMWDL
 ## ** A good example of this can be found in these wdls
 ## ** https://github.com/broadinstitute/dsde-pipelines/blob/develop/genomes_in_the_cloud/single_sample/PairedSingleSampleWf.wdl
 ## ** https://github.com/broadinstitute/gatk/blob/master/scripts/mutect2_wdl/mutect2.wdl
+
+## ** Should comments / descriptions above a task definition be mandatory?
 
 ## main pipeline:
 ## QC track: HISAT2+Picard
@@ -43,7 +54,7 @@ workflow SmartSeq2SingleCell {
   File genome_ref_fasta
   File rrna_intervals
   File gene_ref_flat
-  #load index
+  # load index
   File hisat2_ref_index
   File hisat2_ref_trans_index
   File rsem_ref_index
@@ -84,7 +95,7 @@ workflow SmartSeq2SingleCell {
   }
 
   output {
-    ## qc outputs
+    # qc outputs
     File aligned_bam = QC.aligned_bam
     File alignment_summary_metrics = QC.alignment_summary_metrics
     File bait_bias_detail_metrics = QC.bait_bias_detail_metrics
@@ -107,7 +118,7 @@ workflow SmartSeq2SingleCell {
     File quality_distribution_metrics = QC.quality_distribution_metrics
     File rna_coverage = QC.rna_coverage
     File rna_metrics = QC.rna_metrics
-    ## data outputs
+    # data outputs
     File aligned_trans_bam = Data.aligned_trans_bam
     File hisat2tran_logfile = Data.logfile
     File hisat2tran_metfile = Data.metfile

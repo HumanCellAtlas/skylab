@@ -15,8 +15,8 @@ workflow RunHisat2RsemPipeline {
   String output_prefix
   String hisat2_ref_trans_name
   String sample_name
-  ##variable to estimate disk size
-  ## variables to estimate disk size
+  # variable to estimate disk size
+  # variables to estimate disk size
   Float hisat2_ref_size = size(hisat2_ref_trans, "GB")
   Float fastq_size = size(fastq_read1, "GB") +size(fastq_read2, "GB")
   Float rsem_ref_size = size(rsem_genome, "GB")
