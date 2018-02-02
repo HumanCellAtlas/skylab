@@ -37,7 +37,7 @@ task RsemExpression {
     cpu: "4"
     preemptible: 5
   }
-  
+
   output {
     File rsem_gene = "${rsem_out}.genes.results"
     File rsem_isoform = "${rsem_out}.isoforms.results"

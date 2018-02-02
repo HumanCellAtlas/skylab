@@ -1,4 +1,4 @@
-##### Naming Rules#####
+##### Naming Rules #####
 ## ** Files should be named in CamelCase starting with a capital
 ## ** Tasks should be named in CamelCase starting with a capital
 ## ** Alias' should be named in CamelCase starting with a capital
@@ -6,12 +6,21 @@
 
 ##### New Line Rules #####
 ## ** New line before and after `calls`
+## ** New Line between task definitions
 ## ** New lines between blocks in tasks
 ## ** New line variable declarations that you want to group
 ## ** New line between imports and workflow definition
 ## ** No new lines at the start or end of any workflow/call/task definition
 ## ** No need for having two new lines anywhere
 ## ** No new lines at the start of any blocks
+
+##### Spacing Rules #####
+## ** Space before `{` characters
+## ** Space after `,` characters
+## ** Space before and after operators e.g. `+`,
+
+#### Tab vs Space for Indents #####
+## ** always use spaces? I think whats most frequently used is whenever you want to indent you use 2 spaces but we should decide what works best for us.
 
 import "Hisat2QcPipeline.wdl" as RunHisatQCWDL  ## ** Should import alias follow some kind of pattern like ending in "WDL" or something else
 import "Hisat2RsemPipeline.wdl" as RunHisatRSEMWDL
@@ -61,7 +70,6 @@ workflow SmartSeq2SingleCell {
       hisat2_ref_name = hisat2_ref_name,
       sample_name = sample_name,
       output_prefix = output_name + "_qc"
-      
   }
 
   call RunHisatRSEMWDL.RunHisat2RsemPipeline as Data {

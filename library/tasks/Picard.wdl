@@ -86,6 +86,7 @@ task CollectRnaMetrics {
     File rna_coverage_pdf = "${output_filename}.rna.coverage.pdf"
   }
 }
+
 ## Here are use  -XX:ParallelGCThreads=2 to run MarkDuplication on mutlple
 ## thread. 
 task CollectDuplicationMetrics {
