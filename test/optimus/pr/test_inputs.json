@@ -3,17 +3,17 @@
   "TestOptimusPR.expected_matrix_hash": "69f3be6085e0c5f694b3cfa877b0eeaa",
   "TestOptimusPR.expected_matrix_summary_hash": "dd513351d4e7688c97f7bf902ba2876f",
   "TestOptimusPR.expected_picard_metrics_hash": "7b7be5c9a2236920ca09f05811dca6d5",
-  "TestOptimusPR.fastq_inputs": [
-    [
-      "gs://broad-dsde-mint-dev-teststorage/10x/demo/fastqs/pbmc8k_S1_L007_R1_001.fastq.gz",
-      "gs://broad-dsde-mint-dev-teststorage/10x/demo/fastqs/pbmc8k_S1_L007_R2_001.fastq.gz",
-      "gs://broad-dsde-mint-dev-teststorage/10x/demo/fastqs/pbmc8k_S1_L007_I1_001.fastq.gz"
-    ],
-    [
-      "gs://broad-dsde-mint-dev-teststorage/10x/demo/fastqs/pbmc8k_S1_L007_R1_001.fastq.gz",
-      "gs://broad-dsde-mint-dev-teststorage/10x/demo/fastqs/pbmc8k_S1_L007_R2_001.fastq.gz",
-      "gs://broad-dsde-mint-dev-teststorage/10x/demo/fastqs/pbmc8k_S1_L007_I1_001.fastq.gz"
-    ]
+  "TestOptimusPR.r1": [
+    "gs://broad-dsde-mint-dev-teststorage/10x/demo/fastqs/pbmc8k_S1_L007_R1_001.fastq.gz",
+    "gs://broad-dsde-mint-dev-teststorage/10x/demo/fastqs/pbmc8k_S1_L007_R1_001.fastq.gz"
+  ],
+  "TestOptimusPR.r2": [
+    "gs://broad-dsde-mint-dev-teststorage/10x/demo/fastqs/pbmc8k_S1_L007_R2_001.fastq.gz",
+    "gs://broad-dsde-mint-dev-teststorage/10x/demo/fastqs/pbmc8k_S1_L007_R2_001.fastq.gz"
+  ],
+  "TestOptimusPR.i1": [
+    "gs://broad-dsde-mint-dev-teststorage/10x/demo/fastqs/pbmc8k_S1_L007_I1_001.fastq.gz",
+    "gs://broad-dsde-mint-dev-teststorage/10x/demo/fastqs/pbmc8k_S1_L007_I1_001.fastq.gz"
   ],
   "TestOptimusPR.whitelist": "gs://broad-dsde-mint-dev-teststorage/10x/whitelist/737K-august-2016.txt",
   "TestOptimusPR.tar_star_reference": "gs://broad-dsde-mint-dev-teststorage/demo/star.tar",

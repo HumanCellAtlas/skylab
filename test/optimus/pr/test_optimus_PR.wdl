@@ -13,7 +13,10 @@ workflow TestOptimusPR {
   String expected_picard_metrics_hash
 
   # Optimus inputs
-  Array[Array[File]] fastq_inputs  # array of arrays of matched fastqs [ [r1, r2, i1], ... ]
+  Array[File] r1
+  Array[File] r2
+  Array[File]? i1
+
   File whitelist  # 10x genomics cell barcode whitelist for 10x V2
   File tar_star_reference  # star reference
   File annotations_gtf  # gtf containing annotations for gene tagging
@@ -22,7 +25,9 @@ workflow TestOptimusPR {
 
   call target.Optimus as target {
     input:
-      fastq_inputs = fastq_inputs,
+      r1 = r1,
+      r2 = r2,
+      i1 = i1,
       whitelist = whitelist,
       tar_star_reference = tar_star_reference,
       annotations_gtf = annotations_gtf,
