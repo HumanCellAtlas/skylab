@@ -7,7 +7,10 @@ task StarMkref {
   String star_docker_image = "quay.io/humancellatlas/secondary-analysis-star:v0.2.2-2.5.3a-40ead6e"
   
   command {
+    set -e
+
     mkdir genome
+
     STAR \
       --runMode genomeGenerate \
       --runThreadN $(nproc) \
@@ -21,8 +24,8 @@ task StarMkref {
   runtime {
     docker: "${star_docker_image}"
     cpu: 16
-    memory: "30 GB"
-    disks: "local-disk 100 SSD"
+    memory: "120 GB"
+    disks: "local-disk 300 SSD"
   }
   
   output {
