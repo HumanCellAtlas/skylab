@@ -8,6 +8,7 @@ task StarAlignBamSingleEnd {
   Int input_size = ceil(size(bam_input, "G"))
   Int reference_size = ceil(size(tar_star_reference, "G"))
   Int estimated_disk_required =  ceil(input_size * 2.2 + reference_size * 2)
+  Int estimated_memory_required = reference_size + 6
 
   command {
     # prepare reference
@@ -33,7 +34,7 @@ task StarAlignBamSingleEnd {
   runtime {
     docker: "quay.io/humancellatlas/secondary-analysis-star:v0.2.2-2.5.3a-40ead6e"
     cpu: 16
-    memory: "30 GB"
+    memory: "${estimated_memory_required} GB"
     disks: "local-disk ${estimated_disk_required} SSD"
   }
 
