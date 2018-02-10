@@ -10,9 +10,8 @@
 ## ** New lines between blocks in tasks
 ## ** New line variable declarations that you want to group
 ## ** New line between imports and workflow definition
-## ** No new lines at the start or end of any workflow/call/task definition block
 ## ** No need for having two new lines anywhere
-## ** No new lines at the start of any blocks
+## ** No new lines at the start or end of any blocks
 
 ##### Spacing Rules #####
 ## ** Space before `{` characters
@@ -27,6 +26,7 @@
 ##### Runtime Attributes ######
 ## ** This will change quite a bit i believe when the new spec of WDL comes out (WDL SPEC 3) but we should define all values we care about
 ## ** even if they are the default values.  e.g. write `cpu: 1` instead of leaving it out because its the default.
+## ** Use the correct type for runtime e.g. use an `Int` when specifying cpu, no need to do `cpu: "1"`
 
 ##### Comment Rules ######
 ## **  Should comments have one or two `##` before a comment.  Maybe two for workflow or task descriptions and one for any other kind of comment?
@@ -43,7 +43,7 @@ import "Hisat2RsemPipeline.wdl" as RunHisatRSEMWDL
 
 ## ** Should comments / descriptions above a task definition be mandatory?
 
-## main pipeline:
+## Main Pipeline:
 ## QC track: HISAT2+Picard
 ## this track will produce aligned bam file and a set of QC metrics
 ## rsem quantification track: HISAT2+RSEM
