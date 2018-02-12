@@ -1,9 +1,9 @@
 {
-  "ss2_single_sample.wdl": "/working/pipelines/smartseq2_single_sample/ss2_single_sample.wdl",
-  "ValidateSmartSeq2SingleCell.wdl": "/working/test/smartseq2_single_sample/pr/ValidateSmartSeq2SingleCell.wdl",
-  "hisat2_QC_pipeline.wdl": "/working/library/subworkflows/hisat2_QC_pipeline.wdl",
-  "hisat2_rsem_pipeline.wdl": "/working/library/subworkflows/hisat2_rsem_pipeline.wdl",
-  "hisat2.wdl": "/working/library/tasks/hisat2.wdl",
-  "picard.wdl": "/working/library/tasks/picard.wdl",
-  "rsem.wdl": "/working/library/tasks/rsem.wdl"
+  "ss2_single_sample.wdl": "pipelines/smartseq2_single_sample/ss2_single_sample.wdl",
+  "ValidateSmartSeq2SingleCell.wdl": "test/smartseq2_single_sample/pr/ValidateSmartSeq2SingleCell.wdl",
+  "hisat2_QC_pipeline.wdl": "library/subworkflows/hisat2_QC_pipeline.wdl",
+  "hisat2_rsem_pipeline.wdl": "library/subworkflows/hisat2_rsem_pipeline.wdl",
+  "hisat2.wdl": "library/tasks/hisat2.wdl",
+  "picard.wdl": "library/tasks/picard.wdl",
+  "rsem.wdl": "library/tasks/rsem.wdl"
 }
