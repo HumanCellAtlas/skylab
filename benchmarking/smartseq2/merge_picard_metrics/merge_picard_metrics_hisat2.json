@@ -1,0 +1,6 @@
+{
+  "run_merge.scripts_dir": "gs://broad-dsde-mint-dev-teststorage/pipeline_testing_scripts",
+  "run_merge.uuid": "5a3aa2ad-2a86-46af-9cc6-be35eb9f0abb",
+  "run_merge.metrics_names": ["run_pipelines.RunHisat2Pipeline.alignment_summary_metrics","run_pipelines.RunHisat2Pipeline.rna_metrics","run_pipelines.RunHisat2Pipeline.dedup_metrics","run_pipelines.RunHisat2Pipeline.insert_size_metrics"],
+	"run_merge.agg_file":"HISAT2_met_all.csv"
+}

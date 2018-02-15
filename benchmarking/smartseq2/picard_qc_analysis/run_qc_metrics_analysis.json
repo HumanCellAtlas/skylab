@@ -1,0 +1,7 @@
+{
+ "run_analysis.output_dir": "STAR_vs_HISAT2",
+ "run_analysis.scripts_dir": "gs://broad-dsde-mint-dev-teststorage/pipeline_testing_scripts",
+ "run_analysis.updated_qc": "gs://broad-dsde-mint-dev-cromwell-execution/cromwell-executions/run_merge/6d92d556-be18-48c5-bad8-0a80b233da14/call-AppendMetricsFiles/HISAT2_met_all.csv",
+ "run_analysis.base_qc": "gs://broad-dsde-mint-dev-cromwell-execution/cromwell-executions/run_merge/924b88af-d362-479f-91f1-d99e13a4c5c2/call-AppendMetricsFiles/STAR_met_all.csv",
+ "run_analysis.metrics_keys" : "PCT_PF_READS_ALIGNED,PCT_PF_READS_IMPROPER_PAIRS,PCT_READS_ALIGNED_IN_PAIRS,PCT_CODING_BASES,PCT_INTERGENIC_BASES,PCT_INTRONIC_BASES,PCT_UTR_BASES,PCT_USABLE_BASES,PCT_MRNA_BASES,PCT_RIBOSOMAL_BASES,PERCENT_DUPLICATION,MEDIAN_5PRIME_TO_3PRIME_BIAS,MEDIAN_3PRIME_BIAS,MEDIAN_5PRIME_BIAS,MEDIAN_CV_COVERAGE,PF_MISMATCH_RATE,MEDIAN_INSERT_SIZE"
+}
