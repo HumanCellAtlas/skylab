@@ -1,0 +1,7 @@
+{
+  "run_merge.scripts_dir": "gs://broad-dsde-mint-dev-teststorage/pipeline_testing_scripts/",
+	"run_merge.uuid":"5a3aa2ad-2a86-46af-9cc6-be35eb9f0abb",
+	"run_merge.run_names":["run_pipelines.RunStarPipeline.rsem_gene_results","run_pipelines.RunHisat2RsemPipeline.rsem_gene_results"],
+	"run_merge.output_names":["STAR_rsem_count_merged_counts.csv","HISAT2_rsem_merged_counts.csv"],
+	"run_merge.value_name":"est_counts"
+}
