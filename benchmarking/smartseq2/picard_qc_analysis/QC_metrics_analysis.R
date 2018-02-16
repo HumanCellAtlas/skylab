@@ -36,17 +36,21 @@ addTheme<-function(p){
 
 # metrics files
 ## metfile1 is the production
-# args <-commandArgs(trailingOnly=TRUE)
+args <-commandArgs(trailingOnly=TRUE)
+print(args)
 metfile1<-args[1]
 metfile2<-args[2]
 ## output prefix
 output_name<-args[3]
 ##metrics keys
+##parse keys
+metKeys<-strsplit(args[4],split=',')[[1]]
+print(metKeys)
 #blacklist<-c('BAD_CYCLES','CATEGORY','LIBRARY','MEAN_READ_LENGTH','READ_GROUP','SAMPLE')
-metKeys<-c('PCT_PF_READS_ALIGNED','PCT_PF_READS_IMPROPER_PAIRS','PCT_READS_ALIGNED_IN_PAIRS',
-           'PCT_CODING_BASES','PCT_INTERGENIC_BASES','PCT_INTRONIC_BASES','PCT_UTR_BASES','PCT_USABLE_BASES',
-           'PCT_MRNA_BASES','PCT_RIBOSOMAL_BASES','PERCENT_DUPLICATION',
-           'MEDIAN_5PRIME_TO_3PRIME_BIAS','MEDIAN_3PRIME_BIAS','MEDIAN_5PRIME_BIAS','MEDIAN_CV_COVERAGE','PF_MISMATCH_RATE')
+#metKeys<-c('PCT_PF_READS_ALIGNED','PCT_PF_READS_IMPROPER_PAIRS','PCT_READS_ALIGNED_IN_PAIRS',
+#           'PCT_CODING_BASES','PCT_INTERGENIC_BASES','PCT_INTRONIC_BASES','PCT_UTR_BASES','PCT_USABLE_BASES',
+#           'PCT_MRNA_BASES','PCT_RIBOSOMAL_BASES','PERCENT_DUPLICATION',
+#           'MEDIAN_5PRIME_TO_3PRIME_BIAS','MEDIAN_3PRIME_BIAS','MEDIAN_5PRIME_BIAS','MEDIAN_CV_COVERAGE','PF_MISMATCH_RATE')
 ## checking data format and header
 met1<-read.table(metfile1,header=T,sep=',',stringsAsFactors=F)
 met2<-read.table(metfile2,header=T,sep=',',stringsAsFactors=F)
@@ -143,16 +147,16 @@ for(ii in 1:length(metKeys)){
   gt<-arrangeGrob(density.p, p, ks.p, ncol = 2, nrow = 2, layout_matrix = rbind(c(1,1), c(2,3)))
   gp <- as_ggplot(gt) + draw_plot_label(label = c("A", "B", "C"), size = 20,x = c(0, 0, 0.5), y = c(1, 0.5, 0.5)) # Add labels
   gp<-gp+ggtitle(paste(metKeys[ii]))+theme(plot.title = element_text(hjust = 0.5,size=20,face='bold'))
-  ggsave(gp,file=paste(output_name,'_group_plots_',metKeys[ii],'.png',sep=''),width=20,height=20)
+  ggsave(gp,file=paste(output_name,'/group_plots_',metKeys[ii],'.png',sep=''),width=20,height=20)
   pouts[[ii]]<-gp
   out<-rbind(out,c(metKeys[ii],beta,a,r2,fpval,ks$statistic,ks$p.value))
 }
 #save multiple page into one pdf
-pdf(paste(output_name,'_gp_all.pdf',sep=''),25,25)
+pdf(paste(output_name,'/group_plots_all.pdf',sep=''),25,25)
 for(ii in 1:nrow(met1.core)){print(pouts[[ii]])}
 dev.off()
 colnames(out)<-c('metrics','beta','a','r2','pvalue','ks-D-stats','ks-Pvalue')
-write.table(out,file=paste(output_name,'_tests_stats.csv',sep=''),quote=F,row.names=F,col.names=T,sep=',')
+write.table(out,file=paste(output_name,'/tests_stats.csv',sep=''),quote=F,row.names=F,col.names=T,sep=',')
 
 
 

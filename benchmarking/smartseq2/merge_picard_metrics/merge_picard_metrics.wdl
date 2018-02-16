@@ -5,8 +5,8 @@ task MergePicardMet{
   String output_name
   command{
     set -e
-    gsutil cp -r ${target_dir} ./   
-    python pipeline_testing_scripts/merge_picard_mets.py   ${uuid} ${met_name}  ${output_name}
+    gsutil cp  ${target_dir}/merge_picard_mets.py ./   
+    python merge_picard_mets.py   ${uuid} ${met_name}  ${output_name}
   }
 
   output{

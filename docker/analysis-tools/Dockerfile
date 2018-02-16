@@ -69,6 +69,10 @@ RUN Rscript -e "install.packages('reshape')"
 RUN Rscript -e "install.packages('gplots')"
 RUN Rscript -e "install.packages('ggplot2')"
 RUN Rscript -e "install.packages('googleCloudStorageR')"
+RUN Rscript -e "install.packages('gridExtra')"
+RUN Rscript -e "install.packages('ggpubr')"
+RUN Rscript -e "install.packages('ggpmisc')"
+RUN Rscript -e "install.packages('cowplot')"
 
 # Mount Google Cloud secret key
 ADD broad-dsde-mint-dev-analysis-tools.json /usr/secrets/broad-dsde-mint-dev-analysis-tools.json

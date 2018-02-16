@@ -36,24 +36,19 @@ for kk in range(0,len(files)):
     with open(bname1,'wb') as file_obj:
         blob1.download_to_file(file_obj)
     if "unq_genes_counts" in run_name or "mult_genes_counts" in run_name:
+        dat=pd.read_csv(bname1,skiprows=2,sep='\t',usecols=['gene_id','length',sample_name],names=['gene_id','contigs','start','end','strands','length',sample_name])
+        if value_name == 'tpm': ## convert from cnt to tpm
+            sample=list(dat[sample_name].values)
+            lengths=list(dat['length'].values)
+            rpk=[float(s) / float(l) for s,l in zip(sample, lengths)]
+            RPKM=sum(rpk)/1e6
+            TPM=[r/RPKM for r in rpk]
+            dat[sample_name]=TPM
+
         if kk==0:
-            merged=pd.read_csv(bname1,skiprows=2,sep='\t',usecols=['gene_id','length',sample_name],names=['gene_id','contigs','start','end','strands','length',sample_name])
-            if value_name == 'tpm': ## convert from cnt to tpm
-                sample=list(merged[sample_name].values)
-                lengths=list(merged['length'].values)
-                rpk=[float(s) / float(l) for s,l in zip(sample, lengths)]
-                RPKM=sum(rpk)/1000000
-                TPM=[r/RPKM for r in rpk]
-                merged[sample_name]=TPM
+            merged=dat
         else:
-            cnt=pd.read_csv(bname1,skiprows=2,sep='\t',usecols=['gene_id','length',sample_name],names=['gene_id','contigs','start','end','strands','length',sample_name])
-            if value_name == "tpm":
-                sample=list(cnt[sample_name].values)
-                lengths=list(cnt['length'].values)
-                rpk=[float(s) / float(l) for s,l in zip(sample, lengths)]
-                RPKM=sum(rpk)/1e6
-                TPM=[r/RPKM for r in rpk]
-                cnt[sample_name]=TPM
+            cnt=dat
             merged=pd.merge(left=merged,right=cnt[['gene_id',sample_name]],left_on='gene_id',right_on='gene_id')
     elif 'rsem' in run_name:
         if kk==0:

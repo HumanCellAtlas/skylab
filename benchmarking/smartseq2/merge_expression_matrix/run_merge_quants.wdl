@@ -5,8 +5,8 @@ task mergeTPM{
   String uuid
   String value_name
   command{
-    gsutil cp -r ${target_dir} ./   
-    python pipeline_testing_scripts/merge_table_quants.py  ${uuid} ${run_name} ${value_name} ${output_name}
+    gsutil cp  ${target_dir}/merge_table_quants.py ./   
+    python merge_table_quants.py  ${uuid} ${run_name} ${value_name} ${output_name}
   }
 
   output{
