@@ -25,8 +25,7 @@ workflow run_merge{
   String value_name
   Array[String] run_names
   Array[String] output_names
-  ##Array[String] run_names=['run_pipelines.RunHisat2RsemPipeline.rsem_gene_results','run_pipelines.RunStarPipeline.rsem_gene_results']
-  ## Array[String] merged_outputs = ['HISAT2RSEM_gene_TPM.csv','STAR2RSEM_gene_TPM.csv']
+  
   scatter(idx in range(length(run_names))){
     call mergeTPM{
       input:
