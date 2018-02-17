@@ -25,7 +25,6 @@ workflow run_merge{
   String value_name
   Array[String] run_names
   Array[String] output_names
-  
   scatter(idx in range(length(run_names))){
     call mergeTPM{
       input:
