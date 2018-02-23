@@ -1,19 +1,19 @@
 {
-  "Optimus.fastq_inputs": [
-    [
-      "gs://broad-dsde-mint-dev-teststorage/10x/demo/fastqs/pbmc8k_S1_L007_R1_001.fastq.gz",
-      "gs://broad-dsde-mint-dev-teststorage/10x/demo/fastqs/pbmc8k_S1_L007_R2_001.fastq.gz",
-      "gs://broad-dsde-mint-dev-teststorage/10x/demo/fastqs/pbmc8k_S1_L007_I1_001.fastq.gz"
-    ],
-    [
-      "gs://broad-dsde-mint-dev-teststorage/10x/demo/fastqs/pbmc8k_S1_L007_R1_001.fastq.gz",
-      "gs://broad-dsde-mint-dev-teststorage/10x/demo/fastqs/pbmc8k_S1_L007_R2_001.fastq.gz",
-      "gs://broad-dsde-mint-dev-teststorage/10x/demo/fastqs/pbmc8k_S1_L007_I1_001.fastq.gz"
-    ]
+  "Optimus.r1": [
+      "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_R1_001.fastq.gz",
+      "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_R1_001.fastq.gz"
   ],
-  "Optimus.whitelist": "gs://broad-dsde-mint-dev-teststorage/10x/whitelist/737K-august-2016.txt",
-  "Optimus.tar_star_reference": "gs://broad-dsde-mint-dev-teststorage/demo/star.tar",
+  "Optimus.r2": [
+      "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_R2_001.fastq.gz",
+      "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_R2_001.fastq.gz"
+  ],
+  "Optimus.i1": [
+      "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_I1_001.fastq.gz",
+      "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_I1_001.fastq.gz"
+  ],
+  "Optimus.whitelist": "gs://hca-dcp-mint-test-data/10x/whitelist/737K-august-2016.txt",
+  "Optimus.tar_star_reference": "gs://hca-dcp-mint-test-data/reference/demo/star.tar",
   "Optimus.sample_id": "pbmc8k_test",
-  "Optimus.annotations_gtf": "gs://broad-dsde-mint-dev-teststorage/reference/hg19_ds/GSM1629193_hg19_ERCC.gtf.gz",
-  "Optimus.ref_genome_fasta": "gs://broad-dsde-mint-dev-teststorage/demo/chr21.fa"
+  "Optimus.annotations_gtf": "gs://hca-dcp-mint-test-data/reference/demo/hg19_ds/GSM1629193_hg19_ERCC.gtf.gz",
+  "Optimus.ref_genome_fasta": "gs://hca-dcp-mint-test-data/reference/demo/chr21.fa"
 }
