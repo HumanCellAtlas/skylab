@@ -1,4 +1,4 @@
-task analysis_QC_metrics{
+task AnalysisQCMetrics{
   File base_qc_metrics
   File updated_qc_metrics
   String output_name
@@ -11,22 +11,22 @@ task analysis_QC_metrics{
     Rscript QC_metrics_analysis.R ${base_qc_metrics} ${updated_qc_metrics} ${output_name} ${metrics_keys}
     tar -zcvf ${output_name}.tar.gz ${output_name}
   }
-  output{
+  output {
     File analysis_results = "${output_name}.tar.gz"
   }
-  runtime{
+  runtime {
     docker:"gcr.io/broad-dsde-mint-dev/analysis-tools:0.0.4"
     memory:"3.75 GB"
     disks: "local-disk 50 HDD"
   }
 }
-workflow run_analysis{
+workflow run_analysis {
   String scripts_dir
   String base_qc
   String updated_qc
   String output_dir
   String metrics_keys
-  call analysis_QC_metrics{
+  call AnalysisQCMetrics {
     input:
       base_qc_metrics = base_qc,
       updated_qc_metrics = updated_qc,

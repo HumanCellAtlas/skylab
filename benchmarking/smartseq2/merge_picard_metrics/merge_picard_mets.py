@@ -6,6 +6,7 @@ import json
 from os.path import basename
 import sys
 import requests
+import argparse
 
 def merge_picard_metrics(uuid,met_name,output_name):
     """
@@ -23,7 +24,6 @@ def merge_picard_metrics(uuid,met_name,output_name):
     logins = json.load(open('/usr/secrets/broad-dsde-mint-dev-cromwell.json'))
     # meta_url
     metadata_url = "https://cromwell.mint-dev.broadinstitute.org/api/workflows/v1/"+uuid+"/metadata?expandSubWorkflows=false"
-    print(metadata_url)
     r = requests.get(metadata_url,auth=(logins['cromwell_username'], logins['cromwell_password']))
     data = r.json()
     # load output files
@@ -61,13 +61,13 @@ def merge_picard_metrics(uuid,met_name,output_name):
     tab.to_csv(output_name)
 
 def main():
-    ## input json has uuid, run name and value to parse.
-    uuid = sys.argv[1]
-    # metrics name, such as STARpipeline.alignemntmetrics
-    met_name = sys.argv[2]
-    # output file name, such as STAR_Aln.csv
-    output_name = sys.argv[3]
-    merge_picard_metrics(uuid,met_name,output_name)
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-u", "--uuid", dest = "uuid", required = True, help = "The uuid of workflow, top level")
+    parser.add_argument("-m", "--metrics_name", dest = "met_name", required = True, help = "The Picard metrics file names")
+    parser.add_argument("-o", "--output_name", dest = "output_name", required = True, help = "The output file name")
+    args = parser.parse_args()
+    merge_picard_metrics(args.uuid,args.met_name,args.output_name)
 
 if __name__ == "__main__":
     main()

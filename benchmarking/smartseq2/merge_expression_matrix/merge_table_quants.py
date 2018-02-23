@@ -1,3 +1,4 @@
+import argparse
 import pandas as pd
 import numpy as np
 from google.cloud import storage
@@ -37,7 +38,6 @@ def merge_expression_matrix(uuid, run_name,output_name,value_name):
         fc1 = fc1.replace('gs://broad-dsde-mint-dev-cromwell-execution/', '')
         blob1 = bucket.get_blob(fc1)
         bname1 = basename(fc1)
-        print(bname1)
         # sample_name is the prefix of input file name, such as SRR123456
         sample_name = bname1.split('.')[0]
         with open(bname1, 'wb') as file_obj:
@@ -80,15 +80,14 @@ def merge_expression_matrix(uuid, run_name,output_name,value_name):
     merged.to_csv(output_name, index=False)
 
 def main():
-     # input json has uuid, run name and value to parse.
-    uuid = sys.argv[1]
-    # pipeline task name, such as STARpipeline.rsem
-    run_name = sys.argv[2]
-    # output file name
-    output_name = sys.argv[4]
-    # file or quantification name, such as est_cnt for counts data, tpm, fpkm
-    value_name = sys.argv[3]
-    merge_expression_matrix(uuid, run_name,output_name,value_name)
+    
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-u", "--uuid", dest = "uuid", required = True, help = "The uuid of workflow, top level")
+    parser.add_argument("-rn", "--run_name", dest = "run_name", required = True, help = "The output file name from task or workflow,ex RunSTARPipeline.rsem_gene_results")
+    parser.add_argument("-o", "--output_name", dest = "output_name", required = True, help = "The output folder folder name.")
+    parser.add_argument("-t", "--value_name", dest = "value_name", required = True, help="value or column to parse, ex, tpm, est_counts")
+    args = parser.parse_args()
+    merge_expression_matrix(args.uuid, args.run_name,args.output_name,args.value_name)
 
 if __name__ == "__main__":
     main()

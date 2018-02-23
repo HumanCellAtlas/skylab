@@ -35,23 +35,18 @@ addTheme<-function(p){
 }
 
 # metrics files
-## metfile1 is the production
+# metfile1 is the production pipeline results
+# metfile2 is the updated pipeline results
 args <-commandArgs(trailingOnly=TRUE)
 print(args)
 metfile1<-args[1]
 metfile2<-args[2]
-## output prefix
+#  output prefix
 output_name<-args[3]
-##metrics keys
-##parse keys
+# metrics keys
 metKeys<-strsplit(args[4],split=',')[[1]]
 print(metKeys)
-#blacklist<-c('BAD_CYCLES','CATEGORY','LIBRARY','MEAN_READ_LENGTH','READ_GROUP','SAMPLE')
-#metKeys<-c('PCT_PF_READS_ALIGNED','PCT_PF_READS_IMPROPER_PAIRS','PCT_READS_ALIGNED_IN_PAIRS',
-#           'PCT_CODING_BASES','PCT_INTERGENIC_BASES','PCT_INTRONIC_BASES','PCT_UTR_BASES','PCT_USABLE_BASES',
-#           'PCT_MRNA_BASES','PCT_RIBOSOMAL_BASES','PERCENT_DUPLICATION',
-#           'MEDIAN_5PRIME_TO_3PRIME_BIAS','MEDIAN_3PRIME_BIAS','MEDIAN_5PRIME_BIAS','MEDIAN_CV_COVERAGE','PF_MISMATCH_RATE')
-## checking data format and header
+# checking data format and header
 met1<-read.table(metfile1,header=T,sep=',',stringsAsFactors=F)
 met2<-read.table(metfile2,header=T,sep=',',stringsAsFactors=F)
 colnames(met1)[1]<-'metrics'
@@ -101,7 +96,7 @@ for(ii in 1:length(metKeys)){
   p<-p+xlab(paste('Base'))+ylab(paste('Updated'))
   p<-p+geom_abline(data=coefs,mapping=aes(slope=s, intercept=ic, linetype=factor(tl),color=factor(tl)))
 
-  ##hist 
+  # hist 
   z<-data.frame('Base'=x,'Updated'=y)
   mz<-melt(z)
   mu <- ddply(mz, "variable", summarise, grp.mean=mean(value))
@@ -121,7 +116,7 @@ for(ii in 1:length(metKeys)){
   density.p<-addTheme(density.p)
   density.p<-density.p+annotation_custom(ggplotGrob(stable.p))
   
-  ##ks test
+  # ks test
   ks<-ks.test(x,y)
   cdf1<-ecdf(x)
   cdf2<-ecdf(y)
@@ -143,7 +138,7 @@ for(ii in 1:length(metKeys)){
   ks.p<-ks.p+ggtitle(paste("K-S Test"))
   ks.p<-addTheme(ks.p)
   ks.p<-ks.p+theme(legend.title=element_blank())+annotation_custom(ggplotGrob(dtable.p))
-  ## arrange layout 
+  # arrange layout 
   gt<-arrangeGrob(density.p, p, ks.p, ncol = 2, nrow = 2, layout_matrix = rbind(c(1,1), c(2,3)))
   gp <- as_ggplot(gt) + draw_plot_label(label = c("A", "B", "C"), size = 20,x = c(0, 0, 0.5), y = c(1, 0.5, 0.5)) # Add labels
   gp<-gp+ggtitle(paste(metKeys[ii]))+theme(plot.title = element_text(hjust = 0.5,size=20,face='bold'))
@@ -151,7 +146,7 @@ for(ii in 1:length(metKeys)){
   pouts[[ii]]<-gp
   out<-rbind(out,c(metKeys[ii],beta,a,r2,fpval,ks$statistic,ks$p.value))
 }
-#save multiple page into one pdf
+# save multiple page into one pdf
 pdf(paste(output_name,'/group_plots_all.pdf',sep=''),25,25)
 for(ii in 1:nrow(met1.core)){print(pouts[[ii]])}
 dev.off()
