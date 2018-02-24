@@ -1,10 +1,11 @@
-
 task SplitBamByCellBarcode {
   File bam_input
   Float size_in_mb = 1024.0
   Int estimated_required_disk = ceil(size(bam_input, "G") * 2.2)
 
   command {
+    set -e
+
     SplitBam \
       --bamfile ${bam_input} \
       --output-prefix subfile \

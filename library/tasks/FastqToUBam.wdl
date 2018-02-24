@@ -1,4 +1,3 @@
-
 task FastqToUBam {
   File fastq_file  # input fastq file
   String sample_id  # name of sample matching this file, inserted into read group header
@@ -11,7 +10,14 @@ task FastqToUBam {
   Int estimated_disk_required = ceil(size(fastq_file, "G") * 2.2)
 
   command {
-    mv "${fastq_file}" "${fastq_file}""${fastq_suffix}"  # add suffix; does nothing if not provided
+    set -e
+
+    # Adds fastq_suffix if it is passed
+    if [ ! -z "${fastq_suffix}" ];
+    then
+        mv "${fastq_file}" "${fastq_file}""${fastq_suffix}"
+    fi
+
     java -Xmx2g -jar /usr/picard/picard.jar FastqToSam \
       FASTQ="${fastq_file}""${fastq_suffix}" \
       SORT_ORDER=unsorted \

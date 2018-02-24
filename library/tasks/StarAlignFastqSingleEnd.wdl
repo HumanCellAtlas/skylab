@@ -1,4 +1,3 @@
-
 task StarAlignFastqSingleEnd {
   File fastq_input  # fastq file containing genomic sequence
   File tar_star_reference  # gzipped star reference tarball

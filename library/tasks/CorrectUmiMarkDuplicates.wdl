@@ -1,10 +1,11 @@
-
 task CorrectUmiMarkDuplicates {
   File bam_input
   # mark duplicates swaps a large amount of data to disk, has high disk requirements.
   Int estimated_required_disk = ceil(size(bam_input, "G") * 6)
 
   command {
+    set -e
+
     java -Xmx7g -jar /usr/picard/picard.jar SortSam \
       SORT_ORDER=coordinate \
       I=${bam_input} \
