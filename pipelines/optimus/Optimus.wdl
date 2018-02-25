@@ -62,40 +62,47 @@ workflow Optimus {
     }
 
     File barcoded_bam = select_first([attach_barcodes.bam_output, attach_barcodes_no_index.bam_output])
-
-    call split.SplitBamByCellBarcode {
-      input:
-        bam_input = barcoded_bam
-    }
-
-    call AlignTagCorrectUmis.AlignTagCorrectUmis {
-      input:
-        bam_array = SplitBamByCellBarcode.bam_output_array,
-        tar_star_reference = tar_star_reference,
-        annotations_gtf = annotations_gtf
-    }
   }
 
-  call merge.MergeSortBamFiles {
+  call merge.MergeSortBamFiles as MergeUnsorted {
     input:
-      bam_inputs = AlignTagCorrectUmis.bam_outputs
+      bam_inputs = barcoded_bam,
+      sort_order = "unsorted"
+  }
+
+  call split.SplitBamByCellBarcode {
+    input:
+      bam_input = MergeUnsorted.output_bam
+  }
+
+  call AlignTagCorrectUmis.AlignTagCorrectUmis {
+    input:
+      bam_array = SplitBamByCellBarcode.bam_output_array,
+      tar_star_reference = tar_star_reference,
+      annotations_gtf = annotations_gtf
+  }
+
+  call merge.MergeSortBamFiles as MergeSorted {
+    input:
+      bam_inputs = AlignTagCorrectUmis.bam_outputs,
+      sort_order = "coordinate"
   }
 
   call count.DropSeqToolsDigitalExpression {
     input:
-      bam_input = MergeSortBamFiles.output_bam,
+      bam_input = MergeSorted.output_bam,
       whitelist = whitelist
   }
 
   call collect.CollectMultipleMetrics {
     input:
-      aligned_bam = MergeSortBamFiles.output_bam,
+      aligned_bam = MergeSorted.output_bam,
       ref_genome_fasta = ref_genome_fasta,
       output_filename = sample_id
   }
 
   output {
-      File bam = MergeSortBamFiles.output_bam
+      File bam = MergeSorted.output_bam
       File matrix = DropSeqToolsDigitalExpression.matrix_output
       File matrix_summary = DropSeqToolsDigitalExpression.matrix_summary
       Array[Array[File]] tag_gene_exon_log = AlignTagCorrectUmis.tag_gene_exon_log
