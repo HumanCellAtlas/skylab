@@ -4,7 +4,9 @@ import "SplitBamByCellBarcode.wdl" as split
 import "CollectMultiplePicardMetrics.wdl" as collect
 import "MergeSortBam.wdl" as merge
 import "CreateCountMatrix.wdl" as count
-import "AlignTagCorrectUmis.wdl" as AlignTagCorrectUmis
+import "StarAlignBamSingleEnd.wdl" as StarAlignBamWDL
+import "TagGeneExon.wdl" as TagGeneExonWDL
+import "CorrectUmiMarkDuplicates.wdl" as CorrectUmiMarkDuplicatesWDL
 
 # The optimus 3' pipeline processes 10x genomics sequencing data based on the v2
 # chemistry. It corrects cell barcodes and UMIs, aligns reads, marks duplicates, and
@@ -75,16 +77,28 @@ workflow Optimus {
       bam_input = MergeUnsorted.output_bam
   }
 
-  call AlignTagCorrectUmis.AlignTagCorrectUmis {
-    input:
-      bam_array = SplitBamByCellBarcode.bam_output_array,
-      tar_star_reference = tar_star_reference,
-      annotations_gtf = annotations_gtf
+  scatter (bam in SplitBamByCellBarcode.bam_output_array) {
+    call StarAlignBamWDL.StarAlignBamSingleEnd as StarAlign {
+      input:
+        bam_input = bam,
+        tar_star_reference = tar_star_reference
+    }
+
+    call TagGeneExonWDL.TagGeneExon as TagGenes {
+      input:
+        bam_input = StarAlign.bam_output,
+        annotations_gtf = annotations_gtf
+    }
+
+    call CorrectUmiMarkDuplicatesWDL.CorrectUmiMarkDuplicates as CorrectUmiMarkDuplicates {
+      input:
+        bam_input = TagGenes.bam_output
+    }
   }
 
   call merge.MergeSortBamFiles as MergeSorted {
     input:
-      bam_inputs = AlignTagCorrectUmis.bam_outputs,
+      bam_inputs = CorrectUmiMarkDuplicates.bam_output,
       sort_order = "coordinate"
   }
 
@@ -105,9 +119,9 @@ workflow Optimus {
       File bam = MergeSorted.output_bam
       File matrix = DropSeqToolsDigitalExpression.matrix_output
       File matrix_summary = DropSeqToolsDigitalExpression.matrix_summary
-      Array[File] tag_gene_exon_log = AlignTagCorrectUmis.tag_gene_exon_log
-      Array[File] umi_metrics = AlignTagCorrectUmis.umi_metrics
-      Array[File] duplicate_metrics = AlignTagCorrectUmis.duplicate_metrics
+      Array[File] tag_gene_exon_log = TagGenes.log
+      Array[File] umi_metrics = CorrectUmiMarkDuplicates.umi_metrics
+      Array[File] duplicate_metrics = CorrectUmiMarkDuplicates.duplicate_metrics
       File picard_metrics = CollectMultipleMetrics.alignment_metrics
   }
 }
