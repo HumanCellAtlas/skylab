@@ -7,9 +7,6 @@ task MergeSortBamFiles {
   Int compression_level = 5
 
   command {
-    input_line=$(python -c "print(' INPUT='.join('${sep=' ' bam_inputs}'.replace('[', '').replace(']', '').replace(',', '').split()))")
-
-    echo $input_line
     java -Dsamjdk.compression_level=${compression_level} -Xms7000m -jar /usr/gitc/picard.jar \
       MergeSamFiles \
       USE_THREADING=true \
