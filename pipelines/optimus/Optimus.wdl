@@ -105,9 +105,9 @@ workflow Optimus {
       File bam = MergeSorted.output_bam
       File matrix = DropSeqToolsDigitalExpression.matrix_output
       File matrix_summary = DropSeqToolsDigitalExpression.matrix_summary
-      Array[Array[File]] tag_gene_exon_log = AlignTagCorrectUmis.tag_gene_exon_log
-      Array[Array[File]] umi_metrics = AlignTagCorrectUmis.umi_metrics
-      Array[Array[File]] duplicate_metrics = AlignTagCorrectUmis.duplicate_metrics
+      Array[File] tag_gene_exon_log = AlignTagCorrectUmis.tag_gene_exon_log
+      Array[File] umi_metrics = AlignTagCorrectUmis.umi_metrics
+      Array[File] duplicate_metrics = AlignTagCorrectUmis.duplicate_metrics
       File picard_metrics = CollectMultipleMetrics.alignment_metrics
   }
 }
