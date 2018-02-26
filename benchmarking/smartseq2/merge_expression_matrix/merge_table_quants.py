@@ -33,7 +33,6 @@ def merge_expression_matrix(uuid, run_name,output_name,value_name):
     merged = pd.DataFrame()
     # loop through input files
     for kk in range(0, len(files)):
-        print(kk)
         fc1 = files[kk]
         fc1 = fc1.replace('gs://broad-dsde-mint-dev-cromwell-execution/', '')
         blob1 = bucket.get_blob(fc1)

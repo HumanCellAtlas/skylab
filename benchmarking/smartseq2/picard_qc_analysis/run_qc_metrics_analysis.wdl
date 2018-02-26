@@ -35,4 +35,3 @@ workflow run_analysis {
       metrics_keys = metrics_keys
   }
 }
-

@@ -152,6 +152,3 @@ for(ii in 1:nrow(met1.core)){print(pouts[[ii]])}
 dev.off()
 colnames(out)<-c('metrics','beta','a','r2','pvalue','ks-D-stats','ks-Pvalue')
 write.table(out,file=paste(output_name,'/tests_stats.csv',sep=''),quote=F,row.names=F,col.names=T,sep=',')
-
-
-

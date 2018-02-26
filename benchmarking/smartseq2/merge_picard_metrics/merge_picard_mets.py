@@ -64,7 +64,7 @@ def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-u", "--uuid", dest = "uuid", required = True, help = "The uuid of workflow, top level")
-    parser.add_argument("-m", "--metrics_name", dest = "met_name", required = True, help = "The Picard metrics file names")
+    parser.add_argument("-m", "--metrics_name", dest = "met_name", required = True, help = "The Picard metrics class name")
     parser.add_argument("-o", "--output_name", dest = "output_name", required = True, help = "The output file name")
     args = parser.parse_args()
     merge_picard_metrics(args.uuid,args.met_name,args.output_name)

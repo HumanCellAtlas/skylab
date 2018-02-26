@@ -1,4 +1,4 @@
-task MergePicardMet {
+task MergePicardMetrics {
   String target_dir
   String met_name
   String uuid
@@ -48,7 +48,7 @@ workflow run_merge {
   Array[String] metrics_names
   String agg_file
   scatter(idx in range(length(metrics_names))) {
-    call MergePicardMet {
+    call MergePicardMetrics {
       input:
         target_dir = scripts_dir,
         uuid = uuid,
