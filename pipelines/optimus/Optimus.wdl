@@ -4,7 +4,9 @@ import "SplitBamByCellBarcode.wdl" as split
 import "CollectMultiplePicardMetrics.wdl" as collect
 import "MergeSortBam.wdl" as merge
 import "CreateCountMatrix.wdl" as count
-import "AlignTagCorrectUmis.wdl" as AlignTagCorrectUmis
+import "StarAlignBamSingleEnd.wdl" as StarAlignBamWDL
+import "TagGeneExon.wdl" as TagGeneExonWDL
+import "CorrectUmiMarkDuplicates.wdl" as CorrectUmiMarkDuplicatesWDL
 
 # The optimus 3' pipeline processes 10x genomics sequencing data based on the v2
 # chemistry. It corrects cell barcodes and UMIs, aligns reads, marks duplicates, and
@@ -62,45 +64,64 @@ workflow Optimus {
     }
 
     File barcoded_bam = select_first([attach_barcodes.bam_output, attach_barcodes_no_index.bam_output])
+  }
 
-    call split.SplitBamByCellBarcode {
+  call merge.MergeSortBamFiles as MergeUnsorted {
+    input:
+      bam_inputs = barcoded_bam,
+      sort_order = "unsorted"
+  }
+
+  call split.SplitBamByCellBarcode {
+    input:
+      bam_input = MergeUnsorted.output_bam
+  }
+
+  scatter (bam in SplitBamByCellBarcode.bam_output_array) {
+    call StarAlignBamWDL.StarAlignBamSingleEnd as StarAlign {
       input:
-        bam_input = barcoded_bam
+        bam_input = bam,
+        tar_star_reference = tar_star_reference
     }
 
-    call AlignTagCorrectUmis.AlignTagCorrectUmis {
+    call TagGeneExonWDL.TagGeneExon as TagGenes {
       input:
-        bam_array = SplitBamByCellBarcode.bam_output_array,
-        tar_star_reference = tar_star_reference,
+        bam_input = StarAlign.bam_output,
         annotations_gtf = annotations_gtf
+    }
+
+    call CorrectUmiMarkDuplicatesWDL.CorrectUmiMarkDuplicates as CorrectUmiMarkDuplicates {
+      input:
+        bam_input = TagGenes.bam_output
     }
   }
 
-  call merge.MergeSortBamFiles {
+  call merge.MergeSortBamFiles as MergeSorted {
     input:
-      bam_inputs = AlignTagCorrectUmis.bam_outputs
+      bam_inputs = CorrectUmiMarkDuplicates.bam_output,
+      sort_order = "coordinate"
   }
 
   call count.DropSeqToolsDigitalExpression {
     input:
-      bam_input = MergeSortBamFiles.output_bam,
+      bam_input = MergeSorted.output_bam,
       whitelist = whitelist
   }
 
   call collect.CollectMultipleMetrics {
     input:
-      aligned_bam = MergeSortBamFiles.output_bam,
+      aligned_bam = MergeSorted.output_bam,
       ref_genome_fasta = ref_genome_fasta,
       output_filename = sample_id
   }
 
   output {
-      File bam = MergeSortBamFiles.output_bam
+      File bam = MergeSorted.output_bam
       File matrix = DropSeqToolsDigitalExpression.matrix_output
       File matrix_summary = DropSeqToolsDigitalExpression.matrix_summary
-      Array[Array[File]] tag_gene_exon_log = AlignTagCorrectUmis.tag_gene_exon_log
-      Array[Array[File]] umi_metrics = AlignTagCorrectUmis.umi_metrics
-      Array[Array[File]] duplicate_metrics = AlignTagCorrectUmis.duplicate_metrics
+      Array[File] tag_gene_exon_log = TagGenes.log
+      Array[File] umi_metrics = CorrectUmiMarkDuplicates.umi_metrics
+      Array[File] duplicate_metrics = CorrectUmiMarkDuplicates.duplicate_metrics
       File picard_metrics = CollectMultipleMetrics.alignment_metrics
   }
 }
