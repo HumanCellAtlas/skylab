@@ -1,0 +1,10 @@
+{
+  "run_cnfounding_factors_analysis.scripts_dir": "gs://broad-dsde-mint-dev-teststorage/pipeline_testing_scripts",
+  "run_cnfounding_factors_analysis.npcs": "30",
+  "run_cnfounding_factors_analysis.nvar": "5000",
+  "run_cnfounding_factors_analysis.updated_metrics": "gs://broad-dsde-mint-dev-cromwell-execution/cromwell-executions/run_combine_QC/8308cdff-a165-43ee-96b9-60f1605e73cd/call-CombineQCs/HISAT2_metrics_combined.csv",
+  "run_cnfounding_factors_analysis.base_datafile": "gs://broad-dsde-mint-dev-cromwell-execution/cromwell-executions/run_merge/971636fb-5e26-4e1d-9a45-69394cb9ca21/call-MergeTPM/shard-1/STAR_rsem_merged_counts.csv",
+  "run_cnfounding_factors_analysis.output_name": "STAR_HISAT2",
+  "run_cnfounding_factors_analysis.updated_datafile": "gs://broad-dsde-mint-dev-cromwell-execution/cromwell-executions/run_merge/971636fb-5e26-4e1d-9a45-69394cb9ca21/call-MergeTPM/shard-0/HISAT2_rsem_merged_counts.csv",
+  "run_cnfounding_factors_analysis.base_metrics": "gs://broad-dsde-mint-dev-cromwell-execution/cromwell-executions/run_combine_QC/8cf4d720-9f4b-46d0-b8f5-6fb73960fcd9/call-CombineQCs/STAR_metrics_combined.csv"
+}
