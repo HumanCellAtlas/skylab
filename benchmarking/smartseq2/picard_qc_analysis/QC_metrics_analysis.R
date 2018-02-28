@@ -34,24 +34,28 @@ addTheme<-function(p){
   return(p)
 }
 
-# metrics files
-# metfile1 is the production pipeline results
-# metfile2 is the updated pipeline results
-args <-commandArgs(trailingOnly=TRUE)
-print(args)
-metfile1<-args[1]
-metfile2<-args[2]
-#  output prefix
-output_name<-args[3]
-# metrics keys
-metKeys<-strsplit(args[4],split=',')[[1]]
-print(metKeys)
+## params
+option_list <- list(
+  
+  make_option("--bmetrics", type="character", default=NULL, 
+              help=" base metricsfile name", metavar="character"),
+  make_option("--umetrics", type="character", default=NULL, 
+              help=" updated metricsfile name", metavar="character"),
+  make_option("--metKeys", type="character",default=NULL, 
+              help=" a list of metrics name ", metavar="character"),
+  make_option("--out", type="character", default="out", 
+              help="output file name [default= %default]", metavar="character")
+)
+opt_parser<-OptionParser(option_list=option_list)
+opt<-parse_args(opt_parser)
+## load files
+metKeys<-opt$metKeys
+output_name<-opt$out
 # checking data format and header
-met1<-read.table(metfile1,header=T,sep=',',stringsAsFactors=F)
-met2<-read.table(metfile2,header=T,sep=',',stringsAsFactors=F)
+met1<-read.table(opt$bmetrics,header=T,sep=',',stringsAsFactors=F)
+met2<-read.table(opt$umetrics,header=T,sep=',',stringsAsFactors=F)
 colnames(met1)[1]<-'metrics'
 colnames(met2)[1]<-'metrics'
-
 colnames1<-colnames(met1)
 colnames2<-colnames(met2)
 mlist<-match(colnames1,colnames2)
