@@ -1,12 +1,12 @@
-import "hisat2.wdl" as hisat2
-import "rsem.wdl" as rsem
+import "Hisat2.wdl" as Hisat2WDL
+import "Rsem.wdl" as RsemWDL
+
 ## quantification pipeline
 ## hisat2 as aligner to align reads to transcriptome
 ## output: transcriptome aligned bam files
 ## rsem will estimate the expression levels for both gene/isoform
 ## rsem will estimate abundance based on maximum likelihood (MLE) and posterior mean estimate (PME)
-## output: genes.results and isoform.results 
-
+## output: genes.results and isoform.results
 workflow RunHisat2RsemPipeline {
   File fastq_read1
   File fastq_read2
@@ -15,8 +15,8 @@ workflow RunHisat2RsemPipeline {
   String output_prefix
   String hisat2_ref_trans_name
   String sample_name
-  ##variable to estimate disk size
-  ## variables to estimate disk size
+  # variable to estimate disk size
+  # variables to estimate disk size
   Float hisat2_ref_size = size(hisat2_ref_trans, "GB")
   Float fastq_size = size(fastq_read1, "GB") +size(fastq_read2, "GB")
   Float rsem_ref_size = size(rsem_genome, "GB")
@@ -24,7 +24,7 @@ workflow RunHisat2RsemPipeline {
   Int? increase_disk_size
   Int additional_disk = select_first([increase_disk_size, 10])
   
-  call hisat2.HISAT2rsem as Hisat2Trans {
+  call Hisat2WDL.Hisat2Rsem as Hisat2Trans {
     input:
       hisat2_ref = hisat2_ref_trans,
       fq1 = fastq_read1,
@@ -33,16 +33,18 @@ workflow RunHisat2RsemPipeline {
       sample_name = sample_name,
       output_name = output_prefix,
       disk_size = ceil(fastq_size * bam_disk_multiplier + hisat2_ref_size + additional_disk * 5.0)
-      
-    }
+  }
+
   Float bam_size = size(Hisat2Trans.output_bam, "GB")
-  call rsem.RsemExpression as Rsem {
+
+  call RsemWDL.RsemExpression as Rsem {
     input:
       trans_aligned_bam = Hisat2Trans.output_bam,
       rsem_genome = rsem_genome,
       rsem_out = output_prefix,
       disk_size = ceil(fastq_size * bam_disk_multiplier+rsem_ref_size+additional_disk * 2.0)
-    }
+  }
+
   output {
     File aligned_trans_bam = Hisat2Trans.output_bam
     File metfile = Hisat2Trans.metfile

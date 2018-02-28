@@ -2,7 +2,8 @@ task CollectMultipleMetrics {
   File aligned_bam
   File ref_genome_fasta
   String output_filename
-  Int disk_size 
+  Int disk_size
+
   command {
     java -Xmx6g -jar /usr/picard/picard.jar CollectMultipleMetrics \
       VALIDATION_STRINGENCY=SILENT \
@@ -22,12 +23,14 @@ task CollectMultipleMetrics {
       REFERENCE_SEQUENCE="${ref_genome_fasta}" \
       ASSUME_SORTED=true
   }
+
   runtime {
-    docker:"quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
-    memory:"7.5 GB"
+    docker: "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
+    memory: "7.5 GB"
     disks: "local-disk " + disk_size + " HDD"
     preemptible: 5
   }
+
   output {
     File alignment_summary_metrics = "${output_filename}.alignment_summary_metrics.txt"
     File base_call_dist_metrics = "${output_filename}.base_distribution_by_cycle_metrics.txt"
@@ -56,7 +59,8 @@ task CollectRnaMetrics {
   String output_filename
   String stranded
   Int disk_size
-  command{
+
+  command {
     set -e
     java -Xmx3g -jar /usr/picard/picard.jar CollectRnaSeqMetrics \
       VALIDATION_STRINGENCY=SILENT \
@@ -69,23 +73,27 @@ task CollectRnaMetrics {
       CHART_OUTPUT="${output_filename}.rna.coverage.pdf"
     touch "${output_filename}.rna.coverage.pdf"
   }
+
   runtime {
-    docker:"quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
-    memory:"3.75 GB"
+    docker: "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
+    memory: "3.75 GB"
     disks: "local-disk " + disk_size + " HDD"
     preemptible: 5
   }
+
   output {
     File rna_metrics = "${output_filename}.rna_metrics.txt"
     File rna_coverage_pdf = "${output_filename}.rna.coverage.pdf"
   }
 }
+
 ## Here are use  -XX:ParallelGCThreads=2 to run MarkDuplication on mutlple
 ## thread. 
 task CollectDuplicationMetrics {
   File aligned_bam
   String output_filename
   Int disk_size
+
   command {
     java -Xmx6g -XX:ParallelGCThreads=2  -jar /usr/picard/picard.jar  MarkDuplicates \
        VALIDATION_STRINGENCY=SILENT  \
@@ -95,6 +103,7 @@ task CollectDuplicationMetrics {
        METRICS_FILE="${output_filename}.duplicate_metrics.txt" \
        REMOVE_DUPLICATES=false
   }
+
   runtime {
     docker: "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
     memory: "7.5 GB"
@@ -102,8 +111,8 @@ task CollectDuplicationMetrics {
     disks: "local-disk " + disk_size + " HDD"
     preemptible: 5
   }
+
   output {
     File dedup_metrics = "${output_filename}.duplicate_metrics.txt"
   }
 }
-

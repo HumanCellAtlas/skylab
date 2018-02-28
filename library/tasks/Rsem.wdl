@@ -13,6 +13,7 @@ task RsemExpression {
   File rsem_genome
   String rsem_out
   Int disk_size
+
   command {
     set -e
   
@@ -28,6 +29,7 @@ task RsemExpression {
       rsem/rsem_trans_index  \
       "${rsem_out}" 
   }
+
   runtime {
     docker: "quay.io/humancellatlas/secondary-analysis-rsem:v0.2.2-1.3.0"
     memory: "3.75 GB"
@@ -35,6 +37,7 @@ task RsemExpression {
     cpu: "4"
     preemptible: 5
   }
+
   output {
     File rsem_gene = "${rsem_out}.genes.results"
     File rsem_isoform = "${rsem_out}.isoforms.results"
