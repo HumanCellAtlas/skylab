@@ -19,7 +19,7 @@ task AnalysisConfoundingFactors{
   }
   runtime {
     docker:"gcr.io/broad-dsde-mint-dev/analysis-tools:0.0.5"
-    memory:"3.75 GB"
+    memory:"7.5 GB"
     disks: "local-disk 50 HDD"
   }
 }
