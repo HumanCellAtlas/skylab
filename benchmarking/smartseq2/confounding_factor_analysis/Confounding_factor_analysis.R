@@ -169,7 +169,7 @@ logfc<-cbind(cnt1.kept[,c(1:2)],logfc)
 ## difference in metrics
 delta<-met1-met2
 ## correlation to randomized PCs
-pmat3<-CorrQCvsPCs(t(delta), logfc, npcs, paste(output_name, '_fc_rpca_delta', sep=''), cmd='rpca')
+pmat3<-CorrQCvsPCs(t(delta), logfc, npcs, paste(output_name, '_fc_pca_delta', sep=''), cmd='rpca')
 write.csv(pmat3,file=paste(output_name, '_fc_pca_delta_cor_test.csv', sep=''),
           sep=',', quote=F, row.names=T, col.names=T)
 ## plot two pipeline QC rank based on correlation to matrix
