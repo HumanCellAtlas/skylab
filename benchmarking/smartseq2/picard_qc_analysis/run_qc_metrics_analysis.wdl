@@ -8,7 +8,7 @@ task AnalysisQCMetrics{
     set -e 
     mkdir ${output_name}
     gsutil cp ${src_dir}/QC_metrics_analysis.R ./
-    Rscript QC_metrics_analysis.R ${base_qc_metrics} ${updated_qc_metrics} ${output_name} ${metrics_keys}
+    Rscript QC_metrics_analysis.R --bmetrics ${base_qc_metrics} --umetrics ${updated_qc_metrics} --out ${output_name}/${output_name} --metKeys ${metrics_keys}
     tar -zcvf ${output_name}.tar.gz ${output_name}
   }
   output {
