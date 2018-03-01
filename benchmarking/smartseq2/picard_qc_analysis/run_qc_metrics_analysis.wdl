@@ -15,9 +15,10 @@ task AnalysisQCMetrics{
     File analysis_results = "${output_name}.tar.gz"
   }
   runtime {
-    docker: "gcr.io/broad-dsde-mint-dev/analysis-tools:0.0.4"
+    docker: "gcr.io/broad-dsde-mint-dev/analysis-tools:0.0.5"
     memory: "3.75 GB"
     disks:  "local-disk 50 HDD"
+    preemptible: 5
   }
 }
 

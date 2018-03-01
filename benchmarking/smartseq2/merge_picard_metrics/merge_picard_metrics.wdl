@@ -12,9 +12,10 @@ task MergePicardMetrics {
     File merged_metrics = "${output_name}"
   }
   runtime {
-    docker:"gcr.io/broad-dsde-mint-dev/analysis-tools:0.0.3"
+    docker:"gcr.io/broad-dsde-mint-dev/analysis-tools:0.0.5"
     memory:"3.75 GB"
     disks: "local-disk 50 HDD"
+    preemptible: 5
   }
 }
 task AppendMetricsFiles { 
@@ -36,9 +37,10 @@ task AppendMetricsFiles {
     File merged_metrics = "${output_name}"
   }
   runtime {
-    docker: "gcr.io/broad-dsde-mint-dev/analysis-tools:0.0.3"
+    docker: "gcr.io/broad-dsde-mint-dev/analysis-tools:0.0.5"
     memory: "3.75 GB"
     disks:  "local-disk 10 HDD"
+    preemptible: 5
   }
 }
 workflow run_merge {

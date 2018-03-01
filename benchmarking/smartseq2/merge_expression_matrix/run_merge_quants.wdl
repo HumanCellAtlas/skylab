@@ -12,9 +12,10 @@ task MergeTPM {
     File merged_tpm_csv = "${output_name}"
   }
   runtime {
-    docker: "gcr.io/broad-dsde-mint-dev/analysis-tools:0.0.3"
+    docker: "gcr.io/broad-dsde-mint-dev/analysis-tools:0.0.5"
     memory: "7.5 GB"
     disks:  "local-disk 100 HDD"
+    preemptible: 5   
   }
 }
 
