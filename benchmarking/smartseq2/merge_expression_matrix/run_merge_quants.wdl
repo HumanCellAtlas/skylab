@@ -8,14 +8,13 @@ task MergeTPM {
     gsutil cp  ${target_dir}/merge_table_quants.py ./   
     python merge_table_quants.py  -u ${uuid} -rn ${run_name} -t ${value_name} -o ${output_name}
   }
-
   output {
     File merged_tpm_csv = "${output_name}"
   }
   runtime {
-    docker:"gcr.io/broad-dsde-mint-dev/analysis-tools:0.0.3"
-    memory:"7.5 GB"
-    disks: "local-disk 100 HDD"
+    docker: "gcr.io/broad-dsde-mint-dev/analysis-tools:0.0.3"
+    memory: "7.5 GB"
+    disks:  "local-disk 100 HDD"
   }
 }
 

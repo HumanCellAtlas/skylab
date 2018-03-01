@@ -15,11 +15,12 @@ task AnalysisQCMetrics{
     File analysis_results = "${output_name}.tar.gz"
   }
   runtime {
-    docker:"gcr.io/broad-dsde-mint-dev/analysis-tools:0.0.4"
-    memory:"3.75 GB"
-    disks: "local-disk 50 HDD"
+    docker: "gcr.io/broad-dsde-mint-dev/analysis-tools:0.0.4"
+    memory: "3.75 GB"
+    disks:  "local-disk 50 HDD"
   }
 }
+
 workflow run_analysis {
   String scripts_dir
   String base_qc

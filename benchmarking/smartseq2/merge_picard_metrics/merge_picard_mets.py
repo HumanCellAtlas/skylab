@@ -8,26 +8,30 @@ import sys
 import requests
 import argparse
 
-def merge_picard_metrics(uuid,met_name,output_name):
+def retrieve_workflow_outputs(uuid, run_name):
+    # load cromwell credential
+    logins = json.load(open('/usr/secrets/broad-dsde-mint-dev-cromwell.json'))
+    # meta_url
+    metadata_url = "https://cromwell.mint-dev.broadinstitute.org/api/workflows/v1/"+uuid+"/metadata?expandSubWorkflows=false"
+    r = requests.get(metadata_url, auth=(logins['cromwell_username'], logins['cromwell_password']))
+    data = r.json()
+    # load output files
+    files = data['outputs'][run_name]
+    return(files)
+
+def merge_picard_metrics(files,metric_name):
     """
     piepline output picard QC metrics at sinle cell/sample level.
     This functin is called to merge/aggregate QC metrics by metrics type and then merge multiple QC measurement 
     into single matrix file. In this file, column is sample/cell and row is QC metrics
-    param uuid: run uuid
-    param met_name: metrics name with workflow name and subworkflow name as prefix. such as ['run_pipelines.RunStarPipeline.alignment_summary_metrics']
-    param output_name: output name, csv file
+    param files: metric files from pipeline outputs
+    param met_name: metrics name with workflow name and subworkflow name as prefix. such as 'run_pipelines.RunStarPipeline.alignment_summary_metrics'
     """
     # set up auth
     client = storage.Client()
     bucket = client.get_bucket('broad-dsde-mint-dev-cromwell-execution')
     # load cromwell credential
     logins = json.load(open('/usr/secrets/broad-dsde-mint-dev-cromwell.json'))
-    # meta_url
-    metadata_url = "https://cromwell.mint-dev.broadinstitute.org/api/workflows/v1/"+uuid+"/metadata?expandSubWorkflows=false"
-    r = requests.get(metadata_url,auth=(logins['cromwell_username'], logins['cromwell_password']))
-    data = r.json()
-    # load output files
-    files = data['outputs'][met_name]
     # initial output
     mets = {}
     for kk in range(0,len(files)):
@@ -58,7 +62,12 @@ def merge_picard_metrics(uuid,met_name,output_name):
             met = parsed['metrics']['contents']
         mets[sample_name] = met
     tab = pd.DataFrame.from_dict(mets)
-    tab.to_csv(output_name)
+    return(tab)
+
+def run_merge_metrics(uuid, metric_name, output_name): 
+    metfiles = retrieve_workflow_outputs(uuid, metric_name)
+    metrics_matrix = merge_picard_metrics(metfiles,metric_name)
+    metrics_matrix.to_csv(output_name)
 
 def main():
 
@@ -67,7 +76,7 @@ def main():
     parser.add_argument("-m", "--metrics_name", dest = "met_name", required = True, help = "The Picard metrics class name")
     parser.add_argument("-o", "--output_name", dest = "output_name", required = True, help = "The output file name")
     args = parser.parse_args()
-    merge_picard_metrics(args.uuid,args.met_name,args.output_name)
+    run_merge_metrics(args.uuid, args.met_name, args.output_name)
 
 if __name__ == "__main__":
     main()

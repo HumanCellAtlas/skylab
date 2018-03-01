@@ -8,7 +8,6 @@ task MergePicardMetrics {
     gsutil cp  ${target_dir}/merge_picard_mets.py ./   
     python merge_picard_mets.py  -u ${uuid} -m ${met_name} -o ${output_name}
   }
-
   output {
     File merged_metrics = "${output_name}"
   }
@@ -25,7 +24,7 @@ task AppendMetricsFiles {
     set -e
     isheader=0
     for f in ${sep=' ' met_files}; do
-      if [[ $isheader == 0 ]];then
+      if [[ $isheader == 0 ]]; then
         isheader=1
         cat $f >${output_name}
       else
@@ -37,9 +36,9 @@ task AppendMetricsFiles {
     File merged_metrics = "${output_name}"
   }
   runtime {
-    docker:"gcr.io/broad-dsde-mint-dev/analysis-tools:0.0.3"
-    memory:"3.75 GB"
-    disks: "local-disk 10 HDD"
+    docker: "gcr.io/broad-dsde-mint-dev/analysis-tools:0.0.3"
+    memory: "3.75 GB"
+    disks:  "local-disk 10 HDD"
   }
 }
 workflow run_merge {
@@ -58,7 +57,7 @@ workflow run_merge {
   }
  call AppendMetricsFiles {
   input:
-    met_files = MergePicardMet.merged_metrics,
+    met_files = MergePicardMetrics.merged_metrics,
     output_name = agg_file
   }
 }
