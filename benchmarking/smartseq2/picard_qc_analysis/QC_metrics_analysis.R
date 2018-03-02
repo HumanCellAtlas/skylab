@@ -25,7 +25,7 @@ convert2star <- function(x) {
   }
   return(p)
 }
-## standard theme
+## extra theme
 addTheme <- function(p) {
   p <- p + theme(legend.position = "top")
   p <-
@@ -65,6 +65,9 @@ addTheme <- function(p) {
               legend.title = element_blank())
   return(p)
 }
+# lm test
+# scatter plot and fitted line
+# also plot 1x1 line
 plotlm <- function(df) {
   # lm test
   x <- df$Base
@@ -127,15 +130,16 @@ plotlm <- function(df) {
         color = factor(tl)
       )
     )
-  outs <-
-    list(
+  return(list(
       'p' = p,
       'beta' = beta,
       'a' = a,
       'r2' = r2,
       'fpval' = fpval
-    )
+    ))
 }
+# plot violin plot 
+# run mean comparison test
 plotBox <- function(df) {
   mz <- melt(df)
   p <-
@@ -155,9 +159,9 @@ plotBox <- function(df) {
     grids(linetype = "dashed")
   p <- addTheme(p)
   stat <- wilcox.test(x, y)
-  
   return(list('p' = p, 'pval' = stat$p.value))
 }
+# plot histogram/density plot
 plothist <- function(df) {
   # melt dataframe
   mz <- melt(df)
@@ -234,10 +238,8 @@ plotKS <- function(df) {
     'pval' = ks$p.value
   ))
 }
-# metrics files
-# metfile1 is the production pipeline results
-# metfile2 is the updated pipeline results
-## params,python style
+
+## inputs, python style
 option_list <- list(
   make_option(
     "--bmetrics",
@@ -313,7 +315,7 @@ for (ii in 1:length(metKeys)) {
       p4$p,
       labels = c("A", "B", "C", "D"),
       common.legend = TRUE, legend = "bottom"
-    )
+    ) # arrange 4 plots
   gp <-
     gp + ggtitle(paste(metKeys[ii])) + theme(plot.title = element_text(
       hjust = 0.5,
@@ -340,7 +342,7 @@ for (ii in 1:length(metKeys)) {
       face = "bold",
       size = 20,
       color = "black"
-    )
+    ) # text block for each test
   gp<-ggarrange(gp,text.p,
             ncol = 1, nrow = 2,
             heights = c(1, 0.1),
@@ -357,7 +359,7 @@ for (ii in 1:length(metKeys)) {
             p3$pval,
             p4$D,
             p4$pval
-          ))
+          )) # test, statistics outputs
 }
 
 # save multiple page into one pdf
