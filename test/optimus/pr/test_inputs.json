@@ -1,23 +1,23 @@
 {
-  "TestOptimusPR.expected_bam_hash": "f944c8d26ed178e5cbcc96d75f8f380f",
+  "TestOptimusPR.expected_bam_hash": "c4d4d28c687f00c6d2cccca524284e99",
   "TestOptimusPR.expected_matrix_hash": "69f3be6085e0c5f694b3cfa877b0eeaa",
   "TestOptimusPR.expected_matrix_summary_hash": "dd513351d4e7688c97f7bf902ba2876f",
   "TestOptimusPR.expected_picard_metrics_hash": "7b7be5c9a2236920ca09f05811dca6d5",
   "TestOptimusPR.r1": [
-    "gs://broad-dsde-mint-dev-teststorage/10x/demo/fastqs/pbmc8k_S1_L007_R1_001.fastq.gz",
-    "gs://broad-dsde-mint-dev-teststorage/10x/demo/fastqs/pbmc8k_S1_L007_R1_001.fastq.gz"
+    "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_R1_001.fastq.gz",
+    "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_R1_001.fastq.gz"
   ],
   "TestOptimusPR.r2": [
-    "gs://broad-dsde-mint-dev-teststorage/10x/demo/fastqs/pbmc8k_S1_L007_R2_001.fastq.gz",
-    "gs://broad-dsde-mint-dev-teststorage/10x/demo/fastqs/pbmc8k_S1_L007_R2_001.fastq.gz"
+    "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_R2_001.fastq.gz",
+    "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_R2_001.fastq.gz"
   ],
   "TestOptimusPR.i1": [
-    "gs://broad-dsde-mint-dev-teststorage/10x/demo/fastqs/pbmc8k_S1_L007_I1_001.fastq.gz",
-    "gs://broad-dsde-mint-dev-teststorage/10x/demo/fastqs/pbmc8k_S1_L007_I1_001.fastq.gz"
+    "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_I1_001.fastq.gz",
+    "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_I1_001.fastq.gz"
   ],
-  "TestOptimusPR.whitelist": "gs://broad-dsde-mint-dev-teststorage/10x/whitelist/737K-august-2016.txt",
-  "TestOptimusPR.tar_star_reference": "gs://broad-dsde-mint-dev-teststorage/demo/star.tar",
+  "TestOptimusPR.whitelist": "gs://hca-dcp-mint-test-data/10x/whitelist/737K-august-2016.txt",
+  "TestOptimusPR.tar_star_reference": "gs://hca-dcp-mint-test-data/reference/demo/star.tar",
   "TestOptimusPR.sample_id": "pbmc8k_test",
-  "TestOptimusPR.annotations_gtf": "gs://broad-dsde-mint-dev-teststorage/reference/hg19_ds/GSM1629193_hg19_ERCC.gtf.gz",
-  "TestOptimusPR.ref_genome_fasta": "gs://broad-dsde-mint-dev-teststorage/demo/chr21.fa"
+  "TestOptimusPR.annotations_gtf": "gs://hca-dcp-mint-test-data/reference/demo/hg19_ds/GSM1629193_hg19_ERCC.gtf.gz",
+  "TestOptimusPR.ref_genome_fasta": "gs://hca-dcp-mint-test-data/reference/demo/chr21.fa"
 }
