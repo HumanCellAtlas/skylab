@@ -82,7 +82,7 @@ plotlm <- function(df) {
   a <- round(sfit$coefficients[1], 3)
   # f-stats and p values
   f <- sfit$fstatistic
-  fpval <- pf(f[1], f[2], f[3], lower.tail = F)
+  fpval <- pf(f['value'], f['numdf'], f['dendf'], lower.tail = F)
   fpval.s <- convert2star(fpval)
   # start to plot
   coefs <-
@@ -148,7 +148,6 @@ plotBox <- function(df) {
       x = 'variable',
       y = 'value',
       color = "variable",
-      palette = c("#00AFBB", "#E7B800"),
       fill = "variable",
       add = "boxplot",
       add.params = list(fill = "white")
@@ -173,8 +172,7 @@ plothist <- function(df) {
     add = "mean",
     rug = TRUE,
     color = "variable",
-    fill = "variable",
-    palette = c("#00AFBB", "#E7B800")
+    fill = "variable"
   )
   density.p <- density.p + grids(linetype = "dashed")
   density.p <- addTheme(density.p)
@@ -201,8 +199,7 @@ plotKS <- function(df) {
     stat_ecdf(size = 1) +
     theme_bw(base_size = 20) +
     theme(legend.position = "top") +
-    ylab("ECDF") +
-    scale_color_manual(values = c("#00AFBB", "#E7B800"))
+    ylab("ECDF") 
   # do KS test
   dtable <-
     data.frame(
@@ -276,6 +273,7 @@ opt <- parse_args(opt_parser)
 output_name <- opt$out
 metKeys <- strsplit(opt$metKeys, split = ',')[[1]]
 print(metKeys)
+palette(c("#00AFBB", "#E7B800"))
 met1 <- read.csv(opt$bmetrics, row.names = 1)
 met2 <- read.csv(opt$umetrics, row.names = 1)
 # match column names between two metrics tables
@@ -313,8 +311,7 @@ for (ii in 1:length(metKeys)) {
       p3$p,
       p1$p,
       p4$p,
-      labels = c("A", "B", "C", "D"),
-      common.legend = TRUE, legend = "bottom"
+      labels = c("A", "B", "C", "D")
     ) # arrange 4 plots
   gp <-
     gp + ggtitle(paste(metKeys[ii])) + theme(plot.title = element_text(

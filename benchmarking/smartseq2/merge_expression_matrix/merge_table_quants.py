@@ -11,7 +11,6 @@ import requests
 def retrieve_workflow_outputs(uuid, run_name):
     # load cromwell credential
     logins = json.load(open('/usr/secrets/broad-dsde-mint-dev-cromwell.json'))
-    # meta_url
     metadata_url = "https://cromwell.mint-dev.broadinstitute.org/api/workflows/v1/" + uuid + "/metadata?expandSubWorkflows=false"
     r = requests.get(
         metadata_url,
