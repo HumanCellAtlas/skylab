@@ -47,7 +47,7 @@ workflow run_merge {
   String scripts_dir
   String uuid
   Array[String] metrics_names
-  String agg_file
+  String combined_file
   scatter(idx in range(length(metrics_names))) {
     call MergePicardMetrics {
       input:
@@ -60,6 +60,6 @@ workflow run_merge {
  call AppendMetricsFiles {
   input:
     met_files = MergePicardMetrics.merged_metrics,
-    output_name = agg_file
+    output_name = combined_file
   }
 }

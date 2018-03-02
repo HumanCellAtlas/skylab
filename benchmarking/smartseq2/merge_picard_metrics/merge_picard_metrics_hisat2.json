@@ -5,5 +5,5 @@
 	 "run_pipelines.RunHisat2Pipeline.rna_metrics",
 	 "run_pipelines.RunHisat2Pipeline.dedup_metrics",
 	 "run_pipelines.RunHisat2Pipeline.insert_size_metrics"],
- "run_merge.agg_file": "HISAT2_met_all.csv"
+ "run_merge.combined_file": "HISAT2_met_all.csv"
 }

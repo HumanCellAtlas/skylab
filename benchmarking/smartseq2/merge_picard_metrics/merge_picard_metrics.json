@@ -5,5 +5,5 @@
 	 "run_pipelines.RunStarPipeline.rna_metrics",
 	 "run_pipelines.RunStarPipeline.dedup_metrics",
 	 "run_pipelines.RunStarPipeline.insert_size_metrics"],
- "run_merge.agg_file":"STAR_met_all.csv"
+ "run_merge.combined_file":"STAR_met_all.csv"
 }
