@@ -4,19 +4,21 @@ task AnalysisConfoundingFactors{
   File updated_datafile
   File updated_metrics
   Int  num_pcs
-  Int  num_top_genes
   String output_name
   String src_dir
+  
   command {
     set -e
     mkdir ${output_name}
     gsutil cp ${src_dir}/Confounding_factor_analysis.R ./
-    Rscript Confounding_factor_analysis.R  --bdatafile ${base_datafile} --bmetrics ${base_metrics}  --udatafile ${updated_datafile}  --umetrics ${updated_metrics}  --nvar ${num_top_genes} --npcs ${num_pcs} --out ${output_name}/${output_name}
+    Rscript Confounding_factor_analysis.R  --bdatafile ${base_datafile} --bmetrics ${base_metrics}  --udatafile ${updated_datafile}  --umetrics ${updated_metrics}  --npcs ${num_pcs} --out ${output_name}/${output_name}
     tar -zcvf ${output_name}.tar.gz ${output_name}
   }
+  
   output {
     File combined_results = "${output_name}.tar.gz"
   }
+  
   runtime {
     docker:"gcr.io/broad-dsde-mint-dev/analysis-tools:0.0.5"
     memory:"7.5 GB"
@@ -33,7 +35,6 @@ workflow run_cnfounding_factors_analysis{
   String updated_metrics
   String output_name
   Int    npcs
-  Int    nvar
 
   call AnalysisConfoundingFactors {
     input:
@@ -44,7 +45,6 @@ workflow run_cnfounding_factors_analysis{
       output_name = output_name,
       src_dir = scripts_dir,
       num_pcs = npcs,
-      num_top_genes = nvar,
       src_dir = scripts_dir
   }
 }
