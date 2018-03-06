@@ -93,7 +93,8 @@ plotlm <- function(df) {
     )
   my.formula <- y ~ x
   p <-
-    ggplot(data = df, aes(x = Base, y = Updated)) + geom_point(shape = 1) + theme_bw(base_size = 20)
+    ggplot(data = df, aes(x = Base, y = Updated)) + geom_point(shape = 1) +
+    theme_bw()
   p <- p + stat_poly_eq(
     formula = my.formula,
     eq.with.lhs = "italic(hat(y))~`=`~",
@@ -110,7 +111,7 @@ plotlm <- function(df) {
       method.args = list(formula = my.formula),
       geom = 'text',
       aes(
-        label = paste("P-value:", fpval.s , sep = ""),
+        label = paste("P-value:", fpval , sep = ""),
         size = 12
       ),
       label.x.npc = 'left',
@@ -149,13 +150,16 @@ plotBox <- function(df) {
       y = 'value',
       color = "variable",
       fill = "variable",
-      add = "boxplot",
+      add = "Violin plot",
       add.params = list(fill = "white")
     )
   p <-
     p + stat_compare_means(comparisons = list(c('Base', 'Updated')), label = "p.signif") +
-    stat_compare_means() + # Add pairwise comparisons p-value
-    grids(linetype = "dashed")
+    stat_compare_means(size = 10) + # Add pairwise comparisons p-value
+    grids(linetype = "dashed") +
+    theme_bw()
+  p$layers[[2]]$aes_params$size=1
+  p$layers[[2]]$aes_params$textsize <- 10
   p <- addTheme(p)
   stat <- wilcox.test(x, y)
   return(list('p' = p, 'pval' = stat$p.value))
@@ -174,7 +178,7 @@ plothist <- function(df) {
     color = "variable",
     fill = "variable"
   )
-  density.p <- density.p + grids(linetype = "dashed")
+  density.p <- density.p + grids(linetype = "dashed")+theme_bw()
   density.p <- addTheme(density.p)
   return(list('p' = density.p))
 }
@@ -197,7 +201,7 @@ plotKS <- function(df) {
   ks.p <-
     ggplot(mz, aes(x = value, group = variable, color = variable)) +
     stat_ecdf(size = 1) +
-    theme_bw(base_size = 20) +
+    theme_bw() +
     theme(legend.position = "top") +
     ylab("ECDF") 
   # do KS test
