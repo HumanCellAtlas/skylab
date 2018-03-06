@@ -16,7 +16,9 @@ BLACKLIST <-
   )
 # calcaute detectable genes ratio
 # input cnts is data matrix
-# threshold is minimum counts/tpm
+# input threshold is minimum counts/tpm
+# return the ratio of detected genes
+# over total number genes
 SummaryPerColumn <- function(cnts, threshold) {
   cnt.dd <- cnts[, -c(1:2)]
   detected <- apply(cnt.dd, 2, function(x) {
@@ -26,6 +28,9 @@ SummaryPerColumn <- function(cnts, threshold) {
   return(ratio)
 }
 # calculate MT contents
+# input gtf_file(gencode annotation, version v2 of gff file)
+# input cnt, the data matrix, can be either TPM or counts 
+# return the ratio of
 # total reads/TPM in MT genes vs total reads/TPM per sample
 ParseMTGene <- function(gtf_file, cnt) {
   gtf_gencode <-
@@ -45,12 +50,12 @@ ParseMTGene <- function(gtf_file, cnt) {
   mt.ratio <- cnt.mt / cnt.tot
   return(mt.ratio)
 }
-# Combine Picard metrics and MT, detectable gene ratio into single file
+# Combine Picard metrics with MT and 
+# detectable gene ratio into single file
 CombineMetrics <- function(cnt, met, gtf_file, nthreshold) {
   ## blacklist of metrics
   met.core <- subset(met, !(met$metrics %in% BLACKLIST))
-  print(dim(met.core))
-  rownames(met.core) <- make.names(met.core[, 1], unique = TRUE)
+  rownames(met.core) <- make.names(met.core$metrics, unique = TRUE)
   met.core <- met.core[, -1]
   ## combine QC,summary of quantification
   cnt.ratio <- round(SummaryPerColumn(cnt, nthreshold), 5)
@@ -108,9 +113,8 @@ opt <- parse_args(opt_parser)
 # threshold cut off and output
 nthreshold <- opt$nthreshold
 output_name <- opt$out
-# load gtf
+# parse input parameters and load data
 gtf_file <- opt$gtf
-# load quantification and QC metrics
 metfile <- opt$metrics
 cntfile <- opt$datafile
 met <- read.csv(metfile)

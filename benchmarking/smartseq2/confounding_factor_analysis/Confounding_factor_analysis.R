@@ -14,10 +14,10 @@ library(optparse)
 library(rsvd)
 set.seed(42)
 
-# if p<0.05, return 1 value.
+# if p<0.05 or -1*log(0.05,base=10) >1.3, return 1 value.
 convert2SigLevels <- function(P) {
   x <- floor(-1 * log(P, base = 10))
-  x[x > 1] <- 1
+  x[x > 1.30] <- 1
   return(x)
 }
 # cover to foldchnages
@@ -304,7 +304,7 @@ plotSignCorr(pmat1, pmat2, paste(output_name, '_rpcs', sep = ''))
 # delta values in data matrix vs delta value in qc metrics
 # delta vs delta analysis can tell us the impact of changes in QC metrics to changes in data matrix
 # do fold changes
-## folder changes of data file(matrix) and do rPCA
+## fold changes of data file(matrix) and do rPCA
 logfc <- foldchanges(cnt1, cnt2)
 ## difference in metrics
 delta <- met1 - met2
