@@ -1,4 +1,8 @@
 task CollectMultipleMetrics {
+  meta {
+    description: "JISHU HELP AGAINNNNNNNNNNNNN"
+  }
+
   File aligned_bam
   File ref_genome_fasta
   String output_filename
