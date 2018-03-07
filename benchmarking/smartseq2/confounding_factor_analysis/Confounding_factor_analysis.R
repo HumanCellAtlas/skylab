@@ -14,12 +14,6 @@ library(optparse)
 library(rsvd)
 set.seed(42)
 
-# if p<0.05 or -1*log(0.05,base=10) >1.3, return 1 value.
-convert2SigLevels <- function(P) {
-  x <- floor(-1 * log(P, base = 10))
-  x[x > 1.30] <- 1
-  return(x)
-}
 # cover to foldchnages
 # mat1 and mat2 are two data matrix
 foldchanges <- function(mat1, mat2) {
