@@ -118,12 +118,13 @@ task HISAT2RSEM {
   String sample_name
 
   # runtime values
-  String docker = select_first([opt_docker, "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"])
-  Int machine_mem_mb = select_first([opt_memory_gb, 5]) * 1000
-  Int cpu = select_first([opt_cpu, 4])
+  String docker = "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
+  Int memory_gb = 5
+  Int machine_mem_mb = memory_gb * 1000
+  Int cpu = 4
   # use provided disk number or dynmically size on our own, 10 is our zipped fastq -> bam conversion with 50GB of additional disk
-  Int disk = select_first([opt_disk, ceil((size(fq1, "GB") + size(fq2, "GB") * 10) + size(hisat2_ref, "GB") + 50)])
-  Int preemptible = select_first([opt_preemptible, 5])
+  Int disk = ceil((size(fq1, "GB") + size(fq2, "GB") * 10) + size(hisat2_ref, "GB") + 50)
+  Int preemptible = 5
 
   command {
     set -e
@@ -191,12 +192,13 @@ task HISAT2SingleEnd {
   String sample_name
 
   # runtime values
-  String? docker = select_first([opt_docker, "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"])
-  Int? machine_mem_mb = select_first([opt_memory_gb, 5]) * 1000
-  Int? cpu = select_first([opt_cpu, 4])
+  String? docker = "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
+  Int? memory_gb = 5
+  Int? machine_mem_mb = memory_gb * 1000
+  Int? cpu = 4
   # use provided disk number or dynmically size on our own, 10 is our zipped fastq -> bam conversion with 50GB of additional disk
-  Int? disk = select_first([opt_disk, ceil((size(fq, "GB") * 10) + size(hisat2_ref, "GB") + 50)])
-  Int? preemptible = select_first([opt_preemptible, 5])
+  Int? disk = ceil((size(fq1, "GB") + size(fq2, "GB") * 10) + size(hisat2_ref, "GB") + 50)
+  Int? preemptible = 5
 
   parameter_meta {
     hisat2_ref: ""
