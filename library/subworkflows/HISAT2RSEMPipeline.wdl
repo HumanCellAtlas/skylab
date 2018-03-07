@@ -1,7 +1,7 @@
 import "HISAT2.wdl" as HISAT2
 import "RSEM.wdl" as RSEM
 
-workflow RunHisat2RsemPipeline {
+workflow RunHISAT2RSEMPipeline {
   meta {
     description: "JISHU HELP AGAINNNNNNNNNNNNN"
   }
@@ -24,7 +24,7 @@ workflow RunHisat2RsemPipeline {
     sample_name: ""
   }
   ################### TODO should `Trans` be Transcript?? ##################
-  call HISAT2.HISAT2rsem as HISAT2Trans {
+  call HISAT2.HISAT2RSEM as HISAT2Trans {
     input:
       hisat2_ref = hisat2_ref_trans,
       fq1 = fastq_read1,
