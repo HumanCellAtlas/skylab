@@ -1,11 +1,11 @@
-import "hisat2.wdl" as hisat2
-import "picard.wdl" as picard
-## QC pipeline
-## HISAT2 as aligner to align reads to genome reference
-## output: genome reference aligned bam file 
-## Picard will produce a set of QC metricss
-## output: a set of metrics files. 
+import "HISAT2.wdl" as HISAT2
+import "Picard.wdl" as Picard
+
 workflow RunHisat2Pipeline {
+  meta {
+    description: "JISHU HELP AGAINNNNNNNNNNNNN"
+  }
+
   File fastq_read1
   File fastq_read2
   File gtf
@@ -17,35 +17,40 @@ workflow RunHisat2Pipeline {
   String output_prefix
   String hisat2_ref_name
   String sample_name
-  ## variables to estimate disk size
-  Float hisat2_ref_size = size(hisat2_ref, "GB")
-  Float fastq_size = size(fastq_read1, "GB") + size(fastq_read2, "GB")
-  Float reference_bundle_size = size(ref_fasta, "GB") + size(ref_flat, "GB") + size(rrna_interval, "GB") + size(gtf, "GB")
-  Float bam_disk_multiplier = 10.0
-  Int? increase_disk_size
-  Int additional_disk = select_first([increase_disk_size, 10])
+
+  parameter_meta {
+    fastq_read1: ""
+    fastq_read2: ""
+    gtf: ""
+    stranded: ""
+    ref_fasta: ""
+    rrna_interval: ""
+    ref_flat: ""
+    hisat2_ref: ""
+    output_prefix: ""
+    hisat2_ref_name: ""
+    sample_name: ""
+  }
  
-  call hisat2.HISAT2PE as Hisat2 {
+  call HISAT2.HISAT2PairedEnd {
     input:
       hisat2_ref = hisat2_ref,
       fq1 = fastq_read1,
       fq2 = fastq_read2,
       ref_name = hisat2_ref_name,
       sample_name = sample_name,
-      output_name = output_prefix,
-      disk_size = ceil(hisat2_ref_size + fastq_size * bam_disk_multiplier + additional_disk * 5.0)
+      output_name = output_prefix
   }
   
-  Float bam_size = size(Hisat2.output_bam, "GB")
-  
-  call picard.CollectMultipleMetrics {
+  call Picard.CollectMultipleMetrics {
     input:
       aligned_bam = Hisat2.output_bam,
       ref_genome_fasta = ref_fasta,
       output_filename = output_prefix,
       disk_size = ceil(bam_size + reference_bundle_size + additional_disk)
   }
-  call picard.CollectRnaMetrics {
+
+  call Picard.CollectRnaMetrics {
     input:
       aligned_bam = Hisat2.output_bam,
       ref_flat = ref_flat,
@@ -54,7 +59,8 @@ workflow RunHisat2Pipeline {
       stranded = stranded,
       disk_size = ceil(bam_size + reference_bundle_size + additional_disk)
   }
-  call picard.CollectDuplicationMetrics {
+
+  call Picard.CollectDuplicationMetrics {
     input:
       aligned_bam = Hisat2.output_bam,
       output_filename = output_prefix,
@@ -62,9 +68,9 @@ workflow RunHisat2Pipeline {
   }
 
   output {
-    File aligned_bam = Hisat2.output_bam
-    File metfile = Hisat2.metfile
-    File logfile = Hisat2.logfile
+    File aligned_bam = HISAT2PairedEnd.output_bam
+    File metfile = HISAT2PairedEnd.metfile
+    File logfile = HISAT2PairedEnd.logfile
     File alignment_summary_metrics = CollectMultipleMetrics.alignment_summary_metrics
     File base_call_dist_metrics = CollectMultipleMetrics.base_call_dist_metrics
     File base_call_pdf = CollectMultipleMetrics.base_call_pdf
