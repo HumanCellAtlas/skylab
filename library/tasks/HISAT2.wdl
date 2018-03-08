@@ -206,11 +206,11 @@ task HISAT2SingleEnd {
     ref_name: ""
     output_name: ""
     sample_name: ""
-    opt_docker: ""
-    opt_memory_gb: ""
-    opt_cpu: ""
-    opt_disk: ""
-    opt_preemptible: ""
+    docker: ""
+    memory_gb: ""
+    cpu: ""
+    disk: ""
+    preemptible: ""
   }
 
   meta {
