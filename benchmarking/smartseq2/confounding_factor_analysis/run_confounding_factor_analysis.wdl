@@ -11,7 +11,13 @@ task AnalysisConfoundingFactors{
     set -e
     mkdir ${output_name}
     gsutil cp ${src_dir}/Confounding_factor_analysis.R ./
-    Rscript Confounding_factor_analysis.R  --bdatafile ${base_datafile} --bmetrics ${base_metrics}  --udatafile ${updated_datafile}  --umetrics ${updated_metrics}  --npcs ${num_pcs} --out ${output_name}/${output_name}
+    Rscript Confounding_factor_analysis.R \
+      --bdatafile ${base_datafile} \
+      --bmetrics ${base_metrics} \
+      --udatafile ${updated_datafile} \
+      --umetrics ${updated_metrics} \
+      --npcs ${num_pcs} \
+      --out ${output_name}/${output_name} 
     tar -zcvf ${output_name}.tar.gz ${output_name}
   }
   
