@@ -73,7 +73,10 @@ RUN Rscript -e "install.packages('gridExtra')"
 RUN Rscript -e "install.packages('ggpubr')"
 RUN Rscript -e "install.packages('ggpmisc')"
 RUN Rscript -e "install.packages('cowplot')"
-
+RUN Rscript -e "install.packages('corrplot')"
+RUN Rscript -e "install.packages('ggrepel')"
+RUN Rscript -e "install.packages('optparse')"
+RUN Rscript -e 'source("http://bioconductor.org/biocLite.R")' -e 'biocLite("rtracklayer")'
 # Mount Google Cloud secret key
 ADD broad-dsde-mint-dev-analysis-tools.json /usr/secrets/broad-dsde-mint-dev-analysis-tools.json
 
