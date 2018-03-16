@@ -30,7 +30,7 @@ groups:
       - ambrosejcarr
       - jishuxu
       - mckinsel
-      
+      - meganshand
 
   software-engineers:
     required: 1 # Require approval from at least one software engineer
