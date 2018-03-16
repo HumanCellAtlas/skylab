@@ -25,7 +25,7 @@ group_defaults:
 # Groups of reviewers and their respective settings
 groups:
   computational-biologists:
-    required: 1 # require approval from at least one computational biologist
+    required: 1 # Require approval from at least one computational biologist
     users:
       - ambrosejcarr
       - jishuxu
@@ -33,7 +33,7 @@ groups:
       - meganshand
 
   software-engineers:
-    required: 1 # require approval from at least one software engineer
+    required: 1 # Require approval from at least one software engineer
     users:
       - dshiga
       - jsotobroad
