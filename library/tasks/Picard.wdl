@@ -146,6 +146,7 @@ task CollectRnaMetrics {
     cpu: cpu
     preemptible: preemptible
   }
+
   output {
     File rna_metrics = "${output_name}.rna_metrics.txt"
     File rna_coverage_pdf = "${output_name}.rna.coverage.pdf"
