@@ -1,8 +1,4 @@
 task RSEMExpression {
-  meta {
-    description: "JISHU HELP AGAINNNNNNNNNNNNN"
-  }
-
   File trans_aligned_bam
   File rsem_genome
   String rsem_out
@@ -15,12 +11,16 @@ task RSEMExpression {
   Int? opt_preemptible
 
   # runtime values
-  String docker = select_first([opt_docker, "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"])
+  String docker = select_first([opt_docker, "quay.io/humancellatlas/secondary-analysis-rsem:v0.2.2-1.3."])
   Int machine_mem_mb = select_first([opt_memory_gb, 3]) * 1000
   Int cpu = select_first([opt_cpu, 4])
-  # use provided disk number or dynmically size on our own, with 20GB of additional disk
+  # use provided disk number or dynamically size on our own, with 20GB of additional disk
   Int disk = select_first([opt_disk, ceil(size(trans_aligned_bam, "GB") + size(rsem_genome, "GB") + 20)])
   Int preemptible = select_first([opt_preemptible, 5])
+
+  meta {
+    description: "JISHU HELP AGAINNNNNNNNNNNNN"
+  }
 
   parameter_meta {
     trans_aligned_bam: ""
