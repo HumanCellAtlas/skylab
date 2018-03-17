@@ -1,5 +1,6 @@
-import "HISAT2QualityControlPipeline.wdl" as RunHISAT2
-import "HISAT2RSEMPipeline.wdl" as RunHISAT2RSEM
+import "HISAT2.wdl" as HISAT2
+import "Picard.wdl" as Picard
+import "RSEM.wdl" as RSEM
 
 workflow SmartSeq2SingleCell {
   meta {
@@ -45,67 +46,92 @@ workflow SmartSeq2SingleCell {
     fastq2: ""
   }
 
-  call RunHISAT2.RunHISAT2Pipeline as QualityControlWorkflow {
+  String quality_control_output_prefix = output_name + "_qc"
+  call HISAT2.HISAT2PairedEnd {
     input:
-      fastq_read1 = fastq1,
-      fastq_read2 = fastq2, 
-      gtf = gtf_file,
-      stranded = stranded,
-      ref_fasta = genome_ref_fasta,
-      rrna_interval = rrna_intervals,
-      ref_flat = gene_ref_flat,
       hisat2_ref = hisat2_ref_index,
-      hisat2_ref_name = hisat2_ref_name,
+      fq1 = fastq1,
+      fq2 = fastq2,
+      ref_name = hisat2_ref_name,
       sample_name = sample_name,
-      output_prefix = output_name + "_qc"
-      
+      output_name = quality_control_output_prefix
   }
 
-  call RunHISAT2RSEM.RunHISAT2RSEMPipeline as DataWorkflow {
+  call Picard.CollectMultipleMetrics {
     input:
-      fastq_read1 = fastq1, 
-      fastq_read2 = fastq2, 
-      hisat2_ref_trans = hisat2_ref_trans_index,
-      hisat2_ref_trans_name = hisat2_ref_trans_name,
+      aligned_bam = HISAT2PairedEnd.output_bam,
+      genome_ref_fasta = genome_ref_fasta,
+      output_name = quality_control_output_prefix
+  }
+
+  call Picard.CollectRnaMetrics {
+    input:
+      aligned_bam = HISAT2PairedEnd.output_bam,
+      ref_flat = gene_ref_flat,
+      rrna_intervals = rrna_intervals,
+      output_name = quality_control_output_prefix,
+      stranded = stranded,
+  }
+
+  call Picard.CollectDuplicationMetrics {
+    input:
+      aligned_bam = HISAT2PairedEnd.output_bam,
+      output_name = quality_control_output_prefix
+  }
+
+  String data_output_prefix = output_name + "_rsem"
+  # TODO should `Trans` be Transcript??
+  call HISAT2.HISAT2RSEM as HISAT2Trans {
+    input:
+      hisat2_ref = hisat2_ref_trans_index,
+      fq1 = fastq1,
+      fq2 = fastq2,
+      ref_name = hisat2_ref_trans_name,
+      sample_name = sample_name,
+      output_name = data_output_prefix,
+  }
+
+  call RSEM.RSEMExpression {
+    input:
+      trans_aligned_bam = HISAT2Trans.output_bam,
       rsem_genome = rsem_ref_index,
-      output_prefix = output_name + "_rsem",
-      sample_name = sample_name
+      rsem_out = data_output_prefix,
   }
 
   output {
     # quality control outputs
-    File aligned_bam = QualityControlWorkflow.aligned_bam
-    File alignment_summary_metrics = QualityControlWorkflow.alignment_summary_metrics
-    File bait_bias_detail_metrics = QualityControlWorkflow.bait_bias_detail_metrics
-    File bait_bias_summary_metrics = QualityControlWorkflow.bait_bias_summary_metrics
-    File base_call_dist_metrics = QualityControlWorkflow.base_call_dist_metrics
-    File base_call_pdf = QualityControlWorkflow.base_call_pdf
-    File dedup_metrics = QualityControlWorkflow.dedup_metrics
-    File error_summary_metrics = QualityControlWorkflow.error_summary_metrics
-    File gc_bias_detail_metrics = QualityControlWorkflow.gc_bias_detail_metrics
-    File gc_bias_dist_pdf = QualityControlWorkflow.gc_bias_dist_pdf
-    File gc_bias_summary_metrics = QualityControlWorkflow.gc_bias_summary_metrics
-    File insert_size_hist = QualityControlWorkflow.insert_size_hist
-    File insert_size_metrics = QualityControlWorkflow.insert_size_metrics
-    File hisat2_logfile = QualityControlWorkflow.logfile
-    File hisat2_metfile = QualityControlWorkflow.metfile
-    File pre_adapter_details_metrics = QualityControlWorkflow.pre_adapter_details_metrics
-    File quality_by_cycle_metrics = QualityControlWorkflow.quality_by_cycle_metrics
-    File quality_by_cycle_pdf = QualityControlWorkflow.quality_by_cycle_pdf
-    File quality_distribution_dist_pdf = QualityControlWorkflow.quality_distribution_dist_pdf
-    File quality_distribution_metrics = QualityControlWorkflow.quality_distribution_metrics
-    File rna_coverage = QualityControlWorkflow.rna_coverage
-    File rna_metrics = QualityControlWorkflow.rna_metrics
+    File aligned_bam = HISAT2PairedEnd.output_bam
+    File met_file = HISAT2PairedEnd.met_file
+    File log_file = HISAT2PairedEnd.log_file
+    File alignment_summary_metrics = CollectMultipleMetrics.alignment_summary_metrics
+    File base_call_dist_metrics = CollectMultipleMetrics.base_call_dist_metrics
+    File base_call_pdf = CollectMultipleMetrics.base_call_pdf
+    File gc_bias_detail_metrics = CollectMultipleMetrics.gc_bias_detail_metrics
+    File gc_bias_dist_pdf = CollectMultipleMetrics.gc_bias_dist_pdf
+    File gc_bias_summary_metrics = CollectMultipleMetrics.gc_bias_summary_metrics
+    File insert_size_hist = CollectMultipleMetrics.insert_size_hist
+    File insert_size_metrics = CollectMultipleMetrics.insert_size_metrics
+    File quality_distribution_metrics = CollectMultipleMetrics.quality_distribution_metrics
+    File quality_distribution_dist_pdf = CollectMultipleMetrics.quality_distribution_dist_pdf
+    File quality_by_cycle_metrics = CollectMultipleMetrics.quality_by_cycle_metrics
+    File quality_by_cycle_pdf = CollectMultipleMetrics.quality_by_cycle_pdf
+    File pre_adapter_details_metrics = CollectMultipleMetrics.pre_adapter_details_metrics
+    File bait_bias_detail_metrics = CollectMultipleMetrics.bait_bias_detail_metrics
+    File bait_bias_summary_metrics = CollectMultipleMetrics.bait_bias_summary_metrics
+    File error_summary_metrics = CollectMultipleMetrics.error_summary_metrics
+    File rna_metrics = CollectRnaMetrics.rna_metrics
+    File rna_coverage = CollectRnaMetrics.rna_coverage_pdf
+    File dedup_metrics = CollectDuplicationMetrics.dedup_metrics
 
     # data outputs
-    File aligned_trans_bam = DataWorkflow.aligned_trans_bam
-    File hisat2tran_logfile = DataWorkflow.logfile
-    File hisat2tran_metfile = DataWorkflow.metfile
-    File rsem_cnt_log = DataWorkflow.rsem_cnt_log
-    File rsem_gene_results = DataWorkflow.rsem_gene_results
-    File rsem_isoform_results = DataWorkflow.rsem_isoform_results
-    File rsem_model_log = DataWorkflow.rsem_model_log
-    File rsem_theta_log = DataWorkflow.rsem_theta_log
-    File rsem_time_log = DataWorkflow.rsem_time_log
+    File aligned_trans_bam = HISAT2Trans.output_bam
+    File hisat2tran_met_file = HISAT2Trans.met_file
+    File hisat2tran_log_file = HISAT2Trans.log_file
+    File rsem_gene_results = RSEMExpression.rsem_gene
+    File rsem_isoform_results = RSEMExpression.rsem_isoform
+    File rsem_time_log = RSEMExpression.rsem_time
+    File rsem_cnt_log = RSEMExpression.rsem_cnt
+    File rsem_model_log = RSEMExpression.rsem_model
+    File rsem_theta_log = RSEMExpression.rsem_theta
   }
 }
