@@ -11,7 +11,7 @@ task RSEMExpression {
   Int? opt_preemptible
 
   # runtime values
-  String docker = select_first([opt_docker, "quay.io/humancellatlas/secondary-analysis-rsem:v0.2.2-1.3."])
+  String docker = select_first([opt_docker, "quay.io/humancellatlas/secondary-analysis-rsem:v0.2.2-1.3.0"])
   Int machine_mem_mb = select_first([opt_memory_gb, 3]) * 1000
   Int cpu = select_first([opt_cpu, 4])
   # use provided disk number or dynamically size on our own, with 20GB of additional disk
