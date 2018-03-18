@@ -1,5 +1,5 @@
 {
-  "ss2_single_sample.wdl": "pipelines/smartseq2_single_sample/ss2_single_sample.wdl",
+  "ss2_single_sample.wdl": "pipelines/smartseq2_single_sample/SmartSeq2SingleSample.wdl",
   "ValidateSmartSeq2SingleCell.wdl": "test/smartseq2_single_sample/pr/ValidateSmartSeq2SingleCell.wdl",
   "hisat2.wdl": "library/tasks/HISAT2.wdl",
   "picard.wdl": "library/tasks/Picard.wdl",
