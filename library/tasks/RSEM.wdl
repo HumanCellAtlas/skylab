@@ -1,7 +1,7 @@
 task RSEMExpression {
   File trans_aligned_bam
   File rsem_genome
-  String rsem_out
+  String output_basename
 
   # runtime optional arguments
   String? opt_docker
@@ -25,6 +25,7 @@ task RSEMExpression {
   parameter_meta {
     trans_aligned_bam: ""
     rsem_genome: ""
+    output_basename: ""
     opt_docker: ""
     opt_memory_gb: ""
     opt_cpu: ""
@@ -45,7 +46,7 @@ task RSEMExpression {
       --single-cell-prior \
       ${trans_aligned_bam} \
       rsem/rsem_trans_index  \
-      "${rsem_out}" 
+      "${output_basename}"
   }
 
   runtime {
@@ -57,12 +58,12 @@ task RSEMExpression {
   }
 
   output {
-    File rsem_gene = "${rsem_out}.genes.results"
-    File rsem_isoform = "${rsem_out}.isoforms.results"
-    File rsem_time = "${rsem_out}.time"
-    File rsem_cnt = "${rsem_out}.stat/${rsem_out}.cnt"
-    File rsem_model = "${rsem_out}.stat/${rsem_out}.model"
-    File rsem_theta = "${rsem_out}.stat/${rsem_out}.theta"
+    File rsem_gene = "${output_basename}.genes.results"
+    File rsem_isoform = "${output_basename}.isoforms.results"
+    File rsem_time = "${output_basename}.time"
+    File rsem_cnt = "${output_basename}.stat/${output_basename}.cnt"
+    File rsem_model = "${output_basename}.stat/${output_basename}.model"
+    File rsem_theta = "${output_basename}.stat/${output_basename}.theta"
   }
 }
 

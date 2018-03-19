@@ -46,22 +46,22 @@ workflow SmartSeq2SingleCell {
     fastq2: ""
   }
 
-  String quality_control_output_prefix = output_name + "_qc"
+  String quality_control_output_basename = output_name + "_qc"
   call HISAT2.HISAT2PairedEnd {
     input:
       hisat2_ref = hisat2_ref_index,
-      fq1 = fastq1,
-      fq2 = fastq2,
+      fastq1 = fastq1,
+      fastq2 = fastq2,
       ref_name = hisat2_ref_name,
       sample_name = sample_name,
-      output_name = quality_control_output_prefix
+      output_basename = quality_control_output_basename
   }
 
   call Picard.CollectMultipleMetrics {
     input:
       aligned_bam = HISAT2PairedEnd.output_bam,
       genome_ref_fasta = genome_ref_fasta,
-      output_name = quality_control_output_prefix
+      output_basename = quality_control_output_basename
   }
 
   call Picard.CollectRnaMetrics {
@@ -69,33 +69,33 @@ workflow SmartSeq2SingleCell {
       aligned_bam = HISAT2PairedEnd.output_bam,
       ref_flat = gene_ref_flat,
       rrna_intervals = rrna_intervals,
-      output_name = quality_control_output_prefix,
+      output_basename = quality_control_output_basename,
       stranded = stranded,
   }
 
   call Picard.CollectDuplicationMetrics {
     input:
       aligned_bam = HISAT2PairedEnd.output_bam,
-      output_name = quality_control_output_prefix
+      output_basename = quality_control_output_basename
   }
 
-  String data_output_prefix = output_name + "_rsem"
+  String data_output_basename = output_name + "_rsem"
   # TODO should `Trans` be Transcript??
   call HISAT2.HISAT2RSEM as HISAT2Trans {
     input:
       hisat2_ref = hisat2_ref_trans_index,
-      fq1 = fastq1,
-      fq2 = fastq2,
+      fastq1 = fastq1,
+      fastq2 = fastq2,
       ref_name = hisat2_ref_trans_name,
       sample_name = sample_name,
-      output_name = data_output_prefix,
+      output_basename = data_output_basename,
   }
 
   call RSEM.RSEMExpression {
     input:
       trans_aligned_bam = HISAT2Trans.output_bam,
       rsem_genome = rsem_ref_index,
-      rsem_out = data_output_prefix,
+      output_basename = data_output_basename,
   }
 
   output {

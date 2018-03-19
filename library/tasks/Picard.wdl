@@ -1,7 +1,7 @@
 task CollectMultipleMetrics {
   File aligned_bam
   File genome_ref_fasta
-  String output_name
+  String output_basename
 
   # runtime optional arguments
   String? opt_docker
@@ -27,7 +27,7 @@ task CollectMultipleMetrics {
   parameter_meta {
     aligned_bam: ""
     genome_ref_fasta: ""
-    output_name: ""
+    output_basename: ""
     opt_docker: "optionally provide a docker to run in"
     opt_memory_gb: "optionally provide how much memory to provision"
     opt_cpu: "optionally provide how many cpus to provision"
@@ -40,7 +40,7 @@ task CollectMultipleMetrics {
       VALIDATION_STRINGENCY=SILENT \
       METRIC_ACCUMULATION_LEVEL=ALL_READS \
       INPUT="${aligned_bam}" \
-      OUTPUT="${output_name}" \
+      OUTPUT="${output_basename}" \
       FILE_EXTENSION=".txt" \
       PROGRAM=null \
       PROGRAM=CollectAlignmentSummaryMetrics \
@@ -64,23 +64,23 @@ task CollectMultipleMetrics {
   }
   
   output {
-    File alignment_summary_metrics = "${output_name}.alignment_summary_metrics.txt"
-    File base_call_dist_metrics = "${output_name}.base_distribution_by_cycle_metrics.txt"
-    File base_call_pdf = "${output_name}.base_distribution_by_cycle.pdf"
-    File gc_bias_detail_metrics = "${output_name}.gc_bias.detail_metrics.txt"
-    File gc_bias_dist_pdf = "${output_name}.gc_bias.pdf"
-    File gc_bias_summary_metrics = "${output_name}.gc_bias.summary_metrics.txt"
-    File insert_size_hist = "${output_name}.insert_size_histogram.pdf"
-    File insert_size_metrics = "${output_name}.insert_size_metrics.txt"
-    File quality_distribution_metrics = "${output_name}.quality_distribution_metrics.txt"
-    File quality_distribution_dist_pdf = "${output_name}.quality_distribution.pdf"
-    File quality_by_cycle_metrics = "${output_name}.quality_by_cycle_metrics.txt"
-    File quality_by_cycle_pdf = "${output_name}.quality_by_cycle.pdf"
-    File pre_adapter_details_metrics = "${output_name}.pre_adapter_detail_metrics.txt"
-    File pre_adapter_summary_metrics = "${output_name}.pre_adapter_summary_metrics.txt"
-    File bait_bias_detail_metrics = "${output_name}.bait_bias_detail_metrics.txt"
-    File bait_bias_summary_metrics = "${output_name}.bait_bias_summary_metrics.txt"
-    File error_summary_metrics = "${output_name}.error_summary_metrics.txt"
+    File alignment_summary_metrics = "${output_basename}.alignment_summary_metrics.txt"
+    File base_call_dist_metrics = "${output_basename}.base_distribution_by_cycle_metrics.txt"
+    File base_call_pdf = "${output_basename}.base_distribution_by_cycle.pdf"
+    File gc_bias_detail_metrics = "${output_basename}.gc_bias.detail_metrics.txt"
+    File gc_bias_dist_pdf = "${output_basename}.gc_bias.pdf"
+    File gc_bias_summary_metrics = "${output_basename}.gc_bias.summary_metrics.txt"
+    File insert_size_hist = "${output_basename}.insert_size_histogram.pdf"
+    File insert_size_metrics = "${output_basename}.insert_size_metrics.txt"
+    File quality_distribution_metrics = "${output_basename}.quality_distribution_metrics.txt"
+    File quality_distribution_dist_pdf = "${output_basename}.quality_distribution.pdf"
+    File quality_by_cycle_metrics = "${output_basename}.quality_by_cycle_metrics.txt"
+    File quality_by_cycle_pdf = "${output_basename}.quality_by_cycle.pdf"
+    File pre_adapter_details_metrics = "${output_basename}.pre_adapter_detail_metrics.txt"
+    File pre_adapter_summary_metrics = "${output_basename}.pre_adapter_summary_metrics.txt"
+    File bait_bias_detail_metrics = "${output_basename}.bait_bias_detail_metrics.txt"
+    File bait_bias_summary_metrics = "${output_basename}.bait_bias_summary_metrics.txt"
+    File error_summary_metrics = "${output_basename}.error_summary_metrics.txt"
   }
 }
 
@@ -88,7 +88,7 @@ task CollectRnaMetrics {
   File aligned_bam
   File ref_flat
   File rrna_intervals
-  String output_name
+  String output_basename
   String stranded
   
   # runtime optional arguments
@@ -116,7 +116,7 @@ task CollectRnaMetrics {
     aligned_bam: ""
     ref_flat: ""
     rrna_intervals: ""
-    output_name: ""
+    output_basename: ""
     stranded: ""
     opt_docker: "optionally provide a docker to run in"
     opt_memory_gb: "optionally provide how much memory to provision"
@@ -131,12 +131,12 @@ task CollectRnaMetrics {
       VALIDATION_STRINGENCY=SILENT \
       METRIC_ACCUMULATION_LEVEL=ALL_READS \
       INPUT="${aligned_bam}" \
-      OUTPUT="${output_name}.rna_metrics.txt" \
+      OUTPUT="${output_basename}.rna_metrics.txt" \
       REF_FLAT="${ref_flat}" \
       RIBOSOMAL_INTERVALS="${rrna_intervals}" \
       STRAND_SPECIFICITY=${stranded} \
-      CHART_OUTPUT="${output_name}.rna.coverage.pdf"
-    touch "${output_name}.rna.coverage.pdf"
+      CHART_OUTPUT="${output_basename}.rna.coverage.pdf"
+    touch "${output_basename}.rna.coverage.pdf"
   }
   
   runtime {
@@ -148,15 +148,15 @@ task CollectRnaMetrics {
   }
 
   output {
-    File rna_metrics = "${output_name}.rna_metrics.txt"
-    File rna_coverage_pdf = "${output_name}.rna.coverage.pdf"
+    File rna_metrics = "${output_basename}.rna_metrics.txt"
+    File rna_coverage_pdf = "${output_basename}.rna.coverage.pdf"
   }
 }
 
 # Here we use "-XX:ParallelGCThreads=2" to run MarkDuplication on multiple threads 
 task CollectDuplicationMetrics {
   File aligned_bam
-  String output_name
+  String output_basename
 
   # runtime optional arguments
   String? opt_docker
@@ -181,7 +181,7 @@ task CollectDuplicationMetrics {
 
   parameter_meta {
     aligned_bam: ""
-    output_name: ""
+    output_basename: ""
     opt_docker: "optionally provide a docker to run in"
     opt_memory_gb: "optionally provide how much memory to provision"
     opt_cpu: "optionally provide how many cpus to provision"
@@ -193,9 +193,9 @@ task CollectDuplicationMetrics {
     java -Xmx${command_mem_mb}m -XX:ParallelGCThreads=${cpu}  -jar /usr/picard/picard.jar  MarkDuplicates \
        VALIDATION_STRINGENCY=SILENT  \
        INPUT=${aligned_bam} \
-       OUTPUT="${output_name}.MarkDuplicated.bam" \
+       OUTPUT="${output_basename}.MarkDuplicated.bam" \
        ASSUME_SORTED=true \
-       METRICS_FILE="${output_name}.duplicate_metrics.txt" \
+       METRICS_FILE="${output_basename}.duplicate_metrics.txt" \
        REMOVE_DUPLICATES=false
   }
   
@@ -208,7 +208,7 @@ task CollectDuplicationMetrics {
   }
   
   output {
-    File dedup_metrics = "${output_name}.duplicate_metrics.txt"
+    File dedup_metrics = "${output_basename}.duplicate_metrics.txt"
   }
 }
 

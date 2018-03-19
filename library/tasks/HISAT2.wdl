@@ -1,9 +1,9 @@
 task HISAT2PairedEnd {
   File hisat2_ref
-  File fq1
-  File fq2
+  File fastq1
+  File fastq2
   String ref_name
-  String output_name
+  String output_basename
   String sample_name
 
   # runtime optional arguments
@@ -18,7 +18,7 @@ task HISAT2PairedEnd {
   Int machine_mem_mb = select_first([opt_memory_gb, 5]) * 1000
   Int cpu = select_first([opt_cpu, 4])
   # use provided disk number or dynamically size on our own, 10 is our zipped fastq -> bam conversion with 50GB of additional disk
-  Int disk = select_first([opt_disk, ceil((size(fq1, "GB") + size(fq2, "GB") * 10) + size(hisat2_ref, "GB") + 50)])
+  Int disk = select_first([opt_disk, ceil((size(fastq1, "GB") + size(fastq2, "GB") * 10) + size(hisat2_ref, "GB") + 50)])
   Int preemptible = select_first([opt_preemptible, 5])
 
   meta {
@@ -27,10 +27,10 @@ task HISAT2PairedEnd {
 
   parameter_meta {
     hisat2_ref: ""
-    fq1: "gz forward fastq file"
-    fq2: "gz reverse fastq file"
+    fastq1: "gz forward fastq file"
+    fastq2: "gz reverse fastq file"
     ref_name: ""
-    output_name: ""
+    output_basename: ""
     sample_name: ""
     opt_docker: "optionally provide a docker to run in"
     opt_memory_gb: "optionally provide how much memory to provision"
@@ -47,17 +47,17 @@ task HISAT2PairedEnd {
     set -e
 
     # fix names if necessary.
-    if [ "${fq1}" != *.fastq.gz ]; then
-        FQ1=${fq1}.fastq.gz
-        mv ${fq1} ${fq1}.fastq.gz
+    if [ "${fastq1}" != *.fastq.gz ]; then
+        FQ1=${fastq1}.fastq.gz
+        mv ${fastq1} ${fastq1}.fastq.gz
     else
-        FQ1=${fq1}
+        FQ1=${fastq1}
     fi
-    if [ "${fq2}" != *.fastq.gz ]; then
-        FQ2=${fq2}.fastq.gz
-        mv ${fq2} ${fq2}.fastq.gz
+    if [ "${fastq2}" != *.fastq.gz ]; then
+        FQ2=${fastq2}.fastq.gz
+        mv ${fastq2} ${fastq2}.fastq.gz
     else
-        FQ2=${fq2}
+        FQ2=${fastq2}
     fi
 
    tar -zxvf "${hisat2_ref}"
@@ -67,13 +67,13 @@ task HISAT2PairedEnd {
       -2 $FQ2 \
       --rg-id=${sample_name} --rg SM:${sample_name} --rg LB:${sample_name} \
       --rg PL:ILLUMINA --rg PU:${sample_name} \
-      --new-summary --summary-file ${output_name}.log \
-      --met-file ${output_name}.hisat2.met.txt --met 5 \
+      --new-summary --summary-file ${output_basename}.log \
+      --met-file ${output_basename}.hisat2.met.txt --met 5 \
       --seed 12345 \
       -k 10 \
       --secondary \
-      -p ${cpu} -S ${output_name}.sam
-    samtools sort -@ ${cpu} -O bam -o "${output_name}.bam" "${output_name}.sam"
+      -p ${cpu} -S ${output_basename}.sam
+    samtools sort -@ ${cpu} -O bam -o "${output_basename}.bam" "${output_basename}.sam"
   }
 
   runtime {
@@ -85,18 +85,18 @@ task HISAT2PairedEnd {
   }
 
   output {
-    File log_file = "${output_name}.log"
-    File met_file = "${output_name}.hisat2.met.txt"
-    File output_bam = "${output_name}.bam"
+    File log_file = "${output_basename}.log"
+    File met_file = "${output_basename}.hisat2.met.txt"
+    File output_bam = "${output_basename}.bam"
   }
 }
 
 task HISAT2RSEM {
   File hisat2_ref
-  File fq1
-  File fq2
+  File fastq1
+  File fastq2
   String ref_name
-  String output_name
+  String output_basename
   String sample_name
 
   # runtime optional arguments
@@ -111,7 +111,7 @@ task HISAT2RSEM {
   Int machine_mem_mb = select_first([opt_memory_gb, 5]) * 1000
   Int cpu = select_first([opt_cpu, 4])
   # use provided disk number or dynamically size on our own, 10 is our zipped fastq -> bam conversion with 50GB of additional disk
-  Int disk = select_first([opt_disk, ceil((size(fq1, "GB") + size(fq2, "GB") * 10) + size(hisat2_ref, "GB") + 50)])
+  Int disk = select_first([opt_disk, ceil((size(fastq1, "GB") + size(fastq2, "GB") * 10) + size(hisat2_ref, "GB") + 50)])
   Int preemptible = select_first([opt_preemptible, 5])
 
   meta {
@@ -120,10 +120,10 @@ task HISAT2RSEM {
 
   parameter_meta {
     hisat2_ref: ""
-    fq1: "gz forward fastq file"
-    fq2: "gz reverse fastq file"
+    fastq1: "gz forward fastq file"
+    fastq2: "gz reverse fastq file"
     ref_name: ""
-    output_name: ""
+    output_basename: ""
     sample_name: ""
     opt_docker: "optionally provide a docker to run in"
     opt_memory_gb: "optionally provide how much memory to provision"
@@ -136,18 +136,18 @@ task HISAT2RSEM {
     set -e
 
     # fix names if necessary.
-    if [ "${fq1}" != *.fastq.gz ]; then
-        FQ1=${fq1}.fastq.gz
-        mv ${fq1} ${fq1}.fastq.gz
+    if [ "${fastq1}" != *.fastq.gz ]; then
+        FQ1=${fastq1}.fastq.gz
+        mv ${fastq1} ${fastq1}.fastq.gz
     else
-        FQ1=${fq1}
+        FQ1=${fastq1}
     fi
 
-    if [ "${fq2}" != *.fastq.gz ]; then
-        FQ2=${fq2}.fastq.gz
-        mv ${fq2} ${fq2}.fastq.gz
+    if [ "${fastq2}" != *.fastq.gz ]; then
+        FQ2=${fastq2}.fastq.gz
+        mv ${fastq2} ${fastq2}.fastq.gz
     else
-        FQ2=${fq2}
+        FQ2=${fastq2}
     fi
 
     tar -zxvf "${hisat2_ref}"
@@ -157,8 +157,8 @@ task HISAT2RSEM {
       -2 $FQ2 \
       --rg-id=${sample_name} --rg SM:${sample_name} --rg LB:${sample_name} \
       --rg PL:ILLUMINA --rg PU:${sample_name} \
-      --new-summary --summary-file ${output_name}.log \
-      --met-file ${output_name}.hisat2.met.txt --met 5 \
+      --new-summary --summary-file ${output_basename}.log \
+      --met-file ${output_basename}.hisat2.met.txt --met 5 \
       -k 10 \
       --mp 1,1 \
       --np 1 \
@@ -171,8 +171,8 @@ task HISAT2RSEM {
       --rfg 99999999,99999999 \
       --no-spliced-alignment \
       --seed 12345 \
-      -p ${cpu} -S ${output_name}.sam
-    samtools view -bS  "${output_name}.sam" > "${output_name}.bam"
+      -p ${cpu} -S ${output_basename}.sam
+    samtools view -bS  "${output_basename}.sam" > "${output_basename}.bam"
   }
 
   runtime {
@@ -184,17 +184,17 @@ task HISAT2RSEM {
   }
 
   output {
-    File log_file = "${output_name}.log"
-    File met_file = "${output_name}.hisat2.met.txt"
-    File output_bam = "${output_name}.bam"
+    File log_file = "${output_basename}.log"
+    File met_file = "${output_basename}.hisat2.met.txt"
+    File output_bam = "${output_basename}.bam"
   }
 }
 
 task HISAT2SingleEnd {
   File hisat2_ref
-  File fq
+  File fastq
   String ref_name
-  String output_name
+  String output_basename
   String sample_name
 
   # runtime optional arguments
@@ -209,7 +209,7 @@ task HISAT2SingleEnd {
   Int machine_mem_mb = select_first([opt_memory_gb, 5]) * 1000
   Int cpu = select_first([opt_cpu, 4])
   # use provided disk number or dynamically size on our own, 10 is our zipped fastq -> bam conversion with 50GB of additional disk
-  Int disk = select_first([opt_disk, ceil((size(fq, "GB") * 10) + size(hisat2_ref, "GB") + 50)])
+  Int disk = select_first([opt_disk, ceil((size(fastq, "GB") * 10) + size(hisat2_ref, "GB") + 50)])
   Int preemptible = select_first([opt_preemptible, 5])
 
   meta {
@@ -218,9 +218,9 @@ task HISAT2SingleEnd {
 
   parameter_meta {
     hisat2_ref: ""
-    fq: ""
+    fastq: ""
     ref_name: ""
-    output_name: ""
+    output_basename: ""
     sample_name: ""
     opt_docker: "optionally provide a docker to run in"
     opt_memory_gb: "optionally provide how much memory to provision"
@@ -234,14 +234,14 @@ task HISAT2SingleEnd {
     tar -zxvf "${hisat2_ref}"
     hisat2 -t \
       -x ${ref_name}/${ref_name} \
-      -U ${fq} \
+      -U ${fastq} \
       --rg-id=${sample_name} --rg SM:${sample_name} --rg LB:${sample_name} \
       --rg PL:ILLUMINA --rg PU:${sample_name} \
-      --new-summary --summary-file "${output_name}.log" \
-      --met-file ${output_name}.hisat2.met.txt --met 5 \
+      --new-summary --summary-file "${output_basename}.log" \
+      --met-file ${output_basename}.hisat2.met.txt --met 5 \
       --seed 12345 \
-      -p ${cpu} -S ${output_name}.sam
-    samtools sort -@ ${cpu} -O bam -o "${output_name}.bam" "${output_name}.sam"
+      -p ${cpu} -S ${output_basename}.sam
+    samtools sort -@ ${cpu} -O bam -o "${output_basename}.bam" "${output_basename}.sam"
   }
 
   runtime {
@@ -253,9 +253,9 @@ task HISAT2SingleEnd {
   }
 
   output {
-    File log_file ="${output_name}.log"
-    File met_file ="${output_name}.hisat2.met.txt"
-    File output_bam = "${output_name}.bam"
+    File log_file ="${output_basename}.log"
+    File met_file ="${output_basename}.hisat2.met.txt"
+    File output_bam = "${output_basename}.bam"
   }
 }
 
