@@ -26,11 +26,11 @@ task RSEMExpression {
     trans_aligned_bam: ""
     rsem_genome: ""
     output_basename: ""
-    opt_docker: ""
-    opt_memory_gb: ""
-    opt_cpu: ""
-    opt_disk: ""
-    opt_preemptible: ""
+    opt_docker: "optionally provide a docker to run in"
+    opt_memory_gb: "optionally provide how much memory to provision"
+    opt_cpu: "optionally provide how many cpus to provision"
+    opt_disk: "optionally provide how much disk to provision"
+    opt_preemptible: "optionally provide how many preemptible attempts"
   }
 
   command {
