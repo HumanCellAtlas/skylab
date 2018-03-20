@@ -27,7 +27,7 @@ task CollectMultipleMetrics {
   parameter_meta {
     aligned_bam: ""
     genome_ref_fasta: ""
-    output_basename: ""
+    output_basename: "basename used for output files"
     opt_docker: "optionally provide a docker to run in"
     opt_memory_gb: "optionally provide how much memory to provision"
     opt_cpu: "optionally provide how many cpus to provision"
@@ -116,7 +116,7 @@ task CollectRnaMetrics {
     aligned_bam: ""
     ref_flat: ""
     rrna_intervals: ""
-    output_basename: ""
+    output_basename: "basename used for output files"
     stranded: ""
     opt_docker: "optionally provide a docker to run in"
     opt_memory_gb: "optionally provide how much memory to provision"
@@ -181,7 +181,7 @@ task CollectDuplicationMetrics {
 
   parameter_meta {
     aligned_bam: ""
-    output_basename: ""
+    output_basename: "basename used for output files"
     opt_docker: "optionally provide a docker to run in"
     opt_memory_gb: "optionally provide how much memory to provision"
     opt_cpu: "optionally provide how many cpus to provision"

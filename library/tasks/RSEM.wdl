@@ -25,7 +25,7 @@ task RSEMExpression {
   parameter_meta {
     trans_aligned_bam: ""
     rsem_genome: ""
-    output_basename: ""
+    output_basename: "basename used for output files"
     opt_docker: "optionally provide a docker to run in"
     opt_memory_gb: "optionally provide how much memory to provision"
     opt_cpu: "optionally provide how many cpus to provision"
