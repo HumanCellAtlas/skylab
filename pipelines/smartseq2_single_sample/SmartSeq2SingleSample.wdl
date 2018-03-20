@@ -101,8 +101,8 @@ workflow SmartSeq2SingleCell {
   output {
     # quality control outputs
     File aligned_bam = HISAT2PairedEnd.output_bam
-    File met_file = HISAT2PairedEnd.met_file
-    File log_file = HISAT2PairedEnd.log_file
+    File hisat2_met_file = HISAT2PairedEnd.met_file
+    File hisat2_log_file = HISAT2PairedEnd.log_file
     File alignment_summary_metrics = CollectMultipleMetrics.alignment_summary_metrics
     File base_call_dist_metrics = CollectMultipleMetrics.base_call_dist_metrics
     File base_call_pdf = CollectMultipleMetrics.base_call_pdf
@@ -125,8 +125,8 @@ workflow SmartSeq2SingleCell {
 
     # data outputs
     File aligned_trans_bam = HISAT2Trans.output_bam
-    File hisat2tran_met_file = HISAT2Trans.met_file
-    File hisat2tran_log_file = HISAT2Trans.log_file
+    File hisat2trans_met_file = HISAT2Trans.met_file
+    File hisat2trans_log_file = HISAT2Trans.log_file
     File rsem_gene_results = RSEMExpression.rsem_gene
     File rsem_isoform_results = RSEMExpression.rsem_isoform
     File rsem_time_log = RSEMExpression.rsem_time
