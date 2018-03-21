@@ -13,6 +13,7 @@ library(ggrepel)
 library(optparse)
 library(rsvd)
 library('rtracklayer')
+
 set.seed(42)
 # This R script is to evaluate the changes/difference in two data matrix
 addTheme <- function(p) {
@@ -71,22 +72,63 @@ ParseGene <- function(gtf_file) {
 foldchanges <- function(mat1, mat2) {
   # log2 transformation
   # first 2 columns are gene ID and length
-  logmd1 <- log(mat1[, -c(1:2)] + 1, base = 2)
+  logmd1 <- log(mat1[,-c(1:2)] + 1, base = 2)
   # match gene ID
   mlist <- match(mat1[, 1], mat2[, 1])
   # match sample column
   nlist <- match(colnames(mat1), colnames(mat2))
   mat2 <- mat2[mlist, nlist]
   # log2 transformation
-  logmd2 <- log(mat2[mlist, -c(1:2)] + 1, base = 2)
+  logmd2 <- log(mat2[mlist,-c(1:2)] + 1, base = 2)
   fcmat <- logmd1 - logmd2
   out <- cbind(mat1[, 1:2], fcmat)
   return(out)
 }
+# log2 transformation
+takelog2 <- function(mat) {
+  dd <- log(mat[, -c(1:2)] + 1, base = 2)
+  out <- cbind(mat[, c(1:2)], dd)
+  return(out)
+}
+# run correlation test
+# return stats
+RunCorrTest <- function(x, y) {
+  pval <- c()
+  cval <- c()
+  for (i in colnames(x)) {
+    z <- cor.test(x[, i], y[, i])
+    pval <- c(pval, z$p.value)
+    cval <- c(cval, z$estimate)
+  }
+  return(data.frame(
+    'pvalue' = pval,
+    'cor' = cval,
+    'sample' = colnames(x)
+  ))
+}
+# correlatin between two data matrix
+CorrDataMatrix <- function(mat1, mat2, islog2) {
+  # match gene ID
+  if (islog2 == 1) {
+    mlist <- match(mat1[, 1], mat2[, 1])
+    # match sample column
+    nlist <- match(colnames(mat1), colnames(mat2))
+    mat2 <- mat2[mlist, nlist]
+    # log2 transformation
+    mat1.log <- takelog2(mat1)
+    mat2.log <- takelog2(mat2)
+  } else{
+    mat1.log <- mat1
+    mat2.log <- mat2
+  }
+  #mcor <-  cor(mat1.log[,-c(1:2)],mat2.log[,-c(1:2)])
+  stat.cor <- RunCorrTest(mat1.log[, -c(1:2)], mat2.log[, -c(1:2)])
+  return(stat.cor)
+}
 # summary fold changes by gene's biotype
 # foldchanges: median or mean of FC cross dataset
 # genes: gene annotation from gft file
-# threshold: a cut-off to select significant foldchange 
+# threshold: a cut-off to select significant foldchange
 # values.
 summaryFoldChanges <- function(foldchanges, genes, threshold) {
   upIDs <- names(which(foldchanges > threshold))
@@ -100,7 +142,7 @@ summaryFoldChanges <- function(foldchanges, genes, threshold) {
   fcGene <- rbind(upGene, downGene)
   # summary up- down- FC
   fc_tb <- table(fcGene$FC, fcGene$gene_type)
-  fc_tb['DN', ] <- (-1) * fc_tb['DN', ]
+  fc_tb['DN',] <- (-1) * fc_tb['DN',]
   return(fc_tb)
 }
 # inputs
@@ -143,13 +185,12 @@ output_name <- opt$output_prefix
 # color palette
 palette(c("#00AFBB", "#E7B800"))
 # load data matrix
-gtf_file <- gtf_file
 mat1 <- read.csv(matrixfile1)
 mat2 <- read.csv(matrixfile2)
 # calculate folder changes
 fc <- foldchanges(mat1, mat2)
 # calucate mean or median FC cross samples
-fc.dd <- fc[,-c(1:2)]
+fc.dd <- fc[, -c(1:2)]
 fc.m <- apply(fc.dd, 1, median)
 # boxplot
 # Box plot (bp)
@@ -161,12 +202,25 @@ bxp <- ggviolin(
   add = "jitter"
 )
 bxp <- addTheme(bxp)
-
+# correlation
+# return two matrix of corraltion matrix
+# take diag of correlation matrix
+# plot into histogram
+mcor <- CorrDataMatrix(mat1, mat2, 0)
+phist <- gghistogram(
+  mcor,
+  x = "cor",
+  fill = "lightgray",
+  add = "mean",
+  rug = TRUE,
+  xlab = "Correlation"
+)
+phist <- addTheme(phist)
 # parse GTF
 genes <- ParseGene(gtf_file)
 # summary foldchanges by biotypes
-names(fc.m) <- fc[,1]
-fc_tb <- summaryFoldChanges(fc.m,genes,0.5)
+names(fc.m) <- fc[, 1]
+fc_tb <- summaryFoldChanges(fc.m, genes, 0.5)
 # plot
 mtb <- melt(fc_tb)
 pb <- ggbarplot(
@@ -186,36 +240,42 @@ pb <- ggbarplot(
 )
 pb <- addTheme(pb)
 # combine plots
-text <- paste("A: Violin of log-foldchanges.", sep = ' ')
-text.a <-
-  ggparagraph(
-    text = text,
-    face = "italic",
-    size = 20,
-    color = "black"
-  )
-text <-
-  paste("B: Barplot to summary log-foldchanges by gene biotyps", sep = ' ')
-text.b <-
-  ggparagraph(
-    text = text,
-    face = "italic",
-    size = 20,
-    color = "black"
-  )
-p1 <- ggarrange(bxp, pb, labels = c("A", "B"))
-p2 <- ggarrange(text.a, text.b, ncol = 2, nrow = 1)
+text <- paste(
+  "A: Violin of log-foldchanges.",
+  "B: Histogram of correlation between data matrix",
+  "C: Barplot to summary log-foldchanges by gene biotyps",
+  sep = ' '
+)
+
+p1 <- ggarrange(bxp,
+                phist,
+                labels = c("A", "B"),
+                ncol = 1,
+                nrow = 2)
+p2 <- ggarrange(pb, labels = c("C"))
 p3 <- ggarrange(p1,
                 p2,
+                ncol = 2,
+                nrow = 1)
+p4 <- ggparagraph(text, 
+                face = "bold",
+                size = 20,
+                color = "black")
+p5 <- ggarrange(p3,
+                p4,
                 ncol = 1,
                 nrow = 2,
                 heights = c(1, 0.1))
-ggsave(
-  p3,
-  file = paste(output_name, '_data_matrix_comparison.pdf', sep = ''),
-  width = 30,
-  height = 30,
-  limitsize = FALSE
+pdf(paste(output_name, '_data_matrix_comparison.pdf', sep = ''),30, 30)
+print(p5)
+dev.off()
+write.csv(
+  mcor,
+  file = paste(output_name, '_correlation_data_matrix_comparison.csv', sep = ''),
+  sep = ',',
+  quote = F,
+  row.names = T,
+  col.names = T
 )
 write.csv(
   fc_tb,
