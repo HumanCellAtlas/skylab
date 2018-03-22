@@ -1,4 +1,4 @@
-# R script to do metrics test
+# R script to do data matrix comparison
 # loading library
 library(ggplot2)
 library(MASS)
@@ -12,10 +12,12 @@ library(corrplot)
 library(ggrepel)
 library(optparse)
 library(rsvd)
+library(scran)
+library(igraph)
+library(mclust)
 library('rtracklayer')
-
 set.seed(42)
-# This R script is to evaluate the changes/difference in two data matrix
+
 addTheme <- function(p) {
   p <- p + theme(legend.position = "top")
   p <-
@@ -66,27 +68,26 @@ ParseGene <- function(gtf_file) {
   genes <- subset(gtf_gencode, gtf_gencode$type == "gene")
   return(genes)
 }
-
 # cover to foldchnages
 # matrix1 and matrix2 are two data matrix
 foldchanges <- function(mat1, mat2) {
   # log2 transformation
   # first 2 columns are gene ID and length
-  logmd1 <- log(mat1[,-c(1:2)] + 1, base = 2)
+  logmd1 <- log(mat1[, -c(1:2)] + 1, base = 2)
   # match gene ID
   mlist <- match(mat1[, 1], mat2[, 1])
   # match sample column
   nlist <- match(colnames(mat1), colnames(mat2))
   mat2 <- mat2[mlist, nlist]
   # log2 transformation
-  logmd2 <- log(mat2[mlist,-c(1:2)] + 1, base = 2)
+  logmd2 <- log(mat2[mlist, -c(1:2)] + 1, base = 2)
   fcmat <- logmd1 - logmd2
   out <- cbind(mat1[, 1:2], fcmat)
   return(out)
 }
 # log2 transformation
 takelog2 <- function(mat) {
-  dd <- log(mat[, -c(1:2)] + 1, base = 2)
+  dd <- log(mat[,-c(1:2)] + 1, base = 2)
   out <- cbind(mat[, c(1:2)], dd)
   return(out)
 }
@@ -122,7 +123,7 @@ CorrDataMatrix <- function(mat1, mat2, islog2) {
     mat2.log <- mat2
   }
   #mcor <-  cor(mat1.log[,-c(1:2)],mat2.log[,-c(1:2)])
-  stat.cor <- RunCorrTest(mat1.log[, -c(1:2)], mat2.log[, -c(1:2)])
+  stat.cor <- RunCorrTest(mat1.log[,-c(1:2)], mat2.log[,-c(1:2)])
   return(stat.cor)
 }
 # summary fold changes by gene's biotype
@@ -142,9 +143,29 @@ summaryFoldChanges <- function(foldchanges, genes, threshold) {
   fcGene <- rbind(upGene, downGene)
   # summary up- down- FC
   fc_tb <- table(fcGene$FC, fcGene$gene_type)
-  fc_tb['DN',] <- (-1) * fc_tb['DN',]
+  fc_tb['DN', ] <- (-1) * fc_tb['DN', ]
   return(fc_tb)
 }
+# Run SNN-Cliq to generate SNN graphic and
+# then cluster cells based on graph to generate cluster/group
+# then visualize the SNN clustering result in PCA
+RunSNNCluster <- function(datamatrix) {
+  mat.log <- takelog2(datamatrix)
+  # First run randome PCA then extract top 2 PCs for visualization
+  mat.pca <- rpca(mat.log[,-c(1:2)], scale = T)
+  PCs <- mat.pca$rotation[, 1:2]
+  # Run SNN graph
+  grps <- buildSNNGraph(mat.log[,-c(1:2)])
+  # extract memebership
+  clusters <- cluster_fast_greedy(grps)
+  fc <-  membership(clusters)
+  out <-
+    data.frame('PC1' = PCs[, 1],
+               'PC2' = PCs[, 2],
+               'membership' = as.factor(fc))
+  return(out)
+}
+
 # inputs
 option_list <- list(
   make_option(
@@ -190,7 +211,7 @@ mat2 <- read.csv(matrixfile2)
 # calculate folder changes
 fc <- foldchanges(mat1, mat2)
 # calucate mean or median FC cross samples
-fc.dd <- fc[, -c(1:2)]
+fc.dd <- fc[,-c(1:2)]
 fc.m <- apply(fc.dd, 1, median)
 # boxplot
 # Box plot (bp)
@@ -221,7 +242,15 @@ genes <- ParseGene(gtf_file)
 # summary foldchanges by biotypes
 names(fc.m) <- fc[, 1]
 fc_tb <- summaryFoldChanges(fc.m, genes, 0.5)
-# plot
+# SNN cluster
+mat1.snn <- RunSNNCluster(mat1)
+mat2.snn <- RunSNNCluster(mat2)
+# Calculate adjusted rand index between two cluster results
+# to figure out how similar the results are
+# ideal, if we habe pre-labeled data, we can calculate RAND index
+# between clustering result and labels
+rand <- adjustedRandIndex(mat1.snn$membership,mat2.snn$membership)
+# visualization
 mtb <- melt(fc_tb)
 pb <- ggbarplot(
   mtb,
@@ -241,11 +270,34 @@ pb <- ggbarplot(
 pb <- addTheme(pb)
 # combine plots
 text <- paste(
-  "A: Violin of log-foldchanges.",
+  "A: Violinplot of log-foldchanges.",
   "B: Histogram of correlation between data matrix",
   "C: Barplot to summary log-foldchanges by gene biotyps",
   sep = ' '
 )
+# visualize SNN clustering
+snn.p1 <- ggscatter(
+  mat1.snn,
+  x = "PC1",
+  y = "PC2",
+  color = "membership",
+  palette = "jco",
+  size = 8,
+  alpha = 0.6,
+  title = 'Base Pipeline'
+) + border()
+snn.p2 <- ggscatter(
+  mat2.snn,
+  x = "PC1",
+  y = "PC2",
+  color = "membership",
+  palette = "jco",
+  size = 8,
+  alpha = 0.6,
+  title = 'Updated Pipeline'
+) + border()
+snn.p1 <- addTheme(snn.p1)
+snn.p2 <- addTheme(snn.p2)
 
 p1 <- ggarrange(bxp,
                 phist,
@@ -257,17 +309,45 @@ p3 <- ggarrange(p1,
                 p2,
                 ncol = 2,
                 nrow = 1)
-p4 <- ggparagraph(text, 
-                face = "bold",
-                size = 20,
-                color = "black")
+p4 <- ggparagraph(text,
+                  face = "bold",
+                  size = 20,
+                  color = "black")
 p5 <- ggarrange(p3,
                 p4,
                 ncol = 1,
                 nrow = 2,
                 heights = c(1, 0.1))
-pdf(paste(output_name, '_data_matrix_comparison.pdf', sep = ''),30, 30)
+text <- paste(
+  "A: SNN-Cliq clustering using counts matrix generated by Pipline1",
+  "B: SNN-Cliq clustering using counts matrix generated by Pipline2",
+  "Adjusted Rand index is",
+  rand,
+  sep = ' '
+)
+p6 <- ggarrange(snn.p1,
+                snn.p2,
+                labels = c("A","B"),
+                ncol = 2,
+                nrow = 1)
+p7 <- ggparagraph(text,
+                  face = "bold",
+                  size = 20,
+                  color = "black")
+p8 <- ggarrange(p6,
+                p7,
+                ncol = 1,
+                nrow = 2,
+                heights = c(1, 0.1))
+pdf(paste(output_name, '_data_matrix_comparison.pdf', sep = ''),
+    30,
+    30)
 print(p5)
+dev.off()
+pdf(paste(output_name, '_cluster_data_matrix_comparison.pdf', sep = ''),
+    30,
+    60)
+print(p8)
 dev.off()
 write.csv(
   mcor,
@@ -280,6 +360,19 @@ write.csv(
 write.csv(
   fc_tb,
   file = paste(output_name, '_data_matrix_comparison.csv', sep = ''),
+  sep = ',',
+  quote = F,
+  row.names = T,
+  col.names = T
+)
+grps <-
+  merge(mat1.snn,
+        mat2.snn,
+        by = 'row.names',
+        suffixes = c(".base", ".updated"))
+write.csv(
+  grps,
+  file = paste(output_name, '_SNN_cluster_data_matrix_comparison.csv', sep = ''),
   sep = ',',
   quote = F,
   row.names = T,
