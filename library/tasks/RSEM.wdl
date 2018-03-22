@@ -19,7 +19,7 @@ task RSEMExpression {
   Int preemptible = select_first([opt_preemptible, 5])
 
   meta {
-    description: "JISHU HELP AGAINNNNNNNNNNNNN"
+    description: "This task will quantify gene expression matrix by using RSEM. The output include gene-level and isoform-level results."
   }
 
   parameter_meta {

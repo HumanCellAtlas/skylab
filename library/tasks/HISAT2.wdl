@@ -22,7 +22,7 @@ task HISAT2PairedEnd {
   Int preemptible = select_first([opt_preemptible, 5])
 
   meta {
-    description: "JISHUUUUUUUUUUUUUUUU"
+    description: "HISAT2 alignment task will align paired-end fastq reads to reference genome."
   }
 
   parameter_meta {
@@ -115,7 +115,7 @@ task HISAT2RSEM {
   Int preemptible = select_first([opt_preemptible, 5])
 
   meta {
-    description: "JISHUUUUUUUUUUUUUUUU"
+    description: "This HISAT2 alignment task will align paired-end fastq reads to transcriptome only. "
   }
 
   parameter_meta {
@@ -213,7 +213,7 @@ task HISAT2SingleEnd {
   Int preemptible = select_first([opt_preemptible, 5])
 
   meta {
-    description: "JISHUUUUUUUUUUUUUUUU"
+    description: "This HISAT2 alignment task will align single-end fastq reads to reference genome."
   }
 
   parameter_meta {
@@ -279,7 +279,7 @@ task HISAT2InspectIndex {
   Int preemptible = select_first([opt_preemptible, 5])
 
   meta {
-    description: "JISHUUUUUUUUUUUUUUUU"
+    description: "This task will test reference indexing files built for HISAT2 aligner."
   }
 
   parameter_meta {

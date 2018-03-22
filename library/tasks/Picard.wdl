@@ -21,7 +21,7 @@ task CollectMultipleMetrics {
   Int preemptible = select_first([opt_preemptible, 5])
 
   meta {
-    description: "JISHU HELP AGAINNNNNNNNNNNNN"
+    description: "This Picard task will collect multiple QC metrics, such as CollectAlignmentSummaryMetrics and CollectInsertSizeMetrics."
   }
 
   parameter_meta {
@@ -109,7 +109,7 @@ task CollectRnaMetrics {
   Int preemptible = select_first([opt_preemptible, 5])
 
   meta {
-    description: "JISHU HELP AGAINNNNNNNNNNNNN"
+    description: "This Picard task will collect RnaSeqMetrics."
   }
 
   parameter_meta {
@@ -176,7 +176,7 @@ task CollectDuplicationMetrics {
   Int preemptible = select_first([opt_preemptible, 5])
 
   meta {
-    description: "JISHU HELP AGAINNNNNNNNNNNNN"
+    description: "This Picard task will collect alignment DuplicationMetrics."
   }
 
   parameter_meta {
