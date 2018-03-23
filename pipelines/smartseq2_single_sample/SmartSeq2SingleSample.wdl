@@ -80,8 +80,7 @@ workflow SmartSeq2SingleCell {
   }
 
   String data_output_basename = output_name + "_rsem"
-  # TODO should `Trans` be Transcript??
-  call HISAT2.HISAT2RSEM as HISAT2Trans {
+  call HISAT2.HISAT2RSEM as HISAT2Transcriptome {
     input:
       hisat2_ref = hisat2_ref_trans_index,
       fastq1 = fastq1,
@@ -93,7 +92,7 @@ workflow SmartSeq2SingleCell {
 
   call RSEM.RSEMExpression {
     input:
-      trans_aligned_bam = HISAT2Trans.output_bam,
+      trans_aligned_bam = HISAT2Transcriptome.output_bam,
       rsem_genome = rsem_ref_index,
       output_basename = data_output_basename,
   }
@@ -124,9 +123,9 @@ workflow SmartSeq2SingleCell {
     File dedup_metrics = CollectDuplicationMetrics.dedup_metrics
 
     # data outputs
-    File aligned_trans_bam = HISAT2Trans.output_bam
-    File hisat2trans_met_file = HISAT2Trans.met_file
-    File hisat2trans_log_file = HISAT2Trans.log_file
+    File aligned_transcriptome_bam = HISAT2Transcriptome.output_bam
+    File hisat2_transcriptome_met_file = HISAT2Transcriptome.met_file
+    File hisat2_transcriptome_log_file = HISAT2Transcriptome.log_file
     File rsem_gene_results = RSEMExpression.rsem_gene
     File rsem_isoform_results = RSEMExpression.rsem_isoform
     File rsem_time_log = RSEMExpression.rsem_time
