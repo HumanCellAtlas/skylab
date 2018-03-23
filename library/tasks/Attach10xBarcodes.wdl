@@ -23,7 +23,7 @@ task Attach10xBarcodes {
   }
   
   runtime {
-    docker: "quay.io/humancellatlas/secondary-analysis-sctools:0.1.6"
+    docker: "quay.io/humancellatlas/secondary-analysis-sctools:0.1.9"
     cpu: 2
     memory: "7.5 GB"
     disks: "local-disk ${estimated_required_disk} HDD"

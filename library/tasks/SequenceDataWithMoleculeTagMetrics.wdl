@@ -5,12 +5,11 @@ task CalculateGeneMetrics {
   command {
     set -e
 
-    CalculateGeneMetrics -i "${bam_input}" -o gene-metrics.csv
-    gzip gene-metrics.csv
+    CalculateGeneMetrics -i "${bam_input}" -o gene-metrics.csv.gz
   }
 
   runtime {
-    docker: "quay.io/humancellatlas/secondary-analysis-sctools:0.1.8"
+    docker: "quay.io/humancellatlas/secondary-analysis-sctools:0.1.9"
     cpu: 1
     memory: "3.75 GB"
     disks: "local-disk ${estimated_required_disk} HDD"
@@ -29,12 +28,11 @@ task CalculateCellMetrics {
   command {
     set -e
 
-    CalculateCellMetrics -i "${bam_input}" -o cell-metrics.csv
-    gzip cell-metrics.csv
+    CalculateCellMetrics -i "${bam_input}" -o cell-metrics.csv.gz
   }
 
   runtime {
-    docker: "quay.io/humancellatlas/secondary-analysis-sctools:0.1.8"
+    docker: "quay.io/humancellatlas/secondary-analysis-sctools:0.1.9"
     cpu: 1
     memory: "3.75 GB"
     disks: "local-disk ${estimated_required_disk} HDD"
@@ -52,12 +50,11 @@ task MergeGeneMetrics {
   command {
     set -e
 
-    MergeGeneMetrics -o merged-gene-metrics.csv ${sep=' ' metric_files}
-    gzip merged-gene-metrics.csv
+    MergeGeneMetrics -o merged-gene-metrics.csv.gz ${sep=' ' metric_files}
   }
 
   runtime {
-    docker: "quay.io/humancellatlas/secondary-analysis-sctools:0.1.8"
+    docker: "quay.io/humancellatlas/secondary-analysis-sctools:0.1.9"
     cpu: 1
     memory: "3.75 GB"
     disks: "local-disk 20 HDD"
@@ -75,12 +72,11 @@ task MergeCellMetrics {
   command {
     set -e
 
-    MergeCellMetrics -o merged-cell-metrics.csv ${sep=' ' metric_files}
-    gzip merged-cell-metrics.csv
+    MergeCellMetrics -o merged-cell-metrics.csv.gz ${sep=' ' metric_files}
   }
 
   runtime {
-    docker: "quay.io/humancellatlas/secondary-analysis-sctools:0.1.8"
+    docker: "quay.io/humancellatlas/secondary-analysis-sctools:0.1.9"
     cpu: 1
     memory: "3.75 GB"
     disks: "local-disk 20 HDD"
