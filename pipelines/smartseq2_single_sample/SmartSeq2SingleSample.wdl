@@ -39,11 +39,11 @@ workflow SmartSeq2SingleCell {
     rsem_ref_index: ""
     hisat2_ref_name: ""
     hisat2_ref_trans_name: ""
-    stranded: ""
+    stranded: "Library strand information example values: FR RF NONE"
     sample_name: ""
     output_name: ""
-    fastq1: ""
-    fastq2: ""
+    fastq1: "R1 in paired end reads"
+    fastq2: "R2 in paired end reads"
   }
 
   String quality_control_output_basename = output_name + "_qc"
