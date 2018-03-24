@@ -1,12 +1,13 @@
 import "FastqToUBam.wdl" as fq2bam
 import "Attach10xBarcodes.wdl" as attach
 import "SplitBamByCellBarcode.wdl" as split
-import "CollectMultiplePicardMetrics.wdl" as collect
 import "MergeSortBam.wdl" as merge
 import "CreateCountMatrix.wdl" as count
 import "StarAlignBamSingleEnd.wdl" as StarAlignBamWDL
 import "TagGeneExon.wdl" as TagGeneExonWDL
 import "CorrectUmiMarkDuplicates.wdl" as CorrectUmiMarkDuplicatesWDL
+import "SequenceDataWithMoleculeTagMetrics.wdl" as metrics
+import "TagSortBam.wdl" as TagSortBam
 
 # The optimus 3' pipeline processes 10x genomics sequencing data based on the v2
 # chemistry. It corrects cell barcodes and UMIs, aligns reads, marks duplicates, and
@@ -94,6 +95,26 @@ workflow Optimus {
       input:
         bam_input = TagGenes.bam_output
     }
+
+    call TagSortBam.GeneSortBam {
+      input:
+        bam_input = CorrectUmiMarkDuplicates.bam_output
+    }
+
+    call TagSortBam.CellSortBam {
+      input:
+        bam_input = CorrectUmiMarkDuplicates.bam_output
+    }
+
+    call metrics.CalculateGeneMetrics {
+      input:
+        bam_input = GeneSortBam.bam_output
+    }
+
+    call metrics.CalculateCellMetrics {
+      input:
+        bam_input = CellSortBam.bam_output
+    }
   }
 
   call merge.MergeSortBamFiles as MergeSorted {
@@ -108,20 +129,21 @@ workflow Optimus {
       whitelist = whitelist
   }
 
-  call collect.CollectMultipleMetrics {
+  call metrics.MergeGeneMetrics {
     input:
-      aligned_bam = MergeSorted.output_bam,
-      ref_genome_fasta = ref_genome_fasta,
-      output_filename = sample_id
+      metric_files = CalculateGeneMetrics.gene_metrics
+  }
+
+  call metrics.MergeCellMetrics {
+    input:
+      metric_files = CalculateCellMetrics.cell_metrics
   }
 
   output {
       File bam = MergeSorted.output_bam
       File matrix = DropSeqToolsDigitalExpression.matrix_output
       File matrix_summary = DropSeqToolsDigitalExpression.matrix_summary
-      Array[File] tag_gene_exon_log = TagGenes.log
-      Array[File] umi_metrics = CorrectUmiMarkDuplicates.umi_metrics
-      Array[File] duplicate_metrics = CorrectUmiMarkDuplicates.duplicate_metrics
-      File picard_metrics = CollectMultipleMetrics.alignment_metrics
+      File cell_metrics = MergeCellMetrics.cell_metrics
+      File gene_metrics = MergeGeneMetrics.gene_metrics
   }
 }

@@ -2,15 +2,15 @@ import "Optimus.wdl" as target
 import "ValidateOptimus.wdl" as checker
 
 
-# this task will be run by the jenkins script that gets executed on our PRs.
-
+# this workflow will be run by the jenkins script that gets executed by PRs.
 workflow TestOptimusPR {
 
   # output hashes
   String expected_bam_hash
   String expected_matrix_hash
+  String expected_gene_metric_hash
+  String expected_cell_metric_hash
   String expected_matrix_summary_hash
-  String expected_picard_metrics_hash
 
   # Optimus inputs
   Array[File] r1
@@ -39,12 +39,14 @@ workflow TestOptimusPR {
     input:
       bam = target.bam,
       matrix = target.matrix,
+      gene_metrics = target.gene_metrics,
+      cell_metrics = target.cell_metrics,
       matrix_summary = target.matrix_summary,
-      picard_metrics = target.picard_metrics,
       expected_bam_hash = expected_bam_hash,
       expected_matrix_hash = expected_matrix_hash,
-      expected_matrix_summary_hash = expected_matrix_summary_hash,
-      expected_picard_metrics_hash = expected_picard_metrics_hash
+      expected_cell_metric_hash = expected_cell_metric_hash,
+      expected_gene_metric_hash = expected_gene_metric_hash,
+      expected_matrix_summary_hash = expected_matrix_summary_hash
   }
 
 }

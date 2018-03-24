@@ -1,4 +1,3 @@
-
 task StarAlignBamSingleEnd {
   File bam_input  # unaligned bam file containing genomic sequence, tagged with barcode information
   File tar_star_reference  # star reference tarball
@@ -11,6 +10,8 @@ task StarAlignBamSingleEnd {
   Int estimated_memory_required = reference_size + 6
 
   command {
+    set -e
+
     # prepare reference
     mkdir genome_reference
     tar -xf "${tar_star_reference}" -C genome_reference --strip-components 1

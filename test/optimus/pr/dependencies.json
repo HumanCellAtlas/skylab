@@ -7,7 +7,8 @@
   "SplitBamByCellBarcode.wdl": "library/tasks/SplitBamByCellBarcode.wdl",
   "TagGeneExon.wdl": "library/tasks/TagGeneExon.wdl",
   "CorrectUmiMarkDuplicates.wdl": "library/tasks/CorrectUmiMarkDuplicates.wdl",
-  "CollectMultiplePicardMetrics.wdl": "library/tasks/CollectMultiplePicardMetrics.wdl",
   "MergeSortBam.wdl": "library/tasks/MergeSortBam.wdl",
-  "CreateCountMatrix.wdl": "library/tasks/CreateCountMatrix.wdl"
+  "CreateCountMatrix.wdl": "library/tasks/CreateCountMatrix.wdl",
+  "SequenceDataWithMoleculeTagMetrics.wdl": "library/tasks/SequenceDataWithMoleculeTagMetrics.wdl",
+  "TagSortBam.wdl": "library/tasks/TagSortBam.wdl"
 }

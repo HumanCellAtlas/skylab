@@ -1,4 +1,3 @@
-
 task Attach10xBarcodes {
   # attaches barcodes found in r1 and i1
 
@@ -13,6 +12,8 @@ task Attach10xBarcodes {
   Int estimated_required_disk = ceil((fastq_size + bam_size) * 2.5)
 
   command {
+    set -e
+
     Attach10xBarcodes \
       --r1 "${r1}" \
       ${"--i1 " + i1} \
