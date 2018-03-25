@@ -1,32 +1,57 @@
 task Attach10xBarcodes {
-  # attaches barcodes found in r1 and i1
+  File r1_fastq
+  File unmapped_bam
+  File? i1_fastq
+  File whitelist
 
-  File r1  # forward fastq file; contains umi, cell barcode
-  File u2  # reverse bam file; contains alignable genomic information
-  File? i1  # optional, index fastq file; contains sample barcode
-  File whitelist  # 10x genomics cell barcode whitelist for 10x V2
+  # runtime optional arguments
+  String? opt_docker
+  Int? opt_memory_gb
+  Int? opt_cpu
+  Int? opt_disk
+  Int? opt_preemptible
 
-  # estimate disk requirements
-  Float bam_size = size(u2, "G")
-  Float fastq_size = size(r1, "G")  + if (defined(i1)) then size(i1, "G") else 0
-  Int estimated_required_disk = ceil((fastq_size + bam_size) * 2.5)
+  # runtime values
+  String docker = select_first([opt_docker, "quay.io/humancellatlas/secondary-analysis-sctools:0.1.6"])
+  Int machine_mem_mb = select_first([opt_memory_gb, 7]) * 1000
+  Int cpu = select_first([opt_cpu, 2])
+  # estimate that bam is approximately the size of all inputs plus 50%
+  Int disk = select_first([opt_disk, ceil((size(unmapped_bam, "G") + size(r1_fastq, "G") + if (defined(i1_fastq)) then size(i1_fastq, "G") else 0) * 2.5)])
+  Int preemptible = select_first([opt_preemptible, 0])
+
+  meta {
+    description: "attaches barcodes found in r1 and i1"
+  }
+
+  parameter_meta {
+    r1_fastq: "forward fastq file; contains umi, cell barcode"
+    unmapped_bam: "reverse bam file; contains alignable genomic information"
+    i1_fastq: "optional, index fastq file; contains sample barcode"
+    whitelist: "10x genomics cell barcode whitelist for 10x V2"
+    opt_docker: "optionally provide a docker to run in"
+    opt_memory_gb: "optionally provide how much memory to provision"
+    opt_cpu: "optionally provide how many cpus to provision"
+    opt_disk: "optionally provide how much disk to provision"
+    opt_preemptible: "optionally provide how many preemptible attempts"
+  }
 
   command {
     set -e
 
     Attach10xBarcodes \
-      --r1 "${r1}" \
-      ${"--i1 " + i1} \
-      --u2 "${u2}" \
+      --r1 "${r1_fastq}" \
+      ${"--i1 " + i1_fastq} \
+      --u2 "${unmapped_bam}" \
       --output-bamfile barcoded.bam \
       --whitelist "${whitelist}"
   }
   
   runtime {
-    docker: "quay.io/humancellatlas/secondary-analysis-sctools:0.1.9"
-    cpu: 2
-    memory: "7.5 GB"
-    disks: "local-disk ${estimated_required_disk} HDD"
+    docker: docker
+    memory: "${machine_mem_mb} MB"
+    disks: "local-disk ${disk} HDD"
+    cpu: cpu
+    preemptible: preemptible
   }
   
   output {

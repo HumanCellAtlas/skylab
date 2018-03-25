@@ -1,79 +1,91 @@
-import "FastqToUBam.wdl" as fq2bam
-import "Attach10xBarcodes.wdl" as attach
-import "SplitBamByCellBarcode.wdl" as split
-import "MergeSortBam.wdl" as merge
-import "CreateCountMatrix.wdl" as count
+import "FastqToUBam.wdl" as FastqToUBam
+import "Attach10xBarcodes.wdl" as Attach
+import "SplitBamByCellBarcode.wdl" as Split
+import "MergeSortBam.wdl" as Merge
+import "CreateCountMatrix.wdl" as Count
 import "StarAlignBamSingleEnd.wdl" as StarAlignBamWDL
-import "TagGeneExon.wdl" as TagGeneExonWDL
-import "CorrectUmiMarkDuplicates.wdl" as CorrectUmiMarkDuplicatesWDL
-import "SequenceDataWithMoleculeTagMetrics.wdl" as metrics
+import "TagGeneExon.wdl" as TagGeneExon
+import "CorrectUmiMarkDuplicates.wdl" as CorrectUmiMarkDuplicates
+import "SequenceDataWithMoleculeTagMetrics.wdl" as Metrics
 import "TagSortBam.wdl" as TagSortBam
 
-# The optimus 3' pipeline processes 10x genomics sequencing data based on the v2
-# chemistry. It corrects cell barcodes and UMIs, aligns reads, marks duplicates, and
-# returns data as alignments in BAM format and as counts in sparse matrix exchange
-# format.
 workflow Optimus {
+  meta {
+    description: "The optimus 3' pipeline processes 10x genomics sequencing data based on the v2 chemistry. It corrects cell barcodes and UMIs, aligns reads, marks duplicates, and returns data as alignments in BAM format and as counts in sparse matrix exchange format."
+  }
 
-  # Sequencing data inputs (fastq)
-  Array[File] r1 # forward read, contains cell barcodes and molecule barcodes
-  Array[File] r2 # reverse read, contains cDNA fragment generated from captured mRNA
-  Array[File]? i1 # (optional) index read, for demultiplexing of multiple samples on one flow cell.
+  # Sequencing data inputs
+  Array[File] r1_fastq
+  Array[File] r2_fastq
+  Array[File]? i1_fastq
 
-  String sample_id  # name of sample matching this file, inserted into read group header
+  String sample_id
 
   # organism reference parameters
-  File tar_star_reference  # star reference
-  File annotations_gtf  # gtf containing annotations for gene tagging
-  File ref_genome_fasta  # genome fasta file
+  File tar_star_reference
+  File annotations_gtf
+  File ref_genome_fasta
 
   # 10x v2 parameters
-  File whitelist  # 10x genomics cell barcode whitelist for 10x V2
+  File whitelist
 
   # environment-specific parameters
-  String fastq_suffix = ""  # when running in green box, need to add ".gz" for picard to detect
-  Array[Int] indices = range(length(r1)) # this scatters matched [r1, r2, i1] fastq arrays
+  String fastq_suffix = ""
+  # this is used to scatter matched [r1, r2, i1] fastq arrays
+  Array[Int] indices = range(length(r1_fastq))
+
+  parameter_meta {
+    r1_fastq: "forward read, contains cell barcodes and molecule barcodes"
+    r2_fastq: "reverse read, contains cDNA fragment generated from captured mRNA"
+    i1_fastq: "(optional) index read, for demultiplexing of multiple samples on one flow cell."
+    sample_id: "name of sample matching this file, inserted into read group header"
+    tar_star_reference: "star reference"
+    annotations_gtf: "gtf containing annotations for gene tagging"
+    ref_genome_fasta: "genome fasta file"
+    whitelist: "10x genomics cell barcode whitelist for 10x V2"
+    fastq_suffix: "when running in green box, need to add '.gz' for picard to detect"
+  }
 
   scatter (index in indices) {
-    call fq2bam.FastqToUBam {
+    call FastqToUBam.FastqToUBam {
       input:
-        fastq_file = r2[index],
+        fastq_file = r2_fastq[index],
         sample_id = sample_id,
         fastq_suffix = fastq_suffix
     }
 
     # if the index is passed, attach it to the bam file
-    if (defined(i1)) {
-      Array[File] non_optional_i1 = select_first([i1])
-      call attach.Attach10xBarcodes as attach_barcodes {
+    if (defined(i1_fastq)) {
+      Array[File] non_optional_i1_fastq = select_first([i1_fastq])
+      call Attach.Attach10xBarcodes as AttachBarcodes {
         input:
-          r1 = r1[index],
-          i1 = non_optional_i1[index],
-          u2 = FastqToUBam.bam_output,
+          r1_fastq = r1_fastq[index],
+          i1_fastq = non_optional_i1_fastq[index],
+          unmapped_bam = FastqToUBam.bam_output,
           whitelist = whitelist
       }
     }
 
     # if the index is not passed, proceed without it.
-    if (!defined(i1)) {
-      call attach.Attach10xBarcodes as attach_barcodes_no_index {
+    if (!defined(i1_fastq)) {
+      call Attach.Attach10xBarcodes as AttachBarcodesNoIndex {
         input:
-          r1 = r1[index],
-          u2 = FastqToUBam.bam_output,
+          r1_fastq = r1_fastq[index],
+          unmapped_bam = FastqToUBam.bam_output,
           whitelist = whitelist
       }
     }
 
-    File barcoded_bam = select_first([attach_barcodes.bam_output, attach_barcodes_no_index.bam_output])
+    File barcoded_bam = select_first([AttachBarcodes.bam_output, AttachBarcodesNoIndex.bam_output])
   }
 
-  call merge.MergeSortBamFiles as MergeUnsorted {
+  call Merge.MergeSortBamFiles as MergeUnsorted {
     input:
       bam_inputs = barcoded_bam,
       sort_order = "unsorted"
   }
 
-  call split.SplitBamByCellBarcode {
+  call Split.SplitBamByCellBarcode {
     input:
       bam_input = MergeUnsorted.output_bam
   }
@@ -85,56 +97,56 @@ workflow Optimus {
         tar_star_reference = tar_star_reference
     }
 
-    call TagGeneExonWDL.TagGeneExon as TagGenes {
+    call TagGeneExon.TagGeneExon as TagGenes {
       input:
         bam_input = StarAlign.bam_output,
         annotations_gtf = annotations_gtf
     }
 
-    call CorrectUmiMarkDuplicatesWDL.CorrectUmiMarkDuplicates as CorrectUmiMarkDuplicates {
+    call CorrectUmiMarkDuplicates.SortAndCorrectUmiMarkDuplicates {
       input:
         bam_input = TagGenes.bam_output
     }
 
     call TagSortBam.GeneSortBam {
       input:
-        bam_input = CorrectUmiMarkDuplicates.bam_output
+        bam_input = SortAndCorrectUmiMarkDuplicates.bam_output
     }
 
     call TagSortBam.CellSortBam {
       input:
-        bam_input = CorrectUmiMarkDuplicates.bam_output
+        bam_input = SortAndCorrectUmiMarkDuplicates.bam_output
     }
 
-    call metrics.CalculateGeneMetrics {
+    call Metrics.CalculateGeneMetrics {
       input:
         bam_input = GeneSortBam.bam_output
     }
 
-    call metrics.CalculateCellMetrics {
+    call Metrics.CalculateCellMetrics {
       input:
         bam_input = CellSortBam.bam_output
     }
   }
 
-  call merge.MergeSortBamFiles as MergeSorted {
+  call Merge.MergeSortBamFiles as MergeSorted {
     input:
-      bam_inputs = CorrectUmiMarkDuplicates.bam_output,
+      bam_inputs = SortAndCorrectUmiMarkDuplicates.bam_output,
       sort_order = "coordinate"
   }
 
-  call count.DropSeqToolsDigitalExpression {
+  call Count.DropSeqToolsDigitalExpression {
     input:
       bam_input = MergeSorted.output_bam,
       whitelist = whitelist
   }
 
-  call metrics.MergeGeneMetrics {
+  call Metrics.MergeGeneMetrics {
     input:
       metric_files = CalculateGeneMetrics.gene_metrics
   }
 
-  call metrics.MergeCellMetrics {
+  call Metrics.MergeCellMetrics {
     input:
       metric_files = CalculateCellMetrics.cell_metrics
   }
