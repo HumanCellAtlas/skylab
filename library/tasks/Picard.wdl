@@ -57,8 +57,8 @@ task CollectMultipleMetrics {
   
   runtime {
     docker: docker
-    memory: machine_mem_mb + " MB"
-    disks: "local-disk " + disk + " HDD"
+    memory: "${machine_mem_mb} MB"
+    disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible
   }
@@ -141,8 +141,8 @@ task CollectRnaMetrics {
   
   runtime {
     docker: docker
-    memory: machine_mem_mb + " MB"
-    disks: "local-disk " + disk + " HDD"
+    memory: "${machine_mem_mb} MB"
+    disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible
   }
@@ -201,8 +201,8 @@ task CollectDuplicationMetrics {
   
   runtime {
     docker: docker
-    memory: machine_mem_mb + " MB"
-    disks: "local-disk " + disk + " HDD"
+    memory: "${machine_mem_mb} MB"
+    disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible
   }

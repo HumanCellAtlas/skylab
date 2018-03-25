@@ -51,8 +51,8 @@ task RSEMExpression {
 
   runtime {
     docker: docker
-    memory: machine_mem_mb + " MB"
-    disks: "local-disk " + disk + " HDD"
+    memory: "${machine_mem_mb} MB"
+    disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible
   }

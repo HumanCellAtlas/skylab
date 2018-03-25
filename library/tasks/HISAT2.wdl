@@ -82,8 +82,8 @@ task HISAT2PairedEnd {
 
   runtime {
     docker: docker
-    memory: machine_mem_mb + " MB"
-    disks: "local-disk " + disk + " HDD"
+    memory: "${machine_mem_mb} MB"
+    disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible
   }
@@ -188,8 +188,8 @@ task HISAT2RSEM {
 
   runtime {
     docker: docker
-    memory: machine_mem_mb + " MB"
-    disks: "local-disk " + disk + " HDD"
+    memory: "${machine_mem_mb} MB"
+    disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible
   }
@@ -257,8 +257,8 @@ task HISAT2SingleEnd {
 
   runtime {
     docker: docker
-    memory: machine_mem_mb + " MB"
-    disks: "local-disk " + disk + " HDD"
+    memory: "${machine_mem_mb} MB"
+    disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible
   }
@@ -312,8 +312,8 @@ task HISAT2InspectIndex {
 
   runtime {
     docker: docker
-    memory: machine_mem_mb + " MB"
-    disks: "local-disk " + disk + " HDD"
+    memory: "${machine_mem_mb} MB"
+    disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible
   }
