@@ -3,7 +3,7 @@ import "Attach10xBarcodes.wdl" as Attach
 import "SplitBamByCellBarcode.wdl" as Split
 import "MergeSortBam.wdl" as Merge
 import "CreateCountMatrix.wdl" as Count
-import "StarAlignBamSingleEnd.wdl" as StarAlignBamWDL
+import "StarAlignBamSingleEnd.wdl" as StarAlignBam
 import "TagGeneExon.wdl" as TagGeneExon
 import "CorrectUmiMarkDuplicates.wdl" as CorrectUmiMarkDuplicates
 import "SequenceDataWithMoleculeTagMetrics.wdl" as Metrics
@@ -90,7 +90,7 @@ workflow Optimus {
   }
 
   scatter (bam in SplitBamByCellBarcode.bam_output_array) {
-    call StarAlignBamWDL.StarAlignBamSingleEnd as StarAlign {
+    call StarAlignBam.StarAlignBamSingleEnd as StarAlign {
       input:
         bam_input = bam,
         tar_star_reference = tar_star_reference

@@ -2,20 +2,13 @@ task StarAlignBamSingleEnd {
   File bam_input
   File tar_star_reference
 
-  # runtime optional arguments
-  String? opt_docker
-  Int? opt_memory_gb
-  Int? opt_cpu
-  Int? opt_disk
-  Int? opt_preemptible
-
   # runtime values
-  String docker = select_first([opt_docker, "quay.io/humancellatlas/secondary-analysis-star:v0.2.2-2.5.3a-40ead6e"])
-  Int machine_mem_mb = select_first([opt_memory_gb, ceil(size(tar_star_reference, "G")) + 6]) * 1000
-  Int cpu = select_first([opt_cpu, 16])
+  String docker = "quay.io/humancellatlas/secondary-analysis-star:v0.2.2-2.5.3a-40ead6e"
+  Int machine_mem_mb = (ceil(size(tar_star_reference, "G")) + 6) * 1000
+  Int cpu = 16
   # multiply input size by 2.2 to account for output bam file + 20% overhead, add size of reference.
-  Int disk = select_first([opt_disk, ceil((size(tar_star_reference, "G") * 2) + (size(bam_input, "G") * 2.2))])
-  Int preemptible = select_first([opt_preemptible, 0])
+  Int disk = ceil((size(tar_star_reference, "G") * 2) + (size(bam_input, "G") * 2.2))
+  Int preemptible = 0
 
   meta {
     description: "AMBROSE HALP!!"
@@ -24,11 +17,11 @@ task StarAlignBamSingleEnd {
   parameter_meta {
     bam_input: "unaligned bam file containing genomic sequence, tagged with barcode information"
     tar_star_reference: "star reference tarball"
-    opt_docker: "optionally provide a docker to run in"
-    opt_memory_gb: "optionally provide how much memory to provision"
-    opt_cpu: "optionally provide how many cpus to provision"
-    opt_disk: "optionally provide how much disk to provision"
-    opt_preemptible: "optionally provide how many preemptible attempts"
+    docker: "optionally provide a docker image"
+    machine_mem_mb: "optionally provide how much memory(MB) to provision"
+    cpu: "optionally provide how many cpus to provision"
+    disk: "optionally provide how much disk to provision"
+    preemptible: "optionally provide how many preemptible attempts"
   }
 
   command {
