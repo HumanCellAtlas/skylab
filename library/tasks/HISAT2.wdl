@@ -6,20 +6,13 @@ task HISAT2PairedEnd {
   String output_basename
   String sample_name
 
-  # runtime optional arguments
-  String? opt_docker
-  Int? opt_memory_gb
-  Int? opt_cpu
-  Int? opt_disk
-  Int? opt_preemptible
-
   # runtime values
-  String docker = select_first([opt_docker, "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"])
-  Int machine_mem_mb = select_first([opt_memory_gb, 5]) * 1000
-  Int cpu = select_first([opt_cpu, 4])
+  String docker = "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
+  Int machine_mem_mb = 5000
+  Int cpu = 4
   # use provided disk number or dynamically size on our own, 10 is our zipped fastq -> bam conversion with 50GB of additional disk
-  Int disk = select_first([opt_disk, ceil((size(fastq1, "GB") + size(fastq2, "GB") * 10) + size(hisat2_ref, "GB") + 50)])
-  Int preemptible = select_first([opt_preemptible, 5])
+  Int disk = ceil((size(fastq1, "GB") + size(fastq2, "GB") * 10) + size(hisat2_ref, "GB") + 50)
+  Int preemptible = 5
 
   meta {
     description: "HISAT2 alignment task will align paired-end fastq reads to reference genome."
@@ -32,11 +25,11 @@ task HISAT2PairedEnd {
     ref_name: ""
     output_basename: "basename used for output files"
     sample_name: ""
-    opt_docker: "optionally provide a docker to run in"
-    opt_memory_gb: "optionally provide how much memory to provision"
-    opt_cpu: "optionally provide how many cpus to provision"
-    opt_disk: "optionally provide how much disk to provision"
-    opt_preemptible: "optionally provide how many preemptible attempts"
+    docker: "optionally provide a docker image"
+    machine_mem_mb: "optionally provide how much memory(MB) to provision"
+    cpu: "optionally provide how many cpus to provision"
+    disk: "optionally provide how much disk to provision"
+    preemptible: "optionally provide how many preemptible attempts"
   }
 
   command {
@@ -103,20 +96,13 @@ task HISAT2RSEM {
   String output_basename
   String sample_name
 
-  # runtime optional arguments
-  String? opt_docker
-  Int? opt_memory_gb
-  Int? opt_cpu
-  Int? opt_disk
-  Int? opt_preemptible
-
   # runtime values
-  String docker = select_first([opt_docker, "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"])
-  Int machine_mem_mb = select_first([opt_memory_gb, 5]) * 1000
-  Int cpu = select_first([opt_cpu, 4])
+  String docker = "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
+  Int machine_mem_mb = 5000
+  Int cpu = 4
   # use provided disk number or dynamically size on our own, 10 is our zipped fastq -> bam conversion with 50GB of additional disk
-  Int disk = select_first([opt_disk, ceil((size(fastq1, "GB") + size(fastq2, "GB") * 10) + size(hisat2_ref, "GB") + 50)])
-  Int preemptible = select_first([opt_preemptible, 5])
+  Int disk = ceil((size(fastq1, "GB") + size(fastq2, "GB") * 10) + size(hisat2_ref, "GB") + 50)
+  Int preemptible = 5
 
   meta {
     description: "This HISAT2 alignment task will align paired-end fastq reads to transcriptome only. "
@@ -129,11 +115,11 @@ task HISAT2RSEM {
     ref_name: ""
     output_basename: "basename used for output files"
     sample_name: ""
-    opt_docker: "optionally provide a docker to run in"
-    opt_memory_gb: "optionally provide how much memory to provision"
-    opt_cpu: "optionally provide how many cpus to provision"
-    opt_disk: "optionally provide how much disk to provision"
-    opt_preemptible: "optionally provide how many preemptible attempts"
+    docker: "optionally provide a docker image"
+    machine_mem_mb: "optionally provide how much memory(MB) to provision"
+    cpu: "optionally provide how many cpus to provision"
+    disk: "optionally provide how much disk to provision"
+    preemptible: "optionally provide how many preemptible attempts"
   }
 
   command {
@@ -208,20 +194,13 @@ task HISAT2SingleEnd {
   String output_basename
   String sample_name
 
-  # runtime optional arguments
-  String? opt_docker
-  Int? opt_memory_gb
-  Int? opt_cpu
-  Int? opt_disk
-  Int? opt_preemptible
-
   # runtime values
-  String docker = select_first([opt_docker, "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"])
-  Int machine_mem_mb = select_first([opt_memory_gb, 5]) * 1000
-  Int cpu = select_first([opt_cpu, 4])
+  String docker = "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
+  Int machine_mem_mb = 5000
+  Int cpu = 4
   # use provided disk number or dynamically size on our own, 10 is our zipped fastq -> bam conversion with 50GB of additional disk
-  Int disk = select_first([opt_disk, ceil((size(fastq, "GB") * 10) + size(hisat2_ref, "GB") + 50)])
-  Int preemptible = select_first([opt_preemptible, 5])
+  Int disk = ceil((size(fastq, "GB") * 10) + size(hisat2_ref, "GB") + 50)
+  Int preemptible = 5
 
   meta {
     description: "This HISAT2 alignment task will align single-end fastq reads to reference genome."
@@ -233,11 +212,11 @@ task HISAT2SingleEnd {
     ref_name: ""
     output_basename: "basename used for output files"
     sample_name: ""
-    opt_docker: "optionally provide a docker to run in"
-    opt_memory_gb: "optionally provide how much memory to provision"
-    opt_cpu: "optionally provide how many cpus to provision"
-    opt_disk: "optionally provide how much disk to provision"
-    opt_preemptible: "optionally provide how many preemptible attempts"
+    docker: "optionally provide a docker image"
+    machine_mem_mb: "optionally provide how much memory(MB) to provision"
+    cpu: "optionally provide how many cpus to provision"
+    disk: "optionally provide how much disk to provision"
+    preemptible: "optionally provide how many preemptible attempts"
   }
 
   command {
@@ -274,20 +253,13 @@ task HISAT2InspectIndex {
   File hisat2_ref
   String ref_name
 
-  # runtime optional arguments
-  String? opt_docker
-  Int? opt_memory_gb
-  Int? opt_cpu
-  Int? opt_disk
-  Int? opt_preemptible
-
   # runtime values
-  String docker = select_first([opt_docker, "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"])
-  Int machine_mem_mb = select_first([opt_memory_gb, 3]) * 1000
-  Int cpu = select_first([opt_cpu, 1])
+  String docker =  "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
+  Int machine_mem_mb = 3500
+  Int cpu = 1
   # use provided disk number or dynamically size on our own, with 10GB of additional disk
-  Int disk = select_first([opt_disk, ceil(size(hisat2_ref, "GB") + 10)])
-  Int preemptible = select_first([opt_preemptible, 5])
+  Int disk = ceil(size(hisat2_ref, "GB") + 10)
+  Int preemptible = 5
 
   meta {
     description: "This task will test reference indexing files built for HISAT2 aligner."
@@ -296,11 +268,11 @@ task HISAT2InspectIndex {
   parameter_meta {
     hisat2_ref: ""
     ref_name: ""
-    opt_docker: "optionally provide a docker to run in"
-    opt_memory_gb: "optionally provide how much memory to provision"
-    opt_cpu: "optionally provide how many cpus to provision"
-    opt_disk: "optionally provide how much disk to provision"
-    opt_preemptible: "optionally provide how many preemptible attempts"
+    docker: "optionally provide a docker image"
+    machine_mem_mb: "optionally provide how much memory(MB) to provision"
+    cpu: "optionally provide how many cpus to provision"
+    disk: "optionally provide how much disk to provision"
+    preemptible: "optionally provide how many preemptible attempts"
   }
 
   command {

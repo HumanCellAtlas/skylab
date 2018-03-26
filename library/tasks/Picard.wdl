@@ -3,22 +3,15 @@ task CollectMultipleMetrics {
   File genome_ref_fasta
   String output_basename
 
-  # runtime optional arguments
-  String? opt_docker
-  Int? opt_memory_gb
-  Int? opt_cpu
-  Int? opt_disk
-  Int? opt_preemptible
-
   # runtime values
-  String docker = select_first([opt_docker, "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"])
-  Int machine_mem_mb = select_first([opt_memory_gb, 7]) * 1000
+  String docker ="quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
+  Int machine_mem_mb = 7500
   # give the command 1 GB of overhead
   Int command_mem_mb = machine_mem_mb - 1000
-  Int cpu = select_first([opt_cpu, 1])
+  Int cpu = 1
   # use provided disk number or dynamically size on our own, with 10GB of additional disk
-  Int disk = select_first([opt_disk, ceil(size(aligned_bam, "GB") + size(genome_ref_fasta, "GB") + 10)])
-  Int preemptible = select_first([opt_preemptible, 5])
+  Int disk = ceil(size(aligned_bam, "GB") + size(genome_ref_fasta, "GB") + 10)
+  Int preemptible = 5
 
   meta {
     description: "This Picard task will collect multiple QC metrics, such as CollectAlignmentSummaryMetrics and CollectInsertSizeMetrics."
@@ -28,11 +21,11 @@ task CollectMultipleMetrics {
     aligned_bam: ""
     genome_ref_fasta: ""
     output_basename: "basename used for output files"
-    opt_docker: "optionally provide a docker to run in"
-    opt_memory_gb: "optionally provide how much memory to provision"
-    opt_cpu: "optionally provide how many cpus to provision"
-    opt_disk: "optionally provide how much disk to provision"
-    opt_preemptible: "optionally provide how many preemptible attempts"
+    docker: "optionally provide a docker image"
+    machine_mem_mb: "optionally provide how much memory(MB) to provision"
+    cpu: "optionally provide how many cpus to provision"
+    disk: "optionally provide how much disk to provision"
+    preemptible: "optionally provide how many preemptible attempts"
   }
 
   command {
@@ -90,23 +83,16 @@ task CollectRnaMetrics {
   File rrna_intervals
   String output_basename
   String stranded
-  
-  # runtime optional arguments
-  String? opt_docker
-  Int? opt_memory_gb
-  Int? opt_cpu
-  Int? opt_disk
-  Int? opt_preemptible
 
   # runtime values
-  String docker = select_first([opt_docker, "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"])
-  Int machine_mem_mb = select_first([opt_memory_gb, 3]) * 1000
+  String docker = "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
+  Int machine_mem_mb = 3500
   # give the command 500 MB of overhead
   Int command_mem_mb = machine_mem_mb - 500
-  Int cpu = select_first([opt_cpu, 1])
+  Int cpu = 1
   # use provided disk number or dynamically size on our own, with 10GB of additional disk
-  Int disk = select_first([opt_disk, ceil(size(aligned_bam, "GB") + size(ref_flat, "GB") + size(rrna_intervals, "GB") + 10)])
-  Int preemptible = select_first([opt_preemptible, 5])
+  Int disk = ceil(size(aligned_bam, "GB") + size(ref_flat, "GB") + size(rrna_intervals, "GB") + 10)
+  Int preemptible = 5
 
   meta {
     description: "This Picard task will collect RnaSeqMetrics."
@@ -118,11 +104,11 @@ task CollectRnaMetrics {
     rrna_intervals: ""
     output_basename: "basename used for output files"
     stranded: ""
-    opt_docker: "optionally provide a docker to run in"
-    opt_memory_gb: "optionally provide how much memory to provision"
-    opt_cpu: "optionally provide how many cpus to provision"
-    opt_disk: "optionally provide how much disk to provision"
-    opt_preemptible: "optionally provide how many preemptible attempts"
+    docker: "optionally provide a docker image"
+    machine_mem_mb: "optionally provide how much memory(MB) to provision"
+    cpu: "optionally provide how many cpus to provision"
+    disk: "optionally provide how much disk to provision"
+    preemptible: "optionally provide how many preemptible attempts"
   }
   
   command {
@@ -158,22 +144,15 @@ task CollectDuplicationMetrics {
   File aligned_bam
   String output_basename
 
-  # runtime optional arguments
-  String? opt_docker
-  Int? opt_memory_gb
-  Int? opt_cpu
-  Int? opt_disk
-  Int? opt_preemptible
-
   # runtime values
-  String docker = select_first([opt_docker, "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"])
-  Int machine_mem_mb = select_first([opt_memory_gb, 7]) * 1000
+  String docker = "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
+  Int machine_mem_mb = 7500
   # give the command 1 GB of overhead
   Int command_mem_mb = machine_mem_mb - 1000
-  Int cpu = select_first([opt_cpu, 2])
+  Int cpu = 2
   # use provided disk number or dynamically size on our own, with 10GB of additional disk
-  Int disk = select_first([opt_disk, ceil(size(aligned_bam, "GB") + 10)])
-  Int preemptible = select_first([opt_preemptible, 5])
+  Int disk = ceil(size(aligned_bam, "GB") + 10)
+  Int preemptible = 5
 
   meta {
     description: "This Picard task will collect alignment DuplicationMetrics."
@@ -182,11 +161,11 @@ task CollectDuplicationMetrics {
   parameter_meta {
     aligned_bam: ""
     output_basename: "basename used for output files"
-    opt_docker: "optionally provide a docker to run in"
-    opt_memory_gb: "optionally provide how much memory to provision"
-    opt_cpu: "optionally provide how many cpus to provision"
-    opt_disk: "optionally provide how much disk to provision"
-    opt_preemptible: "optionally provide how many preemptible attempts"
+    docker: "optionally provide a docker image"
+    machine_mem_mb: "optionally provide how much memory(MB) to provision"
+    cpu: "optionally provide how many cpus to provision"
+    disk: "optionally provide how much disk to provision"
+    preemptible: "optionally provide how many preemptible attempts"
   }
   
   command {
