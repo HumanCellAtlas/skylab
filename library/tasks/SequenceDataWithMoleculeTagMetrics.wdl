@@ -47,7 +47,6 @@ task CalculateGeneMetrics {
   }
 }
 
-
 task CalculateCellMetrics {
   File bam_input
 
@@ -146,7 +145,6 @@ task MergeGeneMetrics {
     File gene_metrics = "merged-gene-metrics.csv.gz"
   }
 }
-
 
 task MergeCellMetrics {
   Array[File] metric_files

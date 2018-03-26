@@ -47,7 +47,6 @@ task CellSortBam {
   }
 }
 
-
 task GeneSortBam {
   File bam_input
 
