@@ -18,7 +18,6 @@ workflow Optimus {
   Array[File] r1_fastq
   Array[File] r2_fastq
   Array[File]? i1_fastq
-
   String sample_id
 
   # organism reference parameters
@@ -31,7 +30,7 @@ workflow Optimus {
 
   # environment-specific parameters
   String fastq_suffix = ""
-  # this is used to scatter matched [r1, r2, i1] fastq arrays
+  # this is used to scatter matched [r1_fastq, r2_fastq, i1_fastq] arrays
   Array[Int] indices = range(length(r1_fastq))
 
   parameter_meta {
