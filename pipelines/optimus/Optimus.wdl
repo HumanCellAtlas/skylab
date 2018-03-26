@@ -60,7 +60,7 @@ workflow Optimus {
         input:
           r1_fastq = r1_fastq[index],
           i1_fastq = non_optional_i1_fastq[index],
-          unmapped_bam = FastqToUBam.bam_output,
+          r2_unmapped_bam = FastqToUBam.bam_output,
           whitelist = whitelist
       }
     }

@@ -1,7 +1,7 @@
 task Attach10xBarcodes {
   File r1_fastq
-  File unmapped_bam
   File? i1_fastq
+  File r2_unmapped_bam
   File whitelist
 
   # runtime optional arguments
@@ -16,7 +16,7 @@ task Attach10xBarcodes {
   Int machine_mem_mb = select_first([opt_memory_gb, 7]) * 1000
   Int cpu = select_first([opt_cpu, 2])
   # estimate that bam is approximately the size of all inputs plus 50%
-  Int disk = select_first([opt_disk, ceil((size(unmapped_bam, "G") + size(r1_fastq, "G") + if (defined(i1_fastq)) then size(i1_fastq, "G") else 0) * 2.5)])
+  Int disk = select_first([opt_disk, ceil((size(r2_unmapped_bam, "G") + size(r1_fastq, "G") + if (defined(i1_fastq)) then size(i1_fastq, "G") else 0) * 2.5)])
   Int preemptible = select_first([opt_preemptible, 0])
 
   meta {
@@ -25,8 +25,8 @@ task Attach10xBarcodes {
 
   parameter_meta {
     r1_fastq: "forward fastq file; contains umi, cell barcode"
-    unmapped_bam: "reverse bam file; contains alignable genomic information"
     i1_fastq: "optional, index fastq file; contains sample barcode"
+    r2_unmapped_bam: "reverse bam file; contains alignable genomic information"
     whitelist: "10x genomics cell barcode whitelist for 10x V2"
     opt_docker: "optionally provide a docker to run in"
     opt_memory_gb: "optionally provide how much memory to provision"
@@ -41,7 +41,7 @@ task Attach10xBarcodes {
     Attach10xBarcodes \
       --r1 "${r1_fastq}" \
       ${"--i1 " + i1_fastq} \
-      --u2 "${unmapped_bam}" \
+      --u2 "${r2_unmapped_bam}" \
       --output-bamfile barcoded.bam \
       --whitelist "${whitelist}"
   }

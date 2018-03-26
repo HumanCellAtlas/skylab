@@ -13,7 +13,6 @@ task TagGeneExon {
   String docker = select_first([opt_docker, "quay.io/humancellatlas/secondary-analysis-dropseqtools:v0.2.2-1.12"])
   Int machine_mem_mb = select_first([opt_memory_gb, 7]) * 1000
   Int cpu = select_first([opt_cpu, 1])
-  # multiply input size by 2
   Int disk = select_first([opt_disk, ceil((size(bam_input, "G") + size(annotations_gtf, "G")) * 2)])
   Int preemptible = select_first([opt_preemptible, 0])
 
