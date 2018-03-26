@@ -70,7 +70,7 @@ workflow Optimus {
       call Attach.Attach10xBarcodes as AttachBarcodesNoIndex {
         input:
           r1_fastq = r1_fastq[index],
-          unmapped_bam = FastqToUBam.bam_output,
+          r2_unmapped_bam = FastqToUBam.bam_output,
           whitelist = whitelist
       }
     }
