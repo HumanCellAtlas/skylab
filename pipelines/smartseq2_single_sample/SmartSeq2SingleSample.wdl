@@ -47,7 +47,7 @@ workflow SmartSeq2SingleCell {
   }
 
   String quality_control_output_basename = output_name + "_qc"
-  
+
   call HISAT2.HISAT2PairedEnd {
     input:
       hisat2_ref = hisat2_ref_index,
