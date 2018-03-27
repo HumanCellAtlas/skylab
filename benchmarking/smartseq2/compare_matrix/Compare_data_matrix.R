@@ -16,136 +16,14 @@ library(scran)
 library(igraph)
 library(mclust)
 library('rtracklayer')
+source('analysis_functions.R')
 set.seed(42)
-
-addTheme <- function(p) {
-  p <- p + theme(legend.position = "top")
-  p <-
-    p + theme(plot.title = element_text(
-      hjust = 0.5,
-      size = 20,
-      face = 'bold'
-    ))
-  p <-
-    p + theme(
-      axis.title.x = element_text(
-        color = 'black',
-        size = 18,
-        face = 'bold'
-      ),
-      axis.title.y = element_text(
-        size = 18,
-        color = 'black',
-        face = 'bold'
-      )
-    )
-  p <-
-    p + theme(
-      axis.text.y = element_text(
-        color = 'black',
-        size = 18,
-        face = 'bold'
-      ),
-      axis.text.x = element_text(
-        color = 'black',
-        size = 18,
-        face = 'bold'
-      )
-    )
-  p <-
-    p + theme(legend.text = element_text(size = 15, face = 'bold'),
-              legend.title = element_blank())
-  return(p)
-}
-# parse GTF file
-ParseGene <- function(gtf_file) {
-  gtf_gencode <-
-    readGFF(
-      gtf_file,
-      version = 2L,
-      tags = c("gene_name", "gene_id", "transcript_id", "gene_type")
-    )
-  genes <- subset(gtf_gencode, gtf_gencode$type == "gene")
-  return(genes)
-}
-# cover to foldchnages
-# matrix1 and matrix2 are two data matrix
-foldchanges <- function(mat1, mat2) {
-  # log2 transformation
-  # first 2 columns are gene ID and length
-  logmd1 <- log(mat1[, -c(1:2)] + 1, base = 2)
-  # match gene ID
-  mlist <- match(mat1[, 1], mat2[, 1])
-  # match sample column
-  nlist <- match(colnames(mat1), colnames(mat2))
-  mat2 <- mat2[mlist, nlist]
-  # log2 transformation
-  logmd2 <- log(mat2[mlist, -c(1:2)] + 1, base = 2)
-  fcmat <- logmd1 - logmd2
-  out <- cbind(mat1[, 1:2], fcmat)
-  return(out)
-}
-# log2 transformation
-takelog2 <- function(mat) {
-  dd <- log(mat[,-c(1:2)] + 1, base = 2)
-  out <- cbind(mat[, c(1:2)], dd)
-  return(out)
-}
-# run correlation test
-# return stats
-RunCorrTest <- function(x, y) {
-  pval <- c()
-  cval <- c()
-  for (i in colnames(x)) {
-    z <- cor.test(x[, i], y[, i])
-    pval <- c(pval, z$p.value)
-    cval <- c(cval, z$estimate)
-  }
-  return(data.frame(
-    'pvalue' = pval,
-    'cor' = cval,
-    'sample' = colnames(x)
-  ))
-}
-# correlatin between two data matrix
-CorrDataMatrix <- function(mat1, mat2, islog2) {
-  # match gene ID
-  if (islog2 == 1) {
-    mlist <- match(mat1[, 1], mat2[, 1])
-    # match sample column
-    nlist <- match(colnames(mat1), colnames(mat2))
-    mat2 <- mat2[mlist, nlist]
-    # log2 transformation
-    mat1.log <- takelog2(mat1)
-    mat2.log <- takelog2(mat2)
-  } else{
-    mat1.log <- mat1
-    mat2.log <- mat2
-  }
-  #mcor <-  cor(mat1.log[,-c(1:2)],mat2.log[,-c(1:2)])
-  stat.cor <- RunCorrTest(mat1.log[,-c(1:2)], mat2.log[,-c(1:2)])
-  return(stat.cor)
-}
 # summary fold changes by gene's biotype
 # foldchanges: median or mean of FC cross dataset
 # genes: gene annotation from gft file
 # threshold: a cut-off to select significant foldchange
 # values.
-summaryFoldChanges <- function(foldchanges, genes, threshold) {
-  upIDs <- names(which(foldchanges > threshold))
-  downIDs <- names(which(foldchanges < -threshold))
-  # parse up- down- genes
-  upGene <- subset(genes, genes$gene_id %in% upIDs)
-  downGene <- subset(genes, genes$gene_id %in% downIDs)
-  upGene <- cbind('FC' = rep('UP', nrow(upGene)), upGene)
-  downGene <- cbind('FC' = rep('DN', nrow(downGene)), downGene)
-  # put together
-  fcGene <- rbind(upGene, downGene)
-  # summary up- down- FC
-  fc_tb <- table(fcGene$FC, fcGene$gene_type)
-  fc_tb['DN', ] <- (-1) * fc_tb['DN', ]
-  return(fc_tb)
-}
+
 # Run SNN-Cliq to generate SNN graphic and
 # then cluster cells based on graph to generate cluster/group
 # then visualize the SNN clustering result in PCA
@@ -213,21 +91,12 @@ fc <- foldchanges(mat1, mat2)
 # calucate mean or median FC cross samples
 fc.dd <- fc[,-c(1:2)]
 fc.m <- apply(fc.dd, 1, median)
-# boxplot
-# Box plot (bp)
-bxp <- ggviolin(
-  fc.m,
-  ylab = 'log FoldChanges',
-  xlab = '',
-  ggtheme = theme_minimal(),
-  add = "jitter"
-)
-bxp <- addTheme(bxp)
+
 # correlation
 # return two matrix of corraltion matrix
 # take diag of correlation matrix
 # plot into histogram
-mcor <- CorrDataMatrix(mat1, mat2, 0)
+mcor <- CorrDataMatrix(mat1, mat2, isnotlog=TRUE)
 phist <- gghistogram(
   mcor,
   x = "cor",
