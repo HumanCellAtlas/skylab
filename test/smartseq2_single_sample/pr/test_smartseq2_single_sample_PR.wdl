@@ -1,4 +1,4 @@
-import "ss2_single_sample.wdl" as target_wdl
+import "SmartSeq2SingleSample.wdl" as target_wdl
 import "ValidateSmartSeq2SingleCell.wdl" as checker_wdl
 
 # this task will be run by the jenkins script that gets executed on our PRs.
