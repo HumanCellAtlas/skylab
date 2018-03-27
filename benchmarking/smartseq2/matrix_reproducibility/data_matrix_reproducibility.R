@@ -157,7 +157,7 @@ gp <- ggarrange(
   sp,
   pb,
   labels = c("A: T-test Bulk -SCs", "B: Signature Genes Summary in Biotypes"),
-  common.legend = TRUE,
+  common.legend = FALSE,
   ncol = 2,
   nrow = 1
 )
