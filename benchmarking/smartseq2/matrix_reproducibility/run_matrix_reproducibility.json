@@ -1,0 +1,7 @@
+{
+  "RunDataMatrixReproducibility.scripts_dir": "gs://broad-dsde-mint-dev-teststorage/pipeline_testing_scripts",
+  "RunDataMatrixReproducibility.base_datafile": "gs://broad-dsde-mint-dev-cromwell-execution/cromwell-executions/run_merge/7409e78f-68ba-45a2-b34e-f3d4ec0ecf68/call-MergeTPM/shard-1/STAR_rsem_merged_tpm.csv'",
+  "RunDataMatrixReproducibility.gtf_file": "gs://hca-dcp-mint-test-data/reference/GRCh38_Gencode/gencode.v27.primary_assembly.annotation.gtf",
+  "RunDataMatrixReproducibility.updated_datafile": "gs://broad-dsde-mint-dev-cromwell-execution/cromwell-executions/run_merge/7409e78f-68ba-45a2-b34e-f3d4ec0ecf68/call-MergeTPM/shard-0/HISAT2_rsem_merged_tpm.csv",
+  "RunDataMatrixReproducibility.output_name": "STAR_HISAT2_TPM_rep"
+}
