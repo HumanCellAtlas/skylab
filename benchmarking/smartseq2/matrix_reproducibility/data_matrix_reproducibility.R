@@ -150,7 +150,7 @@ pb <- ggbarplot(
   ggtheme = theme_minimal(),
   palette = "jco",
   legend.title = ""
-) ++ border()
+) + border()
 pb <- addTheme(pb)
 # arrange plots
 gp <- ggarrange(

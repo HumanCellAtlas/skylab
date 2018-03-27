@@ -34,8 +34,10 @@ addTheme <- function(p) {
       )
     )
   p <-
-    p + theme(legend.text = element_text(size = 15, face = 'bold'),
-              legend.title = element_text(size = 15, face = 'bold'))
+    p + theme(
+      legend.text = element_text(size = 15, face = 'bold'),
+      legend.title = element_text(size = 15, face = 'bold')
+    )
   return(p)
 }
 plotlm <- function(df) {
@@ -109,7 +111,7 @@ plotlm <- function(df) {
     'fpval' = fpval
   ))
 }
-# plot violin plot 
+# plot violin plot
 # run mean comparison test
 plotBox <- function(df) {
   mz <- melt(df)
@@ -129,10 +131,10 @@ plotBox <- function(df) {
     stat_compare_means(size = 10) + # Add pairwise comparisons p-value
     grids(linetype = "dashed") +
     theme_bw()
-  p$layers[[2]]$aes_params$size=1
+  p$layers[[2]]$aes_params$size = 1
   p$layers[[2]]$aes_params$textsize <- 10
   p <- addTheme(p)
-  stat <- wilcox.test(df[,'Base'], df[,'Updated'])
+  stat <- wilcox.test(df[, 'Base'], df[, 'Updated'])
   return(list('p' = p, 'pval' = stat$p.value))
 }
 # plot histogram/density plot
@@ -149,7 +151,7 @@ plothist <- function(df) {
     color = "variable",
     fill = "variable"
   )
-  density.p <- density.p + grids(linetype = "dashed")+theme_bw()
+  density.p <- density.p + grids(linetype = "dashed") + theme_bw()
   density.p <- addTheme(density.p)
   return(list('p' = density.p))
 }
@@ -174,7 +176,7 @@ plotKS <- function(df) {
     stat_ecdf(size = 1) +
     theme_bw() +
     theme(legend.position = "top") +
-    ylab("ECDF") 
+    ylab("ECDF")
   # do KS test
   dtable <-
     data.frame(
@@ -226,21 +228,21 @@ ParseGene <- function(gtf_file) {
 foldchanges <- function(mat1, mat2) {
   # log2 transformation
   # first 2 columns are gene ID and length
-  logmd1 <- log(mat1[, -c(1:2)] + 1, base = 2)
+  logmd1 <- log(mat1[,-c(1:2)] + 1, base = 2)
   # match gene ID
   mlist <- match(mat1[, 1], mat2[, 1])
   # match sample column
   nlist <- match(colnames(mat1), colnames(mat2))
   mat2 <- mat2[mlist, nlist]
   # log2 transformation
-  logmd2 <- log(mat2[mlist, -c(1:2)] + 1, base = 2)
+  logmd2 <- log(mat2[mlist,-c(1:2)] + 1, base = 2)
   fcmat <- logmd1 - logmd2
   out <- cbind(mat1[, 1:2], fcmat)
   return(out)
 }
 # log2 transformation
 takelog2 <- function(mat) {
-  dd <- log(mat[,-c(1:2)] + 1, base = 2)
+  dd <- log(mat[, -c(1:2)] + 1, base = 2)
   out <- cbind(mat[, c(1:2)], dd)
   return(out)
 }
@@ -258,6 +260,7 @@ RunCorrTest <- function(x, y) {
     'sample' = colnames(x)
   ))
 }
+# calculate correlation matrix btw matrix data
 CorrDataMatrix <- function(mat1, mat2, islog2) {
   # match gene ID
   if (islog2 == 1) {
@@ -273,16 +276,16 @@ CorrDataMatrix <- function(mat1, mat2, islog2) {
     mat2.log <- mat2
   }
   #mcor <-  cor(mat1.log[,-c(1:2)],mat2.log[,-c(1:2)])
-  stat.cor <- RunCorrTest(mat1.log[,-c(1:2)], mat2.log[,-c(1:2)])
+  stat.cor <- RunCorrTest(mat1.log[, -c(1:2)], mat2.log[, -c(1:2)])
   return(stat.cor)
 }
 # remove cells if total expr < threshold
 # threshold value default 10000
-FilterCellsbyExp<-function(matrixdata, threshold){
+FilterCellsbyExp <- function(matrixdata, threshold) {
   d <- matrixdata
-  tot.exp <-apply(d, 2, sum)
-  rmlist <- which(tot.exp <threshold)
-  sub.d<-d[,-c(rmlist)]
+  tot.exp <- apply(d, 2, sum)
+  rmlist <- which(tot.exp < threshold)
+  sub.d <- d[, -c(rmlist)]
   return(sub.d)
 }
 # calculate group mean
@@ -299,22 +302,26 @@ AggregateMeanbyGroup <- function(x, y) {
   )
   return(out)
 }
+# run statistical test between data matrix with conditions
+# condition can be sc vs bulk, celltype or phenotype.
 RunTest <- function(x, y, testname) {
-  
+  cnt <- aggregate(x, list(y), function(x) {
+    sum(x > 0)
+  })
   if (testname == "ttest") {
     res <-
       t.test(x ~ y, alternative = "two.sided", var.equal = FALSE)
   } else if (testname == "wilcox") {
     res <- wilcox.test(x ~ y)
   }
-  m <-aggregate(x,list(y),mean)
+  m <- aggregate(x, list(y), mean)
   pval <- res$p.value
   out <- c(
     'pvalue' = pval,
-    "a1" =m[1,2],
-    "a2"= m[2,2]
+    "a1" = m[1, 2],
+    "a2" = m[2, 2],
+    "n1" = cnt[1, 2],
+    "n2" = cnt[2, 2]
   )
-  
   return(out)
 }
-
