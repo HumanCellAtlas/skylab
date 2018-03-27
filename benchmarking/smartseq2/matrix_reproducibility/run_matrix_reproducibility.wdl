@@ -2,6 +2,7 @@ task DataMatrixReproducibility {
   File base_datafile
   File updated_datafile
   File gtf_file
+  File metadata_file
   String output_name
   String src_dir
   
@@ -14,6 +15,7 @@ task DataMatrixReproducibility {
       --matrix1 ${base_datafile} \
       --matrix2 ${updated_datafile} \
       --gtf_file ${gtf_file} \
+      --metadata_file ${metadata_file} \
       --output_prefix ${output_name}/${output_name} 
     tar -zcvf ${output_name}.tar.gz ${output_name}
   }
@@ -34,7 +36,7 @@ workflow RunDataMatrixReproducibility {
   String updated_datafile
   String output_name
   String gtf_file
-
+  String metadata_file
   call DataMatrixReproducibility {
     input:
       base_datafile = base_datafile,
@@ -42,5 +44,6 @@ workflow RunDataMatrixReproducibility {
       output_name = output_name,
       gtf_file = gtf_file,
       src_dir = scripts_dir,
+      metadata_file = metadata_file
   }
 }
