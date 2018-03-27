@@ -118,8 +118,8 @@ sp <-
     palette = "jco",
     ggtheme = theme_minimal(),
     legend.title = "t-test SC vs Bulk",
-    xlab = "Base Bulk -SC",
-    ylab = "Updated Bulk - SC"
+    xlab = "Fold Changes: Base Bulk -SC",
+    ylab = "Fold Changes: Updated Bulk - SC"
   ) + border()
 sp <- addTheme(sp)
 
@@ -144,7 +144,7 @@ pb <- ggbarplot(
   # change fill color by FC
   x.text.angle = 90,
   # Rotate vertically x axis texts
-  xlab = "",
+  xlab = "# Of Inconsistent Signature Genes",
   ylab = "",
   rotate = TRUE,
   ggtheme = theme_minimal(),

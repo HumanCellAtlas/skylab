@@ -1,3 +1,19 @@
+library(ggplot2)
+library(MASS)
+library(plyr)
+library(reshape2)
+library(ggpubr)
+library(gridExtra)
+library(ggpmisc)
+library(cowplot)
+library(corrplot)
+library(ggrepel)
+library(optparse)
+library(rsvd)
+library(scran)
+library(igraph)
+library(mclust)
+library(rtracklayer)
 # R functions used in analysis
 addTheme <- function(p) {
   p <- p + theme(legend.position = "top")
@@ -228,21 +244,21 @@ ParseGene <- function(gtf_file) {
 foldchanges <- function(mat1, mat2) {
   # log2 transformation
   # first 2 columns are gene ID and length
-  logmd1 <- log(mat1[,-c(1:2)] + 1, base = 2)
+  logmd1 <- log(mat1[, -c(1:2)] + 1, base = 2)
   # match gene ID
   mlist <- match(mat1[, 1], mat2[, 1])
   # match sample column
   nlist <- match(colnames(mat1), colnames(mat2))
   mat2 <- mat2[mlist, nlist]
   # log2 transformation
-  logmd2 <- log(mat2[mlist,-c(1:2)] + 1, base = 2)
+  logmd2 <- log(mat2[mlist, -c(1:2)] + 1, base = 2)
   fcmat <- logmd1 - logmd2
   out <- cbind(mat1[, 1:2], fcmat)
   return(out)
 }
 # log2 transformation
 takelog2 <- function(mat) {
-  dd <- log(mat[, -c(1:2)] + 1, base = 2)
+  dd <- log(mat[,-c(1:2)] + 1, base = 2)
   out <- cbind(mat[, c(1:2)], dd)
   return(out)
 }
@@ -261,9 +277,9 @@ RunCorrTest <- function(x, y) {
   ))
 }
 # calculate correlation matrix btw matrix data
-CorrDataMatrix <- function(mat1, mat2, islog2) {
+CorrDataMatrix <- function(mat1, mat2, isnotlog2) {
   # match gene ID
-  if (islog2 == 1) {
+  if (isnotlog2) {
     mlist <- match(mat1[, 1], mat2[, 1])
     # match sample column
     nlist <- match(colnames(mat1), colnames(mat2))
@@ -275,8 +291,7 @@ CorrDataMatrix <- function(mat1, mat2, islog2) {
     mat1.log <- mat1
     mat2.log <- mat2
   }
-  #mcor <-  cor(mat1.log[,-c(1:2)],mat2.log[,-c(1:2)])
-  stat.cor <- RunCorrTest(mat1.log[, -c(1:2)], mat2.log[, -c(1:2)])
+  stat.cor <- RunCorrTest(mat1.log[,-c(1:2)], mat2.log[,-c(1:2)])
   return(stat.cor)
 }
 # remove cells if total expr < threshold
@@ -285,7 +300,7 @@ FilterCellsbyExp <- function(matrixdata, threshold) {
   d <- matrixdata
   tot.exp <- apply(d, 2, sum)
   rmlist <- which(tot.exp < threshold)
-  sub.d <- d[, -c(rmlist)]
+  sub.d <- d[,-c(rmlist)]
   return(sub.d)
 }
 # calculate group mean
@@ -324,4 +339,20 @@ RunTest <- function(x, y, testname) {
     "n2" = cnt[2, 2]
   )
   return(out)
+}
+
+summaryFoldChanges <- function(foldchanges, genes, threshold) {
+  upIDs <- names(which(foldchanges > threshold))
+  downIDs <- names(which(foldchanges < -threshold))
+  # parse up- down- genes
+  upGene <- subset(genes, genes$gene_id %in% upIDs)
+  downGene <- subset(genes, genes$gene_id %in% downIDs)
+  upGene <- cbind('FC' = rep('UP', nrow(upGene)), upGene)
+  downGene <- cbind('FC' = rep('DN', nrow(downGene)), downGene)
+  # put together
+  fcGene <- rbind(upGene, downGene)
+  # summary up- down- FC
+  fc_tb <- table(fcGene$FC, fcGene$gene_type)
+  fc_tb['DN',] <- (-1) * fc_tb['DN',]
+  return(fc_tb)
 }
