@@ -14,7 +14,7 @@ task TagGeneExon {
   }
 
   parameter_meta {
-    annotations_gtf: "each record must have a gene_name and transcript_name in addition to a gene_id and transcript_id.  Must be in gtf format"
+    annotations_gtf: "each record must have a gene_name and transcript_name in addition to a gene_id and transcript_id, no white space at the end of any record and must be in gtf format."
     bam_input: ""
     docker: "optionally provide a docker image"
     machine_mem_mb: "optionally provide how much memory(MB) to provision"
