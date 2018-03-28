@@ -16,11 +16,11 @@ task TagGeneExon {
   parameter_meta {
     annotations_gtf: "GTF annotation file for the species that bam input is derived from. Each record must have a gene_name and transcript_name in addition to a gene_id and transcript_id, no white space at the end of any record and must be in gtf format."
     bam_input: "Aligned bam file."
-    docker: "optionally provide a docker image"
-    machine_mem_mb: "optionally provide how much memory(MB) to provision"
-    cpu: "optionally provide how many cpus to provision"
-    disk: "optionally provide how much disk to provision"
-    preemptible: "optionally provide how many preemptible attempts"
+    docker: "(optional) the docker image containing the runtime environment for this task"
+    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    cpu: "(optional) the number of cpus to provision for this task"
+    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
   }
 
  command {

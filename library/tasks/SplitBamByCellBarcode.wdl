@@ -3,8 +3,8 @@ task SplitBamByCellBarcode {
   Float size_in_mb = 1024.0
 
   # runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.1.5"
-  Int machine_mem_mb = 3000
+  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:0.1.9"
+  Int machine_mem_mb = 3500
   Int cpu = 1
   # estimate that bam is approximately equal in size to the input bam, add 20% buffer
   Int disk = ceil(size(bam_input, "G") * 2.2)
@@ -17,11 +17,11 @@ task SplitBamByCellBarcode {
   parameter_meta {
     bam_input: "input bam file"
     size_in_mb: "target size for each output chunk"
-    docker: "optionally provide a docker image"
-    machine_mem_mb: "optionally provide how much memory(MB) to provision"
-    cpu: "optionally provide how many cpus to provision"
-    disk: "optionally provide how much disk to provision"
-    preemptible: "optionally provide how many preemptible attempts"
+    docker: "(optional) the docker image containing the runtime environment for this task"
+    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    cpu: "(optional) the number of cpus to provision for this task"
+    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
   }
 
   command {

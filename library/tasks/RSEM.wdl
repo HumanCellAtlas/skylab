@@ -16,14 +16,14 @@ task RSEMExpression {
   }
 
   parameter_meta {
-    trans_aligned_bam: ""
-    rsem_genome: ""
+    trans_aligned_bam: "input transcriptome aligned bam"
+    rsem_genome: "tar'd RSEM genome"
     output_basename: "basename used for output files"
-    docker: "optionally provide a docker image"
-    machine_mem_mb: "optionally provide how much memory(MB) to provision"
-    cpu: "optionally provide how many cpus to provision"
-    disk: "optionally provide how much disk to provision"
-    preemptible: "optionally provide how many preemptible attempts"
+    docker: "(optional) the docker image containing the runtime environment for this task"
+    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    cpu: "(optional) the number of cpus to provision for this task"
+    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
   }
 
   command {
