@@ -9,11 +9,11 @@ task CellSortBam {
   Int preemptible = 0
 
   meta {
-    description: "AMBROSE HALP!!"
+    description: "Sort bam_input by cell, then molecule, then gene."
   }
 
   parameter_meta {
-    bam_input: ""
+    bam_input: "Input bam file containing reads marked with tags for cell barcodes (CB), molecule barcodes (UB) and gene ids (GE)"
     opt_docker: "optionally provide a docker to run in"
     opt_memory_gb: "optionally provide how much memory to provision"
     opt_cpu: "optionally provide how many cpus to provision"
@@ -51,11 +51,11 @@ task GeneSortBam {
   Int preemptible = 0
 
   meta {
-    description: "AMBROSE HALP!!"
+    description: "Sort bam_input by gene, then cell, then molecule."
   }
 
   parameter_meta {
-    bam_input: ""
+    bam_input: "Input bam file containing reads marked with tags for cell barcodes (CB), molecule barcodes (UB) and gene ids (GE)"
     docker: "optionally provide a docker image"
     machine_mem_mb: "optionally provide how much memory(MB) to provision"
     cpu: "optionally provide how many cpus to provision"

@@ -10,12 +10,12 @@ task TagGeneExon {
   Int preemptible = 0
 
   meta {
-    description: "AMBROSE HALP!!"
+    description: "Tags any read in bam_input that overlaps an intron or exon interval with the gene that those interals correspond to."
   }
 
   parameter_meta {
-    annotations_gtf: "each record must have a gene_name and transcript_name in addition to a gene_id and transcript_id, no white space at the end of any record and must be in gtf format."
-    bam_input: ""
+    annotations_gtf: "GTF annotation file for the species that bam input is derived from. Each record must have a gene_name and transcript_name in addition to a gene_id and transcript_id, no white space at the end of any record and must be in gtf format."
+    bam_input: "Aligned bam file."
     docker: "optionally provide a docker image"
     machine_mem_mb: "optionally provide how much memory(MB) to provision"
     cpu: "optionally provide how many cpus to provision"

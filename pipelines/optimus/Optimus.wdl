@@ -38,11 +38,11 @@ workflow Optimus {
     r2_fastq: "reverse read, contains cDNA fragment generated from captured mRNA"
     i1_fastq: "(optional) index read, for demultiplexing of multiple samples on one flow cell."
     sample_id: "name of sample matching this file, inserted into read group header"
-    tar_star_reference: "star reference"
-    annotations_gtf: "gtf containing annotations for gene tagging"
-    ref_genome_fasta: "genome fasta file"
+    tar_star_reference: "star genome reference"
+    annotations_gtf: "gtf containing annotations for gene tagging (must match star reference)"
+    ref_genome_fasta: "genome fasta file (must match star reference)"
     whitelist: "10x genomics cell barcode whitelist for 10x V2"
-    fastq_suffix: "when running in green box, need to add '.gz' for picard to detect"
+    fastq_suffix: "when running in green box, need to add '.gz' for picard to detect the compression"
   }
 
   scatter (index in indices) {

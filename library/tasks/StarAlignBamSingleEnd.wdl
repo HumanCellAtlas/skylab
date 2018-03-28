@@ -11,12 +11,12 @@ task StarAlignBamSingleEnd {
   Int preemptible = 0
 
   meta {
-    description: "AMBROSE HALP!!"
+    description: "Aligns reads in bam_input to the reference genome in tar_star_reference"
   }
 
   parameter_meta {
     bam_input: "unaligned bam file containing genomic sequence, tagged with barcode information"
-    tar_star_reference: "star reference tarball"
+    tar_star_reference: "star reference tarball built against the species that the bam_input is derived from"
     docker: "optionally provide a docker image"
     machine_mem_mb: "optionally provide how much memory(MB) to provision"
     cpu: "optionally provide how many cpus to provision"

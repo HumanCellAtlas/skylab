@@ -13,19 +13,19 @@ task Attach10xBarcodes {
   Int preemptible = 0
 
   meta {
-    description: "attaches barcodes found in r1 and i1"
+    description: "attaches barcodes found in r1 (forward) and i1 (index) fastq files to corresponding reads in the r2 (reverse) bam file"
   }
 
   parameter_meta {
     r1_fastq: "forward fastq file; contains umi, cell barcode"
     i1_fastq: "optional, index fastq file; contains sample barcode"
-    r2_unmapped_bam: "reverse bam file; contains alignable genomic information"
+    r2_unmapped_bam: "reverse unmapped bam file; contains alignable genomic information"
     whitelist: "10x genomics cell barcode whitelist for 10x V2"
-    docker: "optionally provide a docker image"
-    machine_mem_mb: "optionally provide how much memory(MB) to provision"
-    cpu: "optionally provide how many cpus to provision"
-    disk: "optionally provide how much disk to provision"
-    preemptible: "optionally provide how many preemptible attempts"
+    docker: "(optional) the docker image containing the runtime environment for this task"
+    machine_mem_mb: "(optional, default=7500) the amount of memory (MB) to provision for this task"
+    cpu: "(optional, default=2) the number of cpus to provision for this task"
+    disk: "(optional, default=set based on input sizes) the amount of disk space (GB) to provision for this task"
+    preemptible: "(optional, default=0) if non-zero, request a pre-emptible instance and allow for this number of preemptions before terminating the task."
   }
 
   command {

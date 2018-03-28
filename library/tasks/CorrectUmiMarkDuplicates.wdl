@@ -12,11 +12,11 @@ task SortAndCorrectUmiMarkDuplicates {
   Int preemptible = 0
 
   meta {
-    description: "AMBROSE HALP!!"
+    description: "Iterates over reads in a bam file, marking duplicate reads by setting bit 0x400 in the SAM flag and correcting any barcodes with errors by storing the original barcode in tag UR."
   }
 
   parameter_meta {
-    bam_input: ""
+    bam_input: "Aligned bam file containing reads that have been marked by cell barcodes (CB) and molecular barcodes (UB)"
     docker: "optionally provide a docker image"
     machine_mem_mb: "optionally provide how much memory(MB) to provision"
     cpu: "optionally provide how many cpus to provision"

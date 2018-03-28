@@ -11,12 +11,12 @@ task SplitBamByCellBarcode {
   Int preemptible = 0
 
   meta {
-    description: "AMBROSE HALP!!"
+    description: "Splits a bam file into chunks of size_in_mb, guaranteeing that all information for each cell is fully contained in only one of the chunks"
   }
 
   parameter_meta {
     bam_input: "input bam file"
-    size_in_mb: "threshold of how big each bam split should be"
+    size_in_mb: "target size for each output chunk"
     docker: "optionally provide a docker image"
     machine_mem_mb: "optionally provide how much memory(MB) to provision"
     cpu: "optionally provide how many cpus to provision"

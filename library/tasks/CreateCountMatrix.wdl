@@ -11,12 +11,12 @@ task DropSeqToolsDigitalExpression {
   Int preemptible = 0
 
   meta {
-    description: "AMBROSE HALP!!"
+    description: "Constructs a tab-delimited gzipped count matrix from a bam file containing reads marked with cell barcodes (CB), molecule barcodes (UB) and gene ids (GE)"
   }
 
   parameter_meta {
-    bam_input: ""
-    whitelist: ""
+    bam_input: "input bam file marked with cell barcodes (CB), molecule barcodes (UB) and gene ids (GE)"
+    whitelist: "10x genomics cell barcode whitelist for 10x V2. Only CB found in this list are included in the count matrix"
     docker: "optionally provide a docker image"
     machine_mem_mb: "optionally provide how much memory(MB) to provision"
     cpu: "optionally provide how many cpus to provision"

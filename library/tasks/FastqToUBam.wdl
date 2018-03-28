@@ -14,7 +14,7 @@ task FastqToUBam {
   Int preemptible = 0
 
   meta {
-    description: "AMBROSE HALP!!"
+    description: "Converts a fastq file into an unaligned bam file."
   }
 
   parameter_meta {

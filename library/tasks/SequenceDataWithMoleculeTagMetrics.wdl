@@ -9,11 +9,11 @@ task CalculateGeneMetrics {
   Int preemptible = 0
 
   meta {
-    description: "AMBROSE HALP!!"
+    description: "Calculate gene metrics from the reads in bam_input."
   }
 
   parameter_meta {
-    bam_input: ""
+    bam_input: "An aligned bam file augmented with CB, UB, GE, CY, UY, and XF tags."
     docker: "optionally provide a docker image"
     machine_mem_mb: "optionally provide how much memory(MB) to provision"
     cpu: "optionally provide how many cpus to provision"
@@ -51,11 +51,11 @@ task CalculateCellMetrics {
   Int preemptible = 0
 
   meta {
-    description: "AMBROSE HALP!!"
+    description: "Calculate cell metrics from the reads in bam_input."
   }
 
   parameter_meta {
-    bam_input: ""
+    bam_input: "An aligned bam file augmented with CB, UB, GE, CY, UY, and XF tags."
     docker: "optionally provide a docker image"
     machine_mem_mb: "optionally provide how much memory(MB) to provision"
     cpu: "optionally provide how many cpus to provision"
@@ -94,11 +94,11 @@ task MergeGeneMetrics {
   Int preemptible = 0
 
   meta {
-    description: "AMBROSE HALP!!"
+    description: "Merge an array of gene metric files with the same metric categories and potentially overlapping sets of gene features"
   }
 
   parameter_meta {
-    metric_files: ""
+    metric_files: "A set of metrics files, each measuring a potentially overlapping set of genes in disjoint sets of cells"
     docker: "optionally provide a docker image"
     machine_mem_mb: "optionally provide how much memory(MB) to provision"
     cpu: "optionally provide how many cpus to provision"
@@ -136,11 +136,11 @@ task MergeCellMetrics {
   Int preemptible = 0
 
   meta {
-    description: "AMBROSE HALP!!"
+    description: "Concatenate multiple cell metrics files into a single matrix"
   }
 
   parameter_meta {
-    metric_files: ""
+    metric_files: "An array of cell metrics files that contain the same metric types, but different sets of cells"
     docker: "optionally provide a docker image"
     machine_mem_mb: "optionally provide how much memory(MB) to provision"
     cpu: "optionally provide how many cpus to provision"

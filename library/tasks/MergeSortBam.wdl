@@ -15,7 +15,7 @@ task MergeSortBamFiles {
   Int preemptible = 0
 
   meta {
-    description: "AMBROSE HALP!!"
+    description: "Merge multiple bam files in the specified sort order"
   }
 
   parameter_meta {
