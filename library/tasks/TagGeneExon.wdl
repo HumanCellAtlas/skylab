@@ -10,17 +10,20 @@ task TagGeneExon {
  command {
     set -e
 
-    TagReadWithGeneExon \
+    java -Xms5000m -jar /usr/gitc/dropseq.jar TagMultiMappedReadWithGeneExon \
       INPUT=${bam_input} \
       OUTPUT=bam_with_gene_exon.bam \
       SUMMARY=gene_exon_tag_summary.log \
       TAG=GE \
+      UMI_TAG=UR \
+      DELETE_SECONDARY_ALIGNMENTS=true \
+      ADD_GENE_TAG_TO_INTRONIC_READS=true \
       ANNOTATIONS_FILE=${annotations_gtf}
   }
 
   # Larger genomes (mouse-human) require a 7.5gb instance; single-organism genomes work with 3.75gb
   runtime {
-    docker: "quay.io/humancellatlas/secondary-analysis-dropseqtools:v0.2.2-1.12"
+    docker: "mshand/genomesinthecloud:DST-1.31-1522423586"
     cpu: 1
     memory: "7.5 GB"
     disks: "local-disk ${estimated_required_disk} HDD"

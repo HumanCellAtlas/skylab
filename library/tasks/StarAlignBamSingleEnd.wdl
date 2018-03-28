@@ -24,7 +24,7 @@ task StarAlignBamSingleEnd {
       --readFilesIn "${bam_input}" \
       --outSAMtype BAM Unsorted \
       --outSAMattributes All \
-      --outFilterMultimapNmax 1 \
+      --outFilterMultimapNmax 50 \
       --outSAMunmapped Within \
       --outSAMprimaryFlag AllBestScore \
       --readFilesType SAM SE \
