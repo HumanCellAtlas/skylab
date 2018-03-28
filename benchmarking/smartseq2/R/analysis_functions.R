@@ -241,32 +241,22 @@ ParseGene <- function(gtf_file) {
 }
 # cover to foldchnages
 # matrix1 and matrix2 are two data matrix
-foldchanges <- function(mat1, mat2) {
+foldchanges <- function(mat1.log2, mat2.log2) {
   # log2 transformation
   # first 2 columns are gene ID and length
-  logmd1 <- log(mat1[, -c(1:2)] + 1, base = 2)
-  # match gene ID
-  mlist <- match(mat1[, 1], mat2[, 1])
-  # match sample column
-  nlist <- match(colnames(mat1), colnames(mat2))
-  mat2 <- mat2[mlist, nlist]
-  # log2 transformation
-  logmd2 <- log(mat2[mlist, -c(1:2)] + 1, base = 2)
-  fcmat <- logmd1 - logmd2
-  out <- cbind(mat1[, 1:2], fcmat)
-  return(out)
+  mat.fc <- mat1.log2 - mat2.log2
+  return(mat.fc)
 }
 # log2 transformation
 takelog2 <- function(mat) {
-  dd <- log(mat[,-c(1:2)] + 1, base = 2)
-  out <- cbind(mat[, c(1:2)], dd)
-  return(out)
+  dd <- log(mat + 1, base = 2)
+  return(dd)
 }
 RunCorrTest <- function(x, y) {
   pval <- c()
   cval <- c()
   for (i in colnames(x)) {
-    z <- cor.test(x[, i], y[, i])
+    z <- cor.test(x[, i], y[, i],method = 'spearman')
     pval <- c(pval, z$p.value)
     cval <- c(cval, z$estimate)
   }
@@ -280,10 +270,7 @@ RunCorrTest <- function(x, y) {
 CorrDataMatrix <- function(mat1, mat2, isnotlog2) {
   # match gene ID
   if (isnotlog2) {
-    mlist <- match(mat1[, 1], mat2[, 1])
-    # match sample column
-    nlist <- match(colnames(mat1), colnames(mat2))
-    mat2 <- mat2[mlist, nlist]
+    
     # log2 transformation
     mat1.log <- takelog2(mat1)
     mat2.log <- takelog2(mat2)
@@ -291,7 +278,7 @@ CorrDataMatrix <- function(mat1, mat2, isnotlog2) {
     mat1.log <- mat1
     mat2.log <- mat2
   }
-  stat.cor <- RunCorrTest(mat1.log[,-c(1:2)], mat2.log[,-c(1:2)])
+  stat.cor <- RunCorrTest(mat1.log, mat2.log)
   return(stat.cor)
 }
 # remove cells if total expr < threshold
@@ -355,4 +342,22 @@ summaryFoldChanges <- function(foldchanges, genes, threshold) {
   fc_tb <- table(fcGene$FC, fcGene$gene_type)
   fc_tb['DN',] <- (-1) * fc_tb['DN',]
   return(fc_tb)
+}
+# Run SNN-Cliq to generate SNN graphic and
+# then cluster cells based on graph to generate cluster/group
+# then visualize the SNN clustering result in PCA
+RunSNNCluster <- function(mat.log) {
+  # First run randome PCA then extract top 2 PCs for visualization
+  mat.pca <- rpca(mat.log, scale = T)
+  PCs <- mat.pca$rotation[, 1:2]
+  # Run SNN graph
+  grps <- buildSNNGraph(mat.log)
+  # extract memebership
+  clusters <- cluster_fast_greedy(grps)
+  fc <-  membership(clusters)
+  out <-
+    data.frame('PC1' = PCs[, 1],
+               'PC2' = PCs[, 2],
+               'membership' = as.factor(fc))
+  return(out)
 }

@@ -1,16 +1,8 @@
-library(ggplot2)
-library(MASS)
-library(plyr)
-library(reshape2)
-library(ggpubr)
-library(gridExtra)
-library(ggpmisc)
-library(cowplot)
-library(corrplot)
-library(ggrepel)
-library(optparse)
-library(rsvd)
-library(rtracklayer)
+# This scritp is to check the reproducibility between
+# Single cell vs bulk samples
+# t-test is carried out between SCs vs bulk sample
+# p-values and foldchanges are visualized in scatterplots
+# the inconsistent significant genes are hightlighted 
 source('analysis_functions.R')
 
 option_list <- list(
@@ -67,13 +59,11 @@ palette(c("#00AFBB", "#E7B800"))
 # load data matrix
 mat1 <- read.csv(matrixfile1)
 mat2 <- read.csv(matrixfile2)
-mat1.log2 <- takelog2(mat1)
-mat2.log2 <- takelog2(mat2)
+rownames(mat1)<-mat1[,1]
+rownames(mat2)<-mat2[,1]
+mat1.log2 <- takelog2(mat1[,-c(1:2)])
+mat2.log2 <- takelog2(mat2[,-c(1:2)])
 # filter cells/samples if total expression less than 10000
-mat1.log2.d <- mat1.log2[,-c(1:2)]
-rownames(mat1.log2.d) <- mat1.log2[, 1]
-mat2.log2.d <- mat2.log2[,-c(1:2)]
-rownames(mat2.log2.d) <- mat2.log2[, 1]
 mat1.d <- FilterCellsbyExp(mat1.log2.d, 10000)
 mat2.d <- FilterCellsbyExp(mat2.log2.d, 10000)
 # parse meta data to match filtered data matrix
