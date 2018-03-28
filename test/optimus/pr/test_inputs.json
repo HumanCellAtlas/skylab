@@ -4,7 +4,7 @@
   "TestOptimusPR.expected_matrix_summary_hash": "dd513351d4e7688c97f7bf902ba2876f",
   "TestOptimusPR.expected_cell_metric_hash": "f7d584481407581edd4de11be39ffd13",
   "TestOptimusPR.expected_gene_metric_hash": "73491d134f23fcd527501537c7826f96",
-  "TestOptimusPR.r1": [
+  "TestOptimusPR.r1_fastq": [
     "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_R1_001.fastq.gz",
     "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_R1_001.fastq.gz"
   ],
