@@ -39,6 +39,7 @@ option_list <- list(
 )
 opt_parser <- OptionParser(option_list = option_list)
 opt <- parse_args(opt_parser)
+print(opt)
 matrixfile1 <- opt$matrix1
 matrixfile2 <- opt$matrix2
 metadata_file <- opt$metadata_file

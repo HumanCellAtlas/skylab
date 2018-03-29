@@ -10,6 +10,7 @@ task CompareDataMatrix {
     mkdir ${output_name}
     gsutil cp ${src_dir}/Compare_data_matrix.R ./
     gsutil cp ${src_dir}/analysis_functions.R ./
+    cat Compare_data_matrix.R
     Rscript Compare_data_matrix.R \
       --matrix1 ${base_datafile} \
       --matrix2 ${updated_datafile} \
