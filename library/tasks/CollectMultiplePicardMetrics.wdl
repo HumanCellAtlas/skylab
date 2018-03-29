@@ -1,4 +1,3 @@
-
 task CollectMultipleMetrics {
   File aligned_bam
   File ref_genome_fasta
