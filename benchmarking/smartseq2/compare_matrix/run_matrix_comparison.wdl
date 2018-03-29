@@ -1,7 +1,7 @@
 task CompareDataMatrix {
   File base_datafile
   File updated_datafile
-  File gtf_file
+  File metadata_file
   String output_name
   String src_dir
   
@@ -13,7 +13,7 @@ task CompareDataMatrix {
     Rscript Compare_data_matrix.R \
       --matrix1 ${base_datafile} \
       --matrix2 ${updated_datafile} \
-      --gtf_file ${gtf_file} \
+      --metadata_file ${metadata_file} \
       --output_prefix ${output_name}/${output_name} 
     tar -zcvf ${output_name}.tar.gz ${output_name}
   }
@@ -33,14 +33,14 @@ workflow RunDataMatrixComparison {
   String base_datafile
   String updated_datafile
   String output_name
-  String gtf_file
+  String metadata_file
 
   call CompareDataMatrix {
     input:
       base_datafile = base_datafile,
       updated_datafile = updated_datafile,
       output_name = output_name,
-      gtf_file = gtf_file,
+      metadata_file = metadata_file,
       src_dir = scripts_dir,
   }
 }
