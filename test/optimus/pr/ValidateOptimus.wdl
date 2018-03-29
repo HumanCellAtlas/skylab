@@ -1,15 +1,17 @@
-
 task ValidateOptimus {
       File bam
       File matrix
+      File gene_metrics
+      File cell_metrics
       File matrix_summary
-      File picard_metrics
-      Int required_disk = ceil((size(bam, "G") + size(matrix, "G") + size(matrix_summary, "G") + size(picard_metrics, "G")) * 1.1)
+
+      Int required_disk = ceil((size(bam, "G") + size(matrix, "G") + size(matrix_summary, "G")) * 1.1)
 
       String expected_bam_hash
       String expected_matrix_hash
+      String expected_gene_metric_hash
+      String expected_cell_metric_hash
       String expected_matrix_summary_hash
-      String expected_picard_metrics_hash
 
   command <<<
 
@@ -17,16 +19,15 @@ task ValidateOptimus {
     set -eo pipefail
 
     # calculate hashes; awk is used to extract the hash from the md5sum output that contains both
-    # a hash and the filename that was passed
-    matrix_hash=$(md5sum "${matrix}" | awk '{print $1}')
+    # a hash and the filename that was passed. gzipped files are unzipped to avoid hashing malleable
+    # metadata
     matrix_summary_hash=$(md5sum "${matrix_summary}" | awk '{print $1}')
+    matrix_hash=$(zcat "${matrix}" | md5sum | awk '{print $1}')
+    gene_metric_hash=$(zcat "${gene_metrics}" | md5sum | awk '{print $1}')
+    cell_metric_hash=$(zcat "${cell_metrics}" | md5sum | awk '{print $1}')
 
     # calculate hash as above, but ignore run-specific bam headers
     bam_hash=$(samtools view "${bam}" | md5sum | awk '{print $1}')
-
-    # the picard metrics are contained in a .tar.gz file; in addition to the above processing,
-    # this unzips the archive, and parses it with awk to remove all the run-specific comment lines (#)
-    picard_metrics_hash=$(gunzip -c "${picard_metrics}" | awk 'NF && $1!~/^#/' | md5sum | awk '{print $1}')
 
     # test each output for equivalence, echoing any failure states to stdout
     fail=false
@@ -40,16 +41,21 @@ task ValidateOptimus {
       fail=true
     fi
 
+    if [ "$gene_metric_hash" != "${expected_gene_metric_hash}" ]; then
+      >&2 echo "gene_metric_hash ($gene_metric_hash) did not match expected hash (${expected_gene_metric_hash})"
+      fail=true
+    fi
+
+    if [ "$cell_metric_hash" != "${expected_cell_metric_hash}" ]; then
+      >&2 echo "cell_metric_hash ($cell_metric_hash) did not match expected hash (${expected_cell_metric_hash})"
+      fail=true
+    fi
+
     if [ "$matrix_summary_hash" != "${expected_matrix_summary_hash}" ]; then
       >&2 echo "matrix_summary_hash ($matrix_summary_hash) did not match expected hash (${expected_matrix_summary_hash})"
       fail=true
     fi
 
-    if [ "$picard_metrics_hash" != "${expected_picard_metrics_hash}" ]; then
-      >&2 echo "picard_metrics_hash ($picard_metrics_hash) did not match expected hash (${expected_picard_metrics_hash})"
-      fail=true
-    fi
-    
     if [ $fail == "true" ]; then exit 1; fi
 
   >>>

@@ -1,4 +1,3 @@
-
 task MergeSortBamFiles {
   Array[File] bam_inputs
   String sort_order
@@ -7,6 +6,8 @@ task MergeSortBamFiles {
   Int compression_level = 5
 
   command {
+    set -e
+
     java -Dsamjdk.compression_level=${compression_level} -Xms7000m -jar /usr/gitc/picard.jar \
       MergeSamFiles \
       USE_THREADING=true \

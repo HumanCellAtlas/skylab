@@ -1,4 +1,3 @@
-
 task Mkref {
   # use kallisto index to generate the kallisto index for use with other functions in this
   # module

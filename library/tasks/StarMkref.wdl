@@ -1,4 +1,3 @@
-
 task StarMkref {
   File fasta_file  # genome annotation
   File annotation_file  # gtf annotation file
