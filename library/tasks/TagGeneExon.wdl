@@ -1,4 +1,3 @@
-
 task TagGeneExon {
   # this task requires a gtf file with no internal comments
   # each record must have a gene_name and transcript_name in addition to a gene_id and transcript_id
@@ -9,6 +8,8 @@ task TagGeneExon {
   Int estimated_required_disk = ceil((size(bam_input, "G") + size(annotations_gtf, "G")) * 2)
 
  command {
+    set -e
+
     TagReadWithGeneExon \
       INPUT=${bam_input} \
       OUTPUT=bam_with_gene_exon.bam \

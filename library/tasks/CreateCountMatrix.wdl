@@ -1,10 +1,11 @@
-
 task DropSeqToolsDigitalExpression {
   File bam_input
   File whitelist
   Int estimated_required_disk = ceil((size(bam_input, "G") + size(whitelist, "G")) * 4.0) + 1
 
   command {
+    set -e
+
     DigitalExpression \
       SUMMARY=digital_expression_summary.txt \
       OUTPUT=digital_expression.txt.gz \
