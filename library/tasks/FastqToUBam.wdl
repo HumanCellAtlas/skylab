@@ -1,13 +1,32 @@
 task FastqToUBam {
-  File fastq_file  # input fastq file
-  String sample_id  # name of sample matching this file, inserted into read group header
-
-  # a suffix to add to the fastq file; useful with mangled file IDs, since picard requires that
-  # the file end in .gz or it will not detect the gzipping.
+  File fastq_file
+  String sample_id
   String fastq_suffix = ""
 
+  # runtime values
+  String docker = "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
+  Int machine_mem_mb = 3500
+  # give the command 500MB of overhead
+  Int command_mem_mb = machine_mem_mb - 500
+  Int cpu = 1
   # estimate that bam is approximately equal in size to fastq, add 20% buffer
-  Int estimated_disk_required = ceil(size(fastq_file, "G") * 2.2)
+  Int disk = ceil(size(fastq_file, "G") * 2.2)
+  Int preemptible = 0
+
+  meta {
+    description: "Converts a fastq file into an unaligned bam file."
+  }
+
+  parameter_meta {
+    fastq_file: "input fastq file"
+    sample_id: "name of sample matching this file, inserted into read group header"
+    fastq_suffix: "a suffix to add to the fastq file; useful with mangled file IDs, since picard requires that the file end in .gz or it will not detect the gzipping."
+    docker: "(optional) the docker image containing the runtime environment for this task"
+    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    cpu: "(optional) the number of cpus to provision for this task"
+    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
+  }
 
   command {
     set -e
@@ -18,7 +37,7 @@ task FastqToUBam {
         mv "${fastq_file}" "${fastq_file}""${fastq_suffix}"
     fi
 
-    java -Xmx2g -jar /usr/picard/picard.jar FastqToSam \
+    java -Xmx${command_mem_mb}m -jar /usr/picard/picard.jar FastqToSam \
       FASTQ="${fastq_file}""${fastq_suffix}" \
       SORT_ORDER=unsorted \
       OUTPUT=bamfile.bam \
@@ -26,10 +45,11 @@ task FastqToUBam {
   }
   
   runtime {
-    docker: "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
-    cpu: 1
-    memory: "2.5 GB"
-    disks: "local-disk ${estimated_disk_required} HDD"
+    docker: docker
+    memory: "${machine_mem_mb} MB"
+    disks: "local-disk ${disk} HDD"
+    cpu: cpu
+    preemptible: preemptible
   }
   
   output {
