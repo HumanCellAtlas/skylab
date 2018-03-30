@@ -22,7 +22,7 @@ task HISAT2PairedEnd {
     hisat2_ref: "HISAT2 reference"
     fastq1: "gz forward fastq file"
     fastq2: "gz reverse fastq file"
-    ref_name: ""
+    ref_name: "the basename of the index for the reference genome"
     output_basename: "basename used for output files"
     sample_name: "sample name of input"
     docker: "(optional) the docker image containing the runtime environment for this task"
@@ -112,7 +112,7 @@ task HISAT2RSEM {
     hisat2_ref: "HISAT2 reference"
     fastq1: "gz forward fastq file"
     fastq2: "gz reverse fastq file"
-    ref_name: ""
+    ref_name: "the basename of the index for the reference genome"
     output_basename: "basename used for output files"
     sample_name: "sample name of input"
     docker: "(optional) the docker image containing the runtime environment for this task"
@@ -209,7 +209,7 @@ task HISAT2SingleEnd {
   parameter_meta {
     hisat2_ref: "HISAT2 reference"
     fastq: "input fastq from single ended data"
-    ref_name: ""
+    ref_name: "the basename of the index for the reference genome"
     output_basename: "basename used for output files"
     sample_name: "sample name of input"
     docker: "(optional) the docker image containing the runtime environment for this task"
@@ -267,7 +267,7 @@ task HISAT2InspectIndex {
 
   parameter_meta {
     hisat2_ref: "HISAT2 reference"
-    ref_name: ""
+    ref_name: "the basename of the index for the reference genome"
     docker: "(optional) the docker image containing the runtime environment for this task"
     machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
