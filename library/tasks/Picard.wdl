@@ -18,14 +18,14 @@ task CollectMultipleMetrics {
   }
 
   parameter_meta {
-    aligned_bam: ""
-    genome_ref_fasta: ""
+    aligned_bam: "input aligned bam"
+    genome_ref_fasta: "genome reference fasta"
     output_basename: "basename used for output files"
-    docker: "optionally provide a docker image"
-    machine_mem_mb: "optionally provide how much memory(MB) to provision"
-    cpu: "optionally provide how many cpus to provision"
-    disk: "optionally provide how much disk to provision"
-    preemptible: "optionally provide how many preemptible attempts"
+    docker: "(optional) the docker image containing the runtime environment for this task"
+    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    cpu: "(optional) the number of cpus to provision for this task"
+    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
   }
 
   command {
@@ -99,16 +99,16 @@ task CollectRnaMetrics {
   }
 
   parameter_meta {
-    aligned_bam: ""
-    ref_flat: ""
-    rrna_intervals: ""
+    aligned_bam: "input aligned file"
+    ref_flat: "reference flat file"
+    rrna_intervals: "ribosomal intervals"
     output_basename: "basename used for output files"
-    stranded: ""
-    docker: "optionally provide a docker image"
-    machine_mem_mb: "optionally provide how much memory(MB) to provision"
-    cpu: "optionally provide how many cpus to provision"
-    disk: "optionally provide how much disk to provision"
-    preemptible: "optionally provide how many preemptible attempts"
+    stranded: "whether or not to use strand specificity"
+    docker: "(optional) the docker image containing the runtime environment for this task"
+    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    cpu: "(optional) the number of cpus to provision for this task"
+    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
   }
   
   command {
@@ -159,13 +159,13 @@ task CollectDuplicationMetrics {
   }
 
   parameter_meta {
-    aligned_bam: ""
+    aligned_bam: "input aligned bam"
     output_basename: "basename used for output files"
-    docker: "optionally provide a docker image"
-    machine_mem_mb: "optionally provide how much memory(MB) to provision"
-    cpu: "optionally provide how many cpus to provision"
-    disk: "optionally provide how much disk to provision"
-    preemptible: "optionally provide how many preemptible attempts"
+    docker: "(optional) the docker image containing the runtime environment for this task"
+    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    cpu: "(optional) the number of cpus to provision for this task"
+    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
   }
   
   command {

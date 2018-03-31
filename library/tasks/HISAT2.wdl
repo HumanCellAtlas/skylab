@@ -19,17 +19,17 @@ task HISAT2PairedEnd {
   }
 
   parameter_meta {
-    hisat2_ref: ""
+    hisat2_ref: "HISAT2 reference"
     fastq1: "gz forward fastq file"
     fastq2: "gz reverse fastq file"
-    ref_name: ""
+    ref_name: "the basename of the index for the reference genome"
     output_basename: "basename used for output files"
-    sample_name: ""
-    docker: "optionally provide a docker image"
-    machine_mem_mb: "optionally provide how much memory(MB) to provision"
-    cpu: "optionally provide how many cpus to provision"
-    disk: "optionally provide how much disk to provision"
-    preemptible: "optionally provide how many preemptible attempts"
+    sample_name: "sample name of input"
+    docker: "(optional) the docker image containing the runtime environment for this task"
+    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    cpu: "(optional) the number of cpus to provision for this task"
+    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
   }
 
   command {
@@ -109,17 +109,17 @@ task HISAT2RSEM {
   }
 
   parameter_meta {
-    hisat2_ref: ""
+    hisat2_ref: "HISAT2 reference"
     fastq1: "gz forward fastq file"
     fastq2: "gz reverse fastq file"
-    ref_name: ""
+    ref_name: "the basename of the index for the reference genome"
     output_basename: "basename used for output files"
-    sample_name: ""
-    docker: "optionally provide a docker image"
-    machine_mem_mb: "optionally provide how much memory(MB) to provision"
-    cpu: "optionally provide how many cpus to provision"
-    disk: "optionally provide how much disk to provision"
-    preemptible: "optionally provide how many preemptible attempts"
+    sample_name: "sample name of input"
+    docker: "(optional) the docker image containing the runtime environment for this task"
+    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    cpu: "(optional) the number of cpus to provision for this task"
+    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
   }
 
   command {
@@ -207,16 +207,16 @@ task HISAT2SingleEnd {
   }
 
   parameter_meta {
-    hisat2_ref: ""
-    fastq: ""
-    ref_name: ""
+    hisat2_ref: "HISAT2 reference"
+    fastq: "input fastq from single ended data"
+    ref_name: "the basename of the index for the reference genome"
     output_basename: "basename used for output files"
-    sample_name: ""
-    docker: "optionally provide a docker image"
-    machine_mem_mb: "optionally provide how much memory(MB) to provision"
-    cpu: "optionally provide how many cpus to provision"
-    disk: "optionally provide how much disk to provision"
-    preemptible: "optionally provide how many preemptible attempts"
+    sample_name: "sample name of input"
+    docker: "(optional) the docker image containing the runtime environment for this task"
+    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    cpu: "(optional) the number of cpus to provision for this task"
+    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
   }
 
   command {
@@ -266,13 +266,13 @@ task HISAT2InspectIndex {
   }
 
   parameter_meta {
-    hisat2_ref: ""
-    ref_name: ""
-    docker: "optionally provide a docker image"
-    machine_mem_mb: "optionally provide how much memory(MB) to provision"
-    cpu: "optionally provide how many cpus to provision"
-    disk: "optionally provide how much disk to provision"
-    preemptible: "optionally provide how many preemptible attempts"
+    hisat2_ref: "HISAT2 reference"
+    ref_name: "the basename of the index for the reference genome"
+    docker: "(optional) the docker image containing the runtime environment for this task"
+    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    cpu: "(optional) the number of cpus to provision for this task"
+    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
   }
 
   command {
