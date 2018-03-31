@@ -37,13 +37,33 @@ RUN apt update && apt install -y \
 	libbz2-dev \
 	liblzma-dev \
 	lsb-release \
-	r-base \
-  	r-base-core \
-  	r-base-dev \
 	samtools \
 	sudo \
 	wget \
-	zlib1g-dev
+	zlib1g-dev \
+  gfortran
+
+RUN echo "deb http://http.debian.net/debian sid main" > /etc/apt/sources.list.d/debian-unstable.list \
+	&& echo 'APT::Default-Release "testing";' > /etc/apt/apt.conf.d/default
+ENV R_BASE_VERSION 3.4.4
+## Now install R and littler, and create a link for littler in /usr/local/bin
+## Also set a default CRAN repo, and make sure littler knows about it too
+RUN apt-get update \
+	&& apt-get install -t unstable -y --no-install-recommends \
+		littler \
+    r-cran-littler \
+		r-base=${R_BASE_VERSION}-* \
+		r-base-dev=${R_BASE_VERSION}-* \
+		r-recommended=${R_BASE_VERSION}-* \
+        && echo 'options(repos = c(CRAN = "https://cloud.r-project.org/"), download.file.method = "libcurl")' >> /etc/R/Rprofile.site \
+        && echo 'source("/etc/R/Rprofile.site")' >> /etc/littler.r \
+	&& ln -s /usr/share/doc/littler/examples/install.r /usr/local/bin/install.r \
+	&& ln -s /usr/share/doc/littler/examples/install2.r /usr/local/bin/install2.r \
+	&& ln -s /usr/share/doc/littler/examples/installGithub.r /usr/local/bin/installGithub.r \
+	&& ln -s /usr/share/doc/littler/examples/testInstalled.r /usr/local/bin/testInstalled.r \
+	&& install.r docopt \
+	&& rm -rf /tmp/downloaded_packages/ /tmp/*.rds \
+	&& rm -rf /var/lib/apt/lists/*
 
 # Install python packages
 RUN pip3 install \
@@ -62,21 +82,6 @@ RUN pip3 install \
 
 # Fix cannot import name 'opentype' error
 RUN pip3 install --upgrade google-auth-oauthlib
-
-# Install R packages
-RUN echo "r <- getOption('repos'); r['CRAN'] <- 'http://cran.us.r-project.org'; options(repos = r);" > ~/.Rprofile
-RUN Rscript -e "install.packages('reshape')"
-RUN Rscript -e "install.packages('gplots')"
-RUN Rscript -e "install.packages('ggplot2')"
-RUN Rscript -e "install.packages('googleCloudStorageR')"
-RUN Rscript -e "install.packages('gridExtra')"
-RUN Rscript -e "install.packages('ggpubr')"
-RUN Rscript -e "install.packages('ggpmisc')"
-RUN Rscript -e "install.packages('cowplot')"
-RUN Rscript -e "install.packages('corrplot')"
-RUN Rscript -e "install.packages('ggrepel')"
-RUN Rscript -e "install.packages('optparse')"
-RUN Rscript -e 'source("http://bioconductor.org/biocLite.R")' -e 'biocLite("rtracklayer")'
 # Mount Google Cloud secret key
 ADD broad-dsde-mint-dev-analysis-tools.json /usr/secrets/broad-dsde-mint-dev-analysis-tools.json
 
@@ -102,3 +107,24 @@ RUN wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.8.2-1/sratoolkit.2.8.2-1-u
 ENV PATH /usr/local/sratoolkit.2.8.2-1-ubuntu64/bin:$PATH
 
 RUN pip3 install ipython
+
+# Install R packages
+RUN echo "r <- getOption('repos'); r['CRAN'] <- 'http://cran.us.r-project.org'; options(repos = r);" > ~/.Rprofile
+RUN Rscript -e "install.packages('reshape')"
+RUN Rscript -e "install.packages('gplots')"
+RUN Rscript -e "install.packages('ggplot2')"
+RUN Rscript -e "install.packages('googleCloudStorageR')"
+RUN Rscript -e "install.packages('gridExtra')"
+RUN Rscript -e "install.packages('ggpubr')"
+RUN Rscript -e "install.packages('ggpmisc')"
+RUN Rscript -e "install.packages('cowplot')"
+RUN Rscript -e "install.packages('corrplot')"
+RUN Rscript -e "install.packages('ggrepel')"
+RUN Rscript -e "install.packages('optparse')"
+RUN Rscript -e 'source("http://bioconductor.org/biocLite.R")' -e 'biocLite("rtracklayer")'
+RUN Rscript -e 'source("http://bioconductor.org/biocLite.R")' -e 'biocLite("scran")'
+RUN Rscript -e "install.packages('igraph')"
+RUN Rscript -e "install.packages('rsvd')"
+RUN Rscript -e "install.packages('factoextra')"
+RUN Rscript -e "install.packages('fpc')"
+RUN Rscript -e "install.packages('NbClust')"
