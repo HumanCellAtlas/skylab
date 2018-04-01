@@ -19,8 +19,8 @@ workflow SmartSeq2SingleCell {
   File rsem_ref_index
 
   # ref index name
-  File hisat2_ref_name
-  File hisat2_ref_trans_name
+  String hisat2_ref_name
+  String hisat2_ref_trans_name
 
   # samples
   String stranded

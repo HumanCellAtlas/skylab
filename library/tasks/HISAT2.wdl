@@ -8,7 +8,7 @@ task HISAT2PairedEnd {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
-  Int machine_mem_mb = 5000
+  Int machine_mem_mb = 15000
   Int cpu = 4
   # use provided disk number or dynamically size on our own, 10 is our zipped fastq -> bam conversion with 50GB of additional disk
   Int disk = ceil((size(fastq1, "GB") + size(fastq2, "GB") * 10) + size(hisat2_ref, "GB") + 50)
@@ -53,7 +53,7 @@ task HISAT2PairedEnd {
         FQ2=${fastq2}
     fi
 
-    tar -zxvf "${hisat2_ref}"
+    tar --no-same-owner -xvf "${hisat2_ref}"
 
     # run HISAT2 to genome reference with dedault parameters
     # --seed to fix pseudo-random number and in order to produce deterministics results
@@ -98,7 +98,7 @@ task HISAT2RSEM {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
-  Int machine_mem_mb = 5000
+  Int machine_mem_mb = 15000
   Int cpu = 4
   # use provided disk number or dynamically size on our own, 10 is our zipped fastq -> bam conversion with 50GB of additional disk
   Int disk = ceil((size(fastq1, "GB") + size(fastq2, "GB") * 10) + size(hisat2_ref, "GB") + 50)
@@ -140,7 +140,7 @@ task HISAT2RSEM {
         FQ2=${fastq2}
     fi
 
-    tar -zxvf "${hisat2_ref}"
+    tar --no-same-owner -xvf "${hisat2_ref}"
 
     # increase gap alignment penalty to avoid gap alignment
     # --mp 1,1 --np 1 --score-min L,0,-0.1 is default paramesters when rsem runs alignment by using bowtie2/Bowtie
@@ -196,7 +196,7 @@ task HISAT2SingleEnd {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
-  Int machine_mem_mb = 5000
+  Int machine_mem_mb = 15000
   Int cpu = 4
   # use provided disk number or dynamically size on our own, 10 is our zipped fastq -> bam conversion with 50GB of additional disk
   Int disk = ceil((size(fastq, "GB") * 10) + size(hisat2_ref, "GB") + 50)
@@ -221,7 +221,7 @@ task HISAT2SingleEnd {
 
   command {
     set -e
-    tar -zxvf "${hisat2_ref}"
+    tar --no-same-owner -xvf "${hisat2_ref}"
     hisat2 -t \
       -x ${ref_name}/${ref_name} \
       -U ${fastq} \
@@ -277,7 +277,7 @@ task HISAT2InspectIndex {
 
   command {
     set -e
-    tar -zxvf "${hisat2_ref}"
+    tar --no-same-owner -xvf "${hisat2_ref}"
     hisat2-inspect --ss --snp \
        -s ${ref_name}/${ref_name} > hisat2_inspect.log
   }

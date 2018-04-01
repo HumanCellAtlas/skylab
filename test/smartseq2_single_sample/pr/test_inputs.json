@@ -2,7 +2,6 @@
   "TestSmartSeq2SingleCellPR.gtf_file": "gs://hca-dcp-mint-test-data/reference/GRCh38_Gencode/gencode.v27.primary_assembly.annotation.gtf",
   "TestSmartSeq2SingleCellPR.hisat2_ref_trans_name": "gencode_v27_trans_rsem",
   "TestSmartSeq2SingleCellPR.rrna_intervals": "gs://hca-dcp-mint-test-data/reference/GRCh38_Gencode/gencode.v27.rRNA.interval_list",
-  "TestSmartSeq2SingleCellPR.star_ref_index": "gs://hca-dcp-mint-test-data/reference/GRCh38_Gencode/GRCh38_GencodeV27_Primary.tar",
   "TestSmartSeq2SingleCellPR.hisat2_ref_index": "gs://hca-dcp-mint-test-data/reference/HISAT2/genome_snp_tran.tar.gz",
   "TestSmartSeq2SingleCellPR.genome_ref_fasta": "gs://hca-dcp-mint-test-data/reference/GRCh38_Gencode/GRCh38.primary_assembly.genome.fa",
   "TestSmartSeq2SingleCellPR.hisat2_ref_trans_index": "gs://hca-dcp-mint-test-data/reference/HISAT2/gencode_v27_trans_rsem.tar.gz",
