@@ -25,7 +25,7 @@ workflow run_merge {
   String value_name
   Array[String] file_names
   Array[String] output_names
-  scatter(idx in range(length(run_names))) {
+  scatter(idx in range(length(file_names))) {
     call MergeTPM {
       input:
         target_dir = scripts_dir,
