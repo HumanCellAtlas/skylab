@@ -126,18 +126,18 @@ workflow Optimus {
       input:
         bam_input = CellSortBam.bam_output
     }
+
+    call Count.CreateSparseCountMatrix {
+      input:
+        bam_input = CellSortBam.bam_output,
+        gtf_file = annotations_gtf
+    }
   }
 
   call Merge.MergeSortBamFiles as MergeSorted {
     input:
       bam_inputs = SortAndCorrectUmiMarkDuplicates.bam_output,
       sort_order = "coordinate"
-  }
-
-  call Count.DropSeqToolsDigitalExpression {
-    input:
-      bam_input = MergeSorted.output_bam,
-      whitelist = whitelist
   }
 
   call Metrics.MergeGeneMetrics {
@@ -150,10 +150,18 @@ workflow Optimus {
       metric_files = CalculateCellMetrics.cell_metrics
   }
 
+  call Count.MergeCountFiles {
+    input:
+      sparse_count_matrices = CreateSparseCountMatrix.sparse_count_matrix,
+      row_indices = CreateSparseCountMatrix.row_index,
+      col_indices = CreateSparseCountMatrix.col_index
+  }
+
   output {
       File bam = MergeSorted.output_bam
-      File matrix = DropSeqToolsDigitalExpression.matrix_output
-      File matrix_summary = DropSeqToolsDigitalExpression.matrix_summary
+      File matrix = MergeCountFiles.sparse_count_matrix
+      File matrix_row_index = MergeCountFiles.row_index
+      File matrix_col_index = MergeCountFiles.col_index
       File cell_metrics = MergeCellMetrics.cell_metrics
       File gene_metrics = MergeGeneMetrics.gene_metrics
   }
