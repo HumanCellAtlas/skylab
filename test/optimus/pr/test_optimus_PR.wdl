@@ -13,9 +13,9 @@ workflow TestOptimusPR {
   String expected_matrix_summary_hash
 
   # Optimus inputs
-  Array[File] r1
-  Array[File] r2
-  Array[File]? i1
+  Array[File] r1_fastq
+  Array[File] r2_fastq
+  Array[File]? i1_fastq
 
   File whitelist  # 10x genomics cell barcode whitelist for 10x V2
   File tar_star_reference  # star reference
@@ -25,9 +25,9 @@ workflow TestOptimusPR {
 
   call target.Optimus as target {
     input:
-      r1 = r1,
-      r2 = r2,
-      i1 = i1,
+      r1_fastq = r1_fastq,
+      r2_fastq = r2_fastq,
+      i1_fastq = i1_fastq,
       whitelist = whitelist,
       tar_star_reference = tar_star_reference,
       annotations_gtf = annotations_gtf,
