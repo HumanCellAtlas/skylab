@@ -1,32 +1,31 @@
-task MergeTPM {
+task MergeDataMatrix {
   String target_dir
   String file_name
   String output_name
   String uuid
   String value_name
   command {
-    gsutil cp  ${target_dir}/merge_table_quants.py ./   
-    python merge_table_quants.py  -u ${uuid} -fn ${file_name} -t ${value_name} -o ${output_name}
+    python /usr/local/scripts/merge_table_quants.py  -u ${uuid} -fn ${file_name} -t ${value_name} -o ${output_name}
   }
   output {
     File merged_tpm_csv = "${output_name}"
   }
   runtime {
-    docker: "gcr.io/broad-dsde-mint-dev/analysis-tools:0.0.5"
+    docker: "gcr.io/broad-dsde-mint-dev/benchmarking-tools:0.0.1"
     memory: "7.5 GB"
     disks:  "local-disk 100 HDD"
     preemptible: 5   
   }
 }
 
-workflow run_merge {
+workflow RunMergeDataMatrix {
   String scripts_dir
   String uuid
   String value_name
   Array[String] file_names
   Array[String] output_names
   scatter(idx in range(length(file_names))) {
-    call MergeTPM {
+    call MergeDataMatrix {
       input:
         target_dir = scripts_dir,
         uuid = uuid,

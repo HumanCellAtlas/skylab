@@ -3,7 +3,7 @@
 # t-test is carried out between SCs vs bulk sample
 # p-values and foldchanges are visualized in scatterplots
 # the inconsistent significant genes are hightlighted 
-source('analysis_functions.R')
+source('/usr/local/scripts/analysis_functions.R')
 
 option_list <- list(
   make_option(
@@ -64,8 +64,8 @@ rownames(mat2)<-mat2[,1]
 mat1.log2 <- takelog2(mat1[,-c(1:2)])
 mat2.log2 <- takelog2(mat2[,-c(1:2)])
 # filter cells/samples if total expression less than 10000
-mat1.d <- FilterCellsbyExp(mat1.log2.d, 10000)
-mat2.d <- FilterCellsbyExp(mat2.log2.d, 10000)
+mat1.d <- FilterCellsbyExp(mat1.log2, 10000)
+mat2.d <- FilterCellsbyExp(mat2.log2, 10000)
 # parse meta data to match filtered data matrix
 mlist1 <- match(colnames(mat1.d), meta$sra)
 mlist2 <- match(colnames(mat2.d), meta$sra)

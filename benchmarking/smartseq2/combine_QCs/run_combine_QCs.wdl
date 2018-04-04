@@ -7,21 +7,20 @@ task CombineQCs{
   String src_dir
   command {
     set -e 
-    gsutil cp ${src_dir}/combine_QC_quant_metrics.R ./
-    Rscript combine_QC_quant_metrics.R  --datafile ${datafile} --metrics ${metfile} --nthreshold ${nthreshold} --gtf ${gtf_file} --out ${output_name}
+    Rscript /usr/local/scripts/combine_QC_quant_metrics.R  --datafile ${datafile} --metrics ${metfile} --nthreshold ${nthreshold} --gtf ${gtf_file} --out ${output_name}
   }
   output {
     File combined_results = "${output_name}_metrics_combined.csv"
   }
   runtime {
-    docker:"gcr.io/broad-dsde-mint-dev/analysis-tools:0.0.5"
+    docker:"gcr.io/broad-dsde-mint-dev/benchmarking-tools:0.0.1"
     memory:"3.75 GB"
     disks: "local-disk 50 HDD"
     preemptible: 5
   }
 }
 
-workflow run_combine_QC{
+workflow RunCombineQC{
   String scripts_dir
   String datafile
   String metfile
@@ -36,5 +35,8 @@ workflow run_combine_QC{
       src_dir = scripts_dir,
       nthreshold = nthreshold,
       gtf_file = gtf_file
+  }
+  output {
+    File CombinedQC = CombineQCs.combined_results
   }
 }

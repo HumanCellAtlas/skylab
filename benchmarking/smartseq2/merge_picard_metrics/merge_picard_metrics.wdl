@@ -5,14 +5,13 @@ task MergePicardMetrics {
   String output_name
   command {
     set -e
-    gsutil cp  ${target_dir}/merge_picard_mets.py ./   
-    python merge_picard_mets.py  -u ${uuid} -m ${met_name} -o ${output_name}
+    python /usr/local/scripts/merge_picard_mets.py  -u ${uuid} -m ${met_name} -o ${output_name}
   }
   output {
     File merged_metrics = "${output_name}"
   }
   runtime {
-    docker:"gcr.io/broad-dsde-mint-dev/analysis-tools:0.0.5"
+    docker:"gcr.io/broad-dsde-mint-dev/benchmarking-tools:0.0.1"
     memory:"3.75 GB"
     disks: "local-disk 50 HDD"
     preemptible: 5
@@ -37,13 +36,13 @@ task AppendMetricsFiles {
     File merged_metrics = "${output_name}"
   }
   runtime {
-    docker: "gcr.io/broad-dsde-mint-dev/analysis-tools:0.0.5"
+    docker: "gcr.io/broad-dsde-mint-dev/benchmarking-tools:0.0.1"
     memory: "3.75 GB"
     disks:  "local-disk 10 HDD"
     preemptible: 5
   }
 }
-workflow run_merge {
+workflow RunMergePicardQC {
   String scripts_dir
   String uuid
   Array[String] metrics_names

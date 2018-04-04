@@ -3,7 +3,7 @@
 # In this task, we will calculate and test
 # the correlation of two matrix, cell vs cell
 # We will also do clustering analysis then compare two clustering results
-source('analysis_functions.R')
+source('/usr/local/scripts/analysis_functions.R')
 set.seed(42)
 
 # inputs

@@ -361,3 +361,193 @@ RunSNNCluster <- function(mat.log) {
                'membership' = as.factor(fc))
   return(out)
 }
+# xy-plot: # significant correlation between QC and data
+# x-axis is the # significant test from one pipeline
+# y-axis is the # significant test form another pipeline
+# inputs are correlation tesxt matrix, such as output of CorrQCvsPCs()
+plotSignCorr <- function(base_mat, updated_mat, output_name) {
+  # sum significant test
+  sum.sig1 <- colSums(base_mat < 0.05, na.rm = T)
+  sum.sig2 <- colSums(updated_mat < 0.05, na.rm = T)
+  # merge by qc metrics names
+  df <- merge(sum.sig1, sum.sig2, by = 0)
+  colnames(df) <- c('QC', 'Base', 'Updated')
+  # scatter plot and 1x1 line
+  pl <- ggplot(df) +
+    geom_point(aes(Base, Updated), color = 'red') +
+    geom_text_repel(aes(Base, Updated, label = QC),
+                    size = 6.0,
+                    alpha = 0.85) +
+    theme_classic(base_size = 24) +
+    geom_abline(slope = 1,
+                intercept = 0,
+                color = "blue")
+  pl <-
+    pl + ggtitle(paste(
+      "# of significant correlation between QC metrics and Expression PCs"
+    ))
+  pl <- addTheme(pl)
+  ggsave(
+    pl,
+    file = paste(output_name, '_sum_nsig_p_xyplot.png', sep = ''),
+    width = 25,
+    height = 25,
+    limitsize = FALSE
+  )
+}
+##convert p-value to star char
+convert2star <- function(x) {
+  if (x > 0.05) {
+    p <- 'ns'
+  } else if (x > 0.01) {
+    p <- '*'
+  } else if (x > 0.001) {
+    p <- '**'
+  } else if (x > 0.0001) {
+    p <- '***'
+  } else{
+    p <- '****'
+  }
+  return(p)
+}
+# correlation between qc metrics and data matrics.
+# first run PCA on data matrix and top top N PCs
+# Then calculate correlation and correlation test between
+# QC metrics and N PCs
+# Visualize this correlation and test results in corrplot
+# Y-axis rank by total number of significant correlation test
+# QCmetrics with High rank(on the top) indicates these metrics have
+# high impact on data matrix
+# input cmd: wither rpca or pca. rpca is randomized PCA
+CorrQCvsPCs <- function(qc_mets, cnts, npcs, output_name, cmd) {
+  if (cmd == "rpca") {
+    cnt.pca <- rpca(cnts, scale = T)
+  } else{
+    cnt.pca <- prcomp(cnts, scale = T)
+  }
+  # take top npcs from rotation matrix
+  pcs <- cnt.pca$rotation[, 1:npcs]
+  nc1 <- ncol(qc_mets)
+  # merge qc metrics with pcs by rowname which is sample ID
+  dt <- merge(qc_mets, pcs, by = 0)
+  # run correlation test
+  res <- cor.mtest(dt[, -1])
+  pmat <- res$p # extract p values
+  # pmat is square matrix
+  # each row and column represent qc metrics + top pcs
+  colnames(pmat) <- colnames(dt[, -1])
+  rownames(pmat) <- colnames(dt[, -1])
+  # calculate the correlation
+  M <- cor(dt[, -1])
+  # nc2 should be # pcs + # qc metrics
+  nc2 <- ncol(M)
+  # take subset of M, only use correlation matrix between qc metrics vs PCs
+  M.sub <- M[(nc1 + 1):nc2, 1:nc1]
+  p.sub <- pmat[(nc1 + 1):nc2, 1:nc1]
+  # rank column by # of significant correlation test between qc metrics and PCs
+  rank.p <- order(colSums(p.sub < 0.05, na.rm = T), decreasing = T)
+  png(
+    paste(output_name, '_corrplot_top_', npcs, '_vs_qc_mets.png', sep = ''),
+    width = 5000,
+    height = 5000
+  )
+  corrplot(
+    t(M.sub[, rank.p]),
+    p.mat = t(p.sub[, rank.p]),
+    is.corr = TRUE,
+    insig = "label_sig",
+    sig.level = c(.001, .01, .05),
+    pch.cex = 1.5,
+    pch.col = "white",
+    na.label = " ",
+    tl.cex = 5,
+    cl.cex = 5,
+    tl.col = "black",
+    method = "color",
+    col = colorRampPalette(c("blue", "white", "red"))(200)
+  )
+  dev.off()
+  # use the full correlation matrix
+  # rank column/row by # of significant correlation test between qc metrics vs PCs
+  rank.p <- order(rowSums(pmat < 0.05, na.rm = T), decreasing = T)
+  png(
+    paste(
+      output_name,
+      '_corrplot_top_',
+      npcs,
+      '_vs_qc_mets_all.png',
+      sep = ''
+    ),
+    width = 8000,
+    height = 8000
+  )
+  corrplot(
+    t(M[rank.p, rank.p]),
+    p.mat = t(pmat[rank.p, rank.p]),
+    is.corr = TRUE,
+    insig = "label_sig",
+    sig.level = c(.001, .01, .05),
+    pch.cex = 1.5,
+    pch.col = "white",
+    na.label = " ",
+    tl.cex = 5,
+    cl.cex = 5,
+    tl.cor = 'black',
+    method = "color",
+    col = colorRampPalette(c("blue", "white", "red"))(200)
+  )
+  dev.off()
+  # only return the subset of correlation test results, which is qc metrics vs PCs only
+  return(p.sub)
+}
+SummaryPerColumn <- function(cnts, threshold) {
+  cnt.dd <- cnts[, -c(1:2)]
+  detected <- apply(cnt.dd, 2, function(x) {
+    sum(x > threshold)
+  })
+  ratio <- detected / nrow(cnts)
+  return(ratio)
+}
+# calculate MT contents
+# input gtf_file(gencode annotation, version v2 of gff file)
+# input cnt, the data matrix, can be either TPM or counts 
+# return the ratio of
+# total reads/TPM in MT genes vs total reads/TPM per sample
+ParseMTGene <- function(gtf_file, cnt) {
+  gtf_gencode <-
+    readGFF(
+      gtf_file,
+      version = 2L,
+      tags = c("gene_name", "gene_id", "transcript_id", "gene_type")
+    )
+  genes <- subset(gtf_gencode, gtf_gencode$type == "gene")
+  mt.genes <-
+    subset(genes, genes$gene_type %in% c('Mt_tRNA', 'Mt_rRNA'))
+  # select MT gene IDs
+  x <- subset(cnt[, -c(1:2)], cnt$gene_id %in% mt.genes$gene_id)
+  # MT gene read counts
+  cnt.mt <- apply(x, 2, sum)
+  cnt.tot <- apply(cnt[, -c(1:2)], 2, sum)
+  mt.ratio <- cnt.mt / cnt.tot
+  return(mt.ratio)
+}
+# Combine Picard metrics with MT and 
+# detectable gene ratio into single file
+CombineMetrics <- function(cnt, met, gtf_file, nthreshold) {
+  ## blacklist of metrics
+  met.core <- subset(met, !(met$metrics %in% BLACKLIST))
+  rownames(met.core) <- make.names(met.core$metrics, unique = TRUE)
+  met.core <- met.core[, -1]
+  ## combine QC,summary of quantification
+  cnt.ratio <- round(SummaryPerColumn(cnt, nthreshold), 5)
+  mt.ratio <- round(ParseMTGene(gtf_file, cnt), 5)
+  ## combine wiht QC
+  mlist <- match(colnames(met.core), names(cnt.ratio))
+  x <- data.frame(cnt.ratio[mlist])
+  colnames(x) <- 'detected_ratio'
+  mlist <- match(colnames(met.core), names(mt.ratio))
+  y <- data.frame(mt.ratio[mlist])
+  colnames(y) <- 'MT_ratio'
+  met.core <- rbind(t(x), t(y), met.core)
+  return(met.core)
+}
