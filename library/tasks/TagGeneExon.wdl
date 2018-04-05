@@ -7,10 +7,10 @@ task TagGeneExon {
   File bam_input
   Int estimated_required_disk = ceil((size(bam_input, "G") + size(annotations_gtf, "G")) * 2)
 
- command {
+  command {
     set -e
 
-    java -Xms5000m -jar /usr/gitc/dropseq.jar TagMultiMappedReadWithGeneExon \
+    java -Xms5000m -jar /usr/dropseq-tools-hca/jar/dropseq.jar TagMultiMappedReadWithGeneExon \
       INPUT=${bam_input} \
       OUTPUT=bam_with_gene_exon.bam \
       SUMMARY=gene_exon_tag_summary.log \
@@ -23,7 +23,7 @@ task TagGeneExon {
 
   # Larger genomes (mouse-human) require a 7.5gb instance; single-organism genomes work with 3.75gb
   runtime {
-    docker: "mshand/genomesinthecloud:DST-1.31-1522423586"
+    docker: "gcr.io/broad-dsde-mint-dev/dropseq-tools-hca:1.3.1"
     cpu: 1
     memory: "7.5 GB"
     disks: "local-disk ${estimated_required_disk} HDD"
@@ -33,4 +33,4 @@ task TagGeneExon {
     File bam_output = "bam_with_gene_exon.bam"
     File log = "gene_exon_tag_summary.log"
   }
-} 
+}
