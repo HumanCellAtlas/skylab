@@ -16,6 +16,8 @@ task TagGeneExon {
       SUMMARY=gene_exon_tag_summary.log \
       TAG=GE \
       UMI_TAG=UR \
+      ALLOW_MULTI_GENE_READS=true \
+      FUNCTION_TAG=XF \
       DELETE_SECONDARY_ALIGNMENTS=true \
       ADD_GENE_TAG_TO_INTRONIC_READS=true \
       ANNOTATIONS_FILE=${annotations_gtf}
