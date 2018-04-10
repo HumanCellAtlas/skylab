@@ -16,8 +16,8 @@ workflow TestSmartSeq2SingleCellPR {
   File hisat2_ref_index
   File hisat2_ref_trans_index
   File rsem_ref_index
-  File hisat2_ref_name
-  File hisat2_ref_trans_name
+  String hisat2_ref_name
+  String hisat2_ref_trans_name
   String stranded
   String sample_name
   String output_name

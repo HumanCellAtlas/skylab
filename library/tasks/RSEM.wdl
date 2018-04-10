@@ -29,7 +29,7 @@ task RSEMExpression {
   command {
     set -e
   
-    tar -xvf ${rsem_genome}
+    tar --no-same-owner -xvf ${rsem_genome}
     rsem-calculate-expression \
       --bam \
       --paired-end \
