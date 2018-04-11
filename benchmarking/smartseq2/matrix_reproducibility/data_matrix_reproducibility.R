@@ -23,17 +23,51 @@ library(knitr)
 source('/Users/jishuxu/Works/github/HCA/skylab/benchmarking/smartseq2/R/analysis_functions.R')
 # color palette
 palette(c("#00AFBB", "#E7B800"))
-opt<-list('matrix1'='~/Documents/HCA/pipeline_test/matrics/second_batch/STAR2RSEM_merged_TPM.csv',
-          'matrix2'='~/Documents/HCA/pipeline_test/matrics/second_batch/HISAT2RSEM_merged_TPM.csv',
-          'gtf_file'='~/Documents/HCA/reference/gencode.v27.primary_assembly.annotation.gtf',
-          'metadata_file'='~/Documents/HCA/benchmarking/Sra_meta_groups_iPSC_730.csv',
-          'output_prefix'='~/Documents/HCA/benchmarking/results/test')
+option_list <- list(
+  make_option(
+    "--matrix1",
+    type = "character",
+    default = NULL,
+    help = "data matrix file name",
+    metavar = "character"
+  ),
+  make_option(
+    "--matrix2",
+    type = "character",
+    default = NULL,
+    help = "updated data matrix file name",
+    metavar = "character"
+  ),
+  make_option(
+    "--gtf_file",
+    type = "character",
+    default = NULL,
+    help = "gtf annotation file",
+    metavar = "character"
+  ),
+  make_option(
+    "--metadata_file",
+    type = "character",
+    default = NULL,
+    help = "metadata file",
+    metavar = "character"
+  ),
+  make_option(
+    "--output_prefix",
+    type = "character",
+    default = NULL,
+    help = "output prefix",
+    metavar = "character"
+  )
+)
+opt_parser <- OptionParser(option_list = option_list)
+opt <- parse_args(opt_parser)
 matrixfile1 <- opt$matrix1
 matrixfile2 <- opt$matrix2
+gtf_file <-  opt$gtf_file
 meta_file <-  opt$metadata_file
 grps <- opt$groups
 output_name <- opt$output_prefix
-gtf_file <-  opt$gtf_file
 #'
 #' # Parse Inputs
 #' ## metadata
