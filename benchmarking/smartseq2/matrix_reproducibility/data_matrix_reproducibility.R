@@ -20,7 +20,7 @@
 #' 
 #' # Inputs
 library(knitr)
-source('/Users/jishuxu/Works/github/HCA/skylab/benchmarking/smartseq2/R/analysis_functions.R')
+source('/usr/local/scripts/analysis_functions.R')
 # color palette
 palette(c("#00AFBB", "#E7B800"))
 option_list <- list(
@@ -234,4 +234,4 @@ write.csv(
 #' ## Converting R Script to HTML/PDF  
 #' If you did everyhing right, above this is the easy part.  Simply render the script as desired with the `render` 
 #' function from `rmarkdown`.  
-#' rmarkdown::render('/Users/jishuxu/Works/scripts/R_scripts/data_matrix_reproducibility2.R')
+#' rmarkdown::render('/usr/local/scripts/data_matrix_reproducibility2.R')
