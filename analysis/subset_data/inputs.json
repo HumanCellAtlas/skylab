@@ -1,0 +1,8 @@
+
+{
+"SubsetBam.input_bam": "gs://broad-dsde-mint-dev-cromwell-execution/cromwell-executions/Optimus/ab84a3e4-ecab-44ce-98fc-d953d9d5db7c/call-SortBam/sorted.bam",
+"SubsetBam.num_large_cell_barcodes": 4,
+"SubsetBam.num_small_cell_barcodes": 10,
+"SubsetBam.barcode_tags_to_split_by": ["ORIG", "SR", "CB,UB"],
+"SubsetBam.quality_tags_to_split_by": ["ORIG", "SY", "CY,UY"]
+}
