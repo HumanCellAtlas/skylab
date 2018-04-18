@@ -1,19 +1,33 @@
-library(ggplot2)
-library(MASS)
-library(plyr)
-library(reshape2)
-library(ggpubr)
-library(gridExtra)
-library(ggpmisc)
-library(cowplot)
-library(corrplot)
-library(ggrepel)
-library(optparse)
-library(rsvd)
-library(scran)
-library(igraph)
-library(mclust)
-library(rtracklayer)
+liblist <-
+  c(
+    "ggplot2",
+    "MASS",
+    "plyr",
+    "reshape2",
+    "ggpubr",
+    "gridExtra",
+    "ggpmisc",
+    "cowplot",
+    "corrplot",
+    "ggrepel",
+    "optparse",
+    "rsvd",
+    "scran",
+    "igraph",
+    "rtracklayer",
+    "knitr",
+    "mclust",
+    "Rtsne"
+  )
+for (libname in liblist) {
+  suppressWarnings(suppressMessages(library(libname, character.only = TRUE)))
+}
+
+options(verbose = FALSE)
+options(warn=0)
+# color palette
+palette(c("#00AFBB", "#E7B800"))
+knitr::opts_chunk$set(message = FALSE)
 # R functions used in analysis
 addTheme <- function(p) {
   p <- p + theme(legend.position = "top")
@@ -342,6 +356,26 @@ summaryFoldChanges <- function(foldchanges, genes, threshold) {
   fc_tb <- table(fcGene$FC, fcGene$gene_type)
   fc_tb['DN',] <- (-1) * fc_tb['DN',]
   return(fc_tb)
+}
+# Run tsne to reduce dimensions and then 
+RunClustering <- function(mat.log) {
+  mat.pcs<-rpca(mat.log,scale=T)
+  x<-mat.pcs$rotation[,c(1:50)]
+  tsne <-
+    Rtsne(
+      t(mat.log),
+      check_duplicates = FALSE,
+      dims = 2,
+      perplexity = 30,
+      max_iter = 500,
+      verbose = FALSE
+    )
+  grps <- buildSNNGraph(t(x),
+                        rand.seed = 1000)
+  clusters <- cluster_fast_greedy(grps)
+  rownames(tsne$Y)<-colnames(mat.log)
+  names(clusters$membership)<-colnames(mat.log)
+  return(list('tsne'=tsne,'clusters'=clusters,'graph'=grps))
 }
 # Run SNN-Cliq to generate SNN graphic and
 # then cluster cells based on graph to generate cluster/group
