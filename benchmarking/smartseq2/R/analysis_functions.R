@@ -102,10 +102,10 @@ plotlm <- function(df) {
     eq.with.lhs = "italic(hat(y))~`=`~",
     aes(
       label = paste(..eq.label.., ..rr.label.., sep = "~~~"),
-      size = 8
+      size = 4
     ),
     parse = TRUE,
-    size = 8
+    size = 4
   )
   p <-
     p + stat_fit_glance(
@@ -114,14 +114,14 @@ plotlm <- function(df) {
       geom = 'text',
       aes(
         label = paste("P-value:", fpval , sep = ""),
-        size = 12
+        size = 8
       ),
       label.x.npc = 'left',
       label.y.npc = 0.85,
-      size = 8
+      size = 4
     )
   p <- p + theme(legend.position = "top")
-  p <- addTheme(p)
+  
   p <- p + xlab(paste('Base')) + ylab(paste('Updated'))
   p <-
     p + geom_abline(
@@ -153,17 +153,16 @@ plotBox <- function(df) {
       color = "variable",
       fill = "variable",
       add = "Violin plot",
-      palette = "jco",
       add.params = list(fill = "white")
     )
   p <-
     p + stat_compare_means(comparisons = list(c('Base', 'Updated')), label = "p.signif") +
-    stat_compare_means(size = 10) + # Add pairwise comparisons p-value
+    stat_compare_means() + # Add pairwise comparisons p-value
     grids(linetype = "dashed") +
-    theme_bw()
-  p$layers[[2]]$aes_params$size = 1
-  p$layers[[2]]$aes_params$textsize <- 10
-  p <- addTheme(p)
+    theme_bw() + theme(legend.position = "top")
+  #p$layers[[2]]$aes_params$size = 1
+  #p$layers[[2]]$aes_params$textsize <- 4
+
   stat <- wilcox.test(df[, 'Base'], df[, 'Updated'])
   return(list('p' = p, 'pval' = stat$p.value))
 }
@@ -181,8 +180,11 @@ plothist <- function(df) {
     color = "variable",
     fill = "variable"
   )
-  density.p <- density.p + grids(linetype = "dashed") + theme_bw()
-  density.p <- addTheme(density.p)
+  density.p <- density.p + 
+      grids(linetype = "dashed") + 
+      theme_bw()+
+      theme(legend.position = "top")
+  
   return(list('p' = density.p))
 }
 # ks test
@@ -190,7 +192,7 @@ plotKS <- function(df) {
   mz <- melt(df)
   x <- df$Base
   y <- df$Updated
-  ks <- ks.test(x, y)
+  ks <- suppressWarnings(suppressMessages(ks.test(x, y)))
   # run cdf
   cdf1 <- ecdf(x)
   cdf2 <- ecdf(y)
@@ -211,13 +213,13 @@ plotKS <- function(df) {
   dtable <-
     data.frame(
       'test' = 'K-S',
-      'D-stats' = round(ks$statistic, 4),
+      'D-stats' = round(ks$statistic, 2),
       'P-value' = convert2star(ks$p.value)
     )
   dtable.p <-
     ggtexttable(dtable,
                 row = NULL,
-                theme = ttheme('mBlue', base_size = 18))
+                theme = ttheme('mOrange'))
   # plot segement to represent the D statistics
   ks.p <-
     ks.p + geom_segment(aes(
@@ -232,8 +234,7 @@ plotKS <- function(df) {
     ks.p + geom_point(aes(x = x0[1] , y = y0[1]), color = "red", size = 4)
   ks.p <-
     ks.p + geom_point(aes(x = x0[1] , y = y1[1]), color = "red", size = 4)
-  ks.p <- ks.p + ggtitle(paste("K-S Test"))
-  ks.p <- addTheme(ks.p)
+
   ks.p <-
     ks.p + theme(legend.title = element_blank()) + annotation_custom(ggplotGrob(dtable.p))
   return(list(

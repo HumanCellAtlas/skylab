@@ -69,7 +69,7 @@ option_list <- list(
     metavar = "character"
   )
 )
-args<-strsplit(commandArgs(trailingOnly = TRUE),split=',')
+args<-strsplit(commandArgs(trailingOnly = TRUE),split=' ')
 opt_parser <- OptionParser(option_list = option_list)
 opt <- parse_args(opt_parser,args=args[[1]])
 matrixfile1 <- opt$matrix1
