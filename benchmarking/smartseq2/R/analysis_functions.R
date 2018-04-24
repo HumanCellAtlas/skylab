@@ -17,7 +17,8 @@ liblist <-
     "rtracklayer",
     "knitr",
     "mclust",
-    "Rtsne"
+    "Rtsne",
+    "factoextra"
   )
 for (libname in liblist) {
   suppressWarnings(suppressMessages(library(libname, character.only = TRUE)))
@@ -585,4 +586,50 @@ CombineMetrics <- function(cnt, met, gtf_file, nthreshold) {
   colnames(y) <- 'MT_ratio'
   met.core <- rbind(t(x), t(y), met.core)
   return(met.core)
+}
+
+RunVarianceAnalysis<-function(expn,df){
+  metKeys<-colnames(df)
+  fo <- as.formula(paste('expn', "~", paste(metKeys,collapse="+")))
+  fit<-lm(fo,data=df)
+  m<-anova(fit)
+  # total sum of sq
+  m.tss<-sum(m[,2])
+  # % of total sum of sq of each predictor
+  m.ss<-m[,2]/m.tss
+  names(m.ss)<-c(colnames(df),'residual')
+  return(m.ss)
+}
+
+SelectGeneByVars<-function(x,k){
+  vlist<-apply(x,1,var)
+  olist<-order(vlist,decreasing = T)
+  x.sub<-x[olist[1:k],]
+  return(x.sub)
+}
+findProportion<-function(x,v){
+  m <- apply(x,1,sum)
+  p <- m/sum(m)
+  pv<-aggregate(p,by=list(v), 
+                FUN=sum, na.rm=TRUE)
+  return(pv)
+}
+CumulateVar<-function(expn.pca){
+  # Eigenvalues
+  eig <- (expn.pca$sdev)^2
+  # Variances in percentage
+  variance <- eig*100/sum(eig)
+  # Cumulative variances
+  cumvar <- cumsum(variance)
+  expn.var <- data.frame(eig = eig, variance = variance,
+                                      cumvariance = cumvar)
+
+  return(expn.var)  
+}
+RunPCAMetrix<-function(mets){
+  mets.x<-apply(mets,1,function(x){(x-mean(x))/sd(x)})
+  mets.x <- data.frame(t(na.omit(t(mets.x))))
+  mets.pca<-prcomp(t(mets.x),retx=T)
+  mets.var<-CumulateVar(mets.pca)
+  return(list('PCs'=mets.pca,'CumuVar'=mets.var))
 }

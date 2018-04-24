@@ -26,7 +26,7 @@
 #' First load functions we will use in this test
 #' 
 #' Here is the list of input parameters
-source('/usr/local/scripts/analysis_functions.R')
+source('~/Works/github/HCA/skylab/benchmarking/smartseq2/R/analysis_functions.R')
 ## inputs, python style
 option_list <- list(
   make_option(
@@ -123,21 +123,21 @@ for (ii in 1:length(metKeys)) {
   # plot KS
   p4 <- plotKS(z)
   # test block
-  text <-
+  ctext <-
     paste(
       "A: Density plot of",
       metKeys[ii],
-      " from two pipeline.",
+      " from two pipeline.\n",
       "B: Violin of ",
       metKeys[ii],
-      ", labeled with Wilcoxon test result.",
+      ", labeled with Wilcoxon test result.\n",
       "C: Linear regression test of ",
       metKeys[ii],
-      "between two pipelines.",
-      "D: K-S test, D statistics is labeled",
+      "between two pipelines.\n",
+      "D: K-S test, D statistics is labeled.\n",
       sep = " "
     )
-  cat(metKeys[ii],text,' \n')
+  #cat(metKeys[ii],text,' \n')
   # arranage plots in one figure
   gp <-
     ggarrange(
@@ -153,7 +153,15 @@ for (ii in 1:length(metKeys)) {
       size = 15,
       face = 'bold'
     ))
-  print(gp)
+  p<-annotate_figure(
+    gp,
+    bottom = text_grob(
+      ctext,
+      face = "italic",
+      size = 13
+    )
+  )
+  print(p)
   out <-
     rbind(out,
           c(
