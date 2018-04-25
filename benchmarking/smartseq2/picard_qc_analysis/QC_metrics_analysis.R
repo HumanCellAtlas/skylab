@@ -26,25 +26,25 @@
 #' First load functions we will use in this test
 #' 
 #' Here is the list of input parameters
-source('~/Works/github/HCA/skylab/benchmarking/smartseq2/R/analysis_functions.R')
+source('/usr/local/scripts/analysis_functions.R')
 ## inputs, python style
 option_list <- list(
   make_option(
-    "--bmetrics",
+    "--metrics1",
     type = "character",
     default = NULL,
     help = " First/Base metrics file name",
     metavar = "character"
   ),
   make_option(
-    "--umetrics",
+    "--metrics2",
     type = "character",
     default = NULL,
     help = " Second/Updated metrics file name",
     metavar = "character"
   ),
   make_option(
-    "--output_name",
+    "--output_prefix",
     type = "character",
     default = "out",
     help = "output file name [default= %default]",
@@ -63,18 +63,17 @@ args<-strsplit(commandArgs(trailingOnly = TRUE),split=' ')
 opt_parser <- OptionParser(option_list = option_list)
 opt <- parse_args(opt_parser,args=args[[1]])
 # load params
-output_name <- opt$output_name
+output_name <- opt$output_prefix
 #'
 #' # Parse QC Metrics Files
 #' 
 #' The QC metrics files are the collection of Picardtools QC outputs, which are formated as N*M matrix
 #' The rows are QC metrics and columns are cells/samples. 
 #'  
-met1 <- read.csv(opt$bmetrics, row.names = 1)
-met2 <- read.csv(opt$umetrics, row.names = 1)
+met1 <- read.csv(opt$metrics1, row.names = 1)
+met2 <- read.csv(opt$metrics2, row.names = 1)
 #' Here is the list of metrics we will analysis with
 metKeys <- strsplit(opt$metKeys, split = ',')[[1]]
-print(metKeys)
 #'
 #' First we match column names(cell IDs) between two pipelines metrics
 colnames1 <- colnames(met1)
@@ -122,22 +121,7 @@ for (ii in 1:length(metKeys)) {
   p3 <- plotBox(z)
   # plot KS
   p4 <- plotKS(z)
-  # test block
-  ctext <-
-    paste(
-      "A: Density plot of",
-      metKeys[ii],
-      " from two pipeline.\n",
-      "B: Violin of ",
-      metKeys[ii],
-      ", labeled with Wilcoxon test result.\n",
-      "C: Linear regression test of ",
-      metKeys[ii],
-      "between two pipelines.\n",
-      "D: K-S test, D statistics is labeled.\n",
-      sep = " "
-    )
-  #cat(metKeys[ii],text,' \n')
+  
   # arranage plots in one figure
   gp <-
     ggarrange(
@@ -153,15 +137,7 @@ for (ii in 1:length(metKeys)) {
       size = 15,
       face = 'bold'
     ))
-  p<-annotate_figure(
-    gp,
-    bottom = text_grob(
-      ctext,
-      face = "italic",
-      size = 13
-    )
-  )
-  print(p)
+  print(gp)
   out <-
     rbind(out,
           c(

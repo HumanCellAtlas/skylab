@@ -65,7 +65,7 @@ option_list <- list(
     metavar = "character"
   )
 )
-args<-strsplit(commandArgs(trailingOnly = TRUE),split=',')
+args<-strsplit(commandArgs(trailingOnly = TRUE),split=' ')
 opt_parser <- OptionParser(option_list = option_list)
 opt <- parse_args(opt_parser,args=args[[1]])
 matrixfile1 <- opt$matrix1
@@ -124,9 +124,11 @@ gghistogram(
   fill = "lightgray",
   add = "mean",
   rug = TRUE,
+  caption="Correlation of gene expression between 2 pipelines",
   ggtheme = theme_minimal(),
-  xlab = "Correlation: Expression of Base vs Updated pipeline"
+  xlab = "Correlation Coefficient"
 ) + border()
+
 #'
 #' # SNN Clustering
 #' 
@@ -162,11 +164,12 @@ ggscatter(
   palette = "ucscgb",
   size = 3,
   alpha = 0.9,
-  ggtheme = theme_minimal(),
-  title = 'Tsne of orign gene matrix'
+  caption= "Tsne plot of gene matrix, color label represent cell type.",
+  ggtheme = theme_minimal()
 ) + border()+
   xlab('Tsne 1')+
   ylab('Tsne 2')
+
 #' Then we re-label cells by their SNN cluster results. Number in the scatterplot
 #' indicates the SNN cluster membership
 ggscatter(
@@ -180,14 +183,16 @@ ggscatter(
   palette = "ucscgb",
   size = 0,
   alpha = 0.9,
-  ggtheme = theme_minimal(),
-  title = 'Tsne of orign gene matrix'
+  caption = "Tsne plot of gene matrix, color label represent cell type. 
+  Number labels represent SNN-Cliq clustering results",
+  title = "Tsne of orign gene matrix",
+  ggtheme = theme_minimal()
 ) + border()+
   xlab('Tsne 1')+
   ylab('Tsne 2')
 
 #'
-#' ### Updated Pipelin Results
+#' ### Updated Pipeline Results
 #' Form a data frame
 df <- data.frame(mat2.snn$tsne$Y,'membership'=as.factor(mat2.snn$clusters$membership) ,'labels'=labels)
 #'  Here we will project gene matrix into Tsne 2-D plot and label cell
@@ -201,10 +206,12 @@ ggscatter(
   size = 3,
   alpha = 0.9,
   ggtheme = theme_minimal(),
-  title = 'Tsne of orign gene matrix'
+  caption = "Tsne of updated gene matrix",
+  title = 'Tsne of updated pipeline gene matrix'
 ) + border()+
   xlab('Tsne 1')+
   ylab('Tsne 2')
+
 #' Then we re-label cells by their SNN cluster results. Number in the scatterplot
 #' indicates the SNN cluster membership
 ggscatter(
@@ -219,6 +226,8 @@ ggscatter(
   size = 0,
   alpha = 0.9,
   ggtheme = theme_minimal(),
+  caption = "Tsne plot of gene matrix, color label represent cell type. 
+  Number labels represent SNN-Cliq clustering results",
   title = 'Tsne of orign gene matrix'
 ) + border()+
   xlab('Tsne 1')+

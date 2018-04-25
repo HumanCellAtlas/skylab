@@ -97,7 +97,8 @@ plotlm <- function(df) {
   my.formula <- y ~ x
   p <-
     ggplot(data = df, aes(x = Base, y = Updated)) + geom_point(shape = 1) +
-    theme_bw()
+    theme_bw()+
+    labs(caption = "linear regression test of metric between two pipeline")
   p <- p + stat_poly_eq(
     formula = my.formula,
     eq.with.lhs = "italic(hat(y))~`=`~",
@@ -160,7 +161,8 @@ plotBox <- function(df) {
     p + stat_compare_means(comparisons = list(c('Base', 'Updated')), label = "p.signif") +
     stat_compare_means() + # Add pairwise comparisons p-value
     grids(linetype = "dashed") +
-    theme_bw() + theme(legend.position = "top")
+    theme_bw() + theme(legend.position = "top")+
+    labs(caption = "violin plot of metric, labeled with Wilcoxon test results")
   #p$layers[[2]]$aes_params$size = 1
   #p$layers[[2]]$aes_params$textsize <- 4
 
@@ -184,7 +186,8 @@ plothist <- function(df) {
   density.p <- density.p + 
       grids(linetype = "dashed") + 
       theme_bw()+
-      theme(legend.position = "top")
+      theme(legend.position = "top")+
+    labs(caption="Density plot of metric of two pipelines")
   
   return(list('p' = density.p))
 }
@@ -209,7 +212,7 @@ plotKS <- function(df) {
     stat_ecdf(size = 1) +
     theme_bw() +
     theme(legend.position = "top") +
-    ylab("ECDF")
+    ylab("ECDF")+labs(caption="K-S test, D-statistics is labeled")
   # do KS test
   dtable <-
     data.frame(
@@ -237,7 +240,7 @@ plotKS <- function(df) {
     ks.p + geom_point(aes(x = x0[1] , y = y1[1]), color = "red", size = 4)
 
   ks.p <-
-    ks.p + theme(legend.title = element_blank()) + annotation_custom(ggplotGrob(dtable.p))
+    ks.p + theme(legend.title = element_blank())
   return(list(
     'p' = ks.p,
     'D' = ks$statistic,

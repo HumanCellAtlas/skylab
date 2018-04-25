@@ -193,6 +193,7 @@ sp <-
     palette = "jco",
     ggtheme = theme_minimal(),
     legend.title = "t-test SC vs Bulk",
+    caption = "Scatterplot of foldchanges between SC and bulk samples of each pipeline. Color represents the category of reproducibility",
     xlab = "Fold Changes: Base Bulk -SC",
     ylab = "Fold Changes: Updated Bulk - SC"
   ) + border()
@@ -239,6 +240,7 @@ pb <- ggbarplot(
   xlab = "# Of Inconsistent Genes",
   ylab = "",
   rotate = TRUE,
+  caption = "Barplot of counts of irreproducible genes between pipelines",
   ggtheme = theme_minimal(),
   palette = "jco",
   legend.title = "Inconsistent Genes"

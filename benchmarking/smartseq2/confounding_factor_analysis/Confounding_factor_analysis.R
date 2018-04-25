@@ -36,28 +36,28 @@ source('/usr/local/scripts/analysis_functions.R')
 #'
 option_list <- list(
   make_option(
-    "--bmatrix",
+    "--matrix1",
     type = "character",
     default = NULL,
     help = "data matrix file name",
     metavar = "character"
   ),
   make_option(
-    "--umatrix",
+    "--matrix2",
     type = "character",
     default = NULL,
     help = "updated data matrix file name",
     metavar = "character"
   ),
   make_option(
-    "--bmetrics",
+    "--metrics1",
     type = "character",
     default = NULL,
     help = " base metrics file name",
     metavar = "character"
   ),
   make_option(
-    "--umetrics",
+    "--metrics2",
     type = "character",
     default = NULL,
     help = " updated metrics file name",
@@ -101,10 +101,10 @@ option_list <- list(
 #' Data matrix files are *.csv file and can be count, TPM or FPKM matrix.
 #' For benchmarking purpose, TPM would be optimal choice.
 #'
-#' * bmatrix: data matrix of one pipeline, such as base pipeline
-#' * umatrix: data matrix of the other pipeline, such as updated pipeline
-#' * bmetrcs: QC metrics of one pipeline.
-#' * umetric: QC metrics of the other pipeline
+#' * matrix1: data matrix of one pipeline, such as base pipeline
+#' * matrix2: data matrix of the other pipeline, such as updated pipeline
+#' * metrcs1: QC metrics of one pipeline.
+#' * metric2: QC metrics of the other pipeline
 #' * metadata_file: a file includes metadata information about data, such cell, lineage.
 #' * metaKeys: a list of meta value to extract, such cell, lineage.
 #' * npcs: top number of PCs to extract in PCA
@@ -114,10 +114,10 @@ option_list <- list(
 args <- strsplit(commandArgs(trailingOnly = TRUE), split = ' ')
 opt_parser <- OptionParser(option_list = option_list)
 opt <- parse_args(opt_parser, args = args[[1]])
-met1 <- read.csv(opt$bmetrics, row.names = 1)
-met2 <- read.csv(opt$umetrics, row.names = 1)
-mat1 <- read.csv(opt$bmatrix)
-mat2 <- read.csv(opt$umatrix)
+met1 <- read.csv(opt$metrics1, row.names = 1)
+met2 <- read.csv(opt$metrics2, row.names = 1)
+mat1 <- read.csv(opt$matrix1)
+mat2 <- read.csv(opt$matrix2)
 npcs <- opt$npcs
 output_name <- opt$output_prefix
 #' metadata records information related to this dataset,
@@ -305,59 +305,37 @@ knitr::kable(head(vars2))
 mvar1 <- melt(vars1)
 mvar2 <- melt(vars2)
 #' Plot in boxplot of Base pipeline analysis results.
-pl <- ggboxplot(
+ggboxplot(
   mvar1,
   x = "Var1",
   y = "value",
   color = "Var1",
   palette = 'ucscgb',
   legend.title = "Confounding Factors",
+  caption = "Base pipeline : The boxplot of % of variance explained by confounding factors",
   ggtheme = theme_minimal(),
   x.text.angle = 45
 ) + scale_y_log10() +
   xlab('Confounding Factors') +
-  ylab('% of variance explained by confounding factors') +
+  ylab(' % of variance explained by confounding factors') +
   border()
-annotate_figure(
-  pl,
-  top = text_grob(
-    "Base Pipeline:mean of variance explained by confounding factors",
-    face = "bold",
-    size = 14
-  ),
-  bottom = text_grob(
-    "% of variance explained by confounding factors",
-    face = "italic",
-    size = 15
-  )
-)
+
 #' Plot in boxplot of updated pipeline analysis results.
-pl <- ggboxplot(
+ ggboxplot(
   mvar2,
   x = "Var1",
   y = "value",
   color = "Var1",
   ggtheme = theme_minimal(),
   legend.title = "Confounding Factors",
+  caption = "Updated Pipeline: The boxplot of  % of variance explained by confounding factors",
   palette = 'ucscgb',
   x.text.angle = 45
 ) + scale_y_log10() +
   xlab('Confounding Factors') +
   ylab('% of variance explained by confounding factors') +
   border()
-annotate_figure(
-  pl,
-  top = text_grob(
-    "Updated Pipeline:mean of variance explained by confounding factors",
-    face = "bold",
-    size = 14
-  ),
-  bottom = text_grob(
-    "% of variance explained by confounding factors",
-    face = "italic",
-    size = 15
-  )
-)
+
 #'
 #' # Compare the confounding factors of two pipelines
 #'
@@ -388,7 +366,7 @@ knitr::kable(p)
 #' confounding factors.
 labs <- paste(" (", round(p$x.Base * 100, 1), "%)")
 p['x.labels'] <- labs
-pl <- ggpie(
+ggpie(
   p,
   "x.Base",
   label = 'x.labels',
@@ -398,28 +376,17 @@ pl <- ggpie(
   lab.font = "bold.italic",
   palette = c("#00AFBB", "#E7B800", "#FC4E07"),
   ggtheme = theme_pubr(),
+  caption = "Base Pipeline:% of variance explained by confounding factors",
   legend.title = "confounding factors"
 )
-annotate_figure(
-  pl,
-  top = text_grob(
-    "Base Pipeline:Confounding factors",
-    face = "bold",
-    size = 14
-  ),
-  bottom = text_grob(
-    "% of variance explained by confounding factors",
-    face = "italic",
-    size = 15
-  )
-)
+
 
 #' ### Updated Pipeline: Variance Analysis Results
 #' We can plot pie chart to visualize the `%` of variance explained by
 #' confounding factors.
 labs <- paste0(" (", round(p$x.Updated * 100, 1), "%)")
 p['y.labels'] <- labs
-pl <- ggpie(
+ggpie(
   p,
   "x.Updated",
   label = 'y.labels',
@@ -429,21 +396,10 @@ pl <- ggpie(
   lab.font = "white",
   palette = c("#00AFBB", "#E7B800", "#FC4E07"),
   ggtheme = theme_pubr(),
+  caption = "Update Pipeline: % of variance explained by confounding factors",
   legend.title = "confounding factors"
 )
-annotate_figure(
-  pl,
-  top = text_grob(
-    "Updated Pipeline:Confounding factors",
-    face = "bold",
-    size = 14
-  ),
-  bottom = text_grob(
-    "% of variance explained by confounding factors",
-    face = "italic",
-    size = 15
-  )
-)
+
 #'
 #' # Output
 #'
