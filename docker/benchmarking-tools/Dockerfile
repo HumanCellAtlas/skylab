@@ -128,9 +128,16 @@ RUN Rscript -e "install.packages('rsvd')"
 RUN Rscript -e "install.packages('factoextra')"
 RUN Rscript -e "install.packages('fpc')"
 RUN Rscript -e "install.packages('NbClust')"
-
+RUN Rscript -e "install.packages('knitr')"
+RUN Rscript -e "install.packages('rmarkdown')"
+RUN Rscript -e "install.packages('Rtsne')"
 # Add benchmarking scripts
 WORKDIR /usr/local/scripts/
 ENV PATH /usr/local/scripts/:$PATH
 COPY ./*.R /usr/local/scripts/
 COPY ./*.py /usr/local/scripts/
+RUN apt-get update \
+  && apt-get install -t unstable -y   --no-install-recommends \
+			cabal-install
+RUN cabal update && cabal install pandoc
+RUN ln -s /root/.cabal/bin/pandoc /usr/local/bin/pandoc
