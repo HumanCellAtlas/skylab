@@ -7,7 +7,7 @@ task RunComparativeAnalysis {
 
   command {
     set -e
-    gsutil cp  gs://broad-dsde-mint-dev-teststorage/pipeline_testing_scripts/*.R ./
+    cp  /usr/local/scripts/*.R ./
     Rscript -e 'rmarkdown::render("Compare_data_matrix.R", output_file="${output_name}_Compare_data_matrix.html")' --args \
       "--matrix1=${base_datafile} --matrix2=${updated_datafile} --metaKeys=${metadata_keys} --metadata_file=${metadata_file} --output_prefix=${output_name}"
   }
@@ -31,7 +31,7 @@ task RunReproducibilityAnalysis{
   
   command {
     set -e
-    gsutil cp  gs://broad-dsde-mint-dev-teststorage/pipeline_testing_scripts/*.R ./
+    cp /usr/local/scripts/*.R ./
     Rscript -e 'rmarkdown::render("data_matrix_reproducibility.R", output_file="${output_name}_data_matrix_reproducibility.html")' --args \
       "--matrix1=${base_datafile} --matrix2=${updated_datafile} --metadata_file=${metadata_file} --output_prefix=${output_name} --gtf_file=${gtf_file}"
   }
@@ -56,7 +56,7 @@ task RunQCMetricsAnalysis{
   
   command {
     set -e
-    gsutil cp  gs://broad-dsde-mint-dev-teststorage/pipeline_testing_scripts/*.R ./
+    cp /usr/local/scripts/*.R ./
     Rscript -e 'rmarkdown::render("QC_metrics_analysis.R", output_file="${output_name}_QC_metrics_analysis.html")' --args \
       "--metrics1=${base_metrics} --metrics2=${updated_metrics} --metKeys=${metKeys} --output_prefix=${output_name}"
   }
@@ -84,7 +84,7 @@ task RunConfoundingFactorAnalysis{
   
   command {
     set -e
-    gsutil cp  gs://broad-dsde-mint-dev-teststorage/pipeline_testing_scripts/*.R  ./
+    cp /usr/local/scripts/*.R ./
     Rscript -e 'rmarkdown::render("Confounding_factor_analysis.R", output_file="${output_name}_Confounding_factor_analysis.html")' --args \
       "--matrix1=${base_datafile} --matrix2=${updated_datafile} --metadata_file=${metadata_file} --output_prefix=${output_name} --npcs=${npcs} --metaKeys=${metaKeys} --metrics1=${base_metrics} --metrics2=${updated_metrics}"
   } 
