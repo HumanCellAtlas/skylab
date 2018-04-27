@@ -8,6 +8,6 @@
 	"RunBenchmarkingAnalysis.updated_metrics":"gs://broad-dsde-mint-dev-teststorage/benchmarking/ss2/HISAT2_met_all.csv",
 	"RunBenchmarkingAnalysis.output_name": "STAR_HISAT2",
 	"RunBenchmarkingAnalysis.metKeys":"detected_ratio,MT_ratio,PCT_PF_READS_ALIGNED,PCT_PF_READS_IMPROPER_PAIRS,PCT_READS_ALIGNED_IN_PAIRS,PCT_CODING_BASES,PCT_INTERGENIC_BASES,PCT_INTRONIC_BASES,PCT_UTR_BASES,PCT_USABLE_BASES,PCT_MRNA_BASES,PCT_RIBOSOMAL_BASES,PERCENT_DUPLICATION,MEDIAN_5PRIME_TO_3PRIME_BIAS,MEDIAN_3PRIME_BIAS,MEDIAN_5PRIME_BIAS,MEDIAN_CV_COVERAGE,PF_MISMATCH_RATE,MEDIAN_INSERT_SIZE",
-	"RunBenchmarkingAnalysis.npcs": 30,
-	"RunBenchmarkingAnalysis.nthreshold": 5
+	"RunBenchmarkingAnalysis.npcs": 10,
+	"RunBenchmarkingAnalysis.metadata_Keys":"cell,lineage"
 }
