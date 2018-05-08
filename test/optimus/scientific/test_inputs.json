@@ -1,9 +1,9 @@
 {
   "TestOptimusScientific.r1_fastq": [
-    "gs://hca-dcp-mint-test-data/10x/synthetic/synthetic_r1.fastq.gz"
+    "gs://hca-dcp-mint-test-data/10x/synthetic/synthetic_S1_L007_R1_001.fastq.gz"
   ],
   "TestOptimusScientific.r2_fastq":  [
-    "gs://hca-dcp-mint-test-data/10x/synthetic/synthetic_r2.fastq.gz"
+    "gs://hca-dcp-mint-test-data/10x/synthetic/synthetic_S1_L007_R2_001.fastq.gz"
   ],
   "TestOptimusScientific.whitelist": "gs://broad-dsde-mint-dev-teststorage/10x/whitelist/737K-august-2016.txt",
   "TestOptimusScientific.tar_star_reference": "gs://hca-dcp-mint-test-data/reference/GRCh38_Gencode/star.tar",
