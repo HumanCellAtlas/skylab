@@ -1,0 +1,12 @@
+{
+  "cellranger.sampleId": "synthetic",
+  "cellranger.fastqs": [
+    "gs://hca-dcp-mint-test-data/10x/synthetic/synthetic_r1.fastq.gz",
+    "gs://hca-dcp-mint-test-data/10x/synthetic/synthetic_r2.fastq.gz"
+  ],
+  "cellranger.referenceName": "GRCh38",
+  "cellranger.transcriptomeTarGz": "gs://hca-dcp-mint-test-data/reference/GRCh38_Gencode/refdata-cellranger-GRCh38-1.2.0.tar.gz",
+  "cellranger.secondary": true,
+  "cellranger.expectCells": "5000",
+  "cellranger.diskSpace": "250"
+}
