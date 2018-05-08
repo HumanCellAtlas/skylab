@@ -1,5 +1,4 @@
 task MergePicardMetrics {
-  String target_dir
   String met_name
   String uuid
   String output_name

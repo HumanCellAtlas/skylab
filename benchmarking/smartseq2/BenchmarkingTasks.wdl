@@ -13,11 +13,11 @@ task RunComparativeAnalysis {
   }
   output {
     File html = "${output_name}_Compare_data_matrix.html"
-    File memnbership = "${output_name}_tsne_SNN_cluster_data_matrix_comparison.csv"
+    File membership = "${output_name}_tsne_SNN_cluster_data_matrix_comparison.csv"
   }
   runtime {
-    docker:"gcr.io/broad-dsde-mint-dev/benchmarking-tools:0.0.1"
-    memory:"7.5 GB"
+    docker: "gcr.io/broad-dsde-mint-dev/benchmarking-tools:0.0.1"
+    memory: "7.5 GB"
     disks: "local-disk 50 HDD"
     preemptible: 5
   }
@@ -41,12 +41,11 @@ task RunReproducibilityAnalysis{
     File ttest_updated = "${output_name}_updated_ttest_res.csv"
   }
   runtime {
-    docker:"gcr.io/broad-dsde-mint-dev/benchmarking-tools:0.0.1"
-    memory:"7.5 GB"
+    docker: "gcr.io/broad-dsde-mint-dev/benchmarking-tools:0.0.1"
+    memory: "7.5 GB"
     disks: "local-disk 50 HDD"
     preemptible: 5
   } 
- 
 }
 task RunQCMetricsAnalysis{
   File base_metrics
@@ -65,8 +64,8 @@ task RunQCMetricsAnalysis{
     File test_qc = "${output_name}_tests_stats.csv"
   }
   runtime {
-    docker:"gcr.io/broad-dsde-mint-dev/benchmarking-tools:0.0.1"
-    memory:"7.5 GB"
+    docker: "gcr.io/broad-dsde-mint-dev/benchmarking-tools:0.0.1"
+    memory: "7.5 GB"
     disks: "local-disk 50 HDD"
     preemptible: 5
   } 
@@ -93,8 +92,8 @@ task RunConfoundingFactorAnalysis{
     File test_confoundingfactors = "${output_name}_confounding_factors_vars.csv"
   }
   runtime {
-    docker:"gcr.io/broad-dsde-mint-dev/benchmarking-tools:0.0.1"
-    memory:"7.5 GB"
+    docker: "gcr.io/broad-dsde-mint-dev/benchmarking-tools:0.0.1"
+    memory: "7.5 GB"
     disks: "local-disk 50 HDD"
     preemptible: 5
   } 

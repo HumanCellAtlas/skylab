@@ -22,25 +22,25 @@ RUN apt-get update \
 
 # Install R and other dependencies
 RUN apt update && apt install -y \
-  	build-essential \
-	cmake automake \
-  	curl \
-  	gcc-multilib \
-  	git \
-  	libcurl4-openssl-dev \
-    libssl-dev \
-  	libboost-all-dev \
-  	libncurses5-dev \
-	libxml2-dev \
-  	libncurses5-dev \
-  	libboost-all-dev \
-	libbz2-dev \
-	liblzma-dev \
-	lsb-release \
-	samtools \
-	sudo \
-	wget \
-	zlib1g-dev \
+  build-essential \
+  cmake automake \
+  curl \
+  gcc-multilib \
+  git \
+  libcurl4-openssl-dev \
+  libssl-dev \
+  libboost-all-dev \
+  libncurses5-dev \
+  libxml2-dev \
+  libncurses5-dev \
+  libboost-all-dev \
+  libbz2-dev \
+  liblzma-dev \
+  lsb-release \
+  samtools \
+  sudo \
+  wget \
+  zlib1g-dev \
   gfortran
 
 RUN echo "deb http://http.debian.net/debian sid main" > /etc/apt/sources.list.d/debian-unstable.list \
