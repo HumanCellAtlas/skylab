@@ -4,7 +4,9 @@ task RunComparativeAnalysis {
   File metadata_file
   String metadata_keys
   String output_name
-
+  meta {
+    description: "Run SmartSeq2 Comparative test. In the test, two data matrix will be tested by their clustering results."
+  } 
   command {
     set -e
     cp  /usr/local/scripts/*.R ./
@@ -28,7 +30,9 @@ task RunReproducibilityAnalysis{
   File metadata_file
   File gtf_file
   String output_name
-  
+  meta {
+    description: "Run SmartSeq2 Reproducibility test. In this test, reproducibility between single cell and bulk sample is carried out and the differential genes between single cell and bulk samples will be comparied between to data matrix."
+  } 
   command {
     set -e
     cp /usr/local/scripts/*.R ./
@@ -50,14 +54,14 @@ task RunReproducibilityAnalysis{
 task RunQCMetricsAnalysis{
   File base_metrics
   File updated_metrics
-  String metKeys
+  String met_keys
   String output_name
   
   command {
     set -e
     cp /usr/local/scripts/*.R ./
     Rscript -e 'rmarkdown::render("QC_metrics_analysis.R", output_file="${output_name}_QC_metrics_analysis.html")' --args \
-      "--metrics1=${base_metrics} --metrics2=${updated_metrics} --metKeys=${metKeys} --output_prefix=${output_name}"
+      "--metrics1=${base_metrics} --metrics2=${updated_metrics} --metKeys=${met_keys} --output_prefix=${output_name}"
   }
   output {
     File html = "${output_name}_QC_metrics_analysis.html"
@@ -77,7 +81,7 @@ task RunConfoundingFactorAnalysis{
   File metadata_file
   File base_datafile
   File updated_datafile
-  String metaKeys
+  String meta_keys
   String output_name
   Int npcs
   
@@ -85,7 +89,7 @@ task RunConfoundingFactorAnalysis{
     set -e
     cp /usr/local/scripts/*.R ./
     Rscript -e 'rmarkdown::render("Confounding_factor_analysis.R", output_file="${output_name}_Confounding_factor_analysis.html")' --args \
-      "--matrix1=${base_datafile} --matrix2=${updated_datafile} --metadata_file=${metadata_file} --output_prefix=${output_name} --npcs=${npcs} --metaKeys=${metaKeys} --metrics1=${base_metrics} --metrics2=${updated_metrics}"
+      "--matrix1=${base_datafile} --matrix2=${updated_datafile} --metadata_file=${metadata_file} --output_prefix=${output_name} --npcs=${npcs} --metaKeys=${meta_keys} --metrics1=${base_metrics} --metrics2=${updated_metrics}"
   } 
   output {
     File html = "${output_name}_Confounding_factor_analysis.html"

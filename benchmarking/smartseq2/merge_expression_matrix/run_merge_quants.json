@@ -1,8 +1,0 @@
-{
- "RunMergeDataMatrix.scripts_dir": "gs://broad-dsde-mint-dev-teststorage/pipeline_testing_scripts",
- "RunMergeDataMatrix.uuid": "5a3aa2ad-2a86-46af-9cc6-be35eb9f0abb",
- "RunMergeDataMatrix.file_names": ["run_pipelines.RunHisat2RsemPipeline.rsem_gene_results",
-	 "run_pipelines.RunStarPipeline.rsem_gene_results"],
- "RunMergeDataMatrix.output_names": ["HISAT2_rsem_merged_tpm.csv","STAR_rsem_merged_tpm.csv"],
- "RunMergeDataMatrix.value_name": "tpm"
-}

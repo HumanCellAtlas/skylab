@@ -1,9 +1,0 @@
-{
- "run_merge.scripts_dir": "gs://broad-dsde-mint-dev-teststorage/pipeline_testing_scripts",
- "run_merge.uuid": "5a3aa2ad-2a86-46af-9cc6-be35eb9f0abb",
- "run_merge.metrics_names": ["run_pipelines.RunStarPipeline.alignment_summary_metrics",
-	 "run_pipelines.RunStarPipeline.rna_metrics",
-	 "run_pipelines.RunStarPipeline.dedup_metrics",
-	 "run_pipelines.RunStarPipeline.insert_size_metrics"],
- "run_merge.combined_file":"STAR_met_all.csv"
-}

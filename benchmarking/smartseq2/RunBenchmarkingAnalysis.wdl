@@ -10,7 +10,7 @@ workflow RunBenchmarkingAnalysis {
   String gtf_file
   String metadata_file
   String metadata_keys
-  String metKeys
+  String met_keys
   String base_metrics
   String updated_metrics
   Int    npcs
@@ -20,7 +20,7 @@ workflow RunBenchmarkingAnalysis {
       base_metrics = base_metrics,
       updated_metrics = updated_metrics,
       output_name = output_name,
-      metKeys = metKeys
+      met_keys = met_keys
   }
 
   call analysis.RunComparativeAnalysis {
