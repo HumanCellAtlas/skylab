@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 # note, this test must be run from the workflow root for the relative paths to work out.
+# WDL file should be the KCO cellranger, located here:
+# https://portal.firecloud.org/#methods/single-cell-portal/cell-ranger-2-0-2/3/wdl
 
 set -e
 
