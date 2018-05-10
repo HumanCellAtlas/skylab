@@ -9,7 +9,7 @@ set -e
 # This secrets file contains the following information on a cromwell instance:
 # username
 # password
-# url
+# url (e.g. https://cromwell.my-url.broadinstitute.org)
 CROMWELL_SECRETS=${1:-~/.ssh/mint_cromwell_config.json}
 TEST_DIR=${2:-./test/optimus/scientific_cellranger}
 
