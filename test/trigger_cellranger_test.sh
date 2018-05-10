@@ -6,10 +6,16 @@
 
 set -e
 
-export CROMWELL_SECRETS=~/.ssh/mint_cromwell_config.json
+# This secrets file contains the following information on a cromwell instance:
+# username
+# password
+# url
+CROMWELL_SECRETS=${1:-~/.ssh/mint_cromwell_config.json}
+TEST_DIR=${2:-./test/optimus/scientific_cellranger}
 
-TEST_DIR=./test/optimus/scientific_cellranger
+export CROMWELL_SECRETS
 
 cromwell-tools run \
   --wdl-file "${TEST_DIR}"/cellranger.wdl \
   --inputs-json "${TEST_DIR}"/test_inputs.json
+
