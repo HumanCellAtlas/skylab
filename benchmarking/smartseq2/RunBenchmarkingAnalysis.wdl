@@ -4,6 +4,7 @@ workflow RunBenchmarkingAnalysis {
   meta {
     description: "Run SmartSeq2 Benchmarking pipeline. 4 modules are included in this pipeline.QC test, Comparative tests, Reproducibility test and Confounding factors test."
   }
+
   String base_datafile
   String updated_datafile
   String output_name
@@ -13,7 +14,7 @@ workflow RunBenchmarkingAnalysis {
   String met_keys
   String base_metrics
   String updated_metrics
-  Int    npcs
+  Int npcs
   
   call analysis.RunQCMetricsAnalysis {
     input:

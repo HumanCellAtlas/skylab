@@ -43,27 +43,27 @@ RUN apt update && apt install -y \
   zlib1g-dev \
   gfortran
 
-RUN echo "deb http://http.debian.net/debian sid main" > /etc/apt/sources.list.d/debian-unstable.list \
-	&& echo 'APT::Default-Release "testing";' > /etc/apt/apt.conf.d/default
-ENV R_BASE_VERSION 3.4.4
 ## Now install R and littler, and create a link for littler in /usr/local/bin
 ## Also set a default CRAN repo, and make sure littler knows about it too
+RUN echo "deb http://http.debian.net/debian sid main" > /etc/apt/sources.list.d/debian-unstable.list \
+  && echo 'APT::Default-Release "testing";' > /etc/apt/apt.conf.d/default
+ENV R_BASE_VERSION 3.4.4
 RUN apt-get update \
-	&& apt-get install -t unstable -y --no-install-recommends \
-		littler \
+  && apt-get install -t unstable -y --no-install-recommends \
+    littler \
     r-cran-littler \
-		r-base=${R_BASE_VERSION}-* \
-		r-base-dev=${R_BASE_VERSION}-* \
-		r-recommended=${R_BASE_VERSION}-* \
-        && echo 'options(repos = c(CRAN = "https://cloud.r-project.org/"), download.file.method = "libcurl")' >> /etc/R/Rprofile.site \
-        && echo 'source("/etc/R/Rprofile.site")' >> /etc/littler.r \
-	&& ln -s /usr/share/doc/littler/examples/install.r /usr/local/bin/install.r \
-	&& ln -s /usr/share/doc/littler/examples/install2.r /usr/local/bin/install2.r \
-	&& ln -s /usr/share/doc/littler/examples/installGithub.r /usr/local/bin/installGithub.r \
-	&& ln -s /usr/share/doc/littler/examples/testInstalled.r /usr/local/bin/testInstalled.r \
-	&& install.r docopt \
-	&& rm -rf /tmp/downloaded_packages/ /tmp/*.rds \
-	&& rm -rf /var/lib/apt/lists/*
+    r-base=${R_BASE_VERSION}-* \
+    r-base-dev=${R_BASE_VERSION}-* \
+    r-recommended=${R_BASE_VERSION}-* \
+  && echo 'options(repos = c(CRAN = "https://cloud.r-project.org/"), download.file.method = "libcurl")' >> /etc/R/Rprofile.site \
+  && echo 'source("/etc/R/Rprofile.site")' >> /etc/littler.r \
+  && ln -s /usr/share/doc/littler/examples/install.r /usr/local/bin/install.r \
+  && ln -s /usr/share/doc/littler/examples/install2.r /usr/local/bin/install2.r \
+  && ln -s /usr/share/doc/littler/examples/installGithub.r /usr/local/bin/installGithub.r \
+  && ln -s /usr/share/doc/littler/examples/testInstalled.r /usr/local/bin/testInstalled.r \
+  && install.r docopt \
+  && rm -rf /tmp/downloaded_packages/ /tmp/*.rds \
+  && rm -rf /var/lib/apt/lists/*
 
 # Install python packages
 RUN pip3 install \
@@ -102,8 +102,8 @@ RUN gcloud auth activate-service-account --key-file=$GCS_AUTH_FILE
 ADD broad-dsde-mint-dev-cromwell.json /usr/secrets/broad-dsde-mint-dev-cromwell.json
 
 RUN wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.8.2-1/sratoolkit.2.8.2-1-ubuntu64.tar.gz \
-	&& tar -zxvf sratoolkit.2.8.2-1-ubuntu64.tar.gz \
-	&& cp -r  sratoolkit.2.8.2-1-ubuntu64/ /usr/local/
+  && tar -zxvf sratoolkit.2.8.2-1-ubuntu64.tar.gz \
+  && cp -r  sratoolkit.2.8.2-1-ubuntu64/ /usr/local/
 ENV PATH /usr/local/sratoolkit.2.8.2-1-ubuntu64/bin:$PATH
 
 RUN pip3 install ipython
@@ -131,10 +131,11 @@ RUN Rscript -e "install.packages('NbClust')"
 RUN Rscript -e "install.packages('knitr')"
 RUN Rscript -e "install.packages('rmarkdown')"
 RUN Rscript -e "install.packages('Rtsne')"
+
 # Add benchmarking scripts
 RUN apt-get update \
-  && apt-get install -t unstable -y   --no-install-recommends \
-			cabal-install
+  && apt-get install -t unstable -y --no-install-recommends \
+    cabal-install
 RUN cabal update && cabal install pandoc
 RUN ln -s /root/.cabal/bin/pandoc /usr/local/bin/pandoc
 WORKDIR /usr/local/scripts/
