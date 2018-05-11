@@ -98,8 +98,8 @@ task HISAT2RSEM {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
-  Int machine_mem_mb = 15000
-  Int cpu = 4
+  Int machine_mem_mb = 30000
+  Int cpu = 8
   # use provided disk number or dynamically size on our own, 10 is our zipped fastq -> bam conversion with 50GB of additional disk
   Int disk = ceil((size(fastq1, "GB") + size(fastq2, "GB") * 10) + size(hisat2_ref, "GB") + 50)
   Int preemptible = 5
