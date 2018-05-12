@@ -10,7 +10,7 @@ set -e
 CROMWELL_SECRETS=${2:-${HOME}/.ssh/mint_cromwell_config.json}
 TEST_DIR=${3:-./test/optimus/scientific}
 
-export CROMWELL_SECRETS=~/.ssh/mint_cromwell_config.json
+export CROMWELL_SECRETS
 
 cromwell-tools run \
   --wdl-file "${TEST_DIR}"/TestOptimusScientific.wdl \
