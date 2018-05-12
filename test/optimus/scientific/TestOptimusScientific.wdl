@@ -1,15 +1,29 @@
 import "Optimus.wdl" as target
 
 workflow TestOptimusScientific {
+
+  meta {
+    description: "This workflow runs the Optimus pipeline on synthetic testing data. #TODO it should also test this data against the output of the Cell Ranger reference pipeline"
+  }
+
   # Optimus inputs
   Array[File] r1_fastq
   Array[File] r2_fastq
 
-  File whitelist  # 10x genomics cell barcode whitelist for 10x V2
-  File tar_star_reference  # star reference
-  File annotations_gtf  # gtf containing annotations for gene tagging
-  File ref_genome_fasta  # genome fasta file
-  String sample_id  # name of sample matching this file, inserted into read group header
+  File whitelist
+  File tar_star_reference
+  File annotations_gtf
+  File ref_genome_fasta
+  String sample_id
+
+  parameter_meta {
+    r1_fastq: "The forward (barcode containing) read of a 10x genomics RNA v2 sequencing experiment"
+    r2_fastq: "The reverse (genomic sequence containing) read of a 10x genomics RNA v2 sequencing experiment"
+    whitelist: "A list of expected cell barcodes"
+    annotations_gtf: "A gtf containing annotations for gene tagging"
+    ref_genome_fastq: "The genome reference"
+    sample_id: "Name of the sample"
+  }
 
   call target.Optimus as target {
     input:
