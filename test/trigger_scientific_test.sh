@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-# note, this test must be run from the workflow root for the relative paths to work out.
+# Note, when using default parameters, this test must be run from the workflow root for the
+# relative paths to work out.
 
 set -e
 # This secrets file contains the following information on a cromwell instance:
