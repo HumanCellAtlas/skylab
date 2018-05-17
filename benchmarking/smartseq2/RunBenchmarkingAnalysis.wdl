@@ -13,7 +13,11 @@ workflow RunBenchmarkingAnalysis {
   String met_keys
   String base_metrics
   String updated_metrics
+  String groups
+  String low_cut
+  String high_cut
   Int    npcs
+
   
   call analysis.RunQCMetricsAnalysis {
     input:
@@ -31,14 +35,23 @@ workflow RunBenchmarkingAnalysis {
       metadata_file = metadata_file,
       metadata_keys = metadata_keys
   }
-
+  call analysis.RunGeneQuantificationAnalysis{
+    input:
+      base_datafile = base_datafile,
+      updated_datafile = updated_datafile,
+      output_name = output_name,
+      gtf_file = gtf_file,
+      low_cut = low_cut,
+      high_cut = high_cut
+   }
   call analysis.RunReproducibilityAnalysis {
     input: 
       base_datafile = base_datafile,
       updated_datafile = updated_datafile,
       output_name = output_name,
       gtf_file = gtf_file,
-      metadata_file = metadata_file
+      metadata_file = metadata_file,
+      groups = groups
   } 
  
   call analysis.RunConfoundingFactorAnalysis {
@@ -50,6 +63,6 @@ workflow RunBenchmarkingAnalysis {
       output_name = output_name,
       npcs = npcs,
       metadata_file = metadata_file,
-      metaKeys = metadata_keys
+      meta_keys = metadata_keys
   }
 }

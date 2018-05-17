@@ -115,7 +115,7 @@ mat2.log2 <- takelog2(mat2.d)
 # parse meta data to match filtered data matrix
 mlist <- match(colnames(mat1.d), meta$sra)
 meta <- meta[mlist, ]
-labels <- paste(meta[,metaKeys[1]], meta[,metaKeys[2]], sep = ' ')
+labels <- apply( meta[ , metaKeys ] , 1 , paste , collapse = " " )
 #'
 #' Finally, we have log2-transformed matrix data which is matched with metadata.
 #'
@@ -169,6 +169,7 @@ ggscatter(
   y = "X2",
   color = "labels",
   palette = "ucscgb",
+  legend = "top",
   size = 3,
   alpha = 0.9,
   caption= "Tsne plot of gene matrix, color label represent cell type.",
@@ -188,6 +189,7 @@ ggscatter(
   label = "membership",
   font.label = 14,
   palette = "ucscgb",
+  legend = "top",
   size = 0,
   alpha = 0.9,
   caption = "Tsne plot of gene matrix, color label represent cell type. 
@@ -210,6 +212,7 @@ ggscatter(
   y = "X2",
   color = "labels",
   palette = "ucscgb",
+  legend="top",
   size = 3,
   alpha = 0.9,
   ggtheme = theme_minimal(),
@@ -230,6 +233,7 @@ ggscatter(
   label = "membership",
   font.label = 14,
   palette = "ucscgb",
+  legend="top",
   size = 0,
   alpha = 0.9,
   ggtheme = theme_minimal(),

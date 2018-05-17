@@ -256,7 +256,7 @@ mat2.var <- CumulateVar(mat2.pca)
 mat2.sub <- t(mat2.pca$rotation[, c(1:npcs)])
 rownames(mat2.sub) <- paste('exp.', 'PC', 1:npcs, sep = '')
 #' visualize data matrix PCA results by scree plot
-fp <- fviz_screeplot(mat1.pca, ncp = 30, addlabels = TRUE)
+fp <- fviz_screeplot(mat2.pca, ncp = 30, addlabels = TRUE)
 annotate_figure(
   fp,
   top = text_grob(
@@ -393,7 +393,7 @@ ggpie(
   fill = "Group.1",
   color = "white",
   lab.pos = "in",
-  lab.font = "white",
+  lab.font = "bold.italic",
   palette = c("#00AFBB", "#E7B800", "#FC4E07"),
   ggtheme = theme_pubr(),
   caption = "Update Pipeline: % of variance explained by confounding factors",

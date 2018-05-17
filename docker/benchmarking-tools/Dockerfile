@@ -82,24 +82,11 @@ RUN pip3 install \
 
 # Fix cannot import name 'opentype' error
 RUN pip3 install --upgrade google-auth-oauthlib
-# Mount Google Cloud secret key
-ADD broad-dsde-mint-dev-analysis-tools.json /usr/secrets/broad-dsde-mint-dev-analysis-tools.json
-
-# Set the environment variable for Python
-ENV GOOGLE_APPLICATION_CREDENTIALS=/usr/secrets/broad-dsde-mint-dev-analysis-tools.json
-
-# Set the environment variable for R
-ENV GCS_AUTH_FILE=$GOOGLE_APPLICATION_CREDENTIALS
-
 # Install gcloud components
 RUN curl -sSL https://sdk.cloud.google.com > /tmp/gcl && bash /tmp/gcl --install-dir=/usr/gcloud --disable-prompts
-
 # Configure gcloud
 ENV PATH $PATH:/usr/gcloud/google-cloud-sdk/bin
-RUN gcloud auth activate-service-account --key-file=$GCS_AUTH_FILE
 
-# Add Cromwell Credentials
-ADD broad-dsde-mint-dev-cromwell.json /usr/secrets/broad-dsde-mint-dev-cromwell.json
 
 RUN wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.8.2-1/sratoolkit.2.8.2-1-ubuntu64.tar.gz \
 	&& tar -zxvf sratoolkit.2.8.2-1-ubuntu64.tar.gz \

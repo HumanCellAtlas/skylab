@@ -81,12 +81,20 @@ plotlm <- function(df) {
   # r2
   r2  <- round(sfit$adj.r.squared, 3)
   # intercept and slope
-  beta <- round(sfit$coefficients[2], 3)
-  a <- round(sfit$coefficients[1], 3)
+  if(sd(x)>0 && sd(y)>0){
+  beta <- round(sfit$coefficients[2,1], 3)
+  a <- round(sfit$coefficients[1,1], 3)
   # f-stats and p values
   f <- sfit$fstatistic
   fpval <- pf(f['value'], f['numdf'], f['dendf'], lower.tail = F)
   fpval.s <- convert2star(fpval)
+  }else{
+    a <- round(sfit$coefficients[1], 3)
+    beta<-'NA'
+    fpval<-sfit$coefficients[4]
+    fpval.s<-convert2star(fpval)
+  }
+
   # start to plot
   coefs <-
     data.frame(
@@ -94,6 +102,7 @@ plotlm <- function(df) {
       's' = c(1, beta),
       'tl' = c('1x1', 'fitted')
     )
+
   my.formula <- y ~ x
   p <-
     ggplot(data = df, aes(x = Base, y = Updated)) + geom_point(shape = 1) +
@@ -212,18 +221,9 @@ plotKS <- function(df) {
     stat_ecdf(size = 1) +
     theme_bw() +
     theme(legend.position = "top") +
-    ylab("ECDF")+labs(caption="K-S test, D-statistics is labeled")
+    ylab("ECDF")+labs(caption=paste("D-stats: ",round(ks$statistic, 2), "significant level: ",convert2star(ks$p.value),sep=""))
   # do KS test
-  dtable <-
-    data.frame(
-      'test' = 'K-S',
-      'D-stats' = round(ks$statistic, 2),
-      'P-value' = convert2star(ks$p.value)
-    )
-  dtable.p <-
-    ggtexttable(dtable,
-                row = NULL,
-                theme = ttheme('mOrange'))
+ 
   # plot segement to represent the D statistics
   ks.p <-
     ks.p + geom_segment(aes(
@@ -240,7 +240,7 @@ plotKS <- function(df) {
     ks.p + geom_point(aes(x = x0[1] , y = y1[1]), color = "red", size = 4)
 
   ks.p <-
-    ks.p + theme(legend.title = element_blank())
+    ks.p + theme(legend.title = element_blank()) 
   return(list(
     'p' = ks.p,
     'D' = ks$statistic,
@@ -635,4 +635,28 @@ RunPCAMetrix<-function(mets){
   mets.pca<-prcomp(t(mets.x),retx=T)
   mets.var<-CumulateVar(mets.pca)
   return(list('PCs'=mets.pca,'CumuVar'=mets.var))
+}
+digitalizeMat<-function(data,n,m){
+ d<-matrix(0,nrow(data),ncol(data))
+  for(i in 1:ncol(data)){
+    x<-data[,i]
+    d[,i]<-cut(x,breaks=c(-Inf,n,m,Inf),labels=c(-1,0,1),right=FALSE)
+  }
+  return(d)
+}
+SummaryQuantificationByType<-function(data,genes,nthreshold){
+  biotypes<-genes[match(rownames(data),genes$gene_id),'gene_type']
+  headers<-colnames(data)
+  summ<-data.frame()
+  for(i in 1:ncol(data)){
+    x<-data[,i]
+    y<-data.frame(aggregate(x==nthreshold,by=list(biotypes),FUN=sum))
+    colnames(y)<-c('biotype',headers[i])
+    if(i==1){
+     summ<-y
+    } else{
+      summ<-merge(summ,y,by='biotype')
+    }
+  }
+  return(summ)
 }

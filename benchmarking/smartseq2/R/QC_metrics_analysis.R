@@ -111,6 +111,7 @@ met2.core <- met2[metKeys, ]
 out <- c()
 pouts <- list()
 for (ii in 1:length(metKeys)) {
+  print(metKeys[ii])
   x <- as.numeric(met1.core[metKeys[ii], ])
   y <- as.numeric(met2.core[metKeys[ii], ])
   z <- data.frame('Base' = x, 'Updated' = y)

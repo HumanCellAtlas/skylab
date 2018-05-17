@@ -24,12 +24,39 @@ task RunComparativeAnalysis {
     preemptible: 5
   }
 }
+task RunGeneQuantificationAnalysis{
+  File base_datafile
+  File updated_datafile
+  File gtf_file
+  String output_name
+  String low_cut
+  String high_cut
+  meta {
+    description: "Run SmartSeq2 Gene quantification summary. Pairwise comparison between two data matrix, report the discrepency if gene is low expressed(<low_cut) but high expressed(>high_cut) in anotehr"
+  } 
+  command {
+    set -e
+    cp /usr/local/scripts/*.R ./
+    Rscript -e 'rmarkdown::render("Compare_Quantification.R",output_file="${output_name}_Compare_Quantification.html")' --args \
+      "--matrix1=${base_datafile} --matrix2=${updated_datafile} --output_prefix=${output_name} --gtf_file=${gtf_file} --low_cut=${low_cut} --high_cut=${high_cut}" 
+}   
+  output {
+    File html = "${output_name}_Compare_Quantification.html"
+  } 
+  runtime {
+    docker: "gcr.io/broad-dsde-mint-dev/benchmarking-tools:0.0.1"
+    memory: "7.5 GB"
+    disks: "local-disk 50 HDD"
+    preemptible: 5
+  } 
+} 
 task RunReproducibilityAnalysis{
   File base_datafile
   File updated_datafile
   File metadata_file
   File gtf_file
   String output_name
+  String groups
   meta {
     description: "Run SmartSeq2 Reproducibility test. In this test, reproducibility between single cell and bulk sample is carried out and the differential genes between single cell and bulk samples will be comparied between to data matrix."
   } 
@@ -37,7 +64,7 @@ task RunReproducibilityAnalysis{
     set -e
     cp /usr/local/scripts/*.R ./
     Rscript -e 'rmarkdown::render("data_matrix_reproducibility.R", output_file="${output_name}_data_matrix_reproducibility.html")' --args \
-      "--matrix1=${base_datafile} --matrix2=${updated_datafile} --metadata_file=${metadata_file} --output_prefix=${output_name} --gtf_file=${gtf_file}"
+      "--matrix1=${base_datafile} --matrix2=${updated_datafile} --metadata_file=${metadata_file} --output_prefix=${output_name} --gtf_file=${gtf_file} --groups=${groups}"
   }
   output {
     File html = "${output_name}_data_matrix_reproducibility.html"

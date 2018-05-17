@@ -54,6 +54,13 @@ option_list <- list(
     metavar = "character"
   ),
   make_option(
+    "--groups",
+    type = "character",
+    default = NULL,
+    help = "key id in meta data for t-test",
+    metavar = "character"
+  ),
+  make_option(
     "--metadata_file",
     type = "character",
     default = NULL,
@@ -110,8 +117,8 @@ mat2.d <- FilterCellsbyExp(mat2.log2, 10000)
 # parse meta data to match filtered data matrix
 mlist1 <- match(colnames(mat1.d), meta$sra)
 mlist2 <- match(colnames(mat2.d), meta$sra)
-grp1 <- meta[mlist1, 'cell_type']
-grp2 <- meta[mlist2, 'cell_type']
+grp1 <- meta[mlist1, grps]
+grp2 <- meta[mlist2, grps]
 #'
 #' Finally, we have log2-transformed and filtered data matrix, which is matched with metadata.
 #' 
@@ -192,6 +199,7 @@ sp <-
     palette = "jco",
     ggtheme = theme_minimal(),
     legend.title = "t-test SC vs Bulk",
+    legend ="top",
     caption = "Scatterplot of foldchanges between SC and bulk samples of each pipeline. Color represents the category of reproducibility",
     xlab = "Fold Changes: Base Bulk -SC",
     ylab = "Fold Changes: Updated Bulk - SC"
