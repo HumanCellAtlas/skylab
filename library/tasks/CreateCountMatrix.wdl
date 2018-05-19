@@ -132,7 +132,7 @@ task MergeCountFiles {
 
   command {
     prefixes=$(python <<CODE
-    matrices = [${sep=', ' sparse_count_matrices}]
+    matrices = ["${sep='", "' sparse_count_matrices}"]
     print(' '.join(m.replace('.npz', '') for m in matrices))
     CODE)
 
