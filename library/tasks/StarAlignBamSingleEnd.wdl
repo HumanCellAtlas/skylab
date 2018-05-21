@@ -38,10 +38,9 @@ task StarAlignBamSingleEnd {
       --genomeDir genome_reference \
       --readFilesIn "${bam_input}" \
       --outSAMtype BAM Unsorted \
+      --outSAMmultNmax -1 \
       --outSAMattributes All \
-      --outFilterMultimapNmax 1 \
       --outSAMunmapped Within \
-      --outSAMprimaryFlag AllBestScore \
       --readFilesType SAM SE \
       --readFilesCommand samtools view -h \
       --runRNGseed 777
