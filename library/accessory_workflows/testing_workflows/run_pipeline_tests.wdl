@@ -16,7 +16,6 @@ workflow test_pipelines {
   # ref index name
   File hisat2_ref_name
   File hisat2_ref_trans_name
-  # array of string represents featuretypes
   # samples
   String stranded
   File sra_file
@@ -40,7 +39,8 @@ workflow test_pipelines {
         rsem_ref_index = rsem_ref_index,
         sample_name = sraIDs[idx],
         output_name = sraIDs[idx]
-    }
+   }
+  
    call run_star.SmartSeq2SingleCell as Star {
       input:
         fastq1 = sra_dir+'/'+sraIDs[idx]+"_1.fastq.gz",
@@ -54,7 +54,6 @@ workflow test_pipelines {
         rsem_ref_index = rsem_ref_index,
         sample_name = sraIDs[idx],
         output_name = sraIDs[idx]
-
-    }
-    }
+      }
+   }
 }

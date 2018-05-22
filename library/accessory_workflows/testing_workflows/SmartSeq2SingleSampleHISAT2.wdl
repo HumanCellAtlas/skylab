@@ -7,7 +7,6 @@ workflow SmartSeq2SingleCell {
   meta {
     description: "Process SmartSeq2 scRNA-Seq data, include reads alignment, QC metrics collection, and gene expression quantitication"
   }
-
   # load annotation
   File gtf_file
   File genome_ref_fasta
@@ -47,7 +46,6 @@ workflow SmartSeq2SingleCell {
     fastq2: "R2 in paired end reads"
   }
 
-  
   call HISAT2.HISAT2PairedEnd {
     input:
       hisat2_ref = hisat2_ref_index,
@@ -69,6 +67,7 @@ workflow SmartSeq2SingleCell {
   }
   
   String data_output_basename_picard = output_name + "_picard"
+  
   call Picard.CollectMultipleMetrics {
     input:
       aligned_bam = HISAT2PairedEnd.output_bam,
@@ -92,6 +91,7 @@ workflow SmartSeq2SingleCell {
   }
   
   String data_output_basename_fc = output_name + "_featurecounts"
+  
   call FeatureCounts.FeatureCountsUniqueMapping {
     input:
       aligned_bam = HISAT2PairedEnd.output_bam,
@@ -115,7 +115,6 @@ workflow SmartSeq2SingleCell {
       output_basename = data_output_basename_rsem,
   }
 
-  
   output {
     # hisat2 alignment
     File aligned_bam = HISAT2PairedEnd.output_bam

@@ -39,7 +39,6 @@ workflow SmartSeq2SingleCell {
     fastq2: "R2 in paired end reads"
   }
 
-  
   call STAR.StarPE {
     input:
       input_fastq_read1 = fastq1,
@@ -52,7 +51,7 @@ workflow SmartSeq2SingleCell {
       id_tag = sample_name
   }
  
- String data_output_basename_picard = output_name + "_picard"
+  String data_output_basename_picard = output_name + "_picard"
 
   call Picard.CollectMultipleMetrics {
     input:
@@ -93,6 +92,7 @@ workflow SmartSeq2SingleCell {
   }
 
   String data_output_basename_rsem = output_name + "_rsem"
+  
   call RSEM.RSEMExpression {
     input:
       trans_aligned_bam = StarPE.output_bam_trans,
