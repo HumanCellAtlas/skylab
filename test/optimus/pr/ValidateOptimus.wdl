@@ -3,15 +3,13 @@ task ValidateOptimus {
       File matrix
       File gene_metrics
       File cell_metrics
-      File matrix_summary
 
-      Int required_disk = ceil((size(bam, "G") + size(matrix, "G") + size(matrix_summary, "G")) * 1.1)
+      Int required_disk = ceil((size(bam, "G") + size(matrix, "G")) * 1.1)
 
       String expected_bam_hash
       String expected_matrix_hash
       String expected_gene_metric_hash
       String expected_cell_metric_hash
-      String expected_matrix_summary_hash
 
   command <<<
 
@@ -21,8 +19,10 @@ task ValidateOptimus {
     # calculate hashes; awk is used to extract the hash from the md5sum output that contains both
     # a hash and the filename that was passed. gzipped files are unzipped to avoid hashing malleable
     # metadata
-    matrix_summary_hash=$(md5sum "${matrix_summary}" | awk '{print $1}')
-    matrix_hash=$(zcat "${matrix}" | md5sum | awk '{print $1}')
+
+
+    unzip "${matrix}"
+    matrix_hash=$(find . -name "*.npy" -type f -exec md5sum {} \; | sort -k 2 | md5sum | awk '{print $1}')
     gene_metric_hash=$(zcat "${gene_metrics}" | md5sum | awk '{print $1}')
     cell_metric_hash=$(zcat "${cell_metrics}" | md5sum | awk '{print $1}')
 
@@ -48,11 +48,6 @@ task ValidateOptimus {
 
     if [ "$cell_metric_hash" != "${expected_cell_metric_hash}" ]; then
       >&2 echo "cell_metric_hash ($cell_metric_hash) did not match expected hash (${expected_cell_metric_hash})"
-      fail=true
-    fi
-
-    if [ "$matrix_summary_hash" != "${expected_matrix_summary_hash}" ]; then
-      >&2 echo "matrix_summary_hash ($matrix_summary_hash) did not match expected hash (${expected_matrix_summary_hash})"
       fail=true
     fi
 

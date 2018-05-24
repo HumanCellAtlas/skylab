@@ -4,7 +4,8 @@ Both tests share the same infrastructure, and follow the portability spec; the W
 
 The PR test is designed to answer the question: "did my changes result in any change to the outputs of my pipeline?"
 
-The scientific test is designed to answer the question: "Is the pipeline performing within an expected range of scientific outputs?"
+The scientific test is designed to answer the question: "Is the pipeline performing within an expected range of scientific outputs?". 
+It compares the results of optimus to the results of the Cell Ranger comparison pipeline, run on the same data. 
 
 **Testing Logic & Files**
 All files added in this PR are contained within the test directory. 
@@ -39,3 +40,5 @@ Thus, `trigger_test.sh` is run from the current branch, which is cloned as the w
 of the jenkins instance. 
 `trigger_test.sh` then runs a docker that maps the current working directory to `/working`.
 Thus, the `WDL_FILE`, and `DEPENDENCIES_JSON` (and any files inside the dependencies with local paths) are interpreted from within the docker as referencing the relevant files on the current branch. 
+
+The scientific test does not yet implement the comparison to Cell Ranger, but it does contain a testing script `trigger_scientific_test.sh` which can be run to trigger Optimus to run on the synthetic data. 

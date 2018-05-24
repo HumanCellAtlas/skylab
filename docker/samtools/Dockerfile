@@ -16,6 +16,8 @@ RUN apt update && \
       libncurses5-dev \
       zlib1g-dev \
       libbz2-dev \
+      zip \
+      unzip \
       liblzma-dev \
       openssl \
       libcurl4-openssl-dev \
