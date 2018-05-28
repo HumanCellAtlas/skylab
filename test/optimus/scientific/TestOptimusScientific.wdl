@@ -1,3 +1,4 @@
+import "ScientificTests.wdl" as tests
 import "Optimus.wdl" as target
 
 workflow TestOptimusScientific {
@@ -34,6 +35,10 @@ workflow TestOptimusScientific {
       annotations_gtf = annotations_gtf,
       ref_genome_fasta = ref_genome_fasta,
       sample_id = sample_id
+  }
+  call tests.TestBam {
+    input:
+      bam = target.bam
   }
   output {
     target.*
