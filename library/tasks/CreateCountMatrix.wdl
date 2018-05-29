@@ -57,7 +57,7 @@ task CreateSparseCountMatrix {
   File gtf_file
 
   # runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:0.1.10"
+  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:ajc-add-cellranger-multimap-resolution-option"
   Int machine_mem_mb = 7500
   Int cpu = 1
   Int disk = ceil((size(bam_input, "G") + size(gtf_file, "G")) * 4.0) + 1
@@ -86,8 +86,8 @@ task CreateSparseCountMatrix {
       --gtf-annotation-file ${gtf_file} \
       --cell-barcode-tag CB \
       --molecule-barcode-tag UB \
-      --gene-id-tag GE
-
+      --gene-id-tag GE \
+      --mapq-threshold 255
   }
 
   runtime {
