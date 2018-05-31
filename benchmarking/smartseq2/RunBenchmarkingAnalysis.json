@@ -1,0 +1,12 @@
+{
+  "RunBenchmarkingAnalysis.base_datafile": "gs://broad-dsde-mint-dev-teststorage/benchmarking/ss2/STAR_rsem_merged_tpm.csv'",
+  "RunBenchmarkingAnalysis.gtf_file": "gs://hca-dcp-mint-test-data/reference/GRCh38_Gencode/gencode.v27.primary_assembly.annotation.gtf",
+  "RunBenchmarkingAnalysis.metadata_file": "gs://broad-dsde-mint-dev-teststorage/sloan_sa_astrocytes/Sra_meta_groups_iPSC_730.csv",
+  "RunBenchmarkingAnalysis.updated_datafile": "gs://broad-dsde-mint-dev-teststorage/benchmarking/ss2/call-MergeTPM/shard-0/HISAT2_rsem_merged_tpm.csv",
+  "RunBenchmarkingAnalysis.base_metrics": "gs://broad-dsde-mint-dev-teststorage/benchmarking/ss2/STAR_met_all.csv",
+  "RunBenchmarkingAnalysis.updated_metrics": "gs://broad-dsde-mint-dev-teststorage/benchmarking/ss2/HISAT2_met_all.csv",
+  "RunBenchmarkingAnalysis.output_name": "STAR_HISAT2",
+  "RunBenchmarkingAnalysis.met_keys": "detected_ratio,MT_ratio,PCT_PF_READS_ALIGNED,PCT_PF_READS_IMPROPER_PAIRS,PCT_READS_ALIGNED_IN_PAIRS,PCT_CODING_BASES,PCT_INTERGENIC_BASES,PCT_INTRONIC_BASES,PCT_UTR_BASES,PCT_USABLE_BASES,PCT_MRNA_BASES,PCT_RIBOSOMAL_BASES,PERCENT_DUPLICATION,MEDIAN_5PRIME_TO_3PRIME_BIAS,MEDIAN_3PRIME_BIAS,MEDIAN_5PRIME_BIAS,MEDIAN_CV_COVERAGE,PF_MISMATCH_RATE,MEDIAN_INSERT_SIZE",
+  "RunBenchmarkingAnalysis.npcs": 10,
+  "RunBenchmarkingAnalysis.metadata_Keys": "cell,lineage"
+}

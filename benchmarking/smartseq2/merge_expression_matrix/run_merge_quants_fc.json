@@ -1,8 +1,0 @@
-{
- "run_merge.scripts_dir": "gs://broad-dsde-mint-dev-teststorage/pipeline_testing_scripts",
- "run_merge.uuid": "5a3aa2ad-2a86-46af-9cc6-be35eb9f0abb",
- "run_merge.file_names": ["run_pipelines.RunHisat2Pipeline.mult_genes_counts",
-	 "run_pipelines.RunStarPipeline.mult_genes_counts"],
- "run_merge.output_names": ["HISAT2_fc_merged_tpm.csv","STAR_fc_merged_tpm.csv"],
- "run_merge.value_name": "tpm"
-}

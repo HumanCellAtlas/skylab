@@ -1,8 +1,0 @@
-{
- "run_combine_QC.scripts_dir": "gs://broad-dsde-mint-dev-teststorage/pipeline_testing_scripts",
- "run_combine_QC.gtf_file": "gs://hca-dcp-mint-test-data/reference/GRCh38_Gencode/gencode.v27.primary_assembly.annotation.gtf",
- "run_combine_QC.nthreshold": "5",
- "run_combine_QC.datafile": "gs://broad-dsde-mint-dev-cromwell-execution/cromwell-executions/run_merge/971636fb-5e26-4e1d-9a45-69394cb9ca21/call-MergeTPM/shard-0/HISAT2_rsem_merged_counts.csv",
- "run_combine_QC.output_name": "HISAT2",
- "run_combine_QC.metfile": "gs://broad-dsde-mint-dev-cromwell-execution/cromwell-executions/run_merge/6d92d556-be18-48c5-bad8-0a80b233da14/call-AppendMetricsFiles/HISAT2_met_all.csv"
-}
