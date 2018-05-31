@@ -1,0 +1,18 @@
+{
+  "TestSmartSeq2SingleCellPR.gtf_file": "http://storage.googleapis.com/hca-dcp-mint-test-data/reference/GRCh38_Gencode/gencode.v27.primary_assembly.annotation.gtf",
+  "TestSmartSeq2SingleCellPR.hisat2_ref_trans_name": "gencode_v27_trans_rsem",
+  "TestSmartSeq2SingleCellPR.rrna_intervals": "http://storage.googleapis.com/hca-dcp-mint-test-data/reference/GRCh38_Gencode/gencode.v27.rRNA.interval_list",
+  "TestSmartSeq2SingleCellPR.hisat2_ref_index": "http://storage.googleapis.com/hca-dcp-mint-test-data/reference/HISAT2/genome_snp_tran.tar.gz",
+  "TestSmartSeq2SingleCellPR.genome_ref_fasta": "http://storage.googleapis.com/hca-dcp-mint-test-data/reference/GRCh38_Gencode/GRCh38.primary_assembly.genome.fa",
+  "TestSmartSeq2SingleCellPR.hisat2_ref_trans_index": "http://storage.googleapis.com/hca-dcp-mint-test-data/reference/HISAT2/gencode_v27_trans_rsem.tar.gz",
+  "TestSmartSeq2SingleCellPR.rsem_ref_index": "http://storage.googleapis.com/hca-dcp-mint-test-data/reference/GRCh38_Gencode/gencode_v27_primary.tar",
+  "TestSmartSeq2SingleCellPR.gene_ref_flat": "http://storage.googleapis.com/hca-dcp-mint-test-data/reference/GRCh38_Gencode/GRCh38_gencode.v27.refFlat.txt",
+  "TestSmartSeq2SingleCellPR.hisat2_ref_name": "genome_snp_tran",
+  "TestSmartSeq2SingleCellPR.stranded":"NONE",
+  "TestSmartSeq2SingleCellPR.fastq1":"http://storage.googleapis.com/hca-dcp-mint-test-data/smartseq2_single_sample/patel_ap/SRR1294925_1.fastq.gz",
+  "TestSmartSeq2SingleCellPR.fastq2":"http://storage.googleapis.com/hca-dcp-mint-test-data/smartseq2_single_sample/patel_ap/SRR1294925_2.fastq.gz",
+  "TestSmartSeq2SingleCellPR.sample_name":"SRR1294925",
+  "TestSmartSeq2SingleCellPR.output_name":"SRR1294925",
+  "TestSmartSeq2SingleCellPR.expected_counts_hash": "135a3fbb959583db17713dc8b9d7fe33",
+  "TestSmartSeq2SingleCellPR.expected_alignment_summary_metrics_hash": "80a5c00f425367a3855cad81b89f3a3c"
+}

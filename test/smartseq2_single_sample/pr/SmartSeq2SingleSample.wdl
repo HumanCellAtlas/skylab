@@ -1,0 +1,1 @@
+../../../pipelines/smartseq2_single_sample/SmartSeq2SingleSample.wdl
