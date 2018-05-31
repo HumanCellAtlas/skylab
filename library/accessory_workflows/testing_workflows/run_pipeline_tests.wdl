@@ -25,8 +25,8 @@ workflow test_pipelines {
   scatter(idx in range(length(sraIDs))) { 
     call run_hisat2.SmartSeq2SingleCell as HISAT2 {
       input:
-        fastq1 = sra_dir+'/'+sraIDs[idx]+"_1.fastq.gz",
-        fastq2 = sra_dir+'/'+sraIDs[idx]+"_2.fastq.gz", 
+        fastq1 = sra_dir + '/' + sraIDs[idx] + "_1.fastq.gz",
+        fastq2 = sra_dir + '/' + sraIDs[idx ]+ "_2.fastq.gz", 
         gtf_file = gtf_file,
         stranded = stranded,
         genome_ref_fasta = genome_ref_fasta,
@@ -43,8 +43,8 @@ workflow test_pipelines {
   
    call run_star.SmartSeq2SingleCell as Star {
       input:
-        fastq1 = sra_dir+'/'+sraIDs[idx]+"_1.fastq.gz",
-        fastq2 = sra_dir+'/'+sraIDs[idx]+"_2.fastq.gz",
+        fastq1 = sra_dir + '/' + sraIDs[idx] + "_1.fastq.gz",
+        fastq2 = sra_dir + '/' + sraIDs[idx] + "_2.fastq.gz",
         gtf_file = gtf_file,
         stranded = stranded,
         genome_ref_fasta = genome_ref_fasta,
