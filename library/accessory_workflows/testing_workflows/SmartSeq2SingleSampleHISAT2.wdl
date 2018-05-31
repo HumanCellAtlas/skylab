@@ -1,12 +1,12 @@
 import "HISAT2.wdl" as HISAT2
 import "Picard.wdl" as Picard
 import "RSEM.wdl" as RSEM
+import "featurecounts.wdl" as FeatureCounts
 
 workflow SmartSeq2SingleCell {
   meta {
     description: "Process SmartSeq2 scRNA-Seq data, include reads alignment, QC metrics collection, and gene expression quantitication"
   }
-
   # load annotation
   File gtf_file
   File genome_ref_fasta
@@ -46,8 +46,6 @@ workflow SmartSeq2SingleCell {
     fastq2: "R2 in paired end reads"
   }
 
-  String quality_control_output_basename = output_name + "_qc"
-
   call HISAT2.HISAT2PairedEnd {
     input:
       hisat2_ref = hisat2_ref_index,
@@ -55,33 +53,9 @@ workflow SmartSeq2SingleCell {
       fastq2 = fastq2,
       ref_name = hisat2_ref_name,
       sample_name = sample_name,
-      output_basename = quality_control_output_basename
+      output_basename = output_name
   }
-
-  call Picard.CollectMultipleMetrics {
-    input:
-      aligned_bam = HISAT2PairedEnd.output_bam,
-      genome_ref_fasta = genome_ref_fasta,
-      output_basename = quality_control_output_basename
-  }
-
-  call Picard.CollectRnaMetrics {
-    input:
-      aligned_bam = HISAT2PairedEnd.output_bam,
-      ref_flat = gene_ref_flat,
-      rrna_intervals = rrna_intervals,
-      output_basename = quality_control_output_basename,
-      stranded = stranded,
-  }
-
-  call Picard.CollectDuplicationMetrics {
-    input:
-      aligned_bam = HISAT2PairedEnd.output_bam,
-      output_basename = quality_control_output_basename
-  }
-
-  String data_output_basename = output_name + "_rsem"
-
+  
   call HISAT2.HISAT2RSEM as HISAT2Transcriptome {
     input:
       hisat2_ref = hisat2_ref_trans_index,
@@ -89,21 +63,67 @@ workflow SmartSeq2SingleCell {
       fastq2 = fastq2,
       ref_name = hisat2_ref_trans_name,
       sample_name = sample_name,
-      output_basename = data_output_basename,
+      output_basename = output_name
   }
+  
+  String data_output_basename_picard = output_name + "_picard"
+  
+  call Picard.CollectMultipleMetrics {
+    input:
+      aligned_bam = HISAT2PairedEnd.output_bam,
+      genome_ref_fasta = genome_ref_fasta,
+      output_basename = data_output_basename_picard
+  }
+
+  call Picard.CollectRnaMetrics {
+    input:
+      aligned_bam = HISAT2PairedEnd.output_bam,
+      ref_flat = gene_ref_flat,
+      rrna_intervals = rrna_intervals,
+      output_basename = data_output_basename_picard,
+      stranded = stranded,
+  }
+
+  call Picard.CollectDuplicationMetrics {
+    input:
+      aligned_bam = HISAT2PairedEnd.output_bam,
+      output_basename = data_output_basename_picard
+  }
+  
+  String data_output_basename_fc = output_name + "_featurecounts"
+  
+  call FeatureCounts.FeatureCountsUniqueMapping {
+    input:
+      aligned_bam = HISAT2PairedEnd.output_bam,
+      gtf = gtf_file,
+      fc_out = data_output_basename_fc
+  }
+
+  call FeatureCounts.FeatureCountsMultiMapping {
+    input:
+      aligned_bam = HISAT2PairedEnd.output_bam,
+      gtf = gtf_file,
+      fc_out = data_output_basename_fc
+  }
+
+  String data_output_basename_rsem = output_name + "_rsem"
 
   call RSEM.RSEMExpression {
     input:
       trans_aligned_bam = HISAT2Transcriptome.output_bam,
       rsem_genome = rsem_ref_index,
-      output_basename = data_output_basename,
+      output_basename = data_output_basename_rsem,
   }
 
   output {
-    # quality control outputs
+    # hisat2 alignment
     File aligned_bam = HISAT2PairedEnd.output_bam
     File hisat2_met_file = HISAT2PairedEnd.met_file
     File hisat2_log_file = HISAT2PairedEnd.log_file
+    File aligned_transcriptome_bam = HISAT2Transcriptome.output_bam
+    File hisat2_transcriptome_met_file = HISAT2Transcriptome.met_file
+    File hisat2_transcriptome_log_file = HISAT2Transcriptome.log_file
+    # Picard 
     File alignment_summary_metrics = CollectMultipleMetrics.alignment_summary_metrics
     File base_call_dist_metrics = CollectMultipleMetrics.base_call_dist_metrics
     File base_call_pdf = CollectMultipleMetrics.base_call_pdf
@@ -123,11 +143,14 @@ workflow SmartSeq2SingleCell {
     File rna_metrics = CollectRnaMetrics.rna_metrics
     File rna_coverage = CollectRnaMetrics.rna_coverage_pdf
     File dedup_metrics = CollectDuplicationMetrics.dedup_metrics
-
-    # data outputs
-    File aligned_transcriptome_bam = HISAT2Transcriptome.output_bam
-    File hisat2_transcriptome_met_file = HISAT2Transcriptome.met_file
-    File hisat2_transcriptome_log_file = HISAT2Transcriptome.log_file
+    # FeatureCounts
+    File unq_exons_counts = FeatureCountsUniqueMapping.exons
+    File unq_genes_counts = FeatureCountsUniqueMapping.genes
+    File unq_trans_counts = FeatureCountsUniqueMapping.trans
+    File mult_exons_counts = FeatureCountsMultiMapping.exons
+    File mult_genes_counts = FeatureCountsMultiMapping.genes
+    File mult_trans_counts = FeatureCountsMultiMapping.trans   
+    # rsem
     File rsem_gene_results = RSEMExpression.rsem_gene
     File rsem_isoform_results = RSEMExpression.rsem_isoform
     File rsem_time_log = RSEMExpression.rsem_time

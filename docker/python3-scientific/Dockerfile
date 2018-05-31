@@ -4,6 +4,9 @@ LABEL maintainer="Ambrose J. Carr <acarr@broadinstitute.org>" \
   software="python 3.6.2" \
   description="python 3.6.2 with pysam, sctools, requests, and a basic science stack"
 
+RUN apt update && apt install -y \
+    samtools
+
 RUN pip3 install \
     crimson==0.3.0 \
     HTSeq==0.9.0 \

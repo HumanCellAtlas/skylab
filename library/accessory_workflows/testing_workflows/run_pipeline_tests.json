@@ -1,0 +1,15 @@
+{
+  "test_pipelines.gtf_file": "gs://hca-dcp-mint-test-data/reference/GRCh38_Gencode/gencode.v27.primary_assembly.annotation.gtf",
+  "test_pipelines.hisat2_ref_trans_name": "gencode_v27_trans_rsem",
+  "test_pipelines.rrna_intervals": "gs://hca-dcp-mint-test-data/reference/GRCh38_Gencode/gencode.v27.rRNA.interval_list",
+  "test_pipelines.star_ref_index": "gs://hca-dcp-mint-test-data/reference/GRCh38_Gencode/GRCh38_GencodeV27_Primary.tar",
+  "test_pipelines.hisat2_ref_index": "gs://hca-dcp-mint-test-data/reference/HISAT2/genome_snp_tran.tar.gz",
+  "test_pipelines.genome_ref_fasta": "gs://hca-dcp-mint-test-data/reference/GRCh38_Gencode/GRCh38.primary_assembly.genome.fa",
+  "test_pipelines.hisat2_ref_trans_index": "gs://hca-dcp-mint-test-data/reference/HISAT2/gencode_v27_trans_rsem.tar.gz",
+  "test_pipelines.rsem_ref_index": "gs://hca-dcp-mint-test-data/reference/GRCh38_Gencode/gencode_v27_primary.tar",
+  "test_pipelines.gene_ref_flat": "gs://hca-dcp-mint-test-data/reference/GRCh38_Gencode/GRCh38_gencode.v27.refFlat.txt",
+  "test_pipelines.hisat2_ref_name": "genome_snp_tran",
+  "test_pipelines.stranded": "NONE",
+  "test_pipelines.sra_dir": "gs://hca-dcp-mint-test-data/patel_ap",
+  "test_pipelines.sra_file": "gs://hca-dcp-mint-test-data/patel_ap/SRR_Acc_List_1_10.txt"
+}

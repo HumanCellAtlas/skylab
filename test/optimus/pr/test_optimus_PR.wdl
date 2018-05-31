@@ -10,7 +10,6 @@ workflow TestOptimusPR {
   String expected_matrix_hash
   String expected_gene_metric_hash
   String expected_cell_metric_hash
-  String expected_matrix_summary_hash
 
   # Optimus inputs
   Array[File] r1_fastq
@@ -41,12 +40,10 @@ workflow TestOptimusPR {
       matrix = target.matrix,
       gene_metrics = target.gene_metrics,
       cell_metrics = target.cell_metrics,
-      matrix_summary = target.matrix_summary,
       expected_bam_hash = expected_bam_hash,
       expected_matrix_hash = expected_matrix_hash,
       expected_cell_metric_hash = expected_cell_metric_hash,
-      expected_gene_metric_hash = expected_gene_metric_hash,
-      expected_matrix_summary_hash = expected_matrix_summary_hash
+      expected_gene_metric_hash = expected_gene_metric_hash
   }
 
 }
