@@ -16,6 +16,7 @@ task RunComparativeAnalysis {
     metadata_keys: "keys in metadata to be used to used as biological labels, such as cell type, cell lineage"
     output_name: "output's prefix"
   }
+  
   command {
     set -e
     cp  /usr/local/scripts/*.R ./
