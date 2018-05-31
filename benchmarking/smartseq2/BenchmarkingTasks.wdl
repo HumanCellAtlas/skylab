@@ -1,14 +1,21 @@
 task RunComparativeAnalysis {
+  
+  meta {
+    description: "Run SmartSeq2 Comparative test. In the test, we compare SNN-Cliq clustering results of two data matrix by using Rand adjust index."
+  }
   File base_datafile
   File updated_datafile
   File metadata_file
   String metadata_keys
   String output_name
 
-  meta {
-    description: "Run SmartSeq2 Comparative test. In the test, two data matrix will be tested by their clustering results."
-  } 
-
+  parameter_meta {
+    base_datafile: "data matrix,count  or TPM matrix, of one pipeline"
+    updated_datafile: "data matrix, count or TPM matrix, of second pipeline"
+    metadata_file: "meta file"
+    metadata_keys: "keys in metadata to be used to used as biological labels, such as cell type, cell lineage"
+    output_name: "output's prefix"
+  }
   command {
     set -e
     cp  /usr/local/scripts/*.R ./
@@ -30,6 +37,11 @@ task RunComparativeAnalysis {
 }
 
 task RunGeneQuantificationAnalysis{
+ 
+  meta {
+    description: "Run SmartSeq2 Gene quantification summary. Pairwise comparison between two data matrix, report the discrepency if gene is low expressed(<low_cut) but high expressed(>high_cut) in anotehr"
+  }
+ 
   File base_datafile
   File updated_datafile
   File gtf_file
@@ -37,10 +49,14 @@ task RunGeneQuantificationAnalysis{
   String low_cut
   String high_cut
   
-  meta {
-    description: "Run SmartSeq2 Gene quantification summary. Pairwise comparison between two data matrix, report the discrepency if gene is low expressed(<low_cut) but high expressed(>high_cut) in anotehr"
-  } 
-  
+  parameter_meta {
+    base_datafile: "data matrix,count  or TPM matrix, of one pipeline"
+    updated_datafile: "data matrix, count or TPM matrix, of second pipeline"
+    output_name: "output's prefix"
+    gtf_file: "gene annotaiton file, in gtf format"
+    low_cut: "low threshold cutoff to be used to filter out cells"
+    high_cut: "high threshold cutoff to be used to filter out cells"
+  }
   command {
     set -e
     cp /usr/local/scripts/*.R ./
@@ -61,17 +77,26 @@ task RunGeneQuantificationAnalysis{
 }
  
 task RunReproducibilityAnalysis{
+  
+  meta {
+    description: "Run SmartSeq2 Reproducibility test. In this test, reproducibility between single cell and bulk sample is carried out and the differential genes between single cell and bulk samples will be comparied between to data matrix."
+  }
+
   File base_datafile
   File updated_datafile
   File metadata_file
   File gtf_file
   String output_name
   String groups
-
-  meta {
-    description: "Run SmartSeq2 Reproducibility test. In this test, reproducibility between single cell and bulk sample is carried out and the differential genes between single cell and bulk samples will be comparied between to data matrix."
-  } 
-
+  parameter_meta {
+    base_datafile: "data matrix,count  or TPM matrix, of one pipeline"
+    updated_datafile: "data matrix, count or TPM matrix, of second pipeline"
+    output_name: "output's prefix"
+    metadata_file: "meta file"
+    groups: "labels to be used to identify conditions, such single cell vs bulk, donor1 vs donor2, control vs dieased"
+    gtf_file: "gene annotaiton file, in gtf format"
+  }
+  
   command {
     set -e
     cp /usr/local/scripts/*.R ./
@@ -94,10 +119,22 @@ task RunReproducibilityAnalysis{
 }
 
 task RunQCMetricsAnalysis{
+ 
+  meta {
+    description: "Run SmartSeq2 QC metrics Comparison analysis. 3 statistical tests are carried out to compare QC metrics: a Wilcoxon Pairwise test, a linear Regression model test and a  Kolmogorov–Smirnov test "
+  }
+ 
   File base_metrics
   File updated_metrics
   String met_keys
   String output_name
+  
+  parameter_meta {
+    base_metrics: "QC metrics, each row represents a metric and each column represents a cell"
+    updated_metrics: "QC metrics, each row represents a metric and each column represents a cell"
+    output_name: "output's prefix"
+    met_keys: "names of QC metrics to extract and compare"
+  }
   
   command {
     set -e
@@ -120,6 +157,11 @@ task RunQCMetricsAnalysis{
 }
 
 task RunConfoundingFactorAnalysis{
+  
+  meta {
+    description: This analysis is to evaluate and compare confounding factors impacts of two pipelines.
+  }
+
   File base_metrics
   File updated_metrics
   File metadata_file
@@ -129,6 +171,17 @@ task RunConfoundingFactorAnalysis{
   String output_name
   Int npcs
   
+  parameter_meta {
+    base_metrics: "QC metrics, each row represents a metric and each column represents a cell"
+    updated_metrics: "QC metrics, each row represents a metric and each column represents a cell"
+    base_datafile: "data matrix,count  or TPM matrix, of one pipeline"
+    updated_datafile: "data matrix, count or TPM matrix, of second pipeline"
+    metadata_file: "meta file"
+    output_name: "output's prefix"
+    meta_keys: "names of meta values to extract and use as biological confounding factors"
+    npcs: "number of PCs to extract"
+  } 
+
   command {
     set -e
     cp /usr/local/scripts/*.R ./
