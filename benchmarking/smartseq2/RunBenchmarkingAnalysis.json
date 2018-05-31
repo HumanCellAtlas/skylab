@@ -1,5 +1,4 @@
 {
-  "RunBenchmarkingAnalysis.scripts_dir": "gs://broad-dsde-mint-dev-teststorage/pipeline_testing_scripts",
   "RunBenchmarkingAnalysis.base_datafile": "gs://broad-dsde-mint-dev-teststorage/benchmarking/ss2/STAR_rsem_merged_tpm.csv'",
   "RunBenchmarkingAnalysis.gtf_file": "gs://hca-dcp-mint-test-data/reference/GRCh38_Gencode/gencode.v27.primary_assembly.annotation.gtf",
   "RunBenchmarkingAnalysis.metadata_file": "gs://broad-dsde-mint-dev-teststorage/sloan_sa_astrocytes/Sra_meta_groups_iPSC_730.csv",
