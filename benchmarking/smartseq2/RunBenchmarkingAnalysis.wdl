@@ -6,18 +6,18 @@ workflow RunBenchmarkingAnalysis {
     description: "Run SmartSeq2 Benchmarking pipeline. 4 modules are included in this pipeline.QC test, Comparative tests, Reproducibility test and Confounding factors test."
   }
 
-  String base_datafile
-  String updated_datafile
-  String output_name
-  String gtf_file
-  String metadata_file
+  File base_datafile
+  File updated_datafile
+  File output_name
+  File gtf_file
+  File metadata_file
+  File base_metrics
+  File updated_metrics
   String metadata_keys
-  String met_keys
-  String base_metrics
-  String updated_metrics
   String groups
   String low_cut
   String high_cut
+  String met_keys
   Int    npcs
   
   parameter_meta: {
