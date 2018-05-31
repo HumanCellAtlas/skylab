@@ -18,7 +18,7 @@ task RunComparativeAnalysis {
 
   runtime {
     docker: "gcr.io/broad-dsde-mint-dev/benchmarking-tools:0.0.1"
-    memory: "7.5 GB"
+    memory: "15 GB"
     disks: "local-disk 50 HDD"
     preemptible: 5
   }

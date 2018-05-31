@@ -173,7 +173,8 @@ ggscatter(
   size = 3,
   alpha = 0.9,
   caption= "Tsne plot of gene matrix, color label represent cell type.",
-  ggtheme = theme_minimal()
+  ggtheme = theme_minimal(),
+  title = 'Tsne of base pipeline gene matrix'
 ) + border()+
   xlab('Tsne 1')+
   ylab('Tsne 2')
@@ -194,7 +195,7 @@ ggscatter(
   alpha = 0.9,
   caption = "Tsne plot of gene matrix, color label represent cell type. 
   Number labels represent SNN-Cliq clustering results",
-  title = "Tsne of orign gene matrix",
+  title = "Tsne of origin gene matrix",
   ggtheme = theme_minimal()
 ) + border()+
   xlab('Tsne 1')+

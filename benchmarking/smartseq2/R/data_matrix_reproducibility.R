@@ -178,11 +178,14 @@ names(fc2) <- rownames(res2)
 #' 
 #' Next we convert pvalue to color schema.
 # convert p value
-res1$pvalue <-
-  factor(ifelse(res1$pvalue > 0.01 | is.na(res1$pvalue), "Base.insig", "Base.sig"))
-res2$pvalue <-
-  factor(ifelse(res2$pvalue > 0.01 | is.na(res2$pvalue), "Updated.insig", "Updated.sig"))
-gcols <- paste(res1$pvalue, res2$pvalue, sep = ',')
+res1$padj<-p.adjust(res1$pvalue)
+res2$padj<-p.adjust(res2$pvalue)
+
+res1$plab <-
+  factor(ifelse(res1$padj > 0.01 | is.na(res1$padj), "Base.insig", "Base.sig"))
+res2$plab <-
+  factor(ifelse(res2$padj > 0.01 | is.na(res2$padj), "Updated.insig", "Updated.sig"))
+gcols <- paste(res1$plab, res2$plab, sep = ',')
 # create data frame
 df <- merge(fc1, fc2, by = 'row.names')
 colnames(df) <- c('ensID', 'Base', 'Updated')
