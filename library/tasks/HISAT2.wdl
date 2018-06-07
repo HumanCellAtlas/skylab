@@ -13,6 +13,7 @@ task HISAT2PairedEnd {
   # use provided disk number or dynamically size on our own, 10 is our zipped fastq -> bam conversion with 50GB of additional disk
   Int disk = ceil((size(fastq1, "GB") + size(fastq2, "GB") * 10) + size(hisat2_ref, "GB") + 50)
   Int preemptible = 5
+  Int max_retries = 0
 
   meta {
     description: "HISAT2 alignment task will align paired-end fastq reads to reference genome."
@@ -30,6 +31,7 @@ task HISAT2PairedEnd {
     cpu: "(optional) the number of cpus to provision for this task"
     disk: "(optional) the amount of disk space (GB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
+    max_retries: "(optional) retry this number of times if task fails -- use with caution, see skylab README for details"
   }
 
   command {
@@ -79,6 +81,7 @@ task HISAT2PairedEnd {
     disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible
+    maxRetries: max_retries
   }
 
   output {
@@ -103,6 +106,7 @@ task HISAT2RSEM {
   # use provided disk number or dynamically size on our own, 10 is our zipped fastq -> bam conversion with 50GB of additional disk
   Int disk = ceil((size(fastq1, "GB") + size(fastq2, "GB") * 10) + size(hisat2_ref, "GB") + 50)
   Int preemptible = 5
+  Int max_retries = 0
 
   meta {
     description: "This HISAT2 alignment task will align paired-end fastq reads to transcriptome only. "
@@ -120,6 +124,7 @@ task HISAT2RSEM {
     cpu: "(optional) the number of cpus to provision for this task"
     disk: "(optional) the amount of disk space (GB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
+    max_retries: "(optional) retry this number of times if task fails -- use with caution, see skylab README for details"
   }
 
   command {
@@ -178,6 +183,7 @@ task HISAT2RSEM {
     disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible
+    maxRetries: max_retries
   }
 
   output {
