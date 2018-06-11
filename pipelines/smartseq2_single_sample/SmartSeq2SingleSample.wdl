@@ -29,6 +29,8 @@ workflow SmartSeq2SingleCell {
   File fastq1
   File fastq2
 
+  Int max_retries = 0
+
   parameter_meta {
     gtf_file: "Gene annotation file in gtf format"
     genome_ref_fasta: "Genome reference in fasta format"
@@ -44,6 +46,7 @@ workflow SmartSeq2SingleCell {
     output_name: "Output name, can include path"
     fastq1: "R1 in paired end reads"
     fastq2: "R2 in paired end reads"
+    max_retries: "(optional) retry this number of times if task fails -- use with caution, see skylab README for details"
   }
 
   String quality_control_output_basename = output_name + "_qc"
@@ -55,14 +58,16 @@ workflow SmartSeq2SingleCell {
       fastq2 = fastq2,
       ref_name = hisat2_ref_name,
       sample_name = sample_name,
-      output_basename = quality_control_output_basename
+      output_basename = quality_control_output_basename,
+      max_retries = max_retries,
   }
 
   call Picard.CollectMultipleMetrics {
     input:
       aligned_bam = HISAT2PairedEnd.output_bam,
       genome_ref_fasta = genome_ref_fasta,
-      output_basename = quality_control_output_basename
+      output_basename = quality_control_output_basename,
+      max_retries = max_retries,
   }
 
   call Picard.CollectRnaMetrics {
@@ -72,12 +77,14 @@ workflow SmartSeq2SingleCell {
       rrna_intervals = rrna_intervals,
       output_basename = quality_control_output_basename,
       stranded = stranded,
+      max_retries = max_retries,
   }
 
   call Picard.CollectDuplicationMetrics {
     input:
       aligned_bam = HISAT2PairedEnd.output_bam,
-      output_basename = quality_control_output_basename
+      output_basename = quality_control_output_basename,
+      max_retries = max_retries,
   }
 
   String data_output_basename = output_name + "_rsem"
@@ -90,6 +97,7 @@ workflow SmartSeq2SingleCell {
       ref_name = hisat2_ref_trans_name,
       sample_name = sample_name,
       output_basename = data_output_basename,
+      max_retries = max_retries,
   }
 
   call RSEM.RSEMExpression {
@@ -97,6 +105,7 @@ workflow SmartSeq2SingleCell {
       trans_aligned_bam = HISAT2Transcriptome.output_bam,
       rsem_genome = rsem_ref_index,
       output_basename = data_output_basename,
+      max_retries = max_retries,
   }
 
   output {

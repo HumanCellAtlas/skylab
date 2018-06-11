@@ -12,6 +12,7 @@ task CollectMultipleMetrics {
   # use provided disk number or dynamically size on our own, with 10GB of additional disk
   Int disk = ceil(size(aligned_bam, "GB") + size(genome_ref_fasta, "GB") + 10)
   Int preemptible = 5
+  Int max_retries = 0
 
   meta {
     description: "This Picard task will collect multiple QC metrics, such as CollectAlignmentSummaryMetrics and CollectInsertSizeMetrics."
@@ -26,6 +27,7 @@ task CollectMultipleMetrics {
     cpu: "(optional) the number of cpus to provision for this task"
     disk: "(optional) the amount of disk space (GB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
+    max_retries: "(optional) retry this number of times if task fails -- use with caution, see skylab README for details"
   }
 
   command {
@@ -54,6 +56,7 @@ task CollectMultipleMetrics {
     disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible
+    maxRetries: max_retries
   }
   
   output {
@@ -93,6 +96,7 @@ task CollectRnaMetrics {
   # use provided disk number or dynamically size on our own, with 10GB of additional disk
   Int disk = ceil(size(aligned_bam, "GB") + size(ref_flat, "GB") + size(rrna_intervals, "GB") + 10)
   Int preemptible = 5
+  Int max_retries = 0
 
   meta {
     description: "This Picard task will collect RnaSeqMetrics."
@@ -109,6 +113,7 @@ task CollectRnaMetrics {
     cpu: "(optional) the number of cpus to provision for this task"
     disk: "(optional) the amount of disk space (GB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
+    max_retries: "(optional) retry this number of times if task fails -- use with caution, see skylab README for details"
   }
   
   command {
@@ -131,6 +136,7 @@ task CollectRnaMetrics {
     disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible
+    maxRetries: max_retries
   }
 
   output {
@@ -153,6 +159,7 @@ task CollectDuplicationMetrics {
   # use provided disk number or dynamically size on our own, with 10GB of additional disk
   Int disk = ceil(size(aligned_bam, "GB") + 10)
   Int preemptible = 5
+  Int max_retries = 0
 
   meta {
     description: "This Picard task will collect alignment DuplicationMetrics."
@@ -166,6 +173,7 @@ task CollectDuplicationMetrics {
     cpu: "(optional) the number of cpus to provision for this task"
     disk: "(optional) the amount of disk space (GB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
+    max_retries: "(optional) retry this number of times if task fails -- use with caution, see skylab README for details"
   }
   
   command {
@@ -184,6 +192,7 @@ task CollectDuplicationMetrics {
     disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible
+    maxRetries: max_retries
   }
   
   output {
