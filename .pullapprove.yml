@@ -30,13 +30,14 @@ groups:
       - ambrosejcarr
       - jishuxu
       - mckinsel
-      - meganshand
+    conditions:
+      exclude:
+        - ENG-ONLY
       
 
   software-engineers:
     required: 1 # Require approval from at least one software engineer
     users:
       - dshiga
-      - jsotobroad
       - samanehsan
       - rexwangcc
