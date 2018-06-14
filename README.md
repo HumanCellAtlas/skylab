@@ -2,7 +2,7 @@
 Secondary analysis pipelines for the Human Cell Atlas.
 
 ## Pipelines
-- [Smart-seq2](https://github.com/HumanCellAtlas/skylab/tree/master/smartseq2_single_sample) secondary analysis pipeline
+- [Smart-seq2](https://github.com/HumanCellAtlas/skylab/tree/master/pipelines/smartseq2_single_sample) secondary analysis pipeline
 
 ## How to run pipelines from skylab
 For now, use `git clone git@github.com:HumanCellAtlas/skylab.git` and run the pipeline in Cromwell.
