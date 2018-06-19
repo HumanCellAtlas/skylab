@@ -9,22 +9,22 @@ task CellSortBam {
   Int preemptible = 0
 
   meta {
-    description: "Sort bam_input by cell, then molecule, then gene."
+    description: "Sort bam_input hierarchically first by cell barcode (CB), then by molecule barcode (UB), then by gene name (GE), then by query-name, and finally by coordinate."
   }
 
   parameter_meta {
-    bam_input: "Input bam file containing reads marked with tags for cell barcodes (CB), molecule barcodes (UB) and gene ids (GE)"
+    bam_input: "Input bam file containing reads marked with tags for cell barcodes (CB), molecule barcodes (UB) and gene names (GE)"
     docker: "(optional) the docker image containing the runtime environment for this task"
     machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
     disk: "(optional) the amount of disk space (GB) to provision for this task"
-    preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
+    preemptible: "(optional) if non-zero, request a preemptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
   }
   
   command {
     set -e
 
-    samtools sort -t GE -t UB -t CB -o cell-sorted.bam "${bam_input}"
+    samtools sort -n -t GE -t UB -t CB -o cell-sorted.bam "${bam_input}"
   }
   
   runtime {
@@ -51,7 +51,7 @@ task GeneSortBam {
   Int preemptible = 0
 
   meta {
-    description: "Sort bam_input by gene, then cell, then molecule."
+    description: "Sort bam_input hierarchically first by gene name (GE), then by cell barcode (CB), then by molecule barcode (UB), then by query-name, and finally by coordinate."
   }
 
   parameter_meta {
@@ -60,13 +60,13 @@ task GeneSortBam {
     machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
     disk: "(optional) the amount of disk space (GB) to provision for this task"
-    preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
+    preemptible: "(optional) if non-zero, request a preemptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
   }
 
   command {
     set -e
 
-    samtools sort -t UB -t CB -t GE -o gene-sorted.bam "${bam_input}"
+    samtools sort -n -t UB -t CB -t GE -o gene-sorted.bam "${bam_input}"
   }
 
   runtime {
