@@ -30,3 +30,11 @@ Dockstore has some expectations about the organization of github repos that do n
     "SmartSeq2SingleCell.rrna_intervals": "http://storage.googleapis.com/hca-dcp-mint-test-data/reference/GRCh38_Gencode/gencode.v27.rRNA.interval_list",
     ...</pre></dd>
 </dl>
+
+Now we're ready to go to [Dockstore](https://dockstore.org/) and actually register the pipeline:
+
+- Go to dockstore.org and login in via github. You'll want to use the github account you use to commit to `skylab`
+- Click on "My Workflows", then "Register Workflow", then enter details about the entry point WDL. The repo name should be `HumanCellAtlas/skylab`, and the workflow path should be something like `/pipelines/smartseq2_single_sample/ss2_single_sample.wdl`.
+- Click "Register Workflow"
+- Select the `dockstore` branch from the dropdown menu and click "Publish"
+- The workflow is now published, but it will be pointing to the most recently updated branch in `skylab`, so it's probably broken :(
