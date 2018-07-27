@@ -1,7 +1,7 @@
 #!/bin/sh
 
-#
-# Downloads sequence for the GRCh38 release N version of H. sapiens (human) from
+# July 2018
+# Downloads sequence for the GRCm38 reference from
 # Gencode.
 #
 # files:
