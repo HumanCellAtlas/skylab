@@ -2,17 +2,16 @@ import json
 import argparse
 import pandas as pd
 
-def AggregatePicardMetric(files, output_name):
+def AggregatePicardMetric(filenames, output_name):
     """
     piepline output picard QC metrics at sinle cell/sample level.
     This functin is called to merge/aggregate QC metrics by metrics type and then merge multiple QC measurement 
     into single matrix file. In this file, column is sample/cell and row is QC metrics
     :param files: metric files from pipeline outputs
-    :param met_name: metrics name with workflow name and subworkflow name as prefix. such as 'run_pipelines.RunStarPipeline.alignment_summary_metrics'
+    :param output_name: output file name
     """
     # initial output
-    print(files)
-    filenames = files.split(',')
+    print(filenames)
     for kk in range(0, len(filenames)):
         d = json.load(open(filenames[kk]))
         if kk == 0 :
@@ -29,6 +28,7 @@ def main():
         "--file_names",
         dest="file_names",
         required=True,
+        nargs='+',
         help=
         "a list of files to be parsed out."
     )
