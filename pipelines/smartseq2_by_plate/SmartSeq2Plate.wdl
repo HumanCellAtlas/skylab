@@ -22,17 +22,18 @@ task AggregateDataMatrix{
     maxRetries: 1
   }
 }
-task AggregatePicardMetricsByCell{
+task AggregateQCMetrics{
   Array[File] metric_files
   String output_name
   String docker = "gcr.io/broad-dsde-mint-dev/benchmarking-tools:0.0.1"
+  String run_type
   command {
     set -e
-    gsutil cp gs://broad-dsde-mint-dev-teststorage/pipeline_testing_scripts/AggregatePicardMetricsByCell.py ./
-    python AggregatePicardMetricsByCell.py -f ${sep=',' metric_files}   -o ${output_name}
+    gsutil cp gs://broad-dsde-mint-dev-teststorage/pipeline_testing_scripts/AggregateMetrics.py ./
+    python AggregateMetrics.py -f ${sep=' ' metric_files}   -o ${output_name} -t ${run_type}
   }
   output{
-    File aggregated_result = output_name+".picard.core.json"
+    File aggregated_result = output_name+".csv"
  }
   runtime {
     docker: docker
@@ -44,28 +45,6 @@ task AggregatePicardMetricsByCell{
   }
 }
 
-task AggregatePicardMetricsByBatch {
-  Array[File] metric_files
-  String output_name
-  String docker = "gcr.io/broad-dsde-mint-dev/benchmarking-tools:0.0.1"
-  command {
-    set -e
-    gsutil cp gs://broad-dsde-mint-dev-teststorage/pipeline_testing_scripts/AggregatePicardMetrics.py ./
-    python AggregatePicardMetrics.py -f ${sep=',' metric_files}   -o ${output_name}
-  }
-  output{
-    File aggregated_result = output_name+".picard.batch.core.csv"
- }
-  runtime {
-    docker: docker
-    memory: "2 GB"
-    disks: "local-disk 10 HDD"
-    cpu: 1
-    preemptible: 5
-    maxRetries: 1
-  }
-
-}
 workflow RunSmartSeq2ByPlate {
 
   # load annotation
@@ -86,7 +65,6 @@ workflow RunSmartSeq2ByPlate {
   Array[String] out_types = ["est_counts","tpm"]  
   Array[String] sraIDs
   String batch_id
-
   scatter(idx in range(length(sraIDs))) { 
     call single_cell_run.SmartSeq2SingleCell as sc {
       input:
@@ -105,29 +83,47 @@ workflow RunSmartSeq2ByPlate {
         sample_name = sraIDs[idx],
         output_name = sraIDs[idx]
    }
-   call AggregatePicardMetricsByCell {
-      input:
-        metric_files = [sc.alignment_summary_metrics,sc.rna_metrics, sc.dedup_metrics,sc.insert_size_metrics],
-        output_name = sraIDs[idx]
-      } 
   }
   scatter(i in range(length(out_types))){
     call AggregateDataMatrix as AggregateGene {
       input:
         filename_array = sc.rsem_gene_results,
         col_name = out_types[i],
-        output_name ="gene_" + out_types[i] + ".csv"
+        output_name =batch_id+"_gene_" + out_types[i] + ".csv"
       }
     call AggregateDataMatrix as AggregateIsoform {
       input:
         filename_array = sc.rsem_isoform_results,
         col_name = out_types[i],
-        output_name = "isoform_" + out_types[i] + ".csv"
-      }
+        output_name = batch_id+"_isoform_" + out_types[i] + ".csv"
     }
-  call AggregatePicardMetricsByBatch {
+ }
+  Array[String] row_metrics_names = ["alignment_summary_metrics","rna_metrics","dedup_metrics","insert_size_metrics","gc_bias_summary_metrics"]
+  Array[String] table_metrics_names = ["base_call_dist_metrics","gc_bias_detail_metrics","pre_adapter_details_metrics","bait_bias_detail_metrics","bait_bias_summary_metrics","error_summary_metrics"]
+  Array[Array[File]] row_metrics = [sc.alignment_summary_metrics,sc.rna_metrics, sc.dedup_metrics, sc.insert_size_metrics,sc.gc_bias_summary_metrics]
+  Array[Array[File]] table_metrics = [sc.base_call_dist_metrics,sc.gc_bias_detail_metrics,sc.pre_adapter_details_metrics,sc.bait_bias_detail_metrics,sc.bait_bias_summary_metrics,sc.error_summary_metrics]
+  scatter(i in range(length(row_metrics))){
+    
+    call AggregateQCMetrics as AggregateRow {
+      input:
+        metric_files = row_metrics[i],
+        output_name = batch_id+"_"+row_metrics_names[i],
+        run_type = "Picard"
+    }
+  }
+  scatter(i in range(length(table_metrics))){
+    call AggregateQCMetrics as AppendTable {
+      input:
+        metric_files = table_metrics[i],
+        output_name = batch_id+"_"+table_metrics_names[i],
+        run_type = "PicardTable"
+    }
+  }
+ 
+  call AggregateQCMetrics as AggregateAll {
     input:
-      metric_files = AggregatePicardMetricsByCell.aggregated_result,
-      output_name = batch_id  
-}
+      metric_files = AggregateRow.aggregated_result,
+      output_name = batch_id+"_"+"QCs",
+      run_type = "ALL"
+  }
 }  
