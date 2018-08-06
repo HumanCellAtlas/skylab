@@ -45,6 +45,31 @@ task AggregateQCMetrics{
   }
 }
 
+task MergeBamFiles {
+  Array[File] bam_files
+  String output_name
+  String docker = "quay.io/humancellatlas/secondary-analysis-samtools:v0.2.2-1.6"
+  
+  command {
+    set -e 
+    samtools merge -@ 8 "${output_name}.bam" ${sep=' ' bam_files} 
+    samtools index "${output_name}.bam"
+    ls .    
+  }
+  output {
+    File output_bam = output_name + ".bam"
+    File output_index = output_name + ".bam.bai"
+  }
+  runtime {
+    docker: docker
+    memory: "15 GB"
+    disks: "local-disk 100 HDD"
+    cpu: 8
+    preemptible: 5
+    maxRetries: 1
+  }
+}
+
 workflow RunSmartSeq2ByPlate {
 
   # load annotation
@@ -125,5 +150,18 @@ workflow RunSmartSeq2ByPlate {
       metric_files = AggregateRow.aggregated_result,
       output_name = batch_id+"_"+"QCs",
       run_type = "ALL"
+  }
+ call MergeBamFiles {
+    input:
+      bam_files = sc.aligned_bam,
+      output_name = batch_id
+ }
+ output {
+  File merged_bam = MergeBamFiles.output_bam
+  File bam_index = MergeBamFiles.output_index
+  File core_QC = AggregateAll.aggregated_result
+  Array[File] qc_tabls = AppendTable.aggregated_result
+  Array[File] gene_matrix = AggregateGene.aggregated_result
+  Array[File] isoform_matrix = AggregateIsoform.aggregated_result
   }
 }  
