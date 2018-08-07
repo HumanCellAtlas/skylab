@@ -19,8 +19,9 @@ workflow RunBenchmarkingAnalysis {
   String high_cut
   String met_keys
   Int    npcs
+  String docker
   
-  parameter_meta: {
+  parameter_meta {
     base_datafile: "data matrix,count  or TPM matrix, of one pipeline"
     updated_datafile: "data matrix, count or TPM matrix, of second pipeline"
     base_metrics: "QC metrics, each row represents a metric and each column represents a cell"
@@ -41,7 +42,8 @@ workflow RunBenchmarkingAnalysis {
       base_metrics = base_metrics,
       updated_metrics = updated_metrics,
       output_name = output_name,
-      met_keys = met_keys
+      met_keys = met_keys,
+      docker = docker
   }
 
   call analysis.RunComparativeAnalysis {
@@ -50,7 +52,8 @@ workflow RunBenchmarkingAnalysis {
       updated_datafile = updated_datafile,
       output_name = output_name,
       metadata_file = metadata_file,
-      metadata_keys = metadata_keys
+      metadata_keys = metadata_keys,
+      docker = docker
   }
   
  call analysis.RunGeneQuantificationAnalysis{
@@ -60,7 +63,8 @@ workflow RunBenchmarkingAnalysis {
       output_name = output_name,
       gtf_file = gtf_file,
       low_cut = low_cut,
-      high_cut = high_cut
+      high_cut = high_cut,
+      docker = docker
    }
   
  call analysis.RunReproducibilityAnalysis {
@@ -70,7 +74,8 @@ workflow RunBenchmarkingAnalysis {
       output_name = output_name,
       gtf_file = gtf_file,
       metadata_file = metadata_file,
-      groups = groups
+      groups = groups,
+      docker = docker
   } 
  
   call analysis.RunConfoundingFactorAnalysis {
@@ -82,6 +87,7 @@ workflow RunBenchmarkingAnalysis {
       output_name = output_name,
       npcs = npcs,
       metadata_file = metadata_file,
-      meta_keys = metadata_keys
+      meta_keys = metadata_keys,
+      docker = docker
   }
 }
