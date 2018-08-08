@@ -53,6 +53,8 @@ def AggregatePicardMetricsTable(filenames, output_name):
         dat.insert(0,'Sample',cell_id)
         df=df.append(dat,ignore_index=True)
     df.to_csv(output_name+'.csv')
+    
+    
 def AggregateQCMetrics(filenames,output_name):
     df = pd.DataFrame()
     for file_name in filenames:
@@ -60,7 +62,49 @@ def AggregateQCMetrics(filenames,output_name):
         df=df.append(dat,ignore_index=True)
     df.rename(columns={'Unnamed: 0':'Metrics'}, inplace=True )
     df.to_csv(output_name+'.csv')
+
+def ParseHISATStats(filenames,output_name):
+    mets={}
+    for file_name in filenames:
+        if '_qc' in file_name:
+            cell_id=os.path.basename(file_name).split('_qc')[0]
+            tag = "HISAT2G"
+        elif '_rsem' in file_name:
+            cell_id=os.path.basename(file_name).split('_rsem')[0]
+            tag = "HISAT2T"
+        with open(file_name) as f:
+            dat =  f.readlines()
+            d = [x.strip().split(':') for x in dat]
+            d.pop(0)
+            mets[cell_id]={x[0]:x[1].strip().split(' ')[0] for x in d}
+    df=pd.DataFrame.from_dict(mets,orient='columns')
+    df.insert(0,"Class",tag)
+    df.to_csv(output_name+'.csv')
+
+def ParseRSENStats(filenames,output_name):
+    mets={}
+    for file_name in filenames:
+        cell_id=os.path.basename(file_name).split('_rsem')[0]
+        i=0
+        with open(file_name) as f:
+            while i <3 :
+                if i == 0 :
+                    [N0,N1,N2,N_tot] = f.readline().strip().split(" ")
+                elif i == 1:
+                    [nUnique, nMulti, nUncertain] = f.readline().strip().split(" ")
+                elif i == 2:
+                    [nHits,read_type] = f.readline().strip().split(" ")
+                i=i+1
+        mets[cell_id]={"unalignable reads" :N0,"alignable reads":N1,
+            "filtered reads":N2,"total reads":N_tot,
+            "unique aligned":nUnique,"multiple mapped":nMulti,
+            "total alignments":nHits, "strand": read_type,
+            "uncertain reads":nUncertain
+                }
     
+    df=pd.DataFrame.from_dict(mets,orient='columns')
+    df.insert(0,"Class","RSEM")
+    df.to_csv(output_name+'.csv')
     
 def main():
     parser = argparse.ArgumentParser()
@@ -83,14 +127,18 @@ def main():
         "--metrics-type",
         dest="mtype",
         required=True,
-        help="a list of string to represent metrics types, such Picard, PicardTable, HISAT2,RSEM, ALL")
+        help="a list of string to represent metrics types, such Picard, PicardTable, HISAT2,RSEM, Core")
     args = parser.parse_args()
     if args.mtype == "Picard":
         AggregatePicardMetricsRow(args.file_names, args.output_name)
     elif args.mtype == "PicardTable":
         AggregatePicardMetricsTable(args.file_names,args.output_name)
-    elif args.mtype == "ALL":
+    elif args.mtype == "Core":
         AggregateQCMetrics(args.file_names,args.output_name)
+    elif args.mtype == "HISAT2":
+        ParseHISATStats(args.file_names,args.output_name)
+    elif args.mtype == "RSEM":
+        ParseRSENStats(args.file_names,args.output_name)
     else:
         return 0
 
