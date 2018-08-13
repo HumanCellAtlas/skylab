@@ -46,7 +46,7 @@ task CellRanger {
     }
 
  runtime {
-         docker: "singlecellportal/scrna-seq_orchestra"
+         docker: "quay.io/humancellatlas/secondary-analysis-cellranger"
          memory: "${memory} GB"
          bootDiskSizeGb: 12
          disks: "local-disk ${disk_space} HDD"
