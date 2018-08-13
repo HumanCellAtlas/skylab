@@ -4,10 +4,11 @@ task AggregateDataMatrix{
   Array[File] filename_array
   String col_name
   String output_name
-  String docker = "quay.io/humancellatlas/secondary-analysis-benchmarking-tools:0.0.2"
+  String docker = "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.0.2"
   command {
     set -e
-    gsutil cp gs://broad-dsde-mint-dev-teststorage/pipeline_testing_scripts/MergeDataMatrix.py ./
+    git clone --branch jx-ss2-platebundle https://github.com/HumanCellAtlas/skylab
+    cd skylab/pipelines/smartseq2_by_plate/
     python MergeDataMatrix.py -f ${sep=',' filename_array}  -t ${col_name} -o ${output_name}
   }
   output{
@@ -25,11 +26,12 @@ task AggregateDataMatrix{
 task AggregateQCMetrics{
   Array[File] metric_files
   String output_name
-  String docker = "quay.io/humancellatlas/secondary-analysis-benchmarking-tools:0.0.2"
+  String docker = "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.0.2"
   String run_type
   command {
     set -e
-    gsutil cp gs://broad-dsde-mint-dev-teststorage/pipeline_testing_scripts/AggregateMetrics.py ./
+    git clone --branch jx-ss2-platebundle https://github.com/HumanCellAtlas/skylab
+    cd skylab/pipelines/smartseq2_by_plate/
     python AggregateMetrics.py -f ${sep=' ' metric_files}   -o ${output_name} -t ${run_type}
   }
   output{
@@ -49,11 +51,12 @@ task AggregateQCMetricsCore{
   Array[File] rsem_stats_files
   Array[File] hisat2_stats_files
   String output_name
-  String docker = "quay.io/humancellatlas/secondary-analysis-benchmarking-tools:0.0.2"
+  String docker = "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.0.2"
   String run_type
   command {
     set -e
-    gsutil cp gs://broad-dsde-mint-dev-teststorage/pipeline_testing_scripts/AggregateMetrics.py ./
+    git clone --branch jx-ss2-platebundle https://github.com/HumanCellAtlas/skylab
+    cd skylab/pipelines/smartseq2_by_plate/
     python AggregateMetrics.py -f ${sep=' ' picard_metric_files} ${sep=' ' hisat2_stats_files} ${sep=' ' rsem_stats_files}   -o ${output_name} -t ${run_type}
   }
   output{
