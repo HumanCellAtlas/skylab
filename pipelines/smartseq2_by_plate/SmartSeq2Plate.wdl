@@ -1,5 +1,5 @@
 import "SmartSeq2SingleSample.wdl" as single_cell_run
-
+import "RunBenchmarkingAnalysis.wdl" as run_benchmarking
 task AggregateDataMatrix{
   Array[File] filename_array
   String col_name
@@ -8,8 +8,7 @@ task AggregateDataMatrix{
   command {
     set -e
     git clone --branch jx-ss2-platebundle https://github.com/HumanCellAtlas/skylab
-    cd skylab/pipelines/smartseq2_by_plate/
-    python MergeDataMatrix.py -f ${sep=',' filename_array}  -t ${col_name} -o ${output_name}
+    python skylab/pipelines/smartseq2_by_plate/MergeDataMatrix.py -f ${sep=',' filename_array}  -t ${col_name} -o ${output_name}
   }
   output{
     File aggregated_result = "${output_name}"
@@ -31,8 +30,7 @@ task AggregateQCMetrics{
   command {
     set -e
     git clone --branch jx-ss2-platebundle https://github.com/HumanCellAtlas/skylab
-    cd skylab/pipelines/smartseq2_by_plate/
-    python AggregateMetrics.py -f ${sep=' ' metric_files}   -o ${output_name} -t ${run_type}
+    python skylab/pipelines/smartseq2_by_plate/AggregateMetrics.py -f ${sep=' ' metric_files}   -o ${output_name} -t ${run_type}
   }
   output{
     File aggregated_result = output_name+".csv"
@@ -56,8 +54,7 @@ task AggregateQCMetricsCore{
   command {
     set -e
     git clone --branch jx-ss2-platebundle https://github.com/HumanCellAtlas/skylab
-    cd skylab/pipelines/smartseq2_by_plate/
-    python AggregateMetrics.py -f ${sep=' ' picard_metric_files} ${sep=' ' hisat2_stats_files} ${sep=' ' rsem_stats_files}   -o ${output_name} -t ${run_type}
+    python skylab/pipelines/smartseq2_by_plate/AggregateMetrics.py -f ${sep=' ' picard_metric_files} ${sep=' ' hisat2_stats_files} ${sep=' ' rsem_stats_files}   -o ${output_name} -t ${run_type}
   }
   output{
     File aggregated_result = output_name+".csv"
@@ -82,7 +79,6 @@ task MergeBamFiles {
     set -e 
     samtools merge -@ 8 "${output_name}.bam" ${sep=' ' bam_files} 
     samtools index "${output_name}.bam"
-    ls .    
   }
   output {
     File output_bam = output_name + ".bam"
@@ -119,6 +115,21 @@ workflow RunSmartSeq2ByPlate {
   Array[String] sraIDs
   String batch_id
   String docker
+ # for benchmarking
+  File base_datafile
+  File updated_datafile
+  File output_name
+  File gtf_file
+  File metadata_file
+  File base_metrics
+  File updated_metrics
+  String metadata_keys
+  String groups
+  String low_cut
+  String high_cut
+  String met_keys
+  Int    npcs
+
   scatter(idx in range(length(sraIDs))) { 
     call single_cell_run.SmartSeq2SingleCell as sc {
       input:
@@ -219,6 +230,23 @@ workflow RunSmartSeq2ByPlate {
       bam_files = sc.aligned_bam,
       output_name = batch_id
  }
+ call run_benchmarking {
+    input:
+      base_datafile = base_datafile,
+      updated_datafile = AggregateGene.aggregated_result[1],
+      output_name = benchmarking_output_name,
+      gtf_file = gtf_file,
+      metadata_file = metadata_file,
+      base_metrics = base_metrics,
+      updated_metrics = AggregateCore.aggregated_result,
+      metadata_keys = metadata_keys,
+      groups = groups,
+      low_cut = low_cut,
+      high_cut = hight_cut,
+      met_keys =met_keys,
+      npcs =npcs, 
+      docker = benchmarking_docker
+  }
  output {
   File merged_bam = MergeBamFiles.output_bam
   File bam_index = MergeBamFiles.output_index
