@@ -88,8 +88,12 @@ if (sum(nalist) > 0) {
 met2 <- met2[, mlist]
 #' Then select the subset of QC metrics to run analysis.
 # select subset of metrics
-met1.core <- met1[metKeys, ]
-met2.core <- met2[metKeys, ]
+met1.core <- met1[met1$Metrics %in% metKeys, -c(2)]
+met2.core <- met2[met1$Metrics %in% metKeys, -c(2)]
+rownames(met1.core)<-met1.core$Metrics
+rownames(met2.core)<-met2.core$Metrics
+met1.core<-met1.core[,-1]
+met2.core<-met2.core[,-1]
 #' Finally, we have two QC metrics to run analysis on.
 #' 
 #' # Analysis

@@ -114,8 +114,8 @@ option_list <- list(
 args <- strsplit(commandArgs(trailingOnly = TRUE), split = ' ')
 opt_parser <- OptionParser(option_list = option_list)
 opt <- parse_args(opt_parser, args = args[[1]])
-met1 <- read.csv(opt$metrics1,row.names=1)
-met2 <- read.csv(opt$metrics2,row.names=1)
+met1 <- read.csv(opt$metrics1,row.names=1)[,-c(1:2)]
+met2 <- read.csv(opt$metrics2,row.names=1)[,-c(1:2)]
 mat1 <- read.csv(opt$matrix1)
 mat2 <- read.csv(opt$matrix2)
 npcs <- opt$npcs

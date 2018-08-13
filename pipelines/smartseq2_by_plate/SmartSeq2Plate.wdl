@@ -117,18 +117,16 @@ workflow RunSmartSeq2ByPlate {
   String docker
  # for benchmarking
   File base_datafile
-  File updated_datafile
-  File output_name
-  File gtf_file
+  File benchmarking_output_name
   File metadata_file
   File base_metrics
-  File updated_metrics
   String metadata_keys
   String groups
   String low_cut
   String high_cut
   String met_keys
   Int    npcs
+  String benchmarking_docker
 
   scatter(idx in range(length(sraIDs))) { 
     call single_cell_run.SmartSeq2SingleCell as sc {
@@ -230,7 +228,7 @@ workflow RunSmartSeq2ByPlate {
       bam_files = sc.aligned_bam,
       output_name = batch_id
  }
- call run_benchmarking {
+ call run_benchmarking.RunBenchmarkingAnalysis {
     input:
       base_datafile = base_datafile,
       updated_datafile = AggregateGene.aggregated_result[1],
@@ -242,7 +240,7 @@ workflow RunSmartSeq2ByPlate {
       metadata_keys = metadata_keys,
       groups = groups,
       low_cut = low_cut,
-      high_cut = hight_cut,
+      high_cut = high_cut,
       met_keys =met_keys,
       npcs =npcs, 
       docker = benchmarking_docker
