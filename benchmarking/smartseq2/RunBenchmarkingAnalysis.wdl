@@ -2,10 +2,6 @@ import "BenchmarkingTasks.wdl" as analysis
 
 workflow RunBenchmarkingAnalysis {
   
-  meta {
-    description: "Run SmartSeq2 Benchmarking pipeline. 4 modules are included in this pipeline.QC test, Comparative tests, Reproducibility test and Confounding factors test."
-  }
-
   File base_datafile
   File updated_datafile
   File output_name

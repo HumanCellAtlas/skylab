@@ -17,4 +17,6 @@ RUN pip3 install \
     requests==2.18.4 \
     scipy==0.18.1 \
     sctools==0.1.6 \
-    tables==3.4.2
+    tables==3.4.2 \
+		loompy
+
