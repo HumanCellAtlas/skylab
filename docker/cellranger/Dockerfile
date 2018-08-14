@@ -3,7 +3,6 @@ FROM ubuntu:16.04
 ## Install Variables
 ENV pyversion 2.7.13
 
-
 ## Dependencies python 2.7.13
 ## rust 1.19.0
 ## clang 4.0.1
@@ -28,28 +27,59 @@ ENV PATH $PATH:/Python-${pyversion}:/usr/lib/go-1.9/bin:/root/.cargo/bin
 ## RUST finish
 RUN rustup install 1.19.0 && rustup default 1.19.0
 
-## Node
-RUN apt-get update && apt-get install curl
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
-RUN apt-get install -y build-essential nodejs
-RUN npm install npm@latest -g
-
 ## CellRanger 2.1.1
-RUN apt-get -y install git && git clone https://github.com/10XGenomics/cellranger.git
+RUN apt-get -y install git && git clone https://github.com/samanehsan/cellranger.git
 WORKDIR cellranger
 RUN make
-
-## Set path
-ENV PATH $PATH:/root/cellranger/bin
+WORKDIR /root
 
 ## Martian
-WORKDIR /root
 RUN git clone https://github.com/martian-lang/martian.git --recursive
 WORKDIR martian
 RUN git fetch origin 2.3
 RUN git checkout origin/2.3
 RUN git submodule update --recursive
-RUN make mrs
+RUN make mrc mrf mrg mrp mrs mrt_helper mrstat mrjob
+WORKDIR /root
+
+## Set paths
+ENV PATH $PATH:/root/cellranger/bin:/root/cellranger/lib/bin:/root/cellranger/tenkit/bin:/root/martian/bin
+ENV PYTHONPATH $PYTHONPATH:/root/cellranger/lib/python:/root/cellranger/tenkit/lib/python:/root/martian/adapters/python
+ENV MROPATH $MROPATH:/root/cellranger/mro:/root/cellranger/tenkit/mro
+ENV RUST_SRC_PATH $RUST_SRC_PATH:/root/cellranger/lib/rust
+ENV _TENX_LD_LIBRARY_PATH tenx_path
+
+RUN apt-get update && apt-get -y install python-pip liblzma-dev liblz4-tool libopenblas-dev libatlas-base-dev python-tables cython
+COPY requirements.txt /opt/requirements.txt
+RUN pip install -r /opt/requirements.txt
+
+# Install samtools
+RUN wget https://github.com/samtools/samtools/releases/download/1.9/samtools-1.9.tar.bz2 \
+ && tar xjvf samtools-1.9.tar.bz2 \
+ && rm samtools-1.9.tar.bz2 \
+ && cd samtools-1.9 \
+ && ./configure --prefix=/usr \
+ && make \
+ && make install \
+ && cd .. \
+ && rm -rf samtools-1.9
+
+# Install STAR aligner
+RUN wget https://github.com/alexdobin/STAR/archive/2.5.1b.tar.gz \
+ && tar xf 2.5.1b.tar.gz \
+ && rm 2.5.1b.tar.gz \
+ && cd STAR-2.5.1b \
+ && make \
+ && mv bin/Linux_x86_64_static/STAR* /usr/bin \
+ && cd .. \
+ && rm -rf STAR-2.5.1b
+
+# Install tsne python package. pip installing it doesn't work
+RUN git clone https://github.com/danielfrg/tsne.git \
+ && cd tsne \
+ && make install \
+ && cd .. \
+ && rm -rf tsne
 
 ## Default command
 CMD ["cellranger", "-h"]

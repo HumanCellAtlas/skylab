@@ -43,6 +43,7 @@ task CellRanger {
         call_args.append('--id=' + '${sampleId}')
         call_args.append('--fastqs=' + ','.join(list(dirs.keys())))
         call_args.append('--nosecondary')
+        call_args.append('--disable-ui')
         if expect_cells is not '':
             call_args.append('--expect-cells=' + str(expect_cells))
         call(call_args)
@@ -69,7 +70,6 @@ task CellRanger {
         bootDiskSizeGb: 12
         disks: "local-disk ${diskSpace} HDD"
         cpu: 64
-        preemptible: 2
     }
 }
 
