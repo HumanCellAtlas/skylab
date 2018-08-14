@@ -3,15 +3,7 @@ from os.path import basename
 import argparse
 
 def MergeRsemQuantification(filenames, col_name, output):
-    """
-    pipeline produce gene quantification by using either RSEM at single sample level 
-    This function is called to merge or aggregate all the single cell/sample level results into
-    a single matrix file
-    :param files: the list of rsem outputs.
-    :param col_name: aggregate value type, can be est_counts or tpm. 
-    :param utput: output file name, *,csv or *.tsv
-    """
-    
+  
     # initial dataframe
     merged = pd.DataFrame()
     # loop through input files
@@ -58,6 +50,7 @@ def MergeRsemQuantification(filenames, col_name, output):
             merged = pd.merge(
                 left=merged, right=cnt[['tracking_id',sample_name]],
                 left_on='tracking_id', right_on='tracking_id')
+            print(merged.shape)
     # round matrix by 3 digits
     merged = merged.round(3)
     merged.to_csv(output, index=False)
