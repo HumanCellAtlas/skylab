@@ -1,5 +1,4 @@
 from crimson import picard
-import loompy
 import argparse
 import os
 import pandas as pd
