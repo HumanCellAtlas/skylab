@@ -71,8 +71,8 @@ output_name <- opt$output_prefix
 #' The QC metrics files are the collection of Picardtools QC outputs, which are formated as N*M matrix
 #' The rows are QC metrics and columns are cells/samples. 
 #'  
-met1 <- read.csv(opt$metrics1,row.names=1)
-met2 <- read.csv(opt$metrics2,row.names=1)
+met1 <- read.csv(opt$metrics1)
+met2 <- read.csv(opt$metrics2)
 #' Here is the list of metrics we will analysis with
 metKeys <- strsplit(opt$metKeys, split = ',')[[1]]
 #'

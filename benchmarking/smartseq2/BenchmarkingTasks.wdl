@@ -20,7 +20,8 @@ task RunComparativeAnalysis {
   
   command {
     set -e
-    cp  /usr/local/scripts/*.R ./
+    git clone --branch jx-ss2-for-unity https://github.com/HumanCellAtlas/skylab
+    cp /Users/jishuxu/Works/github/HCA/skylab/benchmarking/smartseq2/R/*.R ./
     Rscript -e 'rmarkdown::render("Compare_data_matrix.R", output_file="${output_name}_Compare_data_matrix.html")' --args \
       "--matrix1=${base_datafile} --matrix2=${updated_datafile} --metaKeys=${metadata_keys} --metadata_file=${metadata_file} --output_prefix=${output_name}"
   }
@@ -62,7 +63,8 @@ task RunGeneQuantificationAnalysis{
   }
   command {
     set -e
-    cp /usr/local/scripts/*.R ./
+    git clone --branch jx-ss2-for-unity https://github.com/HumanCellAtlas/skylab
+    cp /Users/jishuxu/Works/github/HCA/skylab/benchmarking/smartseq2/R/*.R ./
     Rscript -e 'rmarkdown::render("Compare_Quantification.R",output_file="${output_name}_Compare_Quantification.html")' --args \
       "--matrix1=${base_datafile} --matrix2=${updated_datafile} --output_prefix=${output_name} --gtf_file=${gtf_file} --low_cut=${low_cut} --high_cut=${high_cut}" 
   }   
@@ -103,7 +105,8 @@ task RunReproducibilityAnalysis{
   
   command {
     set -e
-    cp /usr/local/scripts/*.R ./
+    git clone --branch jx-ss2-for-unity https://github.com/HumanCellAtlas/skylab
+    cp /Users/jishuxu/Works/github/HCA/skylab/benchmarking/smartseq2/R/*.R ./
     Rscript -e 'rmarkdown::render("data_matrix_reproducibility.R", output_file="${output_name}_data_matrix_reproducibility.html")' --args \
       "--matrix1=${base_datafile} --matrix2=${updated_datafile} --metadata_file=${metadata_file} --output_prefix=${output_name} --gtf_file=${gtf_file} --groups=${groups}"
   }
@@ -142,7 +145,8 @@ task RunQCMetricsAnalysis{
   
   command {
     set -e
-    cp /usr/local/scripts/*.R ./
+    git clone --branch jx-ss2-for-unity https://github.com/HumanCellAtlas/skylab
+    cp /Users/jishuxu/Works/github/HCA/skylab/benchmarking/smartseq2/R/*.R ./
     Rscript -e 'rmarkdown::render("QC_metrics_analysis.R", output_file="${output_name}_QC_metrics_analysis.html")' --args \
       "--metrics1=${base_metrics} --metrics2=${updated_metrics} --metKeys=${met_keys} --output_prefix=${output_name}"
   }
@@ -188,7 +192,8 @@ task RunConfoundingFactorAnalysis{
 
   command {
     set -e
-    cp /usr/local/scripts/*.R ./
+    git clone --branch jx-ss2-for-unity https://github.com/HumanCellAtlas/skylab
+    cp /Users/jishuxu/Works/github/HCA/skylab/benchmarking/smartseq2/R/*.R ./
     Rscript -e 'rmarkdown::render("Confounding_factor_analysis.R", output_file="${output_name}_Confounding_factor_analysis.html")' --args \
       "--matrix1=${base_datafile} --matrix2=${updated_datafile} --metadata_file=${metadata_file} --output_prefix=${output_name} --npcs=${npcs} --metaKeys=${meta_keys} --metrics1=${base_metrics} --metrics2=${updated_metrics}"
   } 

@@ -7,7 +7,7 @@ task AggregateDataMatrix{
   String docker = "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.0.2"
   command {
     set -e
-    git clone --branch jx-ss2-platebundle https://github.com/HumanCellAtlas/skylab
+    git clone --branch jx-ss2-for-unity https://github.com/HumanCellAtlas/skylab
     python skylab/pipelines/smartseq2_by_plate/MergeDataMatrix.py -f ${sep=',' filename_array}  -t ${col_name} -o ${output_name}
   }
   output{
@@ -29,7 +29,7 @@ task AggregateQCMetrics{
   String run_type
   command {
     set -e
-    git clone --branch jx-ss2-platebundle https://github.com/HumanCellAtlas/skylab
+    git clone --branch jx-ss2-for-unity https://github.com/HumanCellAtlas/skylab
     python skylab/pipelines/smartseq2_by_plate/AggregateMetrics.py -f ${sep=' ' metric_files}   -o ${output_name} -t ${run_type}
   }
   output{
@@ -53,7 +53,7 @@ task AggregateQCMetricsCore{
   String run_type
   command {
     set -e
-    git clone --branch jx-ss2-platebundle https://github.com/HumanCellAtlas/skylab
+    git clone --branch jx-ss2-for-unity https://github.com/HumanCellAtlas/skylab
     python skylab/pipelines/smartseq2_by_plate/AggregateMetrics.py -f ${sep=' ' picard_metric_files} ${sep=' ' hisat2_stats_files} ${sep=' ' rsem_stats_files}   -o ${output_name} -t ${run_type}
   }
   output{
@@ -70,29 +70,6 @@ task AggregateQCMetricsCore{
 }
 
 
-task MergeBamFiles {
-  Array[File] bam_files
-  String output_name
-  String docker = "quay.io/humancellatlas/secondary-analysis-samtools:v0.2.2-1.6"
-  
-  command {
-    set -e 
-    samtools merge -@ 8 "${output_name}.bam" ${sep=' ' bam_files} 
-    samtools index "${output_name}.bam"
-  }
-  output {
-    File output_bam = output_name + ".bam"
-    File output_index = output_name + ".bam.bai"
-  }
-  runtime {
-    docker: docker
-    memory: "15 GB"
-    disks: "local-disk 100 HDD"
-    cpu: 8
-    preemptible: 5
-    maxRetries: 1
-  }
-}
 
 workflow RunSmartSeq2ByPlate {
 

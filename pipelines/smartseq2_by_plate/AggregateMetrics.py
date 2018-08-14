@@ -64,7 +64,7 @@ def AggregateQCMetrics(filenames, output_name):
         dat = pd.read_csv(file_name)
         df = df.append(dat, ignore_index=True)
     df.rename(columns={'Unnamed: 0': 'Metrics'}, inplace=True)
-    df.to_csv(output_name + '.csv')
+    df.to_csv(output_name + '.csv', index=False)
 
 
 def ParseHISATStats(filenames, output_name):
