@@ -2,7 +2,7 @@ import pandas as pd
 from os.path import basename
 import argparse
 
-def MergeRsemQuantification(files, col_name, output):
+def MergeRsemQuantification(filenames, col_name, output):
     """
     pipeline produce gene quantification by using either RSEM at single sample level 
     This function is called to merge or aggregate all the single cell/sample level results into
@@ -14,7 +14,6 @@ def MergeRsemQuantification(files, col_name, output):
     
     # initial dataframe
     merged = pd.DataFrame()
-    filenames = files.split(',')
     # loop through input files
     for kk in range(0, len(filenames)):
         file_name = filenames[kk]
@@ -69,6 +68,7 @@ def main():
         "-f",
         "--file_names",
         dest="file_names",
+        nargs='+',
         required=True,
         help=
         "a list of files to be parsed out."
