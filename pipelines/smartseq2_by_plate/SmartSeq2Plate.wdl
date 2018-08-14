@@ -8,7 +8,7 @@ task AggregateDataMatrix{
   command {
     set -e
     git clone --branch jx-ss2-for-unity https://github.com/HumanCellAtlas/skylab
-    python skylab/pipelines/smartseq2_by_plate/MergeDataMatrix.py -f ${sep=',' filename_array}  -t ${col_name} -o ${output_name}
+    python skylab/pipelines/smartseq2_by_plate/MergeDataMatrix.py -f ${sep=' ' filename_array}  -t ${col_name} -o ${output_name}
   }
   output{
     File aggregated_result = "${output_name}"
