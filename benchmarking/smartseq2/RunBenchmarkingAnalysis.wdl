@@ -88,6 +88,7 @@ workflow RunBenchmarkingAnalysis {
       npcs = npcs,
       metadata_file = metadata_file,
       meta_keys = metadata_keys,
+      met_keys = met_keys,
       docker = docker
   }
 }

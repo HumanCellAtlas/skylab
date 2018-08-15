@@ -144,6 +144,11 @@ rownames(mat1) <- mat1[, 1]
 rownames(mat2) <- mat2[, 1]
 mat1.d <- mat1[, -c(1:2)]
 mat2.d <- mat2[, -c(1:2)]
+mlist1<-match(meta$sra,colnames(mat1.d))
+mlist2<-match(meta$sra,colnames(mat2.d))
+mat1<-mat1[,mlist1]
+mat2<-mat2[,mlist2]
+
 #'
 #' ## Data Processing
 #'
@@ -160,11 +165,10 @@ mlist1 <- match(colnames(mat1.d), met1.h)
 mlist2 <- match(colnames(mat2.d), met2.h)
 met1 <- met1[, mlist1]
 met2 <- met2[, mlist2]
+
 met1<-apply(met1,1,function(x){as.numeric(x)})
 met2<-apply(met2,1,function(x){as.numeric(x)})
-#' We will match the matrix with meta data as well
-mlist <- match(colnames(mat1.d), meta$sra)
-meta <- meta[mlist, ]
+
 #'
 #' ## Data Matrix Transformation
 #'
