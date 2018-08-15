@@ -111,6 +111,7 @@ workflow SmartSeq2SingleCell {
   output {
     # quality control outputs
     File aligned_bam = HISAT2PairedEnd.output_bam
+    File bam_index = HISAT2PairedEnd.bam_index
     File hisat2_met_file = HISAT2PairedEnd.met_file
     File hisat2_log_file = HISAT2PairedEnd.log_file
     File alignment_summary_metrics = CollectMultipleMetrics.alignment_summary_metrics
