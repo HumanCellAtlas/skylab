@@ -42,7 +42,6 @@ def MergeRsemQuantification(filenames, col_name, output):
                         usecols=['trans_id', 'length', col_name])
         # while looping input files, merging parsed results into a single file as output
         # initial merged file by the first input file
-        print(dat.shape)
         dat.columns = ['tracking_id','length',sample_name]
         if kk == 0:
             merged = dat
@@ -51,7 +50,6 @@ def MergeRsemQuantification(filenames, col_name, output):
             merged = pd.merge(
                 left=merged, right=cnt[['tracking_id',sample_name]],
                 left_on='tracking_id', right_on='tracking_id')
-            print(merged.shape)
     # round matrix by 3 digits
     merged = merged.round(3)
     merged.to_csv(output, index=False)

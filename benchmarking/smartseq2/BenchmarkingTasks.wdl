@@ -172,6 +172,7 @@ task RunConfoundingFactorAnalysis{
   File base_datafile
   File updated_datafile
   String meta_keys
+  String met_keys
   String output_name
   Int npcs
   String docker = "gcr.io/broad-dsde-mint-dev/benchmarking-tools:0.0.2"
@@ -195,7 +196,7 @@ task RunConfoundingFactorAnalysis{
     git clone --branch jx-ss2-for-unity https://github.com/HumanCellAtlas/skylab
     cp skylab/benchmarking/smartseq2/R/*.R ./
     Rscript -e 'rmarkdown::render("Confounding_factor_analysis.R", output_file="${output_name}_Confounding_factor_analysis.html")' --args \
-      "--matrix1=${base_datafile} --matrix2=${updated_datafile} --metadata_file=${metadata_file} --output_prefix=${output_name} --npcs=${npcs} --metaKeys=${meta_keys} --metrics1=${base_metrics} --metrics2=${updated_metrics}"
+      "--matrix1=${base_datafile} --matrix2=${updated_datafile} --metadata_file=${metadata_file} --output_prefix=${output_name} --npcs=${npcs} --metKeys=${met_keys} --metaKeys=${meta_keys} --metrics1=${base_metrics} --metrics2=${updated_metrics}"
   } 
 
   runtime {

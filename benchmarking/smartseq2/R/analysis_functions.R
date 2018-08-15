@@ -23,7 +23,6 @@ liblist <-
 for (libname in liblist) {
   suppressWarnings(suppressMessages(library(libname, character.only = TRUE)))
 }
-
 options(verbose = FALSE)
 options(warn = 0)
 # color palette

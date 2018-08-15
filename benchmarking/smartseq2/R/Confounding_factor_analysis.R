@@ -91,6 +91,13 @@ option_list <- list(
     default = NULL,
     help = "the list of meta values to be considered as confounding factors",
     metavar = "character"
+  ),
+  make_option(
+    "--metKeys",
+    type = "character",
+    default = NULL,
+    help = "the list of metrics values to be considered as confounding factors",
+    metavar = "character"
   )
 )
 
@@ -114,12 +121,17 @@ option_list <- list(
 args <- strsplit(commandArgs(trailingOnly = TRUE), split = ' ')
 opt_parser <- OptionParser(option_list = option_list)
 opt <- parse_args(opt_parser, args = args[[1]])
-met1 <- read.csv(opt$metrics1,row.names=1)[,-c(1:2)]
-met2 <- read.csv(opt$metrics2,row.names=1)[,-c(1:2)]
+met1 <- read.delim(opt$metrics1,stringsAsFactors = FALSE,sep=',')
+met2 <- read.delim(opt$metrics2,stringsAsFactors = FALSE,sep=',')
 mat1 <- read.csv(opt$matrix1)
 mat2 <- read.csv(opt$matrix2)
 npcs <- opt$npcs
 output_name <- opt$output_prefix
+#'  parse metrics keys
+whitelist<-strsplit(opt$metKeys,split=',')[[1]]
+met1<-met1[which(met1$Metrics %in% whitelist),]
+met2<-met2[which(met2$Metrics %in% whitelist),]
+
 #' metadata records information related to this dataset,
 #' such as 'cell lineage','celltype','is population'
 # parse metadata
@@ -148,6 +160,8 @@ mlist1 <- match(colnames(mat1.d), met1.h)
 mlist2 <- match(colnames(mat2.d), met2.h)
 met1 <- met1[, mlist1]
 met2 <- met2[, mlist2]
+met1<-apply(met1,1,function(x){as.numeric(x)})
+met2<-apply(met2,1,function(x){as.numeric(x)})
 #' We will match the matrix with meta data as well
 mlist <- match(colnames(mat1.d), meta$sra)
 meta <- meta[mlist, ]
@@ -204,9 +218,9 @@ annotate_figure(
   )
 )
 #' Then we extract the top 10 PCs to represent the QC metrics for both pipelines.
-met1.pcs <- met1.pcas$PCs$rotation[, 1:10]
+met1.pcs <- met1.pcas$PCs$x[, 1:10]
 colnames(met1.pcs) <- paste('QC.', 'PC', 1:10, sep = '')
-met2.pcs <- met2.pcas$PCs$rotation[, 1:10]
+met2.pcs <- met2.pcas$PCs$x[, 1:10]
 colnames(met2.pcs) <- paste('QC.', 'PC', 1:10, sep = '')
 
 #'
