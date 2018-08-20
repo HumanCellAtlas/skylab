@@ -214,14 +214,9 @@ workflow RunSmartSeq2ByPlate {
       run_type = "Core",
       docker = docker
   }
- call MergeBamFiles {
-    input:
-      bam_files = sc.aligned_bam,
-      output_name = batch_id
- }
  output {
-  File merged_bam = MergeBamFiles.output_bam
-  File bam_index = MergeBamFiles.output_index
+  File bam_files = sc.aligned_bam
+  File bam_index = sc.bam_index
   File core_QC = AggregateCore.aggregated_result
   Array[File] qc_tabls = AppendTable.aggregated_result
   Array[File] gene_matrix = AggregateGene.aggregated_result
