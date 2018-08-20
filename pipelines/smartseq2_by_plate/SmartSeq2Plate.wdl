@@ -225,5 +225,14 @@ workflow RunSmartSeq2ByPlate {
   Array[File] qc_tabls = AppendTable.aggregated_result
   Array[File] gene_matrix = AggregateGene.aggregated_result
   Array[File] isoform_matrix = AggregateIsoform.aggregated_result
+  File qc_html = RunBenchmarkingAnalysis.qc_html
+  File qc_test_stats = RunBenchmarkingAnalysis.qc_test_stats
+  File confounding_html = RunBenchmarkingAnalysis.confounding_html
+  File confounding_results = RunBenchmarkingAnalysis.confounding_results
+  File reproducibility_html = RunBenchmarkingAnalysis.reproducibility_html
+  File reproducibility_ttest_base = RunBenchmarkingAnalysis.reproducibility_ttest_base
+  File reproducibility_ttest_updated = RunBenchmarkingAnalysis.reproducibility_ttest_updated
+  File quantification_html = RunBenchmarkingAnalysis.quantification_html
+  File comparative_html = RunBenchmarkingAnalysis.comparative_html
   }
 }  

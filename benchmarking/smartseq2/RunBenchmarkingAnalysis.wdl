@@ -37,7 +37,7 @@ workflow RunBenchmarkingAnalysis {
     npcs: "number of PCs to extract"
   } 
 
-  call analysis.RunQCMetricsAnalysis {
+  call analysis.RunQCMetricsAnalysis as AnalysisQC {
     input:
       base_metrics = base_metrics,
       updated_metrics = updated_metrics,
@@ -45,8 +45,7 @@ workflow RunBenchmarkingAnalysis {
       met_keys = met_keys,
       docker = docker
   }
-
-  call analysis.RunComparativeAnalysis {
+  call analysis.RunComparativeAnalysis as ComparativeAnalysis {
     input:
       base_datafile = base_datafile,
       updated_datafile = updated_datafile,
@@ -56,7 +55,7 @@ workflow RunBenchmarkingAnalysis {
       docker = docker
   }
   
- call analysis.RunGeneQuantificationAnalysis{
+ call analysis.RunGeneQuantificationAnalysis as CompareQuantification {
     input:
       base_datafile = base_datafile,
       updated_datafile = updated_datafile,
@@ -67,7 +66,7 @@ workflow RunBenchmarkingAnalysis {
       docker = docker
    }
   
- call analysis.RunReproducibilityAnalysis {
+ call analysis.RunReproducibilityAnalysis  as AnalysisReproducibility {
     input: 
       base_datafile = base_datafile,
       updated_datafile = updated_datafile,
@@ -78,7 +77,7 @@ workflow RunBenchmarkingAnalysis {
       docker = docker
   } 
  
-  call analysis.RunConfoundingFactorAnalysis {
+  call analysis.RunConfoundingFactorAnalysis as AnalysisConfounding {
     input:
       base_datafile = base_datafile,
       updated_datafile = updated_datafile,
@@ -90,5 +89,17 @@ workflow RunBenchmarkingAnalysis {
       meta_keys = metadata_keys,
       met_keys = met_keys,
       docker = docker
+  }
+  
+ output {
+  File qc_html = AnalysisQC.html
+  File qc_test_stats = AnalysisQC.test_qc
+  File confounding_html = AnalysisConfounding.html
+  File confounding_results = AnalysisConfounding.test_confoundingfactors
+  File reproducibility_html = AnalysisReproducibility.html
+  File reproducibility_ttest_base = AnalysisReproducibility.ttest_base
+  File reproducibility_ttest_updated = AnalysisReproducibility.ttest_updated
+  File quantification_html = CompareQuantification.html
+  File comparative_html = ComparativeAnalysis.html
   }
 }
