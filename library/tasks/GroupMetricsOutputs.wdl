@@ -33,13 +33,12 @@ task GroupQCOutputs {
     python skylab/pipelines/smartseq2_single_sample/GroupQCOutputs.py -f ${sep=' ' picard_row_outputs}  -t Picard -o Picard_group
     python skylab/pipelines/smartseq2_single_sample/GroupQCOutputs.py -f ${hisat2_stats} -t HISAT2 -o hisat2
     python skylab/pipelines/smartseq2_single_sample/GroupQCOutputs.py -f ${rsem_stats} -t RSEM -o rsem
-    ls *
     python skylab/pipelines/smartseq2_single_sample/GroupQCOutputs.py -f Picard_group.csv hisat2.csv rsem.csv -t Core -o "${output_name}_QCs"
     python skylab/pipelines/smartseq2_single_sample/GroupQCOutputs.py -f ${sep=' ' picard_table_outputs} -t PicardTable -o "${output_name}"
+    ls *
 }
   output{
-    File grouped_result = "${output_name}"
-    Array[File] gvcf_list = glob("${output_name}_*.csv")
+    Array[File] group_files = glob("${output_name}_*.csv")
   }
   runtime {
     docker: docker

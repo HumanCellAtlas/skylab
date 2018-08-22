@@ -139,7 +139,7 @@ workflow SmartSeq2SingleCell {
     File rna_metrics = CollectRnaMetrics.rna_metrics
     File rna_coverage = CollectRnaMetrics.rna_coverage_pdf
     File dedup_metrics = CollectDuplicationMetrics.dedup_metrics
-
+    Array[File] group_resutls = GroupQCOutputs.group_files
     # data outputs
     File aligned_transcriptome_bam = HISAT2Transcriptome.output_bam
     File hisat2_transcriptome_met_file = HISAT2Transcriptome.met_file
