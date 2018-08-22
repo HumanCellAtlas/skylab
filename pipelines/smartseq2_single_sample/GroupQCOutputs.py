@@ -58,8 +58,8 @@ def AggregatePicardMetricsRow(filenames, output_name):
 def AggregatePicardMetricsTable(filenames, output_name):
     for file_name in filenames:
         cell_id = os.path.basename(file_name).split('_qc')[0]
+        class_name = os.path.basename(file_name).split('.')[1]
         parsed = picard.parse(file_name)
-        class_name = parsed['metrics']['class'].split('.')[2]
         dat = pd.DataFrame.from_dict(parsed['metrics']['contents'])
         dat.insert(0, 'Sample', cell_id)
         dat.to_csv(output_name + "_"+class_name+'.csv',index=False)

@@ -1,7 +1,7 @@
 task GroupQCOutputs {
   Array[File] picard_row_outputs
   Array[File] picard_table_outputs
-  File hisat_stats
+  File hisat2_stats
   File rsem_stats
   String output_name
   # Runtime
@@ -30,14 +30,16 @@ task GroupQCOutputs {
  command {
     set -e
     git clone --branch jx-ss2-bam-index https://github.com/HumanCellAtlas/skylab
-    python skylab/pipelines/smartseq2_single_sample/GroupQCOutputs.py -f ${sep=' ' picard_row_outputs}  -t "Picard" -o "${output_name}_Picard_group.csv"
-    python skylab/pipelines/smartseq2_single_sample/GroupQCOutputs.py -f ${hisat2_stats} -t "hisat2" -o "${output_name}_hisat2.csv"
-    python skylab/pipelines/smartseq2_single_sample/GroupQCOutputs.py -f ${rsem_stats} -t "rsem" -o "${output_name}_rsem.csv"
-    python skylab/pipelines/smartseq2_single_sample/GroupQCOutputs.py -f "${output_name}_Picard_group.csv ${output_name}_hisat2.csv ${output_name}_rsem.csv" -t "Core" -o "${output_name}_QCs.csv"
-    python skylab/pipelines/smartseq2_single_sample/GroupQCOutputs.py -f ${sep=' ' picard_table_outputs} -t "PicardTable" -o ${output_name}
+    python skylab/pipelines/smartseq2_single_sample/GroupQCOutputs.py -f ${sep=' ' picard_row_outputs}  -t Picard -o Picard_group
+    python skylab/pipelines/smartseq2_single_sample/GroupQCOutputs.py -f ${hisat2_stats} -t HISAT2 -o hisat2
+    python skylab/pipelines/smartseq2_single_sample/GroupQCOutputs.py -f ${rsem_stats} -t RSEM -o rsem
+    ls *
+    python skylab/pipelines/smartseq2_single_sample/GroupQCOutputs.py -f Picard_group.csv hisat2.csv rsem.csv -t Core -o "${output_name}_QCs"
+    python skylab/pipelines/smartseq2_single_sample/GroupQCOutputs.py -f ${sep=' ' picard_table_outputs} -t PicardTable -o "${output_name}"
 }
   output{
     File grouped_result = "${output_name}"
+    Array[File] gvcf_list = glob("${output_name}_*.csv")
   }
   runtime {
     docker: docker

@@ -1,7 +1,7 @@
 import "HISAT2.wdl" as HISAT2
 import "Picard.wdl" as Picard
 import "RSEM.wdl" as RSEM
-
+import "GroupMetricsOutputs.wdl" as GroupQCs
 workflow SmartSeq2SingleCell {
   meta {
     description: "Process SmartSeq2 scRNA-Seq data, include reads alignment, QC metrics collection, and gene expression quantitication"
@@ -106,7 +106,14 @@ workflow SmartSeq2SingleCell {
       output_basename = data_output_basename,
       max_retries = max_retries,
   }
-  
+  call GroupQCs.GroupQCOutputs {
+   input:
+      picard_row_outputs = [CollectMultipleMetrics.alignment_summary_metrics,CollectMultipleMetrics.insert_size_metrics,CollectDuplicationMetrics.dedup_metrics,CollectRnaMetrics.rna_metrics],
+      picard_table_outputs = [CollectMultipleMetrics.base_call_dist_metrics,CollectMultipleMetrics.gc_bias_detail_metrics,CollectMultipleMetrics.pre_adapter_details_metrics,CollectMultipleMetrics.bait_bias_detail_metrics,CollectMultipleMetrics.error_summary_metrics],
+      hisat2_stats = HISAT2PairedEnd.log_file,
+      rsem_stats = RSEMExpression.rsem_cnt,
+      output_name = output_name
+  }
   output {
     # quality control outputs
     File aligned_bam = HISAT2PairedEnd.output_bam
