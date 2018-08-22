@@ -88,7 +88,6 @@ workflow SmartSeq2SingleCell {
   }
 
   String data_output_basename = output_name + "_rsem"
-
   call HISAT2.HISAT2RSEM as HISAT2Transcriptome {
     input:
       hisat2_ref = hisat2_ref_trans_index,
@@ -107,7 +106,7 @@ workflow SmartSeq2SingleCell {
       output_basename = data_output_basename,
       max_retries = max_retries,
   }
-
+  
   output {
     # quality control outputs
     File aligned_bam = HISAT2PairedEnd.output_bam
