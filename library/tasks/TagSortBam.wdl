@@ -2,7 +2,7 @@ task CellSortBam {
   File bam_input
 
   # runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-samtools:v0.2.2-1.6"
+  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:0.2.0"
   Int machine_mem_mb = 7500
   Int cpu = 2
   Int disk = ceil(size(bam_input, "G") * 8)
@@ -24,7 +24,7 @@ task CellSortBam {
   command {
     set -e
 
-    samtools sort -t GE -t UB -t CB -o cell-sorted.bam "${bam_input}"
+    TagSortBam -i ${bam_input} -o cell-sorted.bam -t CB UB GE
   }
   
   runtime {
@@ -44,7 +44,7 @@ task GeneSortBam {
   File bam_input
 
   # runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-samtools:v0.2.2-1.6"
+  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:0.2.0"
   Int machine_mem_mb = 7500
   Int cpu = 2
   Int disk = ceil(size(bam_input, "G") * 4)
@@ -66,7 +66,7 @@ task GeneSortBam {
   command {
     set -e
 
-    samtools sort -t UB -t CB -t GE -o gene-sorted.bam "${bam_input}"
+    TagSortBam -i ${bam_input} -o gene-sorted.bam -t GE CB UB
   }
 
   runtime {
