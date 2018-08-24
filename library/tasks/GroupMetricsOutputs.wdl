@@ -5,7 +5,7 @@ task GroupQCOutputs {
   File rsem_stats
   String output_name
   # Runtime
-  String docker = "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.0.2"
+  String docker = "quay.io/humancellatlas/secondary-analysis-pipeline-tools:jx-ss2-group-qc"
   String mem = 2
   String cpu = 1
   String disks = 20 
@@ -29,13 +29,12 @@ task GroupQCOutputs {
   }
  command {
     set -e
-    git clone --branch jx-ss2-bam-index https://github.com/HumanCellAtlas/skylab
-    python skylab/pipelines/smartseq2_single_sample/GroupQCOutputs.py -f ${sep=' ' picard_row_outputs}  -t Picard -o Picard_group
-    python skylab/pipelines/smartseq2_single_sample/GroupQCOutputs.py -f ${hisat2_stats} -t HISAT2 -o hisat2
-    python skylab/pipelines/smartseq2_single_sample/GroupQCOutputs.py -f ${rsem_stats} -t RSEM -o rsem
-    python skylab/pipelines/smartseq2_single_sample/GroupQCOutputs.py -f Picard_group.csv hisat2.csv rsem.csv -t Core -o "${output_name}_QCs"
-    python skylab/pipelines/smartseq2_single_sample/GroupQCOutputs.py -f ${sep=' ' picard_table_outputs} -t PicardTable -o "${output_name}"
-    ls *
+    group-qc-outputs -f ${sep=' ' picard_row_outputs}  -t Picard -o Picard_group
+    group-qc-outputs -f ${hisat2_stats} -t HISAT2 -o hisat2
+    group-qc-outputs -f ${rsem_stats} -t RSEM -o rsem
+    group-qc-outputs -f Picard_group.csv hisat2.csv rsem.csv -t Core -o "${output_name}_QCs"
+    group-qc-outputs -f ${sep=' ' picard_table_outputs} -t PicardTable -o "${output_name}"
+    
 }
   output{
     Array[File] group_files = glob("${output_name}_*.csv")
