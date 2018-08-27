@@ -1,10 +1,24 @@
 workflow cellranger {
+
+    meta: {
+        description: "Analyze 3' single-cell RNA-seq data using the 10X Genomics Cellranger pipeline."
+    }
+
     String sampleId
     Array[File] fastqs
     String referenceName
     File transcriptomeTarGz
     Int? expectCells
     String diskSpace
+
+    parameter_meta {
+        sampleId: "Name of sample to run CellRanger count on"
+        fastqs: "Array of fastq files for running decoupled"
+        referenceName: "Reference name for count"
+        transcriptomeTarGz: "Cellranger transcriptome reference"
+        expectCells: "Expected number of recovered cells (defaults to 3000)"
+    }
+
     call CellRanger {
         input:
         sampleId = sampleId,
@@ -15,6 +29,7 @@ workflow cellranger {
         diskSpace = diskSpace
    }
 }
+
 task CellRanger {
     String sampleId
     Array[File] fastqs
@@ -22,6 +37,7 @@ task CellRanger {
     File transcriptomeTarGz
     Int? expectCells
     String diskSpace
+
     command {
         set -e
         mkdir transcriptome_dir
@@ -48,7 +64,8 @@ task CellRanger {
             call_args.append('--expect-cells=' + str(expect_cells))
         call(call_args)
         CODE
-        }
+    }
+
     output {
         File qc = "${sampleId}/outs/metrics_summary.csv"
         File sorted_bam = "${sampleId}/outs/possorted_genome_bam.bam"
