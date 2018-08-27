@@ -3,11 +3,6 @@ FROM ubuntu:16.04
 ## Install Variables
 ENV pyversion 2.7.13
 
-## Dependencies python 2.7.13
-## rust 1.19.0
-## clang 4.0.1
-## go 1.9
-
 ## Python
 RUN apt-get update && apt-get -y install build-essential checkinstall libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libc6-dev libbz2-dev wget make && wget https://www.python.org/ftp/python/${pyversion}/Python-${pyversion}.tgz && tar -xvf Python-${pyversion}.tgz
 WORKDIR Python-${pyversion}
