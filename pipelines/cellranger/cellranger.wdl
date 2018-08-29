@@ -59,17 +59,13 @@ task cellranger_count {
         # that contains fasta/genome.fa and genes/genes.gtf
         mkdir transcriptome_dir
         tar xf ${transcriptome_tar_gz} -C transcriptome_dir --strip-components 1
-        ln -s /usr/bin/python3 python
-        export PATH=$PATH:.
 
         python <<CODE
         import os
-        from subprocess import call
+        from subprocess import check_call
 
         # Get paths to fastq directories
-        dirs = dict()
-        for f in ["${sep='","' fastqs}"]:
-            dirs.setdefault(os.path.dirname(f), True)
+        fastq_dirs = set([os.path.dirname(f) for f in "${sep='","' fastqs}"])
 
         # Call cellranger count
         call_args = list()
@@ -78,14 +74,14 @@ task cellranger_count {
         call_args.append('--jobmode=local')
         call_args.append('--transcriptome=transcriptome_dir')
         call_args.append('--id=' + '${sample_id}')
-        call_args.append('--fastqs=' + ','.join(list(dirs.keys())))
+        call_args.append('--fastqs=' + ','.join(list(fastq_dirs)))
         call_args.append('--nosecondary')
         call_args.append('--disable-ui')
 
         expect_cells = '${expect_cells}'
         if expect_cells:
             call_args.append('--expect-cells=' + str(expect_cells))
-        call(call_args)
+        check_call(call_args)
 
         CODE
     }
