@@ -23,7 +23,7 @@ ENV PATH $PATH:/Python-${pyversion}:/usr/lib/go-1.9/bin:/root/.cargo/bin
 RUN rustup install 1.19.0 && rustup default 1.19.0
 
 ## CellRanger 2.1.1
-RUN apt-get -y install git && git clone https://github.com/samanehsan/cellranger.git
+RUN apt-get -y install git && git clone https://github.com/10XGenomics/cellranger.git
 WORKDIR cellranger
 RUN make
 WORKDIR /root
