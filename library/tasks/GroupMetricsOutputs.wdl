@@ -2,10 +2,11 @@ task GroupQCOutputs {
   Array[File] picard_row_outputs
   Array[File] picard_table_outputs
   File hisat2_stats
+  File hisat2_trans_stats
   File rsem_stats
   String output_name
   # Runtime
-  String docker = "quay.io/humancellatlas/secondary-analysis-pipeline-tools:jx-ss2-group-qc"
+  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:jx-ss2-group-qc"
   String mem = 2
   String cpu = 1
   String disks = 20 
@@ -29,11 +30,12 @@ task GroupQCOutputs {
   }
  command {
     set -e
-    group-qc-outputs -f ${sep=' ' picard_row_outputs}  -t Picard -o Picard_group
-    group-qc-outputs -f ${hisat2_stats} -t HISAT2 -o hisat2
-    group-qc-outputs -f ${rsem_stats} -t RSEM -o rsem
-    group-qc-outputs -f Picard_group.csv hisat2.csv rsem.csv -t Core -o "${output_name}_QCs"
-    group-qc-outputs -f ${sep=' ' picard_table_outputs} -t PicardTable -o "${output_name}"
+    GroupQCs -f ${sep=' ' picard_row_outputs}  -t Picard -o Picard_group
+    GroupQCs -f ${hisat2_stats} -t HISAT2 -o hisat2
+    GroupQCs -f ${hisat2_trans_stats} -t HISAT2 -o hisat2_trans
+    GroupQCs -f ${rsem_stats} -t RSEM -o rsem
+    GroupQCs -f Picard_group.csv hisat2.csv hisat2_trans.csv rsem.csv -t Core -o "${output_name}_QCs"
+    GroupQCs -f ${sep=' ' picard_table_outputs} -t PicardTable -o "${output_name}"
     
 }
   output{
