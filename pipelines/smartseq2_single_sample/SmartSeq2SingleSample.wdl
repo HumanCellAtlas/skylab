@@ -111,6 +111,7 @@ workflow SmartSeq2SingleCell {
   output {
     # quality control outputs
     File aligned_bam = HISAT2PairedEnd.output_bam
+    File bam_index = HISAT2PairedEnd.bam_index
     File hisat2_met_file = HISAT2PairedEnd.met_file
     File hisat2_log_file = HISAT2PairedEnd.log_file
     File alignment_summary_metrics = CollectMultipleMetrics.alignment_summary_metrics
@@ -132,7 +133,7 @@ workflow SmartSeq2SingleCell {
     File rna_metrics = CollectRnaMetrics.rna_metrics
     File rna_coverage = CollectRnaMetrics.rna_coverage_pdf
     File dedup_metrics = CollectDuplicationMetrics.dedup_metrics
-
+    
     # data outputs
     File aligned_transcriptome_bam = HISAT2Transcriptome.output_bam
     File hisat2_transcriptome_met_file = HISAT2Transcriptome.met_file
