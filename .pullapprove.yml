@@ -27,14 +27,14 @@ groups:
   computational-biologists:
     required: 1 # Require approval from at least one computational biologist
     conditions:
-      exclude:
-        - ENG-ONLY
+      labels:
+        exclude:
+          - ENG-ONLY
     users:
       - ambrosejcarr
       - jishuxu
       - mckinsel
       - mbabadi
-
 
   software-engineers:
     required: 1 # Require approval from at least one software engineer
