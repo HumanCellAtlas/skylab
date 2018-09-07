@@ -117,7 +117,7 @@ pouts <- list()
 for (ii in 1:length(metKeys)) {
   print(metKeys[ii])
   x <- as.numeric(met1.core[metKeys[ii], ])
-  y <- as.numeric(met2.core[metKeys[ii], ])
+  y <- as.numeric(format(met2.core[metKeys[ii], ],digits=4))
   z <- data.frame('Base' = x, 'Updated' = y)
   # linear regression model
   p1 <- plotlm(z)

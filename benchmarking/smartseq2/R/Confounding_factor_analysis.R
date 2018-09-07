@@ -166,8 +166,8 @@ mlist2 <- match(colnames(mat2.d), met2.h)
 met1 <- met1[, mlist1]
 met2 <- met2[, mlist2]
 
-met1<-apply(met1,1,function(x){as.numeric(x)})
-met2<-apply(met2,1,function(x){as.numeric(x)})
+met1<-apply(met1,1,function(x){as.numeric(format(x,digits = 4))})
+met2<-apply(met2,1,function(x){as.numeric(format(x,digits = 4))})
 
 #'
 #' ## Data Matrix Transformation
