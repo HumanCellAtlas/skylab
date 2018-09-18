@@ -2,6 +2,8 @@ workflow CellRanger {
     meta {
         description: "Analyze 3' single-cell RNA-seq data using the 10X Genomics Cellranger pipeline."
     }
+    # version of this pipeline
+    String version = "cellranger_v1.0.0"
 
     String sample_id
     Array[File] fastqs
@@ -38,6 +40,24 @@ workflow CellRanger {
         boot_disk_size_gb = boot_disk_size_gb,
         disk_space = disk_space,
         cpu = cpu
+   }
+
+   output {
+       # version of this pipeline
+       String pipeline_version = version
+
+       File qc = cellranger_count.qc
+       File sorted_bam = cellranger_count.sorted_bam
+       File sorted_bam_index = cellranger_count.sorted_bam_index
+       File barcodes = cellranger_count.barcodes
+       File genes = cellranger_count.genes
+       File matrix = cellranger_count.matrix
+       File filtered_gene_h5 = cellranger_count.filtered_gene_h5
+       File raw_gene_h5 = cellranger_count.raw_gene_h5
+       File raw_barcodes = cellranger_count.raw_barcodes
+       File raw_genes = cellranger_count.raw_genes
+       File raw_matrix = cellranger_count.raw_matrix
+       File mol_info_h5 = cellranger_count.mol_info_h5
    }
 }
 
