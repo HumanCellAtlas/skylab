@@ -2,35 +2,31 @@ import "HISAT2.wdl" as HISAT2
 import "Picard.wdl" as Picard
 import "RSEM.wdl" as RSEM
 import "GroupMetricsOutputs.wdl" as GroupQCs
+
 workflow SmartSeq2SingleCell {
   meta {
     description: "Process SmartSeq2 scRNA-Seq data, include reads alignment, QC metrics collection, and gene expression quantitication"
   }
   # version of this pipeline
   String version = "smartseq2_v2.0.0"
-
   # load annotation
   File gtf_file
   File genome_ref_fasta
   File rrna_intervals
   File gene_ref_flat
-
   # load index
   File hisat2_ref_index
   File hisat2_ref_trans_index
   File rsem_ref_index
-
   # ref index name
   String hisat2_ref_name
   String hisat2_ref_trans_name
-
   # samples
   String stranded
   String sample_name
   String output_name
   File fastq1
   File fastq2
-
   Int max_retries = 0
 
   parameter_meta {
@@ -90,6 +86,7 @@ workflow SmartSeq2SingleCell {
   }
 
   String data_output_basename = output_name + "_rsem"
+  
   call HISAT2.HISAT2RSEM as HISAT2Transcriptome {
     input:
       hisat2_ref = hisat2_ref_trans_index,
@@ -108,6 +105,7 @@ workflow SmartSeq2SingleCell {
       output_basename = data_output_basename,
       max_retries = max_retries,
   }
+
   call GroupQCs.GroupQCOutputs {
    input:
       picard_row_outputs = [CollectMultipleMetrics.alignment_summary_metrics,CollectMultipleMetrics.insert_size_metrics,CollectDuplicationMetrics.dedup_metrics,CollectRnaMetrics.rna_metrics,CollectMultipleMetrics.gc_bias_summary_metrics],
@@ -117,10 +115,10 @@ workflow SmartSeq2SingleCell {
       rsem_stats = RSEMExpression.rsem_cnt,
       output_name = output_name
   }
+
   output {
     # version of this pipeline
     String pipeline_version = version
-
     # quality control outputs
     File aligned_bam = HISAT2PairedEnd.output_bam
     File bam_index = HISAT2PairedEnd.bam_index
