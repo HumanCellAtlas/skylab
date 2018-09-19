@@ -3,5 +3,6 @@
   "ValidateSmartSeq2SingleCell.wdl": "test/smartseq2_single_sample/pr/ValidateSmartSeq2SingleCell.wdl",
   "HISAT2.wdl": "library/tasks/HISAT2.wdl",
   "Picard.wdl": "library/tasks/Picard.wdl",
-  "RSEM.wdl": "library/tasks/RSEM.wdl"
+  "RSEM.wdl": "library/tasks/RSEM.wdl",
+	"GroupMetricsOutputs.wdl": "library/tasks/GroupMetricsOutputs.wdl"
 }
