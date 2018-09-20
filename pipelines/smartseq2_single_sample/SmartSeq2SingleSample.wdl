@@ -1,6 +1,7 @@
 import "HISAT2.wdl" as HISAT2
 import "Picard.wdl" as Picard
 import "RSEM.wdl" as RSEM
+import "GroupMetricsOutputs.wdl" as GroupQCs
 
 workflow SmartSeq2SingleCell {
   meta {
@@ -8,29 +9,24 @@ workflow SmartSeq2SingleCell {
   }
   # version of this pipeline
   String version = "smartseq2_v2.0.0"
-
   # load annotation
   File gtf_file
   File genome_ref_fasta
   File rrna_intervals
   File gene_ref_flat
-
   # load index
   File hisat2_ref_index
   File hisat2_ref_trans_index
   File rsem_ref_index
-
   # ref index name
   String hisat2_ref_name
   String hisat2_ref_trans_name
-
   # samples
   String stranded
   String sample_name
   String output_name
   File fastq1
   File fastq2
-
   Int max_retries = 0
 
   parameter_meta {
@@ -90,7 +86,7 @@ workflow SmartSeq2SingleCell {
   }
 
   String data_output_basename = output_name + "_rsem"
-
+  
   call HISAT2.HISAT2RSEM as HISAT2Transcriptome {
     input:
       hisat2_ref = hisat2_ref_trans_index,
@@ -110,43 +106,31 @@ workflow SmartSeq2SingleCell {
       max_retries = max_retries,
   }
 
+  call GroupQCs.GroupQCOutputs {
+   input:
+      picard_row_outputs = [CollectMultipleMetrics.alignment_summary_metrics,CollectMultipleMetrics.insert_size_metrics,CollectDuplicationMetrics.dedup_metrics,CollectRnaMetrics.rna_metrics,CollectMultipleMetrics.gc_bias_summary_metrics],
+      picard_table_outputs = [CollectMultipleMetrics.base_call_dist_metrics,CollectMultipleMetrics.gc_bias_detail_metrics,CollectMultipleMetrics.pre_adapter_details_metrics,CollectMultipleMetrics.pre_adapter_summary_metrics,CollectMultipleMetrics.bait_bias_detail_metrics,CollectMultipleMetrics.error_summary_metrics],
+      hisat2_stats = HISAT2PairedEnd.log_file,
+      hisat2_trans_stats = HISAT2Transcriptome.log_file,
+      rsem_stats = RSEMExpression.rsem_cnt,
+      output_name = output_name
+  }
+
   output {
     # version of this pipeline
     String pipeline_version = version
-
     # quality control outputs
     File aligned_bam = HISAT2PairedEnd.output_bam
-    File hisat2_met_file = HISAT2PairedEnd.met_file
-    File hisat2_log_file = HISAT2PairedEnd.log_file
-    File alignment_summary_metrics = CollectMultipleMetrics.alignment_summary_metrics
-    File base_call_dist_metrics = CollectMultipleMetrics.base_call_dist_metrics
-    File base_call_pdf = CollectMultipleMetrics.base_call_pdf
-    File gc_bias_detail_metrics = CollectMultipleMetrics.gc_bias_detail_metrics
-    File gc_bias_dist_pdf = CollectMultipleMetrics.gc_bias_dist_pdf
-    File gc_bias_summary_metrics = CollectMultipleMetrics.gc_bias_summary_metrics
-    File insert_size_hist = CollectMultipleMetrics.insert_size_hist
+    File bam_index = HISAT2PairedEnd.bam_index
     File insert_size_metrics = CollectMultipleMetrics.insert_size_metrics
     File quality_distribution_metrics = CollectMultipleMetrics.quality_distribution_metrics
-    File quality_distribution_dist_pdf = CollectMultipleMetrics.quality_distribution_dist_pdf
     File quality_by_cycle_metrics = CollectMultipleMetrics.quality_by_cycle_metrics
-    File quality_by_cycle_pdf = CollectMultipleMetrics.quality_by_cycle_pdf
-    File pre_adapter_details_metrics = CollectMultipleMetrics.pre_adapter_details_metrics
-    File bait_bias_detail_metrics = CollectMultipleMetrics.bait_bias_detail_metrics
     File bait_bias_summary_metrics = CollectMultipleMetrics.bait_bias_summary_metrics
-    File error_summary_metrics = CollectMultipleMetrics.error_summary_metrics
     File rna_metrics = CollectRnaMetrics.rna_metrics
-    File rna_coverage = CollectRnaMetrics.rna_coverage_pdf
-    File dedup_metrics = CollectDuplicationMetrics.dedup_metrics
-
+    Array[File] group_results = GroupQCOutputs.group_files
     # data outputs
     File aligned_transcriptome_bam = HISAT2Transcriptome.output_bam
-    File hisat2_transcriptome_met_file = HISAT2Transcriptome.met_file
-    File hisat2_transcriptome_log_file = HISAT2Transcriptome.log_file
     File rsem_gene_results = RSEMExpression.rsem_gene
     File rsem_isoform_results = RSEMExpression.rsem_isoform
-    File rsem_time_log = RSEMExpression.rsem_time
-    File rsem_cnt_log = RSEMExpression.rsem_cnt
-    File rsem_model_log = RSEMExpression.rsem_model
-    File rsem_theta_log = RSEMExpression.rsem_theta
   }
 }

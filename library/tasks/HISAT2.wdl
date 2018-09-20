@@ -73,6 +73,7 @@ task HISAT2PairedEnd {
       --secondary \
       -p ${cpu} -S ${output_basename}.sam
     samtools sort -@ ${cpu} -O bam -o "${output_basename}.bam" "${output_basename}.sam"
+    samtools index "${output_basename}.bam"
   }
 
   runtime {
@@ -88,6 +89,7 @@ task HISAT2PairedEnd {
     File log_file = "${output_basename}.log"
     File met_file = "${output_basename}.hisat2.met.txt"
     File output_bam = "${output_basename}.bam"
+    File bam_index = "${output_basename}.bam.bai"
   }
 }
 
