@@ -6,7 +6,7 @@ workflow TestSmartSeq2SingleCellPR {
 
   # expected hashes of target_workflow outputs
   String expected_counts_hash
-  String expected_alignment_summary_metrics_hash
+  String expected_metrics_hash
 
   # SS2 inputs
   File gtf_file
@@ -46,8 +46,8 @@ workflow TestSmartSeq2SingleCellPR {
     input:
      counts = target_workflow.rsem_gene_results,
      expected_counts_hash = expected_counts_hash,
-     alignment_summary_metrics = target_workflow.alignment_summary_metrics,
-     expected_alignment_summary_metrics_hash = expected_alignment_summary_metrics_hash
+     target_metrics = target_workflow.insert_size_metrics,
+     expected_metrics_hash = expected_metrics_hash
   }
 
 }

@@ -2,8 +2,8 @@ task ValidateSmartSeq2SingleCell {
       File counts
       String expected_counts_hash
 
-      File alignment_summary_metrics
-      String expected_alignment_summary_metrics_hash
+      File target_metrics
+      String expected_metrics_hash
 
   command <<<
 
@@ -16,15 +16,15 @@ task ValidateSmartSeq2SingleCell {
     counts_hash=$(cut -f 1-7 "${counts}" | md5sum | awk '{print $1}')
 
     # this parses the picard metrics file with awk to remove all the run-specific comment lines (#)
-    picard_metrics_hash=$(cat "${alignment_summary_metrics}" | awk 'NF && $1!~/^#/' | md5sum | awk '{print $1}')
+    target_metrics_hash=$(cat "${target_metrics}" | awk 'NF && $1!~/^#/' | md5sum | awk '{print $1}')
 
     if [ "$counts_hash" != "${expected_counts_hash}" ]; then
       >&2 echo "counts_hash ($counts_hash) did not match expected hash (${expected_counts_hash})"
       fail=true
     fi
 
-    if [ "$picard_metrics_hash" != "${expected_alignment_summary_metrics_hash}" ]; then
-      >&2 echo "picard_metrics_hash ($picard_metrics_hash) did not match expected hash (${expected_alignment_summary_metrics_hash})"
+    if [ "$target_metrics_hash" != "${expected_metrics_hash}" ]; then
+      >&2 echo "target_metrics_hash ($target_metrics_hash) did not match expected hash (${expected_metrics_hash})"
       fail=true
     fi
 
