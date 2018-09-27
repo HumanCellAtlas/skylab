@@ -1,30 +1,65 @@
+version 1.0
+
+
+workflow BuildCellRangerRef {
+  input {
+    String ref_fasta
+    String gtf_file
+    String ref_name
+  }
+
+  call BuildCellRangerReference {
+    input:
+      ref_fasta = ref_fasta,
+      gtf_file = gtf_file,
+      ref_name = ref_name
+  }
+
+  output {
+    File cellranger_ref = BuildCellRangerReference.cellRangerRef
+  }
+}
+
 task BuildCellRangerReference {
-  String ref_fasta
-  String gtf_file
-  String ref_name
+  input {
+    String ref_fasta
+    String gtf_file
+    String ref_name
 
-  String docker = "quay.io/humancellatlas/secondary-analysis-cellranger"
-  String memory = "416 GB"
-  Int boot_disk_size_gb = 12
-  String disk_space = "250"
-  Int cpu = 64
+    String docker = "quay.io/humancellatlas/secondary-analysis-cellranger:v1.0.0"
+    String memory = "57 GB"
+    Int boot_disk_size_gb = 12
+    Int disk_space = 50
+    Int cpu = 64
+  }
+  parameter_meta {
+    ref_fasta: "Genome reference in fasta format"
+    gtf_file: "Gene annotation file in gtf format"
+    disk_space: "(optional) the amount of disk space (GB) to provision for this task"
+    ref_name: "The expected file name of the output reference"
+    docker: "(optional) the docker image containing the runtime environment for this task"
+    boot_disk_size_gb: "(optional) the amount of space (GB) of boot disk to provision for this task"
+    cpu: "(optional) the number of cpus to provision for this task"
+    memory: "(optional) the amount of memory (MB) to provision for this task"
+  }
 
-  command {
-    set -e
+  command <<<
 
-    wget ${ref_fasta}
-    ref_fasta_tar_filename=$(echo ${ref_fasta} | sed 's:.*/::')
-    gunzip $ref_fasta_tar_filename
+    set -euo pipefail
 
-    ref_fasta_filename=$(echo "$ref_fasta_tar_filename" | rev | cut -c4- | rev)
+    ref_fasta_filename="$(basename "~{ref_fasta}")"
+    ref_fasta_filename="${ref_fasta_filename%.gz}"
+    wget -q -O - "~{ref_fasta}"| zcat > "$ref_fasta_filename"
 
-    wget ${gtf_file}
-    gtf_tar_filename=$(echo ${gtf_file} | sed 's:.*/::')
-    gunzip $gtf_tar_filename
+    wget ~{gtf_file}
+    gtf_filename="$(basename "~{gtf_file}")"
+    gtf_filename="${gtf_filename%.gz}"
+    wget -q -O - "~{gtf_file}"| zcat > "$gtf_filename"
 
-    gtf_filename=$(echo "$gtf_tar_filename" | rev | cut -c4- | rev)
+    # The reference building process follows the instructions from
+    # https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/advanced/references
 
-    cellranger mkgtf $gtf_filename "filtered.$gtf_filename" \
+    cellranger mkgtf "$gtf_filename" "filtered.$gtf_filename" \
                      --attribute=gene_biotype:protein_coding \
                      --attribute=gene_biotype:lincRNA \
                      --attribute=gene_biotype:antisense \
@@ -49,32 +84,19 @@ task BuildCellRangerReference {
                      --genes="filtered.$gtf_filename" \
                      --nthreads=$(getconf _NPROCESSORS_ONLN)
 
-    tar cvf ${ref_name}.tar GRCh38/
-  }
+    tar cvf "~{ref_name}.tar" GRCh38/
+
+  >>>
+
   runtime {
-    docker: docker
-    memory: memory
     bootDiskSizeGb: boot_disk_size_gb
-    disks: "local-disk " + disk_space + " HDD"
+    disks: "local-disk ${disk_space} HDD"
+    docker: docker
     cpu: cpu
+    memory: memory
   }
+
   output {
     File cellRangerRef = "${ref_name}.tar"
-  }
-}
-
-workflow BuildCellRangerRef {
-  String fasta
-  String gtf
-  String ref_name
-
-  call BuildCellRangerReference {
-    input:
-      ref_fasta = fasta,
-      gtf_file = gtf,
-      ref_name = ref_name
-  }
-  output {
-    File cellranger_ref = BuildCellRangerReference.cellRangerRef
   }
 }

@@ -107,7 +107,7 @@ task cellranger_count {
     }
 
     runtime {
-        docker: "quay.io/humancellatlas/secondary-analysis-cellranger"
+        docker: "quay.io/humancellatlas/secondary-analysis-cellranger:v1.0.0"
         memory: memory
         bootDiskSizeGb: boot_disk_size_gb
         disks: "local-disk " + disk_space + " HDD"
