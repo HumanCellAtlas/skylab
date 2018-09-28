@@ -2,6 +2,10 @@ version 1.0
 
 
 workflow BuildCellRangerRef {
+  meta {
+    description: "Accessory workflow for builing the reference for CellRanger pipeline."
+  }
+
   input {
     String ref_fasta
     String gtf_file
@@ -44,6 +48,11 @@ task BuildCellRangerReference {
   }
 
   command <<<
+    # This block will do the following works:
+    # - Download the gz files of fasta and gtf data according to the URL in the workflow JSON input
+    # - Gunzip them and get the name of the files without ".gz"
+    # - Filter the GTF file with cellranger
+    # - Make the reference with cellranger
 
     set -euo pipefail
 
