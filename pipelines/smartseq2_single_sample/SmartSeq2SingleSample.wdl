@@ -2,6 +2,7 @@ import "HISAT2.wdl" as HISAT2
 import "Picard.wdl" as Picard
 import "RSEM.wdl" as RSEM
 import "GroupMetricsOutputs.wdl" as GroupQCs
+import "ZarrUtils.wdl" as ZarrUtils
 
 workflow SmartSeq2SingleCell {
   meta {
@@ -116,6 +117,13 @@ workflow SmartSeq2SingleCell {
       output_name = output_name
   }
 
+  call ZarrUtils.SmartSeq2ZarrConversion{
+    input:
+      zarr_output="${sample_name}.zarr",
+      smartseq_output_folder=<analysis bundle path>,
+      sample_id=sample_name
+  }
+
   output {
     # version of this pipeline
     String pipeline_version = version
@@ -132,5 +140,8 @@ workflow SmartSeq2SingleCell {
     File aligned_transcriptome_bam = HISAT2Transcriptome.output_bam
     File rsem_gene_results = RSEMExpression.rsem_gene
     File rsem_isoform_results = RSEMExpression.rsem_isoform
+
+    # zarr
+    File zarr_output = SmartSeq2ZarrConversion.zarr_output
   }
 }
