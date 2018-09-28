@@ -10,13 +10,35 @@ workflow BuildCellRangerRef {
     String ref_fasta
     String gtf_file
     String ref_name
+
+    String docker = "quay.io/humancellatlas/secondary-analysis-cellranger:v1.0.0"
+    String memory = "57 GB"
+    Int boot_disk_size_gb = 12
+    Int disk_space = 50
+    Int cpu = 64
+  }
+
+  parameter_meta {
+    ref_fasta: "Genome reference in fasta format"
+    gtf_file: "Gene annotation file in gtf format"
+    disk_space: "(optional) the amount of disk space (GB) to provision for this task"
+    ref_name: "The expected file name of the output reference"
+    docker: "(optional) the docker image containing the runtime environment for this task"
+    boot_disk_size_gb: "(optional) the amount of space (GB) of boot disk to provision for this task. Note: due to the large boot disk space the cellranger image requires, this number should be at least greater than 10."
+    cpu: "(optional) the number of cpus to provision for this task"
+    memory: "(optional) the amount of memory (MB) to provision for this task"
   }
 
   call BuildCellRangerReference {
     input:
       ref_fasta = ref_fasta,
       gtf_file = gtf_file,
-      ref_name = ref_name
+      ref_name = ref_name,
+      docker=docker,
+      memory = memory,
+      boot_disk_size_gb = boot_disk_size_gb,
+      disk_space = disk_space,
+      cpu = cpu
   }
 
   output {
@@ -30,21 +52,11 @@ task BuildCellRangerReference {
     String gtf_file
     String ref_name
 
-    String docker = "quay.io/humancellatlas/secondary-analysis-cellranger:v1.0.0"
-    String memory = "57 GB"
-    Int boot_disk_size_gb = 12
-    Int disk_space = 50
-    Int cpu = 64
-  }
-  parameter_meta {
-    ref_fasta: "Genome reference in fasta format"
-    gtf_file: "Gene annotation file in gtf format"
-    disk_space: "(optional) the amount of disk space (GB) to provision for this task"
-    ref_name: "The expected file name of the output reference"
-    docker: "(optional) the docker image containing the runtime environment for this task"
-    boot_disk_size_gb: "(optional) the amount of space (GB) of boot disk to provision for this task"
-    cpu: "(optional) the number of cpus to provision for this task"
-    memory: "(optional) the amount of memory (MB) to provision for this task"
+    String docker
+    String memory
+    Int boot_disk_size_gb
+    Int disk_space
+    Int cpu
   }
 
   command <<<
