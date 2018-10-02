@@ -1,6 +1,6 @@
-import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/dockstore/library/tasks/HISAT2.wdl" as HISAT2
-import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/dockstore/library/tasks/Picard.wdl" as Picard
-import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/dockstore/library/tasks/RSEM.wdl" as RSEM
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/rm_httpImports/library/tasks/HISAT2.wdl" as HISAT2
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/rm_httpImports/library/tasks/Picard.wdl" as Picard
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/rm_httpImports/library/tasks/RSEM.wdl" as RSEM
 
 workflow SmartSeq2SingleCell {
   meta {
