@@ -1,7 +1,7 @@
 version 1.0
 
 
-workflow BuildCellRangerRef {
+workflow BuildCellRangerGencodeRef {
   meta {
     description: "Accessory workflow for builing the reference for CellRanger pipeline."
   }
@@ -12,10 +12,10 @@ workflow BuildCellRangerRef {
     String ref_name
 
     String docker = "quay.io/humancellatlas/secondary-analysis-cellranger:v1.0.0"
-    String memory = "57 GB"
+    String memory = "30 GB"
     Int boot_disk_size_gb = 12
     Int disk_space = 50
-    Int cpu = 64
+    Int cpu = 8
   }
 
   parameter_meta {
@@ -29,7 +29,7 @@ workflow BuildCellRangerRef {
     memory: "(optional) the amount of memory (MB) to provision for this task"
   }
 
-  call BuildCellRangerReference {
+  call BuildCellRangerGencodeReference {
     input:
       ref_fasta = ref_fasta,
       gtf_file = gtf_file,
@@ -42,11 +42,11 @@ workflow BuildCellRangerRef {
   }
 
   output {
-    File cellranger_ref = BuildCellRangerReference.cellRangerRef
+    File cellranger_ref = BuildCellRangerGencodeReference.cellRangerRef
   }
 }
 
-task BuildCellRangerReference {
+task BuildCellRangerGencodeReference {
   input {
     String ref_fasta
     String gtf_file

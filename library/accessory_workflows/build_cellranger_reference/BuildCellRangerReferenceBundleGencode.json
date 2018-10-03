@@ -1,5 +1,5 @@
 {
-  "BuildCellRangerRef.ref_fasta": "ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_27/GRCh38.primary_assembly.genome.fa.gz",
-  "BuildCellRangerRef.gtf_file": "ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_27/gencode.v27.primary_assembly.annotation.gtf.gz",
-  "BuildCellRangerRef.ref_name": "GRCh38_cellranger_gencode_v27"
+  "BuildCellRangerGencodeRef.ref_fasta": "ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_27/GRCh38.primary_assembly.genome.fa.gz",
+  "BuildCellRangerGencodeRef.gtf_file": "ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_27/gencode.v27.primary_assembly.annotation.gtf.gz",
+  "BuildCellRangerGencodeRef.ref_name": "GRCh38_cellranger_gencode_v27"
 }
