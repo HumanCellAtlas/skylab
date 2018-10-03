@@ -5,7 +5,7 @@ task Attach10xBarcodes {
   File whitelist
 
   # runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:0.1.9"
+  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:0.2.0"
   Int machine_mem_mb = 7500
   Int cpu = 2
   # estimate that bam is approximately the size of all inputs plus 50%
