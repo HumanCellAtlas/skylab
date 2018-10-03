@@ -79,6 +79,7 @@ task BuildCellRangerReference {
 
     # The reference building process follows the instructions from
     # https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/advanced/references
+    # Gencode use 'gene_type' as attribute name instead of 'gene_biotype' in Ensembl
 
     cellranger mkgtf "$gtf_filename" "filtered.$gtf_filename" \
         --attribute=gene_type:protein_coding \
