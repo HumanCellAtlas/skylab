@@ -1,0 +1,11 @@
+{
+  "CellRanger.sample_id": "synthetic",
+  "CellRanger.fastqs": [
+    "gs://hca-dcp-mint-test-data/10x/synthetic/synthetic_S1_L007_R1_001.fastq.gz",
+    "gs://hca-dcp-mint-test-data/10x/synthetic/synthetic_S1_L007_R2_001.fastq.gz",
+    "gs://hca-dcp-mint-test-data/10x/synthetic/synthetic_S1_L007_I1_001.fastq.gz"
+  ],
+  "CellRanger.reference_name": "GRCh38",
+  "CellRanger.transcriptome_tar_gz": "gs://hca-dcp-mint-test-data/reference/GRCh38_Ensembl/GRCh38_cellranger_ensembl_91.tar",
+  "CellRanger.expect_cells": "5000"
+}

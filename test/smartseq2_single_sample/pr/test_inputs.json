@@ -14,5 +14,5 @@
   "TestSmartSeq2SingleCellPR.sample_name":"SRR1294925",
   "TestSmartSeq2SingleCellPR.output_name":"SRR1294925",
   "TestSmartSeq2SingleCellPR.expected_counts_hash": "135a3fbb959583db17713dc8b9d7fe33",
-  "TestSmartSeq2SingleCellPR.expected_alignment_summary_metrics_hash": "80a5c00f425367a3855cad81b89f3a3c"
+  "TestSmartSeq2SingleCellPR.expected_metrics_hash": "99bd9903ac8dc77eb1c047ffa8eb42ed"
 }

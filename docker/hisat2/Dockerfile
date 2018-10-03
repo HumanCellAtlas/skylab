@@ -37,7 +37,7 @@ RUN \
   make && \
   cp hisat2* /usr/local/bin
 
-COPY  ./make_grch38_snp_tran_*.sh hisat2-2.1.0/
+COPY  ./*.sh hisat2-2.1.0/
 # set ENV PATH, run hisat2 by type 'HISAT2' from cmd
 ENV PATH="/opt/tools/hisat2-2.1.0:${PATH}"
 
