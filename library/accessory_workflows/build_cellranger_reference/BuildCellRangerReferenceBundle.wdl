@@ -102,23 +102,23 @@ task BuildCellRangerReference {
                      --attribute=gene_biotype:TR_C_gene
     elif [[ "~{ref_source}"=="Gencode" ]]; then
       cellranger mkgtf "$gtf_filename" "filtered.$gtf_filename" \
-        --attribute=gene_type:protein_coding \
-        --attribute=gene_type:lincRNA \
-        --attribute=gene_type:antisense_RNA \
-        --attribute=gene_type:IG_LV_gene \
-        --attribute=gene_type:IG_V_gene \
-        --attribute=gene_type:IG_V_pseudogene \
-        --attribute=gene_type:IG_D_gene \
-        --attribute=gene_type:IG_J_gene \
-        --attribute=gene_type:IG_J_pseudogene \
-        --attribute=gene_type:IG_C_gene \
-        --attribute=gene_type:IG_C_pseudogene \
-        --attribute=gene_type:TR_V_gene \
-        --attribute=gene_type:TR_V_pseudogene \
-        --attribute=gene_type:TR_D_gene \
-        --attribute=gene_type:TR_J_gene \
-        --attribute=gene_type:TR_J_pseudogene \
-        --attribute=gene_type:TR_C_gene
+                    --attribute=gene_type:protein_coding \
+                    --attribute=gene_type:lincRNA \
+                    --attribute=gene_type:antisense_RNA \
+                    --attribute=gene_type:IG_LV_gene \
+                    --attribute=gene_type:IG_V_gene \
+                    --attribute=gene_type:IG_V_pseudogene \
+                    --attribute=gene_type:IG_D_gene \
+                    --attribute=gene_type:IG_J_gene \
+                    --attribute=gene_type:IG_J_pseudogene \
+                    --attribute=gene_type:IG_C_gene \
+                    --attribute=gene_type:IG_C_pseudogene \
+                    --attribute=gene_type:TR_V_gene \
+                    --attribute=gene_type:TR_V_pseudogene \
+                    --attribute=gene_type:TR_D_gene \
+                    --attribute=gene_type:TR_J_gene \
+                    --attribute=gene_type:TR_J_pseudogene \
+                    --attribute=gene_type:TR_C_gene
     else
       exit 1;
     fi
@@ -126,7 +126,6 @@ task BuildCellRangerReference {
                      --fasta="$ref_fasta_filename" \
                      --genes="filtered.$gtf_filename" \
                      --nthreads=$(getconf _NPROCESSORS_ONLN)
-
     tar cvf "~{ref_name}.tar" GRCh38/
 
   >>>
