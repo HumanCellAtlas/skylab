@@ -119,9 +119,9 @@ workflow SmartSeq2SingleCell {
 
   call ZarrUtils.SmartSeq2ZarrConversion{
     input:
-      zarr_output="${sample_name}.zarr",
-      smartseq_output_folder=<analysis bundle path>,
-      sample_id=sample_name
+      rsem_gene_results = RSEMExpression.rsem_gene,
+      smartseq_qc_files = GroupQCOutputs.group_files,
+      sample_name=sample_name
   }
 
   output {
@@ -142,6 +142,6 @@ workflow SmartSeq2SingleCell {
     File rsem_isoform_results = RSEMExpression.rsem_isoform
 
     # zarr
-    File zarr_output = SmartSeq2ZarrConversion.zarr_output
+    Array [File] zarr_output_files = SmartSeq2ZarrConversion.zarr_output_files
   }
 }

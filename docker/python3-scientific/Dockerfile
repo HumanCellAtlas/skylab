@@ -20,3 +20,10 @@ RUN pip3 install \
     tables==3.4.2 \
     numcodecs==0.5.5 \
     zarr==2.2.0
+
+RUN mkdir /tools
+
+WORKDIR /tools
+
+COPY create_zarr_ss2.py .
+
