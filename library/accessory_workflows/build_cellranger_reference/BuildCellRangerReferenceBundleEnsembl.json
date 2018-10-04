@@ -1,5 +1,6 @@
 {
-  "BuildCellRangerEnsemblRef.ref_fasta": "ftp://ftp.ensembl.org/pub/release-84/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz",
-  "BuildCellRangerEnsemblRef.gtf_file": "ftp://ftp.ensembl.org/pub/release-91/gtf/homo_sapiens/Homo_sapiens.GRCh38.91.gtf.gz",
-  "BuildCellRangerEnsemblRef.ref_name": "GRCh38_cellranger_ensembl_91"
+  "BuildCellRangerRef.ref_fasta": "ftp://ftp.ensembl.org/pub/release-84/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz",
+  "BuildCellRangerRef.gtf_file": "ftp://ftp.ensembl.org/pub/release-91/gtf/homo_sapiens/Homo_sapiens.GRCh38.91.gtf.gz",
+  "BuildCellRangerRef.ref_name": "GRCh38_cellranger_ensembl_91",
+	"BuildCellRangerRef.reference_source": "Ensembl"
 }

@@ -1,7 +1,7 @@
 version 1.0
 
 
-workflow BuildCellRangerEnsemblRef {
+workflow BuildCellRangerRef {
   meta {
     description: "Accessory workflow for builing the reference for CellRanger pipeline."
   }
@@ -10,12 +10,13 @@ workflow BuildCellRangerEnsemblRef {
     String ref_fasta
     String gtf_file
     String ref_name
+    String ref_source
 
     String docker = "quay.io/humancellatlas/secondary-analysis-cellranger:v1.0.0"
     String memory = "30 GB"
     Int boot_disk_size_gb = 12
     Int disk_space = 50
-    Int cpu = 8
+    Int cpu = 8 
   }
 
   parameter_meta {
@@ -29,29 +30,30 @@ workflow BuildCellRangerEnsemblRef {
     memory: "(optional) the amount of memory (MB) to provision for this task"
   }
 
-  call BuildCellRangerEnsemblReference {
+  call BuildCellRangerReference {
     input:
       ref_fasta = ref_fasta,
       gtf_file = gtf_file,
       ref_name = ref_name,
-      docker=docker,
+      docker = docker,
       memory = memory,
       boot_disk_size_gb = boot_disk_size_gb,
       disk_space = disk_space,
-      cpu = cpu
+      cpu = cpu,
+      ref_source = ref_source
   }
 
   output {
-    File cellranger_ref = BuildCellRangerEnsemblReference.cellRangerRef
+    File cellranger_ref = BuildCellRangerReference.cellRangerRef
   }
 }
 
-task BuildCellRangerEnsemblReference {
+task BuildCellRangerReference {
   input {
     String ref_fasta
     String gtf_file
     String ref_name
-
+    String ref_source
     String docker
     String memory
     Int boot_disk_size_gb
@@ -79,8 +81,8 @@ task BuildCellRangerEnsemblReference {
 
     # The reference building process follows the instructions from
     # https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/advanced/references
-
-    cellranger mkgtf "$gtf_filename" "filtered.$gtf_filename" \
+    if [[ "~{ref_source}"=="Ensembl" ]]; then
+      cellranger mkgtf "$gtf_filename" "filtered.$gtf_filename" \
                      --attribute=gene_biotype:protein_coding \
                      --attribute=gene_biotype:lincRNA \
                      --attribute=gene_biotype:antisense \
@@ -98,8 +100,28 @@ task BuildCellRangerEnsemblReference {
                      --attribute=gene_biotype:TR_J_gene \
                      --attribute=gene_biotype:TR_J_pseudogene \
                      --attribute=gene_biotype:TR_C_gene
-
-
+    elif [[ "~{ref_source}"=="Gencode" ]]; then
+      cellranger mkgtf "$gtf_filename" "filtered.$gtf_filename" \
+        --attribute=gene_type:protein_coding \
+        --attribute=gene_type:lincRNA \
+        --attribute=gene_type:antisense_RNA \
+        --attribute=gene_type:IG_LV_gene \
+        --attribute=gene_type:IG_V_gene \
+        --attribute=gene_type:IG_V_pseudogene \
+        --attribute=gene_type:IG_D_gene \
+        --attribute=gene_type:IG_J_gene \
+        --attribute=gene_type:IG_J_pseudogene \
+        --attribute=gene_type:IG_C_gene \
+        --attribute=gene_type:IG_C_pseudogene \
+        --attribute=gene_type:TR_V_gene \
+        --attribute=gene_type:TR_V_pseudogene \
+        --attribute=gene_type:TR_D_gene \
+        --attribute=gene_type:TR_J_gene \
+        --attribute=gene_type:TR_J_pseudogene \
+        --attribute=gene_type:TR_C_gene
+    else
+      exit 1;
+    fi
     cellranger mkref --genome=GRCh38 \
                      --fasta="$ref_fasta_filename" \
                      --genes="filtered.$gtf_filename" \
