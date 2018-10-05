@@ -1,7 +1,6 @@
 import argparse
 import csv
-import sys
-import re, logging
+import logging
 import numpy
 import zarr
 from zarr import Blosc
@@ -17,7 +16,7 @@ ZARR_GROUP = {
 COMPRESSOR = Blosc(cname='lz4', clevel=5, shuffle=Blosc.SHUFFLE, blocksize=0)
 
 
-def init_zarr(sample_id, path, fileformat):
+def init_zarr(sample_id, path, file_format):
     """Initializes the zarr output
     Args:
         sample_id (str): sample or cell id
@@ -28,10 +27,10 @@ def init_zarr(sample_id, path, fileformat):
     """
 
     store = None
-    if fileformat == "DirectoryStore":
+    if file_format == "DirectoryStore":
         store = zarr.DirectoryStore(path)
 
-    if fileformat == "ZipStore":
+    if file_format == "ZipStore":
         store = zarr.ZipStore(path, mode='w')
 
     # create the root group
@@ -43,12 +42,12 @@ def init_zarr(sample_id, path, fileformat):
 
     # now iterate through list of expected groups and create them
     for data in ZARR_GROUP.keys():
-        datagroup = root.create_group(data, overwrite=True)
+        root.create_group(data, overwrite=True)
 
     return root
 
 
-def read_and_convert_QC(datagroup, input_files_string):
+def read_and_convert_QC(data_group, input_files_string):
     """Converts the QC of Smart Seq2 gene file pipeline outputs to zarr file
     Args:
         datagroup (zarr.hierarchy.Group): zarr group to add the datasets
@@ -61,17 +60,15 @@ def read_and_convert_QC(datagroup, input_files_string):
 
     # we expect only one, write an warning 
     if len(relevant_qc_files) != 1:
-        logging.warning(sys.stderr.write("WARNING: Multiple files ending with _QCs.csv. Expected only one"))
+        logging.warning("WARNING: Multiple files ending with _QCs.csv. Expected only one")
 
     # read the QC values
-    QC_values = []
     with open(relevant_qc_files[0], 'r') as f:
         QC_values = [row for row in csv.reader(f)]
 
-
     # Metrics
     # first value is the row name so we remove it"""
-    datagroup.create_dataset(
+    data_group.create_dataset(
         "qc_metric",
         shape=(1, len(QC_values[0][1:])),
         compressor=COMPRESSOR,
@@ -81,7 +78,7 @@ def read_and_convert_QC(datagroup, input_files_string):
     )
 
     # Values, which are the values of the metrics
-    datagroup.create_dataset(
+    data_group.create_dataset(
         "qc_values",
         shape=(1, len(QC_values[2][1:])),
         compressor=COMPRESSOR,
@@ -91,7 +88,7 @@ def read_and_convert_QC(datagroup, input_files_string):
     )
 
     # Cell IDs
-    datagroup.create_dataset(
+    data_group.create_dataset(
         "cell_id",
         shape=(1, len(QC_values[2][0:1])),
         compressor=COMPRESSOR,
@@ -101,10 +98,10 @@ def read_and_convert_QC(datagroup, input_files_string):
     )
 
 
-def read_and_convert_expression(datagroup, input_path):
+def read_and_convert_expression(data_group, input_path):
     """Converts the Smart Seq2 gene file pipeline outputs to zarr file
     Args:
-        datagroup (zarr.hierarchy.Group): databroup object for the zarr
+        data_group (zarr.hierarchy.Group): databroup object for the zarr
         input_path (str): file where the SS2 pipeline expression counts are
     """
     reader = csv.DictReader(open(input_path), delimiter="\t")
@@ -114,7 +111,7 @@ def read_and_convert_expression(datagroup, input_path):
         expression_values[row["gene_id"]] = float(row["TPM"])
 
     # TPM
-    datagroup.create_dataset(
+    data_group.create_dataset(
         "expression",
         shape=(1, len(expression_values)),
         compressor=COMPRESSOR,
@@ -124,7 +121,7 @@ def read_and_convert_expression(datagroup, input_path):
     )
 
     # Gene IDs
-    datagroup.create_dataset(
+    data_group.create_dataset(
         "gene_id",
         shape=(1, len(expression_values)),
         compressor=COMPRESSOR,
@@ -135,24 +132,25 @@ def read_and_convert_expression(datagroup, input_path):
 
 
 def create_zarr_files(sample_id, qc_analysis_output_files_string, rsem_genes_results_file, output_zarr_path,
-                      fileformat = "DirectoryStore"):
-    """This function creates the zarr file or folder structure in output_zarr_path in format fileformat,
+                      file_format="DirectoryStore"):
+    """This function creates the zarr file or folder structure in output_zarr_path in format file_format,
         with sample_id from the input folder analysis_output_path
     Args:
         sample_id (str): sample or cell id
-        qc_analysis_output_files_string (str): a string with the file names in the QCGroup of SS2 pipeline output, separated by commas
+        qc_analysis_output_files_string (str): a string with the file names in the QCGroup of SS2 pipeline output,
+            separated by commas
         rsem_genes_results_file (str): the file for the expression count
         output_zarr_path (str): location of the output zarr
-        fileformat (str): zarr file format  [DirectoryStore or ZipStore ] Default: DirectoryStore
+        file_format (str): zarr file format  [DirectoryStore or ZipStore ] Default: DirectoryStore
     """
     # initiate the zarr file
-    rootgroup = init_zarr(sample_id, output_zarr_path, fileformat)
+    root_group = init_zarr(sample_id, output_zarr_path, file_format)
 
     # add the the gene/TMP counts
-    read_and_convert_expression(rootgroup['expression_matrix'], rsem_genes_results_file)
+    read_and_convert_expression(root_group['expression_matrix'], rsem_genes_results_file)
 
     # add the the QC metrics
-    read_and_convert_QC(rootgroup['expression_matrix'], qc_analysis_output_files_string)
+    read_and_convert_QC(root_group['expression_matrix'], qc_analysis_output_files_string)
 
 
 def main():
@@ -163,7 +161,7 @@ def main():
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument('--qc_analysis_output_files_string',
                         dest="qc_analysis_output_files_string",
-                        help='a string, list of files from the GroupQCOutputs task of SS2 Sin Samp workflow')
+                        help='a string, list of files from the GroupQCOutputs task of SS2 Single Sample workflow')
 
     parser.add_argument('--rsem_genes_results',
                         dest="rsem_genes_results",

@@ -2,9 +2,12 @@ task SmartSeq2ZarrConversion {
 
   #runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.1.6_zarr_test"
-  File rsem_gene_results # the gene count file "<sample_id>_rsem.genes.results" in the task results folder call-RSEMExpression
-  Array[File] smartseq_qc_files # file named "<sample_id>_QCs.csv" in the folder  "call-GroupQCOutputs/glob-*" of the the SS2  output
-  String sample_name   # name of the sample
+  # the gene count file "<sample_id>_rsem.genes.results" in the task results folder call-RSEMExpression
+  File rsem_gene_results
+  # file named "<sample_id>_QCs.csv" in the folder  "call-GroupQCOutputs/glob-*" of the the SS2  output
+  Array[File] smartseq_qc_files
+  # name of the sample
+  String sample_name
 
   meta {
     description: "This  task will converts some of the outputs of Smart Seq 2 pipeline into a zarr file"
@@ -19,7 +22,7 @@ task SmartSeq2ZarrConversion {
   }
 
   command {
-    set -e
+    set -euo pipefail
 
     cp /tools/create_zarr_ss2.py ./
 

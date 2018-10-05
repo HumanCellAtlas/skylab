@@ -1,8 +1,8 @@
-FROM quay.io/humancellatlas/secondary-analysis-python3-scientific:0.1.6
+FROM python:3.6.2
 
-LABEL maintainer="Ambrose J. Carr <acarr@broadinstitute.org>" \
-  software="python 3.6.2" \
-  description="python 3.6.2 with pysam, sctools, requests, and a basic science stack"
+LABEL maintainer="Mint Team <mintteam@broadinstitute.org>" \
+      software="python 3.6.2" \
+      description="python 3.6.2 with pysam, sctools, requests, and a basic science stack"
 
 RUN apt update && apt install -y \
     samtools
@@ -25,4 +25,3 @@ RUN mkdir /tools
 WORKDIR /tools
 
 COPY create_zarr_ss2.py .
-
