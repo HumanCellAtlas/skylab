@@ -58,6 +58,7 @@ workflow CellRanger {
        File raw_genes = cellranger_count.raw_genes
        File raw_matrix = cellranger_count.raw_matrix
        File mol_info_h5 = cellranger_count.mol_info_h5
+       File web_summary = cellranger_count.web_summary
    }
 }
 
@@ -127,5 +128,6 @@ task cellranger_count {
         File raw_genes = "${sample_id}/outs/raw_gene_bc_matrices/${reference}/genes.tsv"
         File raw_matrix = "${sample_id}/outs/raw_gene_bc_matrices/${reference}/matrix.mtx"
         File mol_info_h5 = "${sample_id}/outs/molecule_info.h5"
+        File web_summary = "${sample_id}/outs/web_summary.html"
     }
 }
