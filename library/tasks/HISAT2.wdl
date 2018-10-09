@@ -10,8 +10,9 @@ task HISAT2PairedEnd {
   String docker = "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
   Int machine_mem_mb = 15000
   Int cpu = 4
-  # use provided disk number or dynamically size on our own, 10 is our zipped fastq -> bam conversion with 50GB of additional disk
-  Int disk = ceil((size(fastq1, "GB") + size(fastq2, "GB") * 10) + size(hisat2_ref, "GB") + 50)
+  # Using (fastq1 + fastq2) x 100 gives factor of a few buffer. BAM can be up to ~5 x (fastq1 + fastq2).
+  # Need room for unsorted + sorted bam + temp sorting space + zipped and unzipped ref. Add 10 GB buffer.
+  Int disk = ceil((size(fastq1, "GB") + size(fastq2, "GB")) * 100 + size(hisat2_ref, "GB") * 2 + 10)
   Int preemptible = 5
   Int max_retries = 0
 
@@ -71,8 +72,8 @@ task HISAT2PairedEnd {
       --seed 12345 \
       -k 10 \
       --secondary \
-      -p ${cpu} -S ${output_basename}.sam
-    samtools sort -@ ${cpu} -O bam -o "${output_basename}.bam" "${output_basename}.sam"
+      -p ${cpu} -S >(samtools view -1 -h -o ${output_basename}_unsorted.bam)
+    samtools sort -@ ${cpu} -O bam -o "${output_basename}.bam" "${output_basename}_unsorted.bam"
     samtools index "${output_basename}.bam"
   }
 
@@ -105,8 +106,9 @@ task HISAT2RSEM {
   String docker = "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
   Int machine_mem_mb = 15000
   Int cpu = 4
-  # use provided disk number or dynamically size on our own, 10 is our zipped fastq -> bam conversion with 50GB of additional disk
-  Int disk = ceil((size(fastq1, "GB") + size(fastq2, "GB") * 10) + size(hisat2_ref, "GB") + 50)
+  # Using (fastq1 + fastq2) x 100 gives factor of a few buffer. BAM can be up to ~5 x (fastq1 + fastq2).
+  # Need room for unsorted + sorted bam + temp sorting space + zipped and unzipped ref. Add 10 GB buffer.
+  Int disk = ceil((size(fastq1, "GB") + size(fastq2, "GB")) * 100 + size(hisat2_ref, "GB") * 2 + 10)
   Int preemptible = 5
   Int max_retries = 0
 
@@ -175,8 +177,7 @@ task HISAT2RSEM {
       --rfg 99999999,99999999 \
       --no-spliced-alignment \
       --seed 12345 \
-      -p ${cpu} -S ${output_basename}.sam
-    samtools view -bS  "${output_basename}.sam" > "${output_basename}.bam"
+      -p ${cpu} -S >(samtools view -1 -h -o ${output_basename}.bam)
   }
 
   runtime {
@@ -206,8 +207,9 @@ task HISAT2SingleEnd {
   String docker = "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
   Int machine_mem_mb = 15000
   Int cpu = 4
-  # use provided disk number or dynamically size on our own, 10 is our zipped fastq -> bam conversion with 50GB of additional disk
-  Int disk = ceil((size(fastq, "GB") * 10) + size(hisat2_ref, "GB") + 50)
+  # Using fastq x 100 gives factor of a few buffer. BAM can be up to ~5 x fastq.
+  # Need room for unsorted + sorted bam + temp sorting space + zipped and unzipped ref. Add 10 GB buffer.
+  Int disk = ceil((size(fastq, "GB") * 100) + size(hisat2_ref, "GB") * 2 + 10)
   Int preemptible = 5
 
   meta {
@@ -238,8 +240,8 @@ task HISAT2SingleEnd {
       --new-summary --summary-file "${output_basename}.log" \
       --met-file ${output_basename}.hisat2.met.txt --met 5 \
       --seed 12345 \
-      -p ${cpu} -S ${output_basename}.sam
-    samtools sort -@ ${cpu} -O bam -o "${output_basename}.bam" "${output_basename}.sam"
+      -p ${cpu} -S >(samtools view -1 -h -o ${output_basename}_unsorted.bam)
+    samtools sort -@ ${cpu} -O bam -o "${output_basename}.bam" "${output_basename}_unsorted.bam"
   }
 
   runtime {
