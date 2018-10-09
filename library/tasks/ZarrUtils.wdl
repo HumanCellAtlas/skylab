@@ -24,9 +24,7 @@ task SmartSeq2ZarrConversion {
   command {
     set -euo pipefail
 
-    cp /tools/create_zarr_ss2.py ./
-
-    python3 create_zarr_ss2.py \
+    python3 /tools/create_zarr_ss2.py \
        --qc_analysis_output_files_string ${sep=',' smartseq_qc_files} \
        --rsem_genes_results  ${rsem_gene_results} \
        --output_path_for_zarr  "${sample_name}.zarr" \

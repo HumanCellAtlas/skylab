@@ -37,7 +37,7 @@ def init_zarr(sample_id, path, file_format):
     root = zarr.group(store, overwrite=True)
 
     # add some readme for the user
-    root.attrs['README'] = "The schema adopted in this zarr store may undergo changes in future"
+    root.attrs['README'] = "The schema adopted in this zarr store may undergo changes in the future"
     root.attrs['sample_id'] = sample_id
 
     # now iterate through list of expected groups and create them
