@@ -33,13 +33,13 @@ task SmartSeq2ZarrConversion {
        --sample_id ${sample_name} \
        --format DirectoryStore
 
-
+    mkdir zarrout
     #get all the files in the zarr folder in  a list
     a=`find "${sample_name}.zarr"  -type f`
     for f in $a; do
        #replace all / to ! as a work around for now.
        b=`echo $f | tr "/" "\!"`
-       mv $f $b
+       mv $f zarrout/$b
     done
   }
 
@@ -51,6 +51,6 @@ task SmartSeq2ZarrConversion {
   }
 
   output {
-    Array[File] zarr_output_files = glob("*zarr*")
+    Array[File] zarr_output_files = glob("zarrout/*zarr*")
   }
 }
