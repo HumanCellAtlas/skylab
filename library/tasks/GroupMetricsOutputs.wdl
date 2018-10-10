@@ -6,7 +6,7 @@ task GroupQCOutputs {
   File rsem_stats
   String output_name
   # Runtime
-  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:jx-ss2-group-qc"
+  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.0"
   String mem = 2
   String cpu = 1
   String disk_space = 20 
