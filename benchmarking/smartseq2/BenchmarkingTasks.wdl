@@ -1,14 +1,15 @@
 task RunComparativeAnalysis {
   
-  meta {
-    description: "Run SmartSeq2 Comparative test. In the test, we compare SNN-Cliq clustering results of two data matrix by using Rand adjust index."
-  }
   File base_datafile
   File updated_datafile
   File metadata_file
   String metadata_keys
   String output_name
+  String docker = "gcr.io/broad-dsde-mint-dev/benchmarking-tools:0.0.2"
 
+  meta {
+    description: "Run SmartSeq2 Comparative test. In the test, we compare SNN-Cliq clustering results of two data matrix by using Rand adjust index."
+  }
   parameter_meta {
     base_datafile: "data matrix,count  or TPM matrix, of one pipeline"
     updated_datafile: "data matrix, count or TPM matrix, of second pipeline"
@@ -25,7 +26,7 @@ task RunComparativeAnalysis {
   }
 
   runtime {
-    docker: "gcr.io/broad-dsde-mint-dev/benchmarking-tools:0.0.1"
+    docker: docker
     memory: "15 GB"
     disks: "local-disk 50 HDD"
     preemptible: 5
@@ -39,9 +40,6 @@ task RunComparativeAnalysis {
 
 task RunGeneQuantificationAnalysis{
  
-  meta {
-    description: "Run SmartSeq2 Gene quantification summary. Pairwise comparison between two data matrix, report the discrepency if gene is low expressed(<low_cut) but high expressed(>high_cut) in anotehr"
-  }
  
   File base_datafile
   File updated_datafile
@@ -49,7 +47,11 @@ task RunGeneQuantificationAnalysis{
   String output_name
   String low_cut
   String high_cut
+  String docker = "gcr.io/broad-dsde-mint-dev/benchmarking-tools:0.0.2"
   
+  meta {
+    description: "Run SmartSeq2 Gene quantification summary. Pairwise comparison between two data matrix, report the discrepency if gene is low expressed(<low_cut) but high expressed(>high_cut) in anotehr"
+  } 
   parameter_meta {
     base_datafile: "data matrix,count  or TPM matrix, of one pipeline"
     updated_datafile: "data matrix, count or TPM matrix, of second pipeline"
@@ -70,7 +72,7 @@ task RunGeneQuantificationAnalysis{
   }
    
   runtime {
-    docker: "gcr.io/broad-dsde-mint-dev/benchmarking-tools:0.0.1"
+    docker: docker
     memory: "7.5 GB"
     disks: "local-disk 50 HDD"
     preemptible: 5
@@ -79,16 +81,17 @@ task RunGeneQuantificationAnalysis{
  
 task RunReproducibilityAnalysis{
   
-  meta {
-    description: "Run SmartSeq2 Reproducibility test. In this test, reproducibility between single cell and bulk sample is carried out and the differential genes between single cell and bulk samples will be comparied between to data matrix."
-  }
-
   File base_datafile
   File updated_datafile
   File metadata_file
   File gtf_file
   String output_name
   String groups
+  String docker = "gcr.io/broad-dsde-mint-dev/benchmarking-tools:0.0.2"
+  
+  meta {
+    description: "Run SmartSeq2 Reproducibility test. In this test, reproducibility between single cell and bulk sample is carried out and the differential genes between single cell and bulk samples will be comparied between to data matrix."
+  }
   parameter_meta {
     base_datafile: "data matrix,count  or TPM matrix, of one pipeline"
     updated_datafile: "data matrix, count or TPM matrix, of second pipeline"
@@ -106,7 +109,7 @@ task RunReproducibilityAnalysis{
   }
 
   runtime {
-    docker: "gcr.io/broad-dsde-mint-dev/benchmarking-tools:0.0.1"
+    docker: docker
     memory: "7.5 GB"
     disks: "local-disk 50 HDD"
     preemptible: 5
@@ -121,15 +124,15 @@ task RunReproducibilityAnalysis{
 
 task RunQCMetricsAnalysis{
  
-  meta {
-    description: "Run SmartSeq2 QC metrics Comparison analysis. 3 statistical tests are carried out to compare QC metrics: a Wilcoxon Pairwise test, a linear Regression model test and a  Kolmogorov–Smirnov test "
-  }
- 
   File base_metrics
   File updated_metrics
   String met_keys
   String output_name
-  
+  String docker = "gcr.io/broad-dsde-mint-dev/benchmarking-tools:0.0.2"
+
+  meta {
+    description: "Run SmartSeq2 QC metrics Comparison analysis. 3 statistical tests are carried out to compare QC metrics: a Wilcoxon Pairwise test, a linear Regression model test and a  Kolmogorov–Smirnov test "
+  }
   parameter_meta {
     base_metrics: "QC metrics, each row represents a metric and each column represents a cell"
     updated_metrics: "QC metrics, each row represents a metric and each column represents a cell"
@@ -145,7 +148,7 @@ task RunQCMetricsAnalysis{
   }
 
   runtime {
-    docker: "gcr.io/broad-dsde-mint-dev/benchmarking-tools:0.0.1"
+    docker: docker
     memory: "7.5 GB"
     disks: "local-disk 50 HDD"
     preemptible: 5
@@ -158,10 +161,6 @@ task RunQCMetricsAnalysis{
 }
 
 task RunConfoundingFactorAnalysis{
-  
-  meta {
-    description: This analysis is to evaluate and compare confounding factors impacts of two pipelines.
-  }
 
   File base_metrics
   File updated_metrics
@@ -171,7 +170,11 @@ task RunConfoundingFactorAnalysis{
   String meta_keys
   String output_name
   Int npcs
-  
+  String docker = "gcr.io/broad-dsde-mint-dev/benchmarking-tools:0.0.2"
+
+  meta {
+    description: "This analysis is to evaluate and compare confounding factors impacts of two pipelines."
+  }
   parameter_meta {
     base_metrics: "QC metrics, each row represents a metric and each column represents a cell"
     updated_metrics: "QC metrics, each row represents a metric and each column represents a cell"
@@ -191,7 +194,7 @@ task RunConfoundingFactorAnalysis{
   } 
 
   runtime {
-    docker: "gcr.io/broad-dsde-mint-dev/benchmarking-tools:0.0.1"
+    docker: docker  
     memory: "7.5 GB"
     disks: "local-disk 50 HDD"
     preemptible: 5
