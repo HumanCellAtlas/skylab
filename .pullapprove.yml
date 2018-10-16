@@ -35,6 +35,7 @@ groups:
       - jishuxu
       - mckinsel
       - mbabadi
+      - kishorikonwar
 
   software-engineers:
     required: 1 # Require approval from at least one software engineer
