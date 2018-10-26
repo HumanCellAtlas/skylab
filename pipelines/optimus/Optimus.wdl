@@ -8,6 +8,8 @@ import "TagGeneExon.wdl" as TagGeneExon
 import "CorrectUmiMarkDuplicates.wdl" as CorrectUmiMarkDuplicates
 import "SequenceDataWithMoleculeTagMetrics.wdl" as Metrics
 import "TagSortBam.wdl" as TagSortBam
+import "ZarrUtils.wdl" as ZarrUtils
+
 
 workflow Optimus {
   meta {
@@ -159,6 +161,16 @@ workflow Optimus {
       col_indices = CreateSparseCountMatrix.col_index
   }
 
+  call ZarrUtils.OptimusZarrConversion{
+    input:
+      sample_id=sample_id,
+      cell_metrics = MergeCellMetrics.cell_metrics,
+      gene_metrics = MergeGeneMetrics.gene_metrics,
+      sparse_count_matrix = MergeCountFiles.sparse_count_matrix,
+      cell_id = MergeCountFiles.row_index,
+      gene_id = MergeCountFiles.col_index
+  }
+
   output {
       # version of this pipeline
       String pipeline_version = version
@@ -169,5 +181,8 @@ workflow Optimus {
       File matrix_col_index = MergeCountFiles.col_index
       File cell_metrics = MergeCellMetrics.cell_metrics
       File gene_metrics = MergeGeneMetrics.gene_metrics
+
+      # zarr
+      Array [File] zarr_output_files = OptimusZarrConversion.zarr_output_files
   }
 }
