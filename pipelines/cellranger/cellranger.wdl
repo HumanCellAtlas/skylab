@@ -3,7 +3,7 @@ workflow CellRanger {
         description: "Analyze 3' single-cell RNA-seq data using the 10X Genomics Cellranger pipeline."
     }
     # version of this pipeline
-    String version = "cellranger_v1.0.0"
+    String version = "cellranger_v1.0.1"
 
     String sample_id
     Array[File] fastqs
