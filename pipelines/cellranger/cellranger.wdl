@@ -14,7 +14,7 @@ workflow CellRanger {
     # Runtime attributes
     String memory = "416 GB"
     Int boot_disk_size_gb = 12
-    String disk_space = "250"
+    String disk_space = "400"
     Int cpu = 64
 
     parameter_meta {
