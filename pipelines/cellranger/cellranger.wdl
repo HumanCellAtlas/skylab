@@ -3,7 +3,7 @@ workflow CellRanger {
         description: "Analyze 3' single-cell RNA-seq data using the 10X Genomics Cellranger pipeline."
     }
     # version of this pipeline
-    String version = "cellranger_v1.0.0"
+    String version = "cellranger_v1.0.1"
 
     String sample_id
     Array[File] fastqs
@@ -14,7 +14,7 @@ workflow CellRanger {
     # Runtime attributes
     String memory = "416 GB"
     Int boot_disk_size_gb = 12
-    String disk_space = "250"
+    String disk_space = "400"
     Int cpu = 64
 
     parameter_meta {
