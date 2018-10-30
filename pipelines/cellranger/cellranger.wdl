@@ -3,7 +3,7 @@ workflow CellRanger {
         description: "Analyze 3' single-cell RNA-seq data using the 10X Genomics Cellranger pipeline."
     }
     # version of this pipeline
-    String version = "cellranger_v1.0.1"
+    String version = "cellranger_v1.0.2"
 
     String sample_id
     Array[File] fastqs
@@ -16,6 +16,7 @@ workflow CellRanger {
     Int boot_disk_size_gb = 12
     String disk_space = "400"
     Int cpu = 64
+    Int max_retries = 0
 
     parameter_meta {
         sample_id: "Name of sample to run CellRanger count on"
@@ -27,6 +28,7 @@ workflow CellRanger {
         boot_disk_size_gb: "Size of disk (GB) where the docker image is booted by the Cromwell VM"
         disk_space: "Amount of disk space (GB) to allocate to the Cromwell VM"
         cpu: "The minimum number of cores to use for the Cromwell VM"
+        max_retries: "(optional) retry this number of times if task fails -- use with caution, see skylab README for details"
     }
 
     call cellranger_count {
@@ -39,7 +41,8 @@ workflow CellRanger {
         memory = memory,
         boot_disk_size_gb = boot_disk_size_gb,
         disk_space = disk_space,
-        cpu = cpu
+        cpu = cpu,
+        max_retries = max_retries
    }
 
    output {
@@ -72,6 +75,7 @@ task cellranger_count {
     Int boot_disk_size_gb
     String disk_space
     Int cpu
+    Int max_retries = 0
 
     command {
         set -e
@@ -113,6 +117,7 @@ task cellranger_count {
         bootDiskSizeGb: boot_disk_size_gb
         disks: "local-disk " + disk_space + " HDD"
         cpu: cpu
+        max_retries: max_retries
     }
 
     output {
