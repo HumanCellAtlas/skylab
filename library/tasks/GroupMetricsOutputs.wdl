@@ -7,9 +7,9 @@ task GroupQCOutputs {
   String output_name
   # Runtime
   String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.0"
-  String mem = 2
-  String cpu = 1
-  String disk_space = 20 
+  Int mem = 2
+  Int cpu = 1
+  Int disk_space = 20
   Int preemptible = 5
   Int max_retries = 0
   
