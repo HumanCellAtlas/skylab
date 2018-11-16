@@ -9,5 +9,8 @@ jobs:
                 command: |
                     python3 -m venv venv
                     . venv/bin/activate
-                    pip install requests
+                    pip install miniwdl requests
+                    miniwdl check pipelines/smartseq2_single_sample/SmartSeq2SingleSample.wdl --path library/tasks
+                    miniwdl check pipelines/optimus/Optimus.wdl --path library/tasks
+                    miniwdl check pipelines/cellranger/cellranger.wdl --path library/tasks
                     python test/run_portability_test.py --test-directories test/smartseq2_single_sample/pr/ test/optimus/pr
