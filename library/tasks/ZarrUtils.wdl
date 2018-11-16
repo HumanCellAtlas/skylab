@@ -1,7 +1,7 @@
 task SmartSeq2ZarrConversion {
 
   #runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.1.6_zarr_test"
+  String docker = "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.1.7"
   # the gene count file "<sample_id>_rsem.genes.results" in the task results folder call-RSEMExpression
   File rsem_gene_results
   # file named "<sample_id>_QCs.csv" in the folder  "call-GroupQCOutputs/glob-*" of the the SS2  output
@@ -25,9 +25,9 @@ task SmartSeq2ZarrConversion {
     set -euo pipefail
 
     python3 /tools/create_zarr_ss2.py \
-       --qc_analysis_output_files_string ${sep=',' smartseq_qc_files} \
+       --qc_files ${sep=' ' smartseq_qc_files} \
        --rsem_genes_results  ${rsem_gene_results} \
-       --output_path_for_zarr  "${sample_name}.zarr" \
+       --output_zarr_path  "${sample_name}.zarr" \
        --sample_id ${sample_name} \
        --format DirectoryStore
 
