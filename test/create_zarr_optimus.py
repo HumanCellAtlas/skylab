@@ -13,7 +13,9 @@ from zarr import Blosc
 
 ZARR_GROUP = {
     'expression_matrix': ["expression", "cell_id", "gene_id",
-                          "qc_gene_metric", "qc_gene_values", "qc_cell_metric", "qc_cell_values"]
+                          "gene_metadata_string", "gene_metadata_numeric", 
+                           "cell_metadata_string", "cell_metadata_numeric"
+                         ]
 }
 
 COMPRESSOR = Blosc(cname='lz4', clevel=5, shuffle=Blosc.SHUFFLE, blocksize=0)
@@ -74,26 +76,16 @@ def add_gene_metrics(data_group, input_path):
         with open(input_path, 'r') as f:
             gene_metrics = [row for row in csv.reader(f)]
 
-    # metric names
+    # metric names we use [1:] to remove the empty string
     if len(gene_metrics[0]):
         data_group.create_dataset(
-            "qc_gene_metric",
-            shape=(1, len(gene_metrics[0])),
+            "gene_metadata_numeric_name",
+            shape=(len(gene_metrics[0][1:]),),
             compressor=COMPRESSOR,
             dtype="<U40",
-            chunks=(1, len(gene_metrics[0])),
-            data=[list(gene_metrics[0])])
+            chunks=(len(gene_metrics[0][1:]),),
+            data=[list(gene_metrics[0][1:])])
 
-    # Gene names : get the gene names by collecting the first column after the first row
-    gene_names = [name[0] for name in gene_metrics[1:]]
-    if len(gene_metrics):
-        data_group.create_dataset(
-            "qc_gene_id",
-            shape=(1, len(gene_names)),
-            compressor=COMPRESSOR,
-            dtype="<U40",
-            chunks=(1, len(gene_names)),
-            data=[list(gene_names)])
 
     # Gene metric values, the row and column sizes
     ncols = len(gene_metrics[0][1:])
@@ -114,7 +106,7 @@ def add_gene_metrics(data_group, input_path):
 
     # now insert the dataset that has the numeric values for the qc metrics for the genes
     data_group.create_dataset(
-        "qc_gene_values",
+        "gene_metadata_numeric",
         shape=(nrows, ncols),
         compressor=COMPRESSOR,
         dtype=np.float32,
@@ -139,23 +131,12 @@ def add_cell_metrics(data_group, input_path):
 
     # metric names for the cells
     data_group.create_dataset(
-        "qc_cell_metric",
-        shape=(1, len(cell_metrics[0])),
+        "cell_metadata_numeric_name",
+        shape=(len(cell_metrics[0][1:]), ),
         compressor=COMPRESSOR,
         dtype="<U40",
-        chunks=(1, len(cell_metrics[0])),
-        data=[list(cell_metrics[0])])
-
-    # cell barcodes or cell ids
-    # get the cell ids or cell barcodes, which is in  the first column after the first row
-    cell_barcodes = [name[0] for name in cell_metrics[1:]]
-    data_group.create_dataset(
-        "qc_cell_id",
-        shape=(1, len(cell_barcodes)),
-        compressor=COMPRESSOR,
-        dtype="<U40",
-        chunks=(1, len(cell_barcodes)),
-        data=[list(cell_barcodes)])
+        chunks=(len(cell_metrics[0][1:]), ),
+        data=[list(cell_metrics[0][1:])])
 
     # ignore the first line with the cell metric names in text
     cell_metric_values = []
@@ -176,7 +157,7 @@ def add_cell_metrics(data_group, input_path):
 
     # now insert the dataset that has the numeric values for the cell qc metrics
     data_group.create_dataset(
-        "qc_cell_values",
+        "cell_metadata_numeric",
         shape=(nrows, ncols),
         compressor=COMPRESSOR,
         dtype=np.float32,
@@ -193,6 +174,10 @@ def add_expression_counts(data_group, args):
     # read the cell ids and adds into the cell_barcodes dataset
     barcodes = np.load(args.cell_ids)
 
+    """ note that if we do not specify the exact dimension, i.e., (len(barcodes), ) 
+        instead of (1, len(barcodes)) then  there is a memory bloat
+        while adding the cell_id or gene_id
+    """
     if len(barcodes):
         data_group.create_dataset(
             "cell_id",
@@ -269,22 +254,27 @@ def main():
 
     parser.add_argument('--cell_metrics',
                         dest="cell_metrics",
+                        required=True,
                         help='a .csv file path for the cell metrics, an output of the MergeCellMetrics task')
 
     parser.add_argument('--gene_metrics',
                         dest="gene_metrics",
+                        required=True,
                         help='a .csv file path for the gene metrics, an output of the MergeGeneMetrics task')
 
     parser.add_argument('--cell_id',
                         dest="cell_ids",
+                        required=True,
                         help='a .npy file path for the cell barcodes, an output of the MergeCountFiles task')
 
     parser.add_argument('--gene_id',
                         dest="gene_ids",
+                        required=True,
                         help='a .npy file path for the gene ids, an output of the MergeCountFiles task')
 
     parser.add_argument('--count_matrix',
                         dest="count_matrix",
+                        required=True,
                         help='a .npz file path for the count matrix, an output of the MergeCountFiles task')
 
     parser.add_argument('--sample_id', dest="sample_id",
@@ -293,6 +283,7 @@ def main():
 
     parser.add_argument('--output_path_for_zarr',
                         dest="output_zarr_path",
+                        required=True,
                         help='path to .zarr file is to be created')
 
     parser.add_argument('--format', dest="zarr_format",
