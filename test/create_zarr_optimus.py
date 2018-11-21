@@ -7,9 +7,7 @@ import numpy as np
 import zarr
 from zarr import Blosc
 
-""" key,  dataset name,   suffix of file,  metadata description  this is a list of groups to add to the zarr 
-    file, which can be  further extended
-"""
+
 
 ZARR_GROUP = {
     'expression_matrix': ["expression", "cell_id", "gene_id",
@@ -21,14 +19,7 @@ ZARR_GROUP = {
 COMPRESSOR = Blosc(cname='lz4', clevel=5, shuffle=Blosc.SHUFFLE, blocksize=0)
 
 # the number of rows in a chunk for expression counts
-CHUNK_ROW_SIZE = 200
-
-
-def is_file_ext_gz(file_name):
-    if re.search(r'[.]gz$', file_name):
-        return True
-    return False
-
+CHUNK_ROW_SIZE = 1000
 
 def init_zarr(sample_id, path, file_format):
     """Initializes the zarr output
@@ -55,7 +46,7 @@ def init_zarr(sample_id, path, file_format):
     root.attrs['sample_id'] = sample_id
 
     # now iterate through list of expected groups and create them
-    for dataset in ZARR_GROUP.keys():
+    for dataset in ZARR_GROUP:
         root.create_group(dataset, overwrite=True)
 
     return root
@@ -69,7 +60,7 @@ def add_gene_metrics(data_group, input_path):
     """
 
     # read the gene metrics names and values
-    if is_file_ext_gz(input_path):
+    if input_path.endswith(".gz"):
         with gzip.open(input_path, 'rt') as f:
             gene_metrics = [row for row in csv.reader(f)]
     else:
@@ -77,7 +68,7 @@ def add_gene_metrics(data_group, input_path):
             gene_metrics = [row for row in csv.reader(f)]
 
     # metric names we use [1:] to remove the empty string
-    if len(gene_metrics[0]):
+    if gene_metrics[0]:
         data_group.create_dataset(
             "gene_metadata_numeric_name",
             shape=(len(gene_metrics[0][1:]),),
@@ -122,7 +113,7 @@ def add_cell_metrics(data_group, input_path):
     """
 
     # read the gene metrics names and values
-    if is_file_ext_gz(input_path):
+    if input_path.endswith(".gz"):
         with gzip.open(input_path, 'rt') as f:
             cell_metrics = [row for row in csv.reader(f)]
     else:
@@ -174,40 +165,43 @@ def add_expression_counts(data_group, args):
     # read the cell ids and adds into the cell_barcodes dataset
     barcodes = np.load(args.cell_ids)
 
-    """ note that if we do not specify the exact dimension, i.e., (len(barcodes), ) 
-        instead of (1, len(barcodes)) then  there is a memory bloat
-        while adding the cell_id or gene_id
-    """
+    # note that if we do not specify the exact dimension, i.e., (len(barcodes), )
+    # instead of (1, len(barcodes)) then  there is a memory bloat
+    # while adding the cell_id or gene_id
+    print('cell id')
     if len(barcodes):
         data_group.create_dataset(
             "cell_id",
-            shape=(1, len(barcodes)),
+            shape=(len(barcodes),),
             compressor=COMPRESSOR,
             dtype='<U40',
-            chunks=(1, len(barcodes)),
+            #chunks=(len(barcodes), ),
+            chunks=(10000,100),
             data=[list(barcodes)])
 
     # read the gene ids  and adds into the gene_ids dataset
     gene_ids = np.load(args.gene_ids)
 
+    print('gene id')
     if len(gene_ids):
         data_group.create_dataset(
             "gene_id",
-            shape=(1, len(gene_ids)),
+            shape=(len(gene_ids),),
             compressor=COMPRESSOR,
             dtype='<U40',
-            chunks=(1, len(gene_ids)),
+            #chunks=(len(gene_ids), ),
+            chunks=(10000, 100),
             data=[list(gene_ids)])
 
     # read .npz file expression counts and add it to the expression_counts dataset
     exp_counts = np.load(args.count_matrix)
-
     # now convert it back to a csr_matrix object
     csr_exp_counts = sparse.csr_matrix((exp_counts['data'],
                                         exp_counts['indices'],
                                         exp_counts['indptr']),
                                        shape=exp_counts['shape'])
 
+    print("exp", CHUNK_ROW_SIZE, csr_exp_counts.shape[1])
     # now create a dataset of zeros with the same dimensions as the expression count matrix
     exp_counts_group = data_group.zeros('expression',
                                         compressor=COMPRESSOR,
@@ -242,6 +236,7 @@ def create_zarr_files(args):
     add_cell_metrics(root_group['expression_matrix'], args.cell_metrics)
 
     # add the expression count matrix data
+    print('hey')
     add_expression_counts(root_group['expression_matrix'], args)
 
 
@@ -288,6 +283,7 @@ def main():
 
     parser.add_argument('--format', dest="zarr_format",
                         default="DirectoryStore",
+                        choices=["DirectoryStore", "ZipStore"],
                         help='format of the zarr file choices: [DirectoryStore, ZipStore] default: DirectoryStore')
     args = parser.parse_args()
 
