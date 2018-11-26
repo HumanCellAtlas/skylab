@@ -42,3 +42,9 @@ of the jenkins instance.
 Thus, the `WDL_FILE`, and `DEPENDENCIES_JSON` (and any files inside the dependencies with local paths) are interpreted from within the docker as referencing the relevant files on the current branch. 
 
 The scientific test does not yet implement the comparison to Cell Ranger, but it does contain a testing script `trigger_scientific_test.sh` which can be run to trigger Optimus to run on the synthetic data. 
+
+**Static Analysis/Linting**
+
+As part of the PR tests, the [miniwdl](https://github.com/chanzuckerberg/miniwdl) linting tool is run all WDLs in the skylab repo. This identifies certain WDL issues like undesirable type conversions or WDL style problems. Problems found by `miniwdl` do not cause the PR test to fail but generally should be looked into by the developer.
+
+The default linting rules are implemented [here](https://github.com/chanzuckerberg/miniwdl/blob/master/WDL/Lint.py) and will likely grow over time.
