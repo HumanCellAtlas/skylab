@@ -1,5 +1,5 @@
 ### Purpose
-_Please link to the issue being fixed by this PR:_
+_Please explain the purpose of this PR and include links to any GitHub issues that it fixes:_
 
 - No issue is linked to this PR.
 ---
@@ -20,11 +20,12 @@ _Please ensure the following when opening a PR:_
 - [ ] This PR added or updated tests.
 - [ ] This PR updated docstrings or documentation.
 - [ ] Let Jodi (**jodihir**) know when there is user-facing documentation updates needed!
-- [ ] This PR applied (WDL/Python) style guidelines.
+- [ ] This PR applied the Mint style guide for WDL.
+- [ ] This PR has no WDL linting errors reported by [miniwdl](https://github.com/chanzuckerberg/miniwdl)
 - [ ] This PR considered generalizability beyond our own use case.
 
 ---
 ### Follow-up Discussions
-_Please append follow-up discussions during the review process below:_
+_Please append follow-up discussions and issues during the review process below:_
 
 - No follow-up discussions.
