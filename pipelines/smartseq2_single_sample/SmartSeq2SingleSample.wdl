@@ -11,7 +11,6 @@ workflow SmartSeq2SingleCell {
   # version of this pipeline
   String version = "smartseq2_v2.1.0"
   # load annotation
-  File gtf_file
   File genome_ref_fasta
   File rrna_intervals
   File gene_ref_flat
@@ -31,7 +30,6 @@ workflow SmartSeq2SingleCell {
   Int max_retries = 0
 
   parameter_meta {
-    gtf_file: "Gene annotation file in gtf format"
     genome_ref_fasta: "Genome reference in fasta format"
     rrna_intervals: "rRNA interval file required by Picard"
     gene_ref_flat: "Gene refflat file required by Picard"
