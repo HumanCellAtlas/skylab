@@ -17,7 +17,6 @@ docker run --rm -v ${working_dir}:/working \
     -e VAULT_TOKEN=${vault_token} \
     -e INPUT_PATH=/working/test/config \
     -e OUT_PATH=/working/test \
-    --privileged \ 
-    "${docker_image}" bash -c "ls /working && ls /working/test && ls /working/test/config"
+    --privileged "${docker_image}" bash -c "ls /working && ls /working/test && ls /working/test/config"
     
     
