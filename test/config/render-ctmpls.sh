@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set +ex 
+set -ex 
 
 env=$1
 vault_token=$2
