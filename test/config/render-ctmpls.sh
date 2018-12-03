@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set +ex 
+
 env=$1
 vault_token=$2
 working_dir=${3:-$PWD}
