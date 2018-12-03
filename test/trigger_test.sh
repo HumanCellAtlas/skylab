@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -ex
 
 # NOTE: this script will execute from the repository root when called on jenkins
 
