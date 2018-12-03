@@ -75,7 +75,7 @@ def add_gene_metrics(data_group, input_path):
             compressor=COMPRESSOR,
             dtype="<U40",
             chunks=(len(gene_metrics[0][1:]),),
-            data=[list(gene_metrics[0][1:])])
+            data=list(gene_metrics[0][1:]))
 
 
     # Gene metric values, the row and column sizes
@@ -127,7 +127,7 @@ def add_cell_metrics(data_group, input_path):
         compressor=COMPRESSOR,
         dtype="<U40",
         chunks=(len(cell_metrics[0][1:]), ),
-        data=[list(cell_metrics[0][1:])])
+        data=list(cell_metrics[0][1:]))
 
     # ignore the first line with the cell metric names in text
     cell_metric_values = []
@@ -168,7 +168,6 @@ def add_expression_counts(data_group, args):
     # note that if we do not specify the exact dimension, i.e., (len(barcodes), )
     # instead of (1, len(barcodes)) then  there is a memory bloat
     # while adding the cell_id or gene_id
-    print('cell id')
     if len(barcodes):
         data_group.create_dataset(
             "cell_id",
@@ -176,13 +175,12 @@ def add_expression_counts(data_group, args):
             compressor=COMPRESSOR,
             dtype='<U40',
             #chunks=(len(barcodes), ),
-            chunks=(10000,100),
-            data=[list(barcodes)])
+            chunks=(10000, ),
+            data=list(barcodes))
 
     # read the gene ids  and adds into the gene_ids dataset
     gene_ids = np.load(args.gene_ids)
 
-    print('gene id')
     if len(gene_ids):
         data_group.create_dataset(
             "gene_id",
@@ -190,8 +188,8 @@ def add_expression_counts(data_group, args):
             compressor=COMPRESSOR,
             dtype='<U40',
             #chunks=(len(gene_ids), ),
-            chunks=(10000, 100),
-            data=[list(gene_ids)])
+            chunks=(10000, ),
+            data=list(gene_ids))
 
     # read .npz file expression counts and add it to the expression_counts dataset
     exp_counts = np.load(args.count_matrix)
@@ -201,7 +199,6 @@ def add_expression_counts(data_group, args):
                                         exp_counts['indptr']),
                                        shape=exp_counts['shape'])
 
-    print("exp", CHUNK_ROW_SIZE, csr_exp_counts.shape[1])
     # now create a dataset of zeros with the same dimensions as the expression count matrix
     exp_counts_group = data_group.zeros('expression',
                                         compressor=COMPRESSOR,
@@ -236,7 +233,6 @@ def create_zarr_files(args):
     add_cell_metrics(root_group['expression_matrix'], args.cell_metrics)
 
     # add the expression count matrix data
-    print('hey')
     add_expression_counts(root_group['expression_matrix'], args)
 
 
