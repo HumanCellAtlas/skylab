@@ -25,6 +25,7 @@ echo "Running test"
 docker run --rm \
   -v ${WD}:/working \
   -w /working \
+  --privileged \
   humancellatlas/cromwell-tools:1.0.1 \
   /working/test/test_cromwell_workflow.sh \
     "${CROMWELL_USER}" \
