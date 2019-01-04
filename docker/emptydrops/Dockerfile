@@ -37,6 +37,9 @@ COPY installDropletUtils.R /root/
 RUN Rscript /root/installDropletUtils.R
 
 # Install emptyDropsWrapper and npz2rds
+COPY installOptParse.R /root/
+RUN Rscript /root/installOptParse.R 
+
 RUN apt-get install -y git
 RUN git clone https://github.com/HumanCellAtlas/skylab-analysis.git && cd skylab-analysis && git checkout b772460458388c8edaaee596db08829bd1b64cec
 ENV PATH="/root/skylab-analysis/tools/emptyDropsWrapper/:/root/skylab-analysis/tools/npz2rds/:$PATH"
