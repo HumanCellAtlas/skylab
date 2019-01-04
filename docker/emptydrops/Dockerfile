@@ -1,6 +1,7 @@
 # Start with an ubuntu system and update it
 FROM ubuntu:16.04
 
+
 # Image label
 LABEL maintainer="Nick Barkas <nbarkas@broadinstititute.org>" \
   software="DropletUtils" \
@@ -40,6 +41,11 @@ RUN Rscript /root/installDropletUtils.R
 COPY installOptParse.R /root/
 RUN Rscript /root/installOptParse.R 
 
+# Install numpy
+RUN apt-get install -y python python-pip && pip install numpy
+
+# Add skylab analysis
 RUN apt-get install -y git
-RUN git clone https://github.com/HumanCellAtlas/skylab-analysis.git && cd skylab-analysis && git checkout b772460458388c8edaaee596db08829bd1b64cec
+RUN git clone https://github.com/HumanCellAtlas/skylab-analysis.git && cd skylab-analysis && git checkout 1f435ce963a71364b5d3f1f2977d1ce478b8df8c
 ENV PATH="/root/skylab-analysis/tools/emptyDropsWrapper/:/root/skylab-analysis/tools/npz2rds/:$PATH"
+
