@@ -4,7 +4,7 @@ task RunEmptyDrops {
     File row_index
 
     # runtime values
-    String docker = "quay.io/humancellatlas/secondary-analysis-dropletutils@sha256:3927d3456eba07599dcef16df39bc965a51c5986efffb6c972bbd273769cab90"
+    String docker = "quay.io/humancellatlas/secondary-analysis-dropletutils:0.1.0"
     Int machine_mem_mb = 4000
     Int cpu = 1
     Int disk = 20
@@ -25,7 +25,7 @@ task RunEmptyDrops {
 
     command {
         npz2rds.sh -c ${col_index} -r ${row_index} -d ${sparse_count_matrix} -o temp_matrix.rds
-        emptyDropsWrapper.R --verbose --input-rds temp_matrix.rds --output-csv empty_drops_result.csv
+        emptyDropsWrapper.R --transpose --verbose --input-rds temp_matrix.rds --output-csv empty_drops_result.csv
     }
 
     runtime {
