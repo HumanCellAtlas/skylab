@@ -46,6 +46,6 @@ RUN apt-get install -y python python-pip && pip install numpy
 
 # Add skylab analysis
 RUN apt-get install -y git
-RUN git clone https://github.com/HumanCellAtlas/skylab-analysis.git && cd skylab-analysis && git checkout 6faa787464c112394d23e54aad0d3998aff4eace
+RUN git clone https://github.com/HumanCellAtlas/skylab-analysis.git && cd skylab-analysis && git checkout 473c9e161f8cf4cd0865d87db2c2e1f6bba11ae2
 ENV PATH="/root/skylab-analysis/tools/emptyDropsWrapper/:/root/skylab-analysis/tools/npz2rds/:$PATH"
 

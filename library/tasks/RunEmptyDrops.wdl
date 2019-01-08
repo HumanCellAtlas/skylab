@@ -1,7 +1,12 @@
 task RunEmptyDrops {
+    # Input data
     File sparse_count_matrix
     File col_index
     File row_index
+
+    # emptyDrops Params
+    Float niters = 10000
+    Float fdr_cutoff = 0.10
 
     # runtime values
     String docker = "quay.io/humancellatlas/secondary-analysis-dropletutils:0.1.0"
@@ -25,7 +30,7 @@ task RunEmptyDrops {
 
     command {
         npz2rds.sh -c ${col_index} -r ${row_index} -d ${sparse_count_matrix} -o temp_matrix.rds
-        emptyDropsWrapper.R --transpose --verbose --input-rds temp_matrix.rds --output-csv empty_drops_result.csv
+        emptyDropsWrapper.R --transpose --verbose --input-rds temp_matrix.rds --output-csv empty_drops_result.csv --fdr-cutoff ${fdr_cutoff} --emptydrops-niters ${niters}
     }
 
     runtime {
