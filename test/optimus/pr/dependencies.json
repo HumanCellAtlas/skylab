@@ -10,5 +10,6 @@
   "MergeSortBam.wdl": "library/tasks/MergeSortBam.wdl",
   "CreateCountMatrix.wdl": "library/tasks/CreateCountMatrix.wdl",
   "SequenceDataWithMoleculeTagMetrics.wdl": "library/tasks/SequenceDataWithMoleculeTagMetrics.wdl",
-  "TagSortBam.wdl": "library/tasks/TagSortBam.wdl"
+  "TagSortBam.wdl": "library/tasks/TagSortBam.wdl",
+  "RunEmptyDrops.wdl": "library/tasks/RunEmptyDrops.wdl"
 }
