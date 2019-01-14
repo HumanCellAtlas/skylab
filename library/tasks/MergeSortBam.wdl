@@ -6,7 +6,7 @@ task MergeSortBamFiles {
 
   # runtime values
   String docker = "us.gcr.io/broad-gotc-prod/genomes-in-the-cloud:2.3.3-1513176735"
-  Int machine_mem_mb = 7500
+  Int machine_mem_mb = 16500
   # give the command 500MB of overhead
   Int command_mem_mb = machine_mem_mb - 500
   Int cpu = 1

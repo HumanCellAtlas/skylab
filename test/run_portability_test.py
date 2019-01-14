@@ -47,10 +47,13 @@ def gather_test_inputs(test_dir):
     if len(wdl_paths) > 1:
         errors.append("Multiple candidate test WDLs found: {}".format(wdl_paths))
 
+    workflow_attachment = []
     try:
+        test_wdl_name = os.path.basename(wdl_paths[0])
         test_wdl_string = open(wdl_paths[0]).read()
+        workflow_attachment.append((test_wdl_name, test_wdl_string))
     except IOError:
-        test_wdl_string = None
+        test_wdl_name, test_wdl_string = None, None
         errors.append("Test WDL {} could not be read".format(wdl_paths[0]))
 
     # Test inputs
@@ -72,15 +75,14 @@ def gather_test_inputs(test_dir):
         errors.append("Dependencies JSON {} could not be read".format(dependencies_json_path))
 
     # Now iterate over the dependencies and load the files.
-    loaded_dependencies = []
     dependencies_dict = json.loads(dependencies_json_string)
 
     for key, value in dependencies_dict.items():
         try:
-            loaded_dependencies.append({
-                "name": key,
-                "code": open(value).read()
-            })
+            workflow_attachment.append((
+                key,
+                open(value).read()
+            ))
         except IOError:
             errors.append("Could not read dependency {}".format(value))
 
@@ -90,9 +92,9 @@ def gather_test_inputs(test_dir):
         raise TestDefinitionError(errors)
 
     return {
-        "workflow_descriptor": test_wdl_string,
+        "entry_point_wdl": test_wdl_name,
         "workflow_params": inputs_json_string,
-        "workflow_dependencies": loaded_dependencies
+        "workflow_attachment": workflow_attachment
         }
 
 # These are the environment variables we're expecting to be able to submit a
@@ -173,8 +175,17 @@ def monitor_tests(test_ids):
         if len(terminal_tests) == len(test_ids):
             break
 
+    for test_name, test_id in test_ids.items():
+
+        if terminal_tests[test_name] != "Succeeded":
+            info_endpoint = ENV_VARIABLES["portability_service_url"]  + "/portability_tests/" + \
+                test_id
+            response = requests.get(info_endpoint, headers=service_headers)
+            print(response.json())
+
     if not all(k == "Succeeded" for k in terminal_tests.values()):
         raise TestFailure()
+
 
 def main():
     parser = argparse.ArgumentParser()
