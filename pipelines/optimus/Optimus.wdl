@@ -38,7 +38,7 @@ workflow Optimus {
   Array[Int] indices = range(length(r1_fastq))
 
   # whether to convert the outputs to Zarr format, by default it's set to true
-  String output_zarr = true
+  Boolean output_zarr = true
 
   parameter_meta {
     r1_fastq: "forward read, contains cell barcodes and molecule barcodes"
