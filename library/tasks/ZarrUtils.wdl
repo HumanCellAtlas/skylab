@@ -32,10 +32,10 @@ task SmartSeq2ZarrConversion {
        --format DirectoryStore
 
     mkdir zarrout
-    #get all the files in the zarr folder in  a list
+    # get all the files in the zarr folder in  a list
     a=`find "${sample_name}.zarr"  -type f`
     for f in $a; do
-       #replace all / to ! as a work around for now.
+       # replace all / to ! as a work around for now.
        b=`echo $f | tr "/" "\!"`
        mv $f zarrout/$b
     done
@@ -96,10 +96,10 @@ task OptimusZarrConversion {
        --count_matrix ${sparse_count_matrix}
 
     mkdir zarrout
-    #get all the files in the zarr folder in  a list
+    # get all the files in the zarr folder in  a list
     a=`find "${sample_id}.zarr"  -type f`
     for f in $a; do
-       #replace all / to ! as a work around for now.
+       # replace all / to ! as a work around for now.
        b=`echo $f | tr "/" "\!"`
        mv $f zarrout/$b
     done
