@@ -30,6 +30,9 @@ workflow SmartSeq2SingleCell {
   File fastq2
   Int max_retries = 0
 
+  # whether to convert the outputs to Zarr format, by default it's set to true
+  Boolean output_zarr = true
+
   parameter_meta {
     gtf_file: "Gene annotation file in gtf format"
     genome_ref_fasta: "Genome reference in fasta format"
@@ -46,6 +49,7 @@ workflow SmartSeq2SingleCell {
     fastq1: "R1 in paired end reads"
     fastq2: "R2 in paired end reads"
     max_retries: "(optional) retry this number of times if task fails -- use with caution, see skylab README for details"
+    output_zarr: "whether to run the taks that converts the outputs to Zarr format, by default it's true"
   }
 
   String quality_control_output_basename = output_name + "_qc"
@@ -116,13 +120,15 @@ workflow SmartSeq2SingleCell {
       rsem_stats = RSEMExpression.rsem_cnt,
       output_name = output_name
   }
-
-  call ZarrUtils.SmartSeq2ZarrConversion{
-    input:
-      rsem_gene_results = RSEMExpression.rsem_gene,
-      smartseq_qc_files = GroupQCOutputs.group_files,
-      sample_name=sample_name
+  if (output_zarr) {
+    call ZarrUtils.SmartSeq2ZarrConversion {
+      input:
+        rsem_gene_results = RSEMExpression.rsem_gene,
+        smartseq_qc_files = GroupQCOutputs.group_files,
+        sample_name=sample_name
+    }
   }
+
 
   output {
     # version of this pipeline
@@ -142,6 +148,6 @@ workflow SmartSeq2SingleCell {
     File rsem_isoform_results = RSEMExpression.rsem_isoform
 
     # zarr
-    Array [File] zarr_output_files = SmartSeq2ZarrConversion.zarr_output_files
+    Array[File]? zarr_output_files = SmartSeq2ZarrConversion.zarr_output_files
   }
 }
