@@ -139,6 +139,7 @@ if(any(dim(inputMatrix) == 0)) {
     outputFile <- file(output_csv);
     writeLines('"CellId","Total","LogProb","PValue","Limited","FDR","IsCell"',outputFile)
     close(outputFile)
+    q(save="no",status=0)
 }
 ## Check row and column names
 if(is.null(rownames(inputMatrix))) {
