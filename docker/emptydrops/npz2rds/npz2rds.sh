@@ -95,11 +95,13 @@ if [ ! -d "$tmpdir" ]; then
 fi
 
 ## Convert the npz to text
+echo Converting npz to text...
 npz2txt.py --col-index $colindexfile \
 	     --row-index $rowindexfile \
 	     --counts $countsfile \
 	     --output-dir $tmpdir
 
 ## Convert the text to rds
+echo Converting text to rds...
 sparseTxt2Rds.R --input-dir $tmpdir --output-file $outputfile
 

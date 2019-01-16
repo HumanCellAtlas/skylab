@@ -33,27 +33,66 @@ data_file <- file.path(inputdir, 'sparse_counts_data.txt')
 indptr_file <- file.path(inputdir, 'sparse_counts_indptr.txt')
 shape_file <- file.path(inputdir, 'sparse_counts_shape.txt')
 
+
+
+#' Get the filesize of the specified 
+getFileSize <- function(filename) {
+    file.info(filename)$size
+}
+
+## Flag for empty matrix -- no need to sort if empty
+matrixIsEmpty <- FALSE
+
 cat('Loading text files...')
-col_index <- read.table(col_index_file, stringsAsFactors=FALSE)$V1
-indices <- read.table(indices_file, stringsAsFactors=FALSE)$V1
-row_index <- read.table(row_index_file, stringsAsFactors=FALSE)$V1
-data <- read.table(data_file, stringsAsFactors=FALSE)$V1
-indptr <- read.table(indptr_file, stringsAsFactors=FALSE)$V1
-shape <- read.table(shape_file, stringsAsFactors=FALSE)$V1
+tryCatch({
+    shape_file_size <- getFileSize(shape_file)
+    if(shape_file_size >0) {
+        shape <- read.table(shape_file, stringsAsFactors=FALSE)$V1
+    } else {
+        cat('\nAn error occured while reading the input shape file. Exiting.');
+        ## This is fatal, exit with error code
+        q(status=1);
+    }
+
+    if (all(shape == 0)) {
+        ## This is an empty matrix, warn and continue
+        cat('\nWarning: Loading an empty matrix!\n')
+        matrixIsEmpty <- TRUE
+        col_index <- c()
+        row_index <- c()
+        data <- double()
+        indices <- integer()
+        indptr <- as.integer(c(0))
+    } else {
+        col_index <- read.table(col_index_file, stringsAsFactors=FALSE)$V1
+        row_index <- read.table(row_index_file, stringsAsFactors=FALSE)$V1
+        data <- read.table(data_file, stringsAsFactors=FALSE)$V1
+        indices <- read.table(indices_file, stringsAsFactors=FALSE)$V1
+        indptr <- read.table(indptr_file, stringsAsFactors=FALSE)$V1
+    }
+    
+}, error=function(e) {
+    cat(paste0("\nAn error occured while loading the files: ",e," Exiting.\n"));
+    q(status=1);
+}) 
 cat('done\n')
 
 ## The R Matrix package requires that the second dimension is ordered
 ## within the first dimention, but the input isn't, here we output a sort order
 ## by sorting all the second index dimentions for each range of first index
-cat('Sorting elements...')
-ord1 <- unlist(lapply(1:(length(indptr)-1), function(i) {
-    rowStart <- indptr[i] + 1;
-    rowEnd <- indptr[i+1];
-    rowIndices <- indices[c(rowStart:rowEnd)]
-    rowElementOrder <- order(rowIndices) + rowStart - 1;
-    rowElementOrder
-}))
-cat('done\n')
+if(!matrixIsEmpty) {
+    cat('Sorting elements...')
+    ord1 <- unlist(lapply(1:(length(indptr)-1), function(i) {
+        rowStart <- indptr[i] + 1;
+        rowEnd <- indptr[i+1];
+        rowIndices <- indices[c(rowStart:rowEnd)]
+        rowElementOrder <- order(rowIndices) + rowStart - 1;
+        rowElementOrder
+    }))
+    cat('done\n')
+} else {
+    ord1 <- c()
+}
 
 dimError=FALSE;
 if ( shape[1] != length(row_index) ) {
