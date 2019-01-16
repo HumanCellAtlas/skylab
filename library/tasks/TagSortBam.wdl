@@ -2,7 +2,7 @@ task CellSortBam {
   File bam_input
 
   # runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:0.2.0"
+  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.2"
   Int machine_mem_mb = 40000
   Int cpu = 2
   Int disk = ceil(size(bam_input, "G") * 8)
@@ -44,7 +44,7 @@ task GeneSortBam {
   File bam_input
 
   # runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:0.2.0"
+  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.2"
   Int machine_mem_mb = 40000
   Int cpu = 2
   Int disk = ceil(size(bam_input, "G") * 4)
