@@ -57,7 +57,7 @@ task CreateSparseCountMatrix {
   File gtf_file
 
   # runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.1"
+  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.2"
   Int machine_mem_mb = 7500
   Int cpu = 1
   Int disk = ceil((size(bam_input, "G") + size(gtf_file, "G")) * 4.0) + 1
@@ -111,7 +111,7 @@ task MergeCountFiles {
   Array[File] col_indices
 
   # runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:0.1.10"
+  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.2"
   Int machine_mem_mb = 7500
   Int cpu = 1
   Int disk = 20  # todo find out how to make this adaptive with Array[file] input
