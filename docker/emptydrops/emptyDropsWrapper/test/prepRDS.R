@@ -12,7 +12,7 @@ option_list <- list(
 		type='character',
 		default='V2',
 		dest='version',
-		help='version of 10X matrix, allowed values V2 and V3')
+		help='version of 10X matrix, allowed values V2 and V3'),
 	make_option(c('-o','--output'),
 		type='character',
 		default=NULL,

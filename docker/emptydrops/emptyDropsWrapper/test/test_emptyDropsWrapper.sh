@@ -48,5 +48,5 @@ fi
 printf "done\n"
 
 ## Cleanup
-rm ${emptyDropsOutput} ${testDataFileName} $ ${rdsFileName}
+rm ${emptyDropsOutput} ${testDataFileName} ${rdsFileName}
 rm -r ${extraCleanup}

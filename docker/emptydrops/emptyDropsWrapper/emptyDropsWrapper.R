@@ -134,8 +134,11 @@ if(!class(inputMatrix) %in% c( 'dgCMatrix','dgRMatrix' )) {
 }
 ## Check dimensions
 if(any(dim(inputMatrix) == 0)) {
-    cat('Error: one or more dimensions of the input matrix are empty',file=stderr())
-    quit(save="no",status=1)
+    ## If the matrix is empty we can't run emptyDrops, write a empty table header
+    cat('Warning: one or more dimensions of the input matrix are empty. Generating empty result table.',file=stderr())
+    outputFile <- file(output_csv);
+    writeLines('"CellId","Total","LogProb","PValue","Limited","FDR","IsCell"',outputFile)
+    close(outputFile)
 }
 ## Check row and column names
 if(is.null(rownames(inputMatrix))) {
