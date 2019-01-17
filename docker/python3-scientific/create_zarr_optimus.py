@@ -211,6 +211,7 @@ def add_cell_metrics(data_group, input_path, cell_ids, verbose=False):
 
 def add_expression_counts(data_group, args):
     """Converts  the count matrix from the Optimus pipeline to zarr file
+
     Args:
         data_group (zarr.hierarchy.Group): datagroup object for the zarr
         args (argparse.Namespace): input arguments for the run
