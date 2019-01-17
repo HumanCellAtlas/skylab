@@ -102,6 +102,6 @@ npz2txt.py --col-index $colindexfile \
 	     --output-dir $tmpdir
 
 ## Convert the text to rds
-echo Converting text to rds...
+echo "Converting text to rds..."
 sparseTxt2Rds.R --input-dir $tmpdir --output-file $outputfile
 
