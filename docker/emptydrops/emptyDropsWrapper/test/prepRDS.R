@@ -3,8 +3,8 @@
 library('optparse')
 
 option_list <- list(
-	    make_option(c('-i','--input'),
-			type='character',
+	make_option(c('-i','--input'),
+		type='character',
 		default=NULL,
 		dest='input',
 		help='directory path of 10x matrix used for input'),
