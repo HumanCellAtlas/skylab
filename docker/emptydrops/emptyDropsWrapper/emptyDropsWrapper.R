@@ -131,7 +131,10 @@ inputMatrix <- readRDS(inputRDS)
 if(!class(inputMatrix) %in% c( 'dgCMatrix','dgRMatrix' )) {
     cat(paste0('Error: input matrix is not of class dgCMatrix or dgRMatrix. It is of class:',class(inputMatrix)),file=stderr())
     quit(save="no",status=1)
+} else {
+    catv('Note: Input matrix class check: OK')
 }
+
 ## Check dimensions
 if(any(dim(inputMatrix) == 0)) {
     ## If the matrix is empty we can't run emptyDrops, write a empty table header
@@ -140,15 +143,22 @@ if(any(dim(inputMatrix) == 0)) {
     writeLines('"CellId","Total","LogProb","PValue","Limited","FDR","IsCell"',outputFile)
     close(outputFile)
     q(save="no",status=0)
+} else {
+    catv('Note: Input matrix input dimensions check: OK')
 }
+
 ## Check row and column names
 if(is.null(rownames(inputMatrix))) {
     cat('Warning: rownames of the input matrix are empty',file=stderr())
     quit(save="no",status=1)
+} else {
+    catv('Note: Input matrix rownames check: OK')
 }
 if(is.null(colnames(inputMatrix))) {
     cat('Warning: colnames of the input matrix are empty',file=stderr())
     quit(save="no",status=1)
+} else {
+    catv('Note: Input matrix colnames check: OK')	
 }
 
 ## Convert to CsparseMatrix if required
