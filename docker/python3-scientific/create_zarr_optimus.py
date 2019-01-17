@@ -284,6 +284,7 @@ def add_expression_counts(data_group, args):
 def create_zarr_files(args):
     """This function creates the zarr file or folder structure in output_zarr_path in format file_format,
         with sample_id from the input folder analysis_output_path
+
     Args:
         args (argparse.Namespace): input arguments for the run
     """
