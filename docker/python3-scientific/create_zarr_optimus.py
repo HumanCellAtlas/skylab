@@ -215,6 +215,7 @@ def add_expression_counts(data_group, args):
     Args:
         data_group (zarr.hierarchy.Group): datagroup object for the zarr
         args (argparse.Namespace): input arguments for the run
+
     Return:
         cell_ids: list of cell ids
         gene_ids: list of gene ids
