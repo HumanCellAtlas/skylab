@@ -1,7 +1,7 @@
 task SmartSeq2ZarrConversion {
 
   #runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.1.7"
+  String docker = "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.1.8"
   # the gene count file "<sample_id>_rsem.genes.results" in the task results folder call-RSEMExpression
   File rsem_gene_results
   # file named "<sample_id>_QCs.csv" in the folder  "call-GroupQCOutputs/glob-*" of the the SS2  output
@@ -32,10 +32,10 @@ task SmartSeq2ZarrConversion {
        --format DirectoryStore
 
     mkdir zarrout
-    #get all the files in the zarr folder in  a list
+    # get all the files in the zarr folder in  a list
     a=`find "${sample_name}.zarr"  -type f`
     for f in $a; do
-       #replace all / to ! as a work around for now.
+       # replace all / to ! as a work around for now.
        b=`echo $f | tr "/" "\!"`
        mv $f zarrout/$b
     done
@@ -98,10 +98,10 @@ task OptimusZarrConversion {
        --count_matrix ${sparse_count_matrix}
 
     mkdir zarrout
-    #get all the files in the zarr folder in  a list
+    # get all the files in the zarr folder in  a list
     a=`find "${sample_id}.zarr"  -type f`
     for f in $a; do
-       #replace all / to ! as a work around for now.
+       # replace all / to ! as a work around for now.
        b=`echo $f | tr "/" "\!"`
        mv $f zarrout/$b
     done

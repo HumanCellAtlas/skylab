@@ -1,12 +1,11 @@
 import argparse
 import csv
 import gzip
-from scipy import sparse
 import numpy as np
 import zarr
+from scipy import sparse
 from zarr import Blosc
-
-DEBUG_MSGS = False
+import logging
 
 ZARR_GROUP = {
     'expression_matrix': ["expression", "cell_id", "gene_id",
@@ -19,16 +18,17 @@ COMPRESSOR = Blosc(cname='lz4', clevel=5, shuffle=Blosc.SHUFFLE, blocksize=0)
 
 # the number of rows in a chunk for expression counts
 CHUNK_ROW_SIZE = 1000
-
+logging.basicConfig(level=logging.INFO)
 
 def init_zarr(sample_id, path, file_format):
-    """Initializes the zarr output
+    """Initializes the zarr output.
     Args:
         sample_id (str): sample or cell id
         path (str): path to the zarr output
-        file_format (str): zarr file format [ DirectoryStore, ZipStore]
+        file_format (str): zarr file format [DirectoryStore, ZipStore]
+
     Returns:
-        zarr.hierarchy.Group
+        root (zarr.hierarchy.Group): initialized zarr group
     """
 
     store = None
@@ -42,7 +42,7 @@ def init_zarr(sample_id, path, file_format):
     root = zarr.group(store, overwrite=True)
 
     # add some readme for the user
-    root.attrs['README'] = "The schema adopted in this zarr store may undergo changes in the the future"
+    root.attrs['README'] = "The schema adopted in this zarr store may undergo changes in the future"
     root.attrs['sample_id'] = sample_id
 
     # now iterate through list of expected groups and create them
@@ -52,12 +52,14 @@ def init_zarr(sample_id, path, file_format):
     return root
 
 
-def add_gene_metrics(data_group, input_path, gene_ids):
+def add_gene_metrics(data_group, input_path, gene_ids, verbose=False):
     """Converts the gene metrics from the Optimus pipeline to zarr file
+
     Args:
         data_group (zarr.hierarchy.Group): datagroup object for the zarr
         input_path (str): file containing gene metrics name and values
         gene_ids (list): list of gene ids
+        verbose (bool): whether to output verbose messages for debugging purposes
     """
 
     # read the gene metrics names and values
@@ -77,9 +79,12 @@ def add_gene_metrics(data_group, input_path, gene_ids):
             dtype="<U40",
             chunks=(len(gene_metrics[0][1:]),),
             data=list(gene_metrics[0][1:]))
+    else:
+        logging.info("Not adding \"gene_metadata_numeric_name\" to zarr output: must have at least one metric")
 
-    if DEBUG_MSGS:
-        print("# gene numeric metadata", len(gene_metrics[0][1:]))
+    if verbose:
+        logging.info("# gene numeric metadata", len(gene_metrics[0][1:]))
+
     # Gene metric values, the row and column sizes
     gene_ids_location = {gene_id: index for index, gene_id in enumerate(gene_ids)}
 
@@ -115,9 +120,9 @@ def add_gene_metrics(data_group, input_path, gene_ids):
             gene_metric_values.append([np.nan] * ncols)
 
     nrows = len(gene_ids)
-    if DEBUG_MSGS:
-        print("# genes", nrows)
-        print("# gene metadate metrics", ncols)
+    if verbose:
+        logging.info("# of genes: {}".format(nrows))
+        logging.info("# of gene metadate metrics: {}".format(ncols))
 
     # now insert the dataset that has the numeric values for the qc metrics for the genes
     if nrows and ncols:
@@ -128,16 +133,18 @@ def add_gene_metrics(data_group, input_path, gene_ids):
             dtype=np.float32,
             chunks=(nrows, ncols),
             data=gene_metric_values)
+    else:
+        logging.info("Not adding \"gene_metadata_numeric\" to zarr output: either the #genes or # cell ids is 0")
 
 
-def add_cell_metrics(data_group, input_path, cell_ids):
+def add_cell_metrics(data_group, input_path, cell_ids, verbose=False):
     """Converts cell metrics from the Optimus pipeline to zarr file
     Args:
         data_group (zarr.hierarchy.Group): datagroup object for the zarr
         input_path (str): file containing gene metrics name and values
         cell_ids (list): list of cell ids
+        verbose (bool): whether to output verbose messages for debugging purposes
     """
-
     # read the gene metrics names and values
     if input_path.endswith(".gz"):
         with gzip.open(input_path, 'rt') as f:
@@ -155,9 +162,11 @@ def add_cell_metrics(data_group, input_path, cell_ids):
             dtype="<U40",
             chunks=(len(cell_metrics[0][1:]),),
             data=list(cell_metrics[0][1:]))
+    else:
+        logging.info("Not adding \"cell_metadata_numeric_name\" to zarr output: must have at least one metric")
 
-    if DEBUG_MSGS:
-        print("cell_metadata_numeric_names", len(cell_metrics[0][1:]))
+    if verbose:
+        logging.info("# of cell_metadata_numeric_names: {}".format(len(cell_metrics[0][1:])))
 
     cell_ids_location = {cell_id: index for index, cell_id in enumerate(cell_ids)}
 
@@ -194,9 +203,9 @@ def add_cell_metrics(data_group, input_path, cell_ids):
 
     # Gene metric values, the row size (i.e., number of cell_ids)
     nrows = len(cell_ids)
-    if DEBUG_MSGS:
-        print('# cell ids ', nrows)
-        print('# numeric metrics', ncols)
+    if verbose:
+        logging.info('# of cell ids: {}'.format(nrows))
+        logging.info('# of numeric metrics: {}'.format(ncols))
 
     # now insert the dataset that has the numeric values for the cell qc metrics
     if nrows and ncols:
@@ -207,18 +216,21 @@ def add_cell_metrics(data_group, input_path, cell_ids):
             dtype=np.float32,
             chunks=(nrows, ncols),
             data=cell_metric_values)
+    else:
+        logging.info("Not adding \"cell_metadata_numeric\" to zarr output: either the #genes or # cell ids is 0")
 
 
 def add_expression_counts(data_group, args):
     """Converts  the count matrix from the Optimus pipeline to zarr file
+
     Args:
         data_group (zarr.hierarchy.Group): datagroup object for the zarr
         args (argparse.Namespace): input arguments for the run
+
     Return:
         cell_ids: list of cell ids
         gene_ids: list of gene ids
     """
-
     # read the cell ids and adds into the cell_barcodes dataset
     cell_ids = np.load(args.cell_ids)
 
@@ -233,8 +245,10 @@ def add_expression_counts(data_group, args):
             dtype='<U40',
             chunks=(10000,),
             data=list(cell_ids))
+    else:
+        logging.info("Not adding \"cell_id\" to zarr output: # cell ids is 0")
 
-    # read the gene ids  and adds into the gene_ids dataset
+        # read the gene ids  and adds into the gene_ids dataset
     gene_ids = np.load(args.gene_ids)
 
     if len(gene_ids):
@@ -245,10 +259,12 @@ def add_expression_counts(data_group, args):
             dtype='<U40',
             chunks=(10000,),
             data=list(gene_ids))
+    else:
+        logging.info("Not adding \"gene_id\" to zarr output: # gene ids is 0")
 
-    if DEBUG_MSGS:
-        print('# barcodes', len(cell_ids))
-        print('# num genes', len(gene_ids))
+    #if args.verbose:
+     #   logging.info('# barcodes', len(cell_ids))
+    #    logging.info('# num genes', len(gene_ids))
 
     # read .npz file expression counts and add it to the expression_counts dataset
     exp_counts = np.load(args.count_matrix)
@@ -258,8 +274,8 @@ def add_expression_counts(data_group, args):
                                         exp_counts['indptr']),
                                        shape=exp_counts['shape'])
 
-    if DEBUG_MSGS:
-        print('shape of count matrix', exp_counts['shape'], csr_exp_counts.shape)
+    if args.verbose:
+        logging.info('shape of count matrix', exp_counts['shape'], csr_exp_counts.shape)
     # now create a dataset of zeros with the same dimensions as the expression count matrix
     exp_counts_group = data_group.zeros('expression',
                                         compressor=COMPRESSOR,
@@ -283,6 +299,7 @@ def add_expression_counts(data_group, args):
 def create_zarr_files(args):
     """This function creates the zarr file or folder structure in output_zarr_path in format file_format,
         with sample_id from the input folder analysis_output_path
+
     Args:
         args (argparse.Namespace): input arguments for the run
     """
@@ -293,10 +310,10 @@ def create_zarr_files(args):
     cell_ids, gene_ids = add_expression_counts(root_group['expression_matrix'], args)
 
     # add the the gene metrics
-    add_gene_metrics(root_group['expression_matrix'], args.gene_metrics, gene_ids)
+    add_gene_metrics(root_group['expression_matrix'], args.gene_metrics, gene_ids, args.verbose)
 
     # add the the gene metrics
-    add_cell_metrics(root_group['expression_matrix'], args.cell_metrics, cell_ids)
+    add_cell_metrics(root_group['expression_matrix'], args.cell_metrics, cell_ids, args.verbose)
 
 
 def main():
@@ -346,6 +363,12 @@ def main():
                         default="DirectoryStore",
                         choices=["DirectoryStore", "ZipStore"],
                         help='format of the zarr file choices: [DirectoryStore, ZipStore] default: DirectoryStore')
+
+    parser.add_argument('--verbose',
+                        dest="verbose",
+                        action="store_true",
+                        help='whether to output verbose debugging messages')
+
     args = parser.parse_args()
 
     create_zarr_files(args)
