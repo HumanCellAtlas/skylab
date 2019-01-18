@@ -19,10 +19,21 @@ jobs:
             - run:
                 command: |
                     cd docker/emptydrops/emptyDropsWrapper/test/
-                    test_emptyDropsWrapper.sh
+                    ./test_emptyDropsWrapper.sh
+    test_npz2rds:
+        docker:
+            - image: quay.io/humancellatlas/secondary-analysis-dropletutils:test
+        steps:
+            - checkout
+            - run:
+                command: |
+                    cd docker/emptydrops/npz2rds/test/
+                    ./test.sh
 workflows:
     version: 2
     test_all:
         jobs:
           - build
           - test_emptyDropsWrapper
+          - test_npz2rds
+
