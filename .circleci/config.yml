@@ -11,17 +11,18 @@ jobs:
                     . venv/bin/activate
                     pip install requests
                     python test/run_portability_test.py --test-directories test/smartseq2_single_sample/pr/ test/optimus/pr
-    test_dummy:
+    test_emptyDropsWrapper:
         docker:
             - image: quay.io/humancellatlas/secondary-analysis-dropletutils:test
         steps:
             - checkout
             - run:
                 command: |
-                    ./dummy_test_true.sh
+                    cd docker/emptydrops/emptyDropsWrapper/test/
+                    test_emptyDropsWrapper.sh
 workflows:
     version: 2
     test_all:
         jobs:
           - build
-          - test_dummy
+          - test_emptyDropsWrapper
