@@ -24,11 +24,14 @@ printf "done\n"
 printf "Validating output checksum..."
 ## Check the output checksum
 chksum=`md5sum counts.rds | cut -f 1 -d ' ' `
+exitCode=0
 if [[ "$chksum" == "f19b93dc8ecb651dd8956c44a2a53725" ]]
 then
     printf "PASSED\n"
+    exitCode=0
 else
     printf "FAILED\n"
+    exitCode=1
 fi
 
 ## Cleanup
@@ -36,3 +39,5 @@ printf "Cleaning up..."
 rm -r input/
 rm counts.rds
 printf "done\n"
+
+exit $exitCode
