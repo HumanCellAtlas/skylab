@@ -6,7 +6,7 @@ import numpy as np
 import zarr
 from zarr import Blosc
 
-DEBUG_MSGS = True
+DEBUG_MSGS = False
 
 ZARR_GROUP = {
     'expression_matrix': ["expression", "cell_id", "gene_id",
@@ -69,14 +69,14 @@ def add_gene_metrics(data_group, input_path, gene_ids):
             gene_metrics = [row for row in csv.reader(f)]
 
     # metric names we use [1:] to remove the empty string
-    # if gene_metrics[0]:
-    data_group.create_dataset(
-        "gene_metadata_numeric_name",
-        shape=(len(gene_metrics[0][1:]),),
-        compressor=COMPRESSOR,
-        dtype="<U40",
-        chunks=(len(gene_metrics[0][1:]),),
-        data=list(gene_metrics[0][1:]))
+    if len(gene_metrics[0][1:]):
+        data_group.create_dataset(
+            "gene_metadata_numeric_name",
+            shape=(len(gene_metrics[0][1:]),),
+            compressor=COMPRESSOR,
+            dtype="<U40",
+            chunks=(len(gene_metrics[0][1:]),),
+            data=list(gene_metrics[0][1:]))
 
     if DEBUG_MSGS:
         print("# gene numeric metadata", len(gene_metrics[0][1:]))
@@ -120,13 +120,14 @@ def add_gene_metrics(data_group, input_path, gene_ids):
         print("# gene metadate metrics", ncols)
 
     # now insert the dataset that has the numeric values for the qc metrics for the genes
-    data_group.create_dataset(
-        "gene_metadata_numeric",
-        shape=(nrows, ncols),
-        compressor=COMPRESSOR,
-        dtype=np.float32,
-        chunks=(nrows, ncols),
-        data=gene_metric_values)
+    if nrows and ncols:
+        data_group.create_dataset(
+            "gene_metadata_numeric",
+            shape=(nrows, ncols),
+            compressor=COMPRESSOR,
+            dtype=np.float32,
+            chunks=(nrows, ncols),
+            data=gene_metric_values)
 
 
 def add_cell_metrics(data_group, input_path, cell_ids):
@@ -146,13 +147,14 @@ def add_cell_metrics(data_group, input_path, cell_ids):
             cell_metrics = [row for row in csv.reader(f)]
 
     # metric names for the cells
-    data_group.create_dataset(
-        "cell_metadata_numeric_name",
-        shape=(len(cell_metrics[0][1:]),),
-        compressor=COMPRESSOR,
-        dtype="<U40",
-        chunks=(len(cell_metrics[0][1:]),),
-        data=list(cell_metrics[0][1:]))
+    if len(cell_metrics[0][1:]):
+        data_group.create_dataset(
+            "cell_metadata_numeric_name",
+            shape=(len(cell_metrics[0][1:]),),
+            compressor=COMPRESSOR,
+            dtype="<U40",
+            chunks=(len(cell_metrics[0][1:]),),
+            data=list(cell_metrics[0][1:]))
 
     if DEBUG_MSGS:
         print("cell_metadata_numeric_names", len(cell_metrics[0][1:]))
@@ -161,6 +163,7 @@ def add_cell_metrics(data_group, input_path, cell_ids):
 
     cell_id_to_metric_values = {}
     # ignore the first line with the cell metric names in text
+
     ncols = 0
     for row in cell_metrics[1:]:
         # only consider cell_id that are also in the count_metrics
@@ -177,7 +180,8 @@ def add_cell_metrics(data_group, input_path, cell_ids):
         cell_id_to_metric_values[row[0]] = row_values
 
         # note that all of these lengths are assumed to be equal and this check is already done in the pipeline
-        ncols = len(row_values)
+        if ncols == 0:
+            ncols = len(row_values)
 
     # now insert the metrics of the cells that are in count matrix, i.e.,  the global variable "cell_ids"
     cell_metric_values = []
@@ -195,13 +199,14 @@ def add_cell_metrics(data_group, input_path, cell_ids):
         print('# numeric metrics', ncols)
 
     # now insert the dataset that has the numeric values for the cell qc metrics
-    data_group.create_dataset(
-        "cell_metadata_numeric",
-        shape=(nrows, ncols),
-        compressor=COMPRESSOR,
-        dtype=np.float32,
-        chunks=(nrows, ncols),
-        data=cell_metric_values)
+    if nrows and ncols:
+        data_group.create_dataset(
+            "cell_metadata_numeric",
+            shape=(nrows, ncols),
+            compressor=COMPRESSOR,
+            dtype=np.float32,
+            chunks=(nrows, ncols),
+            data=cell_metric_values)
 
 
 def add_expression_counts(data_group, args):
@@ -213,7 +218,6 @@ def add_expression_counts(data_group, args):
         cell_ids: list of cell ids
         gene_ids: list of gene ids
     """
-    cell_ids = []
 
     # read the cell ids and adds into the cell_barcodes dataset
     cell_ids = np.load(args.cell_ids)
@@ -221,27 +225,26 @@ def add_expression_counts(data_group, args):
     # note that if we do not specify the exact dimension, i.e., (len(barcodes), )
     # instead of (1, len(barcodes)) then  there is a memory bloat
     # while adding the cell_id or gene_id
-    # if len(barcodes):
-    data_group.create_dataset(
-        "cell_id",
-        shape=(len(cell_ids),),
-        compressor=COMPRESSOR,
-        dtype='<U40',
-        chunks=(10000,),
-        data=list(cell_ids))
+    if len(cell_ids):
+        data_group.create_dataset(
+            "cell_id",
+            shape=(len(cell_ids),),
+            compressor=COMPRESSOR,
+            dtype='<U40',
+            chunks=(10000,),
+            data=list(cell_ids))
 
     # read the gene ids  and adds into the gene_ids dataset
-    gene_ids = []
     gene_ids = np.load(args.gene_ids)
 
-    # if len(gene_ids):
-    data_group.create_dataset(
-        "gene_id",
-        shape=(len(gene_ids),),
-        compressor=COMPRESSOR,
-        dtype='<U40',
-        chunks=(10000,),
-        data=list(gene_ids))
+    if len(gene_ids):
+        data_group.create_dataset(
+            "gene_id",
+            shape=(len(gene_ids),),
+            compressor=COMPRESSOR,
+            dtype='<U40',
+            chunks=(10000,),
+            data=list(gene_ids))
 
     if DEBUG_MSGS:
         print('# barcodes', len(cell_ids))
@@ -275,6 +278,7 @@ def add_expression_counts(data_group, args):
             exp_counts_group[i:i + j, ] = csr_exp_counts[i:i + j, ].toarray()
 
     return cell_ids, gene_ids
+
 
 def create_zarr_files(args):
     """This function creates the zarr file or folder structure in output_zarr_path in format file_format,
