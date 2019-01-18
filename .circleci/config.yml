@@ -13,9 +13,9 @@ jobs:
                     python test/run_portability_test.py --test-directories test/smartseq2_single_sample/pr/ test/optimus/pr
     test_dummy:
         docker:
-	    - image: quay.io/humancellatlas secondary-analysis-dropletutils:test
+            - image: quay.io/humancellatlas secondary-analysis-dropletutils:test
 	steps:
-	    - checkout
+            - checkout
             - run:
                 command: |
                     dummy_test_true.sh
