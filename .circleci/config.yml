@@ -18,7 +18,7 @@ jobs:
             - checkout
             - run:
                 command: |
-                    dummy_test_true.sh
+                    ./dummy_test_true.sh
 workflows:
     version: 2
     test_all:
