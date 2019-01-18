@@ -2,6 +2,14 @@ version: 2
 jobs:
     build:
         docker:
+	    - image: quay.io/humancellatlas secondary-analysis-dropletutils
+	steps:
+	    - checkout
+	    - run:
+	        command: |
+	            dummy_test_true.sh
+    build:
+        docker:
             - image: circleci/python:3.6.1
         steps:
             - checkout
