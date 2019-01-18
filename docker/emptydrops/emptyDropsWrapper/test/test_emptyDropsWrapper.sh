@@ -39,14 +39,20 @@ printf "done\n"
 ## validates
 printf "Verifying checksum..."
 md5out=`md5sum ${emptyDropsOutput} | cut -f 1 -d ' '`
+
+exitCode=0
 if [ "$md5out" = "$md5checksum" ];
 then
     echo 'PASSED'
+    exitCode=0
 else
     echo 'FAIL'
+    exitCode=1
 fi
 printf "done\n"
 
 ## Cleanup
 rm ${emptyDropsOutput} ${testDataFileName} ${rdsFileName}
 rm -r ${extraCleanup}
+
+exit $exitCode
