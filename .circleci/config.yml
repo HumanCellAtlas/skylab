@@ -1,6 +1,6 @@
 version: 2
 jobs:
-    test_portability:
+    build:
         docker:
             - image: circleci/python:3.6.1
         steps:
