@@ -23,5 +23,5 @@ workflows:
     version: 2
     test_all:
         jobs:
-          - test_portability
+          - build
           - test_dummy
