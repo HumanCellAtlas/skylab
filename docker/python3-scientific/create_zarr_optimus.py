@@ -22,6 +22,7 @@ logging.basicConfig(level=logging.INFO)
 
 def init_zarr(sample_id, path, file_format):
     """Initializes the zarr output.
+
     Args:
         sample_id (str): sample or cell id
         path (str): path to the zarr output
