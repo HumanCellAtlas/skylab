@@ -140,6 +140,7 @@ def add_gene_metrics(data_group, input_path, gene_ids, verbose=False):
 
 def add_cell_metrics(data_group, input_path, cell_ids, verbose=False):
     """Converts cell metrics from the Optimus pipeline to zarr file
+
     Args:
         data_group (zarr.hierarchy.Group): datagroup object for the zarr
         input_path (str): file containing gene metrics name and values
