@@ -17,7 +17,7 @@ ZARR_GROUP = {
 COMPRESSOR = Blosc(cname='lz4', clevel=5, shuffle=Blosc.SHUFFLE, blocksize=0)
 
 # the number of rows in a chunk for expression counts
-CHUNK_ROW_SIZE = 1000
+CHUNK_ROW_SIZE = 10000
 logging.basicConfig(level=logging.INFO)
 
 def init_zarr(sample_id, path, file_format):
