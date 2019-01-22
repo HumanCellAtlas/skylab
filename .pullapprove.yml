@@ -32,14 +32,14 @@ groups:
           - ENG-ONLY
     users:
       - ambrosejcarr
-      - jishuxu
       - mckinsel
       - mbabadi
       - kishorikonwar
+      - barkasn
 
   software-engineers:
     required: 1 # Require approval from at least one software engineer
     users:
-      - dshiga
+      - pshapiro4broad
       - samanehsan
       - rexwangcc
