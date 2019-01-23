@@ -13,7 +13,7 @@ jobs:
                     python test/run_portability_test.py --test-directories test/smartseq2_single_sample/pr/ test/optimus/pr
     test_emptyDropsWrapper:
         docker:
-            - image: quay.io/humancellatlas/secondary-analysis-dropletutils:test
+            - image: quay.io/humancellatlas/secondary-analysis-dropletutils:0.1.0
         steps:
             - checkout
             - run:
@@ -22,7 +22,7 @@ jobs:
                     ./test_emptyDropsWrapper.sh
     test_npz2rds:
         docker:
-            - image: quay.io/humancellatlas/secondary-analysis-dropletutils:test
+            - image: quay.io/humancellatlas/secondary-analysis-dropletutils:0.1.0
         steps:
             - checkout
             - run:
