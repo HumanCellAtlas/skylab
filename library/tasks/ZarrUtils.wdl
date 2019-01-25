@@ -58,7 +58,7 @@ task OptimusZarrConversion {
   #runtime values
   #String docker = "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.1.8"
   # for passing the test we use a temporary zarr
-  String docker = "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.1.6_zarr_test"
+  String docker = "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.1.9"
   # name of the sample
   String sample_id
   # the file "merged-cell-metrics.csv.gz" that contains the cellwise metrics
