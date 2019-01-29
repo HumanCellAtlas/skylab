@@ -12,4 +12,5 @@
   "SequenceDataWithMoleculeTagMetrics.wdl": "library/tasks/SequenceDataWithMoleculeTagMetrics.wdl",
   "TagSortBam.wdl": "library/tasks/TagSortBam.wdl",
   "RunEmptyDrops.wdl": "library/tasks/RunEmptyDrops.wdl"
+  "ZarrUtils.wdl": "library/tasks/ZarrUtils.wdl"
 }
