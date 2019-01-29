@@ -16,7 +16,7 @@ workflow Optimus {
     description: "The optimus 3' pipeline processes 10x genomics sequencing data based on the v2 chemistry. It corrects cell barcodes and UMIs, aligns reads, marks duplicates, and returns data as alignments in BAM format and as counts in sparse matrix exchange format."
   }
   # version of this pipeline
-  String version = "optimus_v0.3.0"
+  String version = "optimus_v0.4.0"
 
   # Sequencing data inputs
   Array[File] r1_fastq
@@ -180,7 +180,8 @@ workflow Optimus {
         gene_metrics = MergeGeneMetrics.gene_metrics,
         sparse_count_matrix = MergeCountFiles.sparse_count_matrix,
         cell_id = MergeCountFiles.row_index,
-        gene_id = MergeCountFiles.col_index
+        gene_id = MergeCountFiles.col_index,
+        empty_drops_result = RunEmptyDrops.empty_drops_result
     }
 }
 
