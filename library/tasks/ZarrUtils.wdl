@@ -1,7 +1,7 @@
 task SmartSeq2ZarrConversion {
 
   #runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.1.8"
+  String docker = "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.1.9"
   # the gene count file "<sample_id>_rsem.genes.results" in the task results folder call-RSEMExpression
   File rsem_gene_results
   # file named "<sample_id>_QCs.csv" in the folder  "call-GroupQCOutputs/glob-*" of the the SS2  output
@@ -56,8 +56,6 @@ task SmartSeq2ZarrConversion {
 
 task OptimusZarrConversion {
   #runtime values
-  #String docker = "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.1.8"
-  # for passing the test we use a temporary zarr
   String docker = "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.1.9"
   # name of the sample
   String sample_id
@@ -71,6 +69,8 @@ task OptimusZarrConversion {
   File cell_id
   # file (.npy) that contains the array of gene names
   File gene_id
+  # emptydrops output metadata
+  File empty_drops_result
 
   meta {
     description: "This task will converts some of the outputs of Optimus pipeline into a zarr file"
