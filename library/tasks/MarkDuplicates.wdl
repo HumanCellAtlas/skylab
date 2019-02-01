@@ -31,7 +31,7 @@ task MarkDuplicatesUmiTools {
         mv ${bam_index} input.bam.bai
 
         umi_tools group \
-            -I ${bam_input} \
+            -I input.bam \
             -L outlog.txt \
             -E outerr.txt \
             -S duplicate_marked.bam \
