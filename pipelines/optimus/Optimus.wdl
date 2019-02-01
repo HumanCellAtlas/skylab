@@ -123,6 +123,11 @@ workflow Optimus {
         bam_index = PreUMISort.bam_index
     }
 
+    call Picard.SortBamAndIndex as PostUMISort {
+      input:
+        bam_input = MarkDups.bam_output
+    }
+
     call TagSortBam.GeneSortBam {
       input:
         bam_input = MarkDups.bam_output
@@ -152,7 +157,7 @@ workflow Optimus {
 
   call Merge.MergeSortBamFiles as MergeSorted {
     input:
-      bam_inputs = MarkDups.bam_output,
+      bam_inputs = PostUMISort.bam_output,
       sort_order = "coordinate"
   }
 
