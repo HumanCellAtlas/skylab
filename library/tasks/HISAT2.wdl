@@ -43,13 +43,13 @@ task HISAT2PairedEnd {
     set -e
 
     # fix names if necessary.
-    if [ "${fastq1}" != *.fastq.gz ]; then
+    if [[ "${fastq1}" != *.fastq.gz ]]; then
         FQ1=${fastq1}.fastq.gz
         mv ${fastq1} ${fastq1}.fastq.gz
     else
         FQ1=${fastq1}
     fi
-    if [ "${fastq2}" != *.fastq.gz ]; then
+    if [[ "${fastq2}" != *.fastq.gz ]]; then
         FQ2=${fastq2}.fastq.gz
         mv ${fastq2} ${fastq2}.fastq.gz
     else
@@ -97,7 +97,7 @@ task HISAT2PairedEnd {
 task HISAT2RSEM {
   File hisat2_ref
   File fastq1
-  File fastq2
+  File? fastq2
   String ref_name
   String output_basename
   String sample_name
@@ -135,20 +135,25 @@ task HISAT2RSEM {
     set -e
 
     # fix names if necessary.
-    if [ "${fastq1}" != *.fastq.gz ]; then
+    if [[ "${fastq1}" != *.fastq.gz ]]; then
         FQ1=${fastq1}.fastq.gz
         mv ${fastq1} ${fastq1}.fastq.gz
     else
         FQ1=${fastq1}
     fi
 
-    if [ "${fastq2}" != *.fastq.gz ]; then
-        FQ2=${fastq2}.fastq.gz
-        mv ${fastq2} ${fastq2}.fastq.gz
+    if [ -n "${"" + fastq2}" ]; then
+        if [[ "${fastq2}" != *.fastq.gz ]]; then
+            FQ2=${fastq2}.fastq.gz
+            mv ${fastq2} ${fastq2}.fastq.gz
+        else
+            FQ2=${fastq2}
+        fi
+        hisat_input="-1 $FQ1 -2 $FQ2"
     else
-        FQ2=${fastq2}
+        hisat_input="-U $FQ1"
     fi
-
+    echo "$hisat_input"
     tar --no-same-owner -xvf "${hisat2_ref}"
 
     # increase gap alignment penalty to avoid gap alignment
@@ -159,8 +164,7 @@ task HISAT2RSEM {
     # no indel/gaps in alignments
     hisat2 -t \
       -x ${ref_name}/${ref_name} \
-      -1 $FQ1 \
-      -2 $FQ2 \
+      $hisat_input \
       --rg-id=${sample_name} --rg SM:${sample_name} --rg LB:${sample_name} \
       --rg PL:ILLUMINA --rg PU:${sample_name} \
       --new-summary --summary-file ${output_basename}.log \
@@ -211,6 +215,7 @@ task HISAT2SingleEnd {
   # Need room for unsorted + sorted bam + temp sorting space + zipped and unzipped ref. Add 10 GB buffer.
   Int disk = ceil((size(fastq, "GB") * 100) + size(hisat2_ref, "GB") * 2 + 10)
   Int preemptible = 5
+  Int max_retries = 0
 
   meta {
     description: "This HISAT2 alignment task will align single-end fastq reads to reference genome."
@@ -227,6 +232,7 @@ task HISAT2SingleEnd {
     cpu: "(optional) the number of cpus to provision for this task"
     disk: "(optional) the amount of disk space (GB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
+    max_retries: "(optional) retry this number of times if task fails -- use with caution, see skylab README for details"
   }
 
   command {
@@ -240,8 +246,11 @@ task HISAT2SingleEnd {
       --new-summary --summary-file "${output_basename}.log" \
       --met-file ${output_basename}.hisat2.met.txt --met 5 \
       --seed 12345 \
+      -k 10 \
+      --secondary \
       -p ${cpu} -S >(samtools view -1 -h -o ${output_basename}_unsorted.bam)
     samtools sort -@ ${cpu} -O bam -o "${output_basename}.bam" "${output_basename}_unsorted.bam"
+    samtools index "${output_basename}.bam"
   }
 
   runtime {
@@ -250,12 +259,14 @@ task HISAT2SingleEnd {
     disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible
+    maxRetries: max_retries
   }
 
   output {
     File log_file ="${output_basename}.log"
     File met_file ="${output_basename}.hisat2.met.txt"
     File output_bam = "${output_basename}.bam"
+    File bam_index = "${output_basename}.bam.bai"
   }
 }
 

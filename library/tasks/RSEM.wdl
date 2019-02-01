@@ -2,6 +2,7 @@ task RSEMExpression {
   File trans_aligned_bam
   File rsem_genome
   String output_basename
+  Boolean single_end = false
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-rsem:v0.2.2-1.3.0"
@@ -34,7 +35,7 @@ task RSEMExpression {
     tar --no-same-owner -xvf ${rsem_genome}
     rsem-calculate-expression \
       --bam \
-      --paired-end \
+      ${true="" false="--paired-end" single_end} \
        -p ${cpu} \
       --time --seed 555 \
       --calc-pme \
