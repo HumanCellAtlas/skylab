@@ -19,7 +19,7 @@ task SortSam {
     command {
         set -e
 
-        java -Xmx${command_mem_mb}m -jar picard.jar SortSam \
+        java -Xmx${command_mem_mb}m -jar /usr/picard/picard.jar SortSam \
               I=${bam_input} \
               O=sorted.bam \
               SORT_ORDER=${sort_order}
