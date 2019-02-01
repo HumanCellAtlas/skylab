@@ -45,7 +45,7 @@ task MarkDuplicatesUmiTools {
             --per-gene \
             --per-cell \
             --cell-tag CB \
-            --gene-tag GE
+            --gene-tag GE \
             --no-sort-output \
             --group-out groupout.txt \
             --umi-group-tag UB
