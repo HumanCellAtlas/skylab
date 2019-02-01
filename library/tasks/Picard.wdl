@@ -26,7 +26,7 @@ task SortBamAndIndex {
 
 
          java -Xmx${command_mem_mb}m -jar /usr/picard/picard.jar BuildBamIndex \
-              I=sorted.bam
+              I=sorted.bam \
               O=sorted.bai
     }
 
