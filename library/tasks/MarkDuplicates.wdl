@@ -1,5 +1,6 @@
 task MarkDuplicatesUmiTools {
     File bam_input
+    File bam_index
 
     # runtime values
     String docker = "quay.io/humancellatlas/secondary-analysis-umitools:0.0.1"
@@ -25,6 +26,9 @@ task MarkDuplicatesUmiTools {
 
     command {
         set -e
+
+        mv ${bam_input} input.bam
+        mv ${bam_index} input.bam.bai
 
         umi_tools group \
             -I ${bam_input} \
