@@ -119,7 +119,7 @@ workflow Optimus {
 
     call MarkDuplicates.MarkDuplicatesUmiTools as MarkDups {
       input:
-        bam_input = PreUMISort.bam_output
+        bam_input = PreUMISort.bam_output,
         bam_index = PreUMISort.bam_index
     }
 
