@@ -112,7 +112,7 @@ workflow Optimus {
         annotations_gtf = annotations_gtf
     }
 
-    call Picard.SortSam as PreUMISort {
+    call Picard.SortBamAndIndex as PreUMISort {
       input:
         bam_input = TagGenes.bam_output
     }
@@ -120,6 +120,7 @@ workflow Optimus {
     call MarkDuplicates.MarkDuplicatesUmiTools as MarkDups {
       input:
         bam_input = PreUMISort.bam_output
+        bam_index = PreUMISort.bam_index
     }
 
     call TagSortBam.GeneSortBam {

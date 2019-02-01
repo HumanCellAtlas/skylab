@@ -1,4 +1,4 @@
-task SortSam {
+task SortBamAndIndex {
     File bam_input
     String sort_order = "coordinate"
 
@@ -23,6 +23,11 @@ task SortSam {
               I=${bam_input} \
               O=sorted.bam \
               SORT_ORDER=${sort_order}
+
+
+         java -Xmx${command_mem_mb}m -jar /usr/picard/picard.jar BuildBamIndex \
+              I=sorted.bam
+              O=sorted.bai
     }
 
     runtime {
@@ -35,6 +40,7 @@ task SortSam {
 
     output {
         File bam_output = "sorted.bam"
+        File bam_index = "sorted.bai"
     }
 }
 
