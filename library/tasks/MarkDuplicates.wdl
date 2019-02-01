@@ -14,6 +14,15 @@ task MarkDuplicatesUmiTools {
         description: "Marks duplicates using umitools group specifically for single-cell experiments"
     }
 
+    parameter_meta {
+        bam_input: "Aligned and sorted bam"
+        docker: "(optional) the docker image containing the runtime environment for this task"
+        machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+        cpu: "(optional) the number of cpus to provision for this task"
+        disk: "(optional) the amount of disk space (GB) to provision for this task"
+        preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
+    }
+
     command {
         set -e
 
@@ -33,7 +42,19 @@ task MarkDuplicatesUmiTools {
             --no-sort-output \
             --group-out groupout.txt \
             --umi-group-tag UB
+    }
 
+    runtime {
+        docker: docker
+        memory: "${machine_mem_mb} MB"
+        disks: "local-disk ${disk} HDD"
+        cpu: cpu
+        preemptible: preemptible
+    }
 
+    output {
+        File bam_output = "duplicate_marked.bam"
+        File group_output = "groupout.txt"
+    }
 
 }
