@@ -30,6 +30,9 @@ task MarkDuplicatesUmiTools {
         mv ${bam_input} input.bam
         mv ${bam_index} input.bam.bai
 
+        touch input.bam
+        touch input.bam.bai
+
         umi_tools group \
             -I input.bam \
             -L outlog.txt \
