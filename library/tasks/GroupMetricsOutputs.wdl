@@ -1,5 +1,5 @@
 task GroupQCOutputs {
-  Array[File] picard_row_outputs
+  Array[File?] picard_row_outputs
   Array[File] picard_table_outputs
   File hisat2_stats
   File hisat2_trans_stats
