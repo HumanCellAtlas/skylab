@@ -130,14 +130,12 @@ task MergeCountFiles {
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
   }
 
-  command {
-    prefixes=$(python <<CODE
-    matrices = ["${sep='", "' sparse_count_matrices}"]
-    print(' '.join(m.replace('.npz', '') for m in matrices))
-    CODE)
+  String dollar = "$"
 
-    MergeCountMatrices -o sparse_counts -i $prefixes
-  }
+  command <<<
+    matrices=('${sep="' '" sparse_count_matrices}')
+    MergeCountMatrices -o sparse_counts -i (${dollar}{matrices[@]%.npz})
+  >>>
 
   runtime {
     docker: docker
