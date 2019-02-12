@@ -8,13 +8,15 @@ import "TagGeneExon.wdl" as TagGeneExon
 import "CorrectUmiMarkDuplicates.wdl" as CorrectUmiMarkDuplicates
 import "SequenceDataWithMoleculeTagMetrics.wdl" as Metrics
 import "TagSortBam.wdl" as TagSortBam
+import "RunEmptyDrops.wdl" as RunEmptyDrops
+import "ZarrUtils.wdl" as ZarrUtils
 
 workflow Optimus {
   meta {
     description: "The optimus 3' pipeline processes 10x genomics sequencing data based on the v2 chemistry. It corrects cell barcodes and UMIs, aligns reads, marks duplicates, and returns data as alignments in BAM format and as counts in sparse matrix exchange format."
   }
   # version of this pipeline
-  String version = "optimus_v0.3.0"
+  String version = "optimus_v0.4.0"
 
   # Sequencing data inputs
   Array[File] r1_fastq
@@ -35,6 +37,9 @@ workflow Optimus {
   # this is used to scatter matched [r1_fastq, r2_fastq, i1_fastq] arrays
   Array[Int] indices = range(length(r1_fastq))
 
+  # whether to convert the outputs to Zarr format, by default it's set to true
+  Boolean output_zarr = true
+
   parameter_meta {
     r1_fastq: "forward read, contains cell barcodes and molecule barcodes"
     r2_fastq: "reverse read, contains cDNA fragment generated from captured mRNA"
@@ -45,6 +50,7 @@ workflow Optimus {
     ref_genome_fasta: "genome fasta file (must match star reference)"
     whitelist: "10x genomics cell barcode whitelist for 10x V2"
     fastq_suffix: "when running in green box, need to add '.gz' for picard to detect the compression"
+    output_zarr: "whether to run the taks that converts the outputs to Zarr format, by default it's true"
   }
 
   scatter (index in indices) {
@@ -159,6 +165,26 @@ workflow Optimus {
       col_indices = CreateSparseCountMatrix.col_index
   }
 
+  call RunEmptyDrops.RunEmptyDrops {
+    input:
+       sparse_count_matrix = MergeCountFiles.sparse_count_matrix,
+       row_index = MergeCountFiles.row_index,
+       col_index = MergeCountFiles.col_index
+  }
+
+  if (output_zarr) {
+    call ZarrUtils.OptimusZarrConversion{
+      input:
+        sample_id=sample_id,
+        cell_metrics = MergeCellMetrics.cell_metrics,
+        gene_metrics = MergeGeneMetrics.gene_metrics,
+        sparse_count_matrix = MergeCountFiles.sparse_count_matrix,
+        cell_id = MergeCountFiles.row_index,
+        gene_id = MergeCountFiles.col_index,
+        empty_drops_result = RunEmptyDrops.empty_drops_result
+    }
+}
+
   output {
       # version of this pipeline
       String pipeline_version = version
@@ -169,5 +195,9 @@ workflow Optimus {
       File matrix_col_index = MergeCountFiles.col_index
       File cell_metrics = MergeCellMetrics.cell_metrics
       File gene_metrics = MergeGeneMetrics.gene_metrics
+      File cell_calls = RunEmptyDrops.empty_drops_result
+
+      # zarr
+      Array[File]? zarr_output_files = OptimusZarrConversion.zarr_output_files
   }
 }
