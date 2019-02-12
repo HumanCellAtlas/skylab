@@ -1,5 +1,4 @@
-# You *must* specify "version: 2"
-version: 2
+version: 3
 
 requirements:
   signed_off_by:
