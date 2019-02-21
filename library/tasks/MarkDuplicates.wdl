@@ -49,6 +49,12 @@ task MarkDuplicatesUmiTools {
             --no-sort-output \
             --group-out groupout.txt \
             --umi-group-tag UB
+
+       getUntaggedReads --in-bam-file input.bam --out-bam-file untagged.bam
+
+       rm input.bam input.bam.bai
+       samtools cat -o output.bam duplicate_marked.bam untagged.bam
+       
     }
 
     runtime {
@@ -60,7 +66,7 @@ task MarkDuplicatesUmiTools {
     }
 
     output {
-        File bam_output = "duplicate_marked.bam"
+        File bam_output = "output.bam"
         File group_output = "groupout.txt"
     }
 
