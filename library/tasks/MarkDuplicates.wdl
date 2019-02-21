@@ -47,7 +47,7 @@ task MarkDuplicatesUmiTools {
             --cell-tag CB \
             --gene-tag GE \
             --no-sort-output \
-            --group-out groupout.txt \
+            --group-out groupout.tsv \
             --umi-group-tag UB
 
        getUntaggedReads --in-bam-file input.bam --out-bam-file untagged.bam
