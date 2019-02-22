@@ -148,9 +148,15 @@ workflow Optimus {
         bam_input = CellSortBam.bam_output
     }
 
+    call Picard.SortBamAndIndex as PreCountSort {
+      input:
+        bam_input = MarkDups.bam_output
+	sort_order = "queryname"
+    }
+
     call Count.CreateSparseCountMatrix {
       input:
-        bam_input = CellSortBam.bam_output,
+        bam_input = PreCountSort.bam_output,
         gtf_file = annotations_gtf
     }
   }
