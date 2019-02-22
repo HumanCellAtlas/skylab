@@ -27,7 +27,7 @@ workflow Optimus {
 
   # organism reference parameters
   File tar_star_reference
- File annotations_gtf
+  File annotations_gtf
   File ref_genome_fasta
 
   # 10x v2 parameters
