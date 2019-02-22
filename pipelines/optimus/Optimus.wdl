@@ -148,7 +148,7 @@ workflow Optimus {
         bam_input = CellSortBam.bam_output
     }
 
-    call Picard.SortBamAndIndex as PreCountSort {
+    call Picard.SortBam as PreCountSort {
       input:
         bam_input = MarkDups.bam_output,
 	sort_order = "queryname"

@@ -12,7 +12,7 @@ task SortBamAndIndex {
     Int preemptible = 0
 
     meta {
-        description: "Sorts bam by genomic position"
+        description: "Sorts bam and genereates index file"
     }
 
 
@@ -24,7 +24,7 @@ task SortBamAndIndex {
               O=sorted.bam \
               SORT_ORDER=${sort_order}
 
-
+         
          java -Xmx${command_mem_mb}m -jar /usr/picard/picard.jar BuildBamIndex \
               I=sorted.bam \
               O=sorted.bai
@@ -45,6 +45,44 @@ task SortBamAndIndex {
     }
 }
 
+task SortBam {
+    File bam_input
+    String sort_order = "coordinate"
+
+    # runtime values
+    String docker = "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
+    Int machine_mem_mb = 7500
+    Int machine_overhead_mb = 500
+    Int command_mem_mb = machine_mem_mb - machine_overhead_mb
+    Int cpu = 1
+    Int disk = ceil(size(bam_input, "G") * 6) + 50
+    Int preemptible = 0
+
+    meta {
+        description: "Sorts bam"
+    }
+
+    command {
+        set -e
+
+        java -Xmx${command_mem_mb}m -jar /usr/picard/picard.jar SortSam \
+              I=${bam_input} \
+              O=sorted.bam \
+              SORT_ORDER=${sort_order}
+    }
+
+    runtime {
+        docker: docker
+        memory: "${machine_mem_mb} MB"
+        disks: "local-disk ${disk} HDD"
+        cpu: cpu
+        preemptible: preemptible
+    }
+
+    output {
+        File bam_output = "sorted.bam"
+    }
+}
 
 task CollectMultipleMetrics {
   File aligned_bam
