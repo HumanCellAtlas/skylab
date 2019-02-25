@@ -13,5 +13,5 @@
   "TagSortBam.wdl": "library/tasks/TagSortBam.wdl",
   "RunEmptyDrops.wdl": "library/tasks/RunEmptyDrops.wdl",
   "ZarrUtils.wdl": "library/tasks/ZarrUtils.wdl",
-  "Optimus.wdl": "library/tasks/Optimus.wdl"
+  "Picard.wdl": "library/tasks/Picard.wdl"
 }
