@@ -67,7 +67,7 @@ task MarkDuplicatesUmiTools {
 
     output {
         File bam_output = "output.bam"
-        File group_output = "groupout.txt"
+        File group_output = "groupout.tsv"
     }
 
 }
