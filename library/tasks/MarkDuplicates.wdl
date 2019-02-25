@@ -5,6 +5,9 @@ task MarkDuplicatesUmiTools {
     # runtime values
     String docker = "quay.io/humancellatlas/secondary-analysis-umitools:0.0.1"
 
+    String output_bam_filename = "output.bam"
+    String groupout_filename = "groupout.tsv"
+
     ## TODO: Optimize these values
     Int machine_mem_mb = 10000
     Int cpu = 1
@@ -47,13 +50,13 @@ task MarkDuplicatesUmiTools {
             --cell-tag CB \
             --gene-tag GE \
             --no-sort-output \
-            --group-out groupout.tsv \
+            --group-out ${groupout_filename} \
             --umi-group-tag UB
 
        getUntaggedReads --in-bam-file input.bam --out-bam-file untagged.bam
 
        rm input.bam input.bam.bai
-       samtools cat -o output.bam duplicate_marked.bam untagged.bam
+       samtools cat -o ${groupout_filename} duplicate_marked.bam untagged.bam
        
     }
 
@@ -66,8 +69,8 @@ task MarkDuplicatesUmiTools {
     }
 
     output {
-        File bam_output = "output.bam"
-        File group_output = "groupout.tsv"
+        File bam_output = ${output_bam_filename}
+        File group_output = ${groupout_filename}
     }
 
 }
