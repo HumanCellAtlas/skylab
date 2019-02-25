@@ -18,7 +18,9 @@ COMPRESSOR = Blosc(cname='lz4', clevel=5, shuffle=Blosc.SHUFFLE, blocksize=0)
 
 # the number of rows in a chunk for expression counts
 CHUNK_ROW_SIZE = 10000
+CHUNK_COL_SIZE = 10000
 logging.basicConfig(level=logging.INFO)
+
 
 def init_zarr(sample_id, path, file_format):
     """Initializes the zarr output.
@@ -264,10 +266,6 @@ def add_expression_counts(data_group, args):
     else:
         logging.info("Not adding \"gene_id\" to zarr output: # gene ids is 0")
 
-    #if args.verbose:
-     #   logging.info('# barcodes', len(cell_ids))
-    #    logging.info('# num genes', len(gene_ids))
-
     # read .npz file expression counts and add it to the expression_counts dataset
     exp_counts = np.load(args.count_matrix)
     # now convert it back to a csr_matrix object
@@ -282,18 +280,24 @@ def add_expression_counts(data_group, args):
     exp_counts_group = data_group.zeros('expression',
                                         compressor=COMPRESSOR,
                                         shape=csr_exp_counts.shape,
-                                        chunks=(CHUNK_ROW_SIZE, csr_exp_counts.shape[1]),
+                                        chunks=(CHUNK_ROW_SIZE, CHUNK_COL_SIZE),
                                         dtype=np.float32)
 
     # load a chunks from the expression count matrix and update the corresponding chunk in expression matrix in zar
     for i in range(0, csr_exp_counts.shape[0], CHUNK_ROW_SIZE):
-        # check if it is possible to make a full chunk of data
-        if i + CHUNK_ROW_SIZE <= csr_exp_counts.shape[0]:
-            exp_counts_group[i:i + CHUNK_ROW_SIZE, ] = csr_exp_counts[i:i + CHUNK_ROW_SIZE, ].toarray()
-        else:
-            # not enough data remaining, so make the final set of data less than a chunk
-            j = csr_exp_counts.shape[0] - i
-            exp_counts_group[i:i + j, ] = csr_exp_counts[i:i + j, ].toarray()
+        for j in range(0, csr_exp_counts.shape[1], CHUNK_COL_SIZE):
+            # check if it is possible to make a full row chunk of data, otherwise adjust to the correct size
+            p = CHUNK_ROW_SIZE
+            if i + CHUNK_ROW_SIZE > csr_exp_counts.shape[0]:
+                p = csr_exp_counts.shape[0] - i
+
+            # check if it is possible to make a full row chunk of data, otherwise adjust to the correct size
+            q = CHUNK_COL_SIZE
+            if j + CHUNK_COL_SIZE > csr_exp_counts.shape[1]:
+                q = csr_exp_counts.shape[1] - j
+
+            # insert the chunk
+            exp_counts_group[i:i + p, j:j + q] = csr_exp_counts[i:i + p, j:j + q].toarray()
 
     return cell_ids, gene_ids
 
@@ -314,7 +318,7 @@ def create_zarr_files(args):
     # add the the gene metrics
     add_gene_metrics(root_group['expression_matrix'], args.gene_metrics, gene_ids, args.verbose)
 
-    # add the the gene metrics
+    # add the the cell metrics
     add_cell_metrics(root_group['expression_matrix'], args.cell_metrics, cell_ids, args.verbose)
 
 
