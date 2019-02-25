@@ -69,8 +69,8 @@ task MarkDuplicatesUmiTools {
     }
 
     output {
-        File bam_output = ${output_bam_filename}
-        File group_output = ${groupout_filename}
+        File bam_output = "${output_bam_filename}"
+        File group_output = "${groupout_filename}"
     }
 
 }
