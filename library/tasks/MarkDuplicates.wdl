@@ -56,7 +56,7 @@ task MarkDuplicatesUmiTools {
        getUntaggedReads --in-bam-file input.bam --out-bam-file untagged.bam
 
        rm input.bam input.bam.bai
-       samtools cat -o ${groupout_filename} duplicate_marked.bam untagged.bam
+       samtools cat -o ${output_bam_filename} duplicate_marked.bam untagged.bam
        
     }
 
