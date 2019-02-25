@@ -10,6 +10,7 @@ import "SequenceDataWithMoleculeTagMetrics.wdl" as Metrics
 import "TagSortBam.wdl" as TagSortBam
 import "RunEmptyDrops.wdl" as RunEmptyDrops
 import "ZarrUtils.wdl" as ZarrUtils
+import "Picard.wdl" as Picard
 
 workflow Optimus {
   meta {
@@ -135,9 +136,15 @@ workflow Optimus {
         bam_input = CellSortBam.bam_output
     }
 
+    call Picard.SortBam as PreCountSort {
+      input:
+        bam_input = SortAndCorrectUmiMarkDuplicates.bam_output,
+        sort_order = "queryname"
+    }
+
     call Count.CreateSparseCountMatrix {
       input:
-        bam_input = CellSortBam.bam_output,
+        bam_input = PreCountSort.bam_output,
         gtf_file = annotations_gtf
     }
   }
