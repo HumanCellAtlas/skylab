@@ -18,3 +18,12 @@ COPY filterFastqByReadName.py /tools/
 COPY prepSubset.sh /tools/
 
 ENV PATH=/tools/:${PATH}
+
+## Note that this string is specific this linux base
+ENV CLOUD_SDK_REPO="cloud-sdk-jessie"
+
+RUN echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" |  tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg |  apt-key add -
+RUN apt update
+RUN apt install -y google-cloud-sdk
+

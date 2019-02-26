@@ -9,3 +9,5 @@ if [ -z $tag ]; then
 fi
 
 docker build -t quay.io/humancellatlas/secondary-analysis-subset-fastq:$tag .
+
+echo You can now push with docker push quay.io/humancellatlas/secondary-analysis-subset-fastq:$tag
