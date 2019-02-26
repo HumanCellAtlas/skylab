@@ -5,12 +5,12 @@ import "MergeSortBam.wdl" as Merge
 import "CreateCountMatrix.wdl" as Count
 import "StarAlignBamSingleEnd.wdl" as StarAlignBam
 import "TagGeneExon.wdl" as TagGeneExon
-import "CorrectUmiMarkDuplicates.wdl" as CorrectUmiMarkDuplicates
 import "SequenceDataWithMoleculeTagMetrics.wdl" as Metrics
 import "TagSortBam.wdl" as TagSortBam
 import "RunEmptyDrops.wdl" as RunEmptyDrops
 import "ZarrUtils.wdl" as ZarrUtils
 import "Picard.wdl" as Picard
+import "MarkDuplicates.wdl" as MarkDuplicates
 
 workflow Optimus {
   meta {
@@ -111,19 +111,30 @@ workflow Optimus {
         annotations_gtf = annotations_gtf
     }
 
-    call CorrectUmiMarkDuplicates.SortAndCorrectUmiMarkDuplicates {
+    call Picard.SortBamAndIndex as PreUMISort {
       input:
         bam_input = TagGenes.bam_output
     }
 
+    call MarkDuplicates.MarkDuplicatesUmiTools as MarkDuplicates {
+      input:
+        bam_input = PreUMISort.bam_output,
+        bam_index = PreUMISort.bam_index
+    }
+
+    call Picard.SortBamAndIndex as PostUMISort {
+      input:
+        bam_input = MarkDuplicates.bam_output
+    }
+
     call TagSortBam.GeneSortBam {
       input:
-        bam_input = SortAndCorrectUmiMarkDuplicates.bam_output
+        bam_input = MarkDuplicates.bam_output
     }
 
     call TagSortBam.CellSortBam {
       input:
-        bam_input = SortAndCorrectUmiMarkDuplicates.bam_output
+        bam_input = MarkDuplicates.bam_output
     }
 
     call Metrics.CalculateGeneMetrics {
@@ -138,7 +149,7 @@ workflow Optimus {
 
     call Picard.SortBam as PreCountSort {
       input:
-        bam_input = SortAndCorrectUmiMarkDuplicates.bam_output,
+        bam_input = MarkDuplicates.bam_output,
         sort_order = "queryname"
     }
 
@@ -151,7 +162,7 @@ workflow Optimus {
 
   call Merge.MergeSortBamFiles as MergeSorted {
     input:
-      bam_inputs = SortAndCorrectUmiMarkDuplicates.bam_output,
+      bam_inputs = PostUMISort.bam_output,
       sort_order = "coordinate"
   }
 
