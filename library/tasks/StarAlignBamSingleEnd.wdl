@@ -8,7 +8,7 @@ task StarAlignBamSingleEnd {
   Int cpu = 16
   # multiply input size by 2.2 to account for output bam file + 20% overhead, add size of reference.
   Int disk = ceil((size(tar_star_reference, "G") * 2) + (size(bam_input, "G") * 2.2))
-  Int preemptible = 0
+  Int preemptible = 3
 
   meta {
     description: "Aligns reads in bam_input to the reference genome in tar_star_reference"

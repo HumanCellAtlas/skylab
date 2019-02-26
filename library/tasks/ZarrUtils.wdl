@@ -9,6 +9,8 @@ task SmartSeq2ZarrConversion {
   # name of the sample
   String sample_name
 
+  Int preemptible = 3
+
   meta {
     description: "This  task will converts some of the outputs of Smart Seq 2 pipeline into a zarr file"
   }
@@ -46,6 +48,7 @@ task SmartSeq2ZarrConversion {
     cpu: 4  # note that only 1 thread is supported by pseudobam
     memory: "16 GB"
     disks: "local-disk 100 HDD"
+    preemptible: preemptible
   }
 
   output {
@@ -71,6 +74,8 @@ task OptimusZarrConversion {
   File gene_id
   # emptydrops output metadata
   File empty_drops_result
+
+  Int preemptible = 3
 
   meta {
     description: "This task will converts some of the outputs of Optimus pipeline into a zarr file"
@@ -112,6 +117,7 @@ task OptimusZarrConversion {
     cpu: 4  # note that only 1 thread is supported by pseudobam
     memory: "16 GB"
     disks: "local-disk 100 HDD"
+    preemptible: preemptible
   }
 
   output {

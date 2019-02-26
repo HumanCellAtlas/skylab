@@ -8,7 +8,7 @@ task SplitBamByCellBarcode {
   Int cpu = 1
   # estimate that bam is approximately equal in size to the input bam, add 20% buffer
   Int disk = ceil(size(bam_input, "G") * 2.2)
-  Int preemptible = 0
+  Int preemptible = 3
 
   meta {
     description: "Splits a bam file into chunks of size_in_mb, guaranteeing that all information for each cell is fully contained in only one of the chunks"

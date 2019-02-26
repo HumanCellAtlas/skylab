@@ -7,7 +7,7 @@ task DropSeqToolsDigitalExpression {
   Int machine_mem_mb = 7500
   Int cpu = 1
   Int disk = ceil((size(bam_input, "G") + size(whitelist, "G")) * 4.0) + 1
-  Int preemptible = 0
+  Int preemptible = 3
 
   meta {
     description: "Constructs a tab-delimited gzipped count matrix from a bam file containing reads marked with cell barcodes (CB), molecule barcodes (UB) and gene ids (GE)"
@@ -61,7 +61,7 @@ task CreateSparseCountMatrix {
   Int machine_mem_mb = 7500
   Int cpu = 1
   Int disk = ceil((size(bam_input, "G") + size(gtf_file, "G")) * 4.0) + 1
-  Int preemptible = 0
+  Int preemptible = 3
 
   meta {
     description: "Constructs a compressed sparse row matrix from a bam file containing reads marked with cell barcodes (CB), molecule barcodes (UB) and gene ids (GE)"
@@ -115,7 +115,7 @@ task MergeCountFiles {
   Int machine_mem_mb = 7500
   Int cpu = 1
   Int disk = 20  # todo find out how to make this adaptive with Array[file] input
-  Int preemptible = 0
+  Int preemptible = 3
 
   meta {
     description: "Constructs a compressed sparse row matrix by concatenating multiple input matrices"
