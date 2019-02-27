@@ -1,8 +1,8 @@
 {
-  "TestOptimusPR.expected_bam_hash": "85975323e23b566297c5099e0a0365ba",
+  "TestOptimusPR.expected_bam_hash": "a54495ad22db2dd9b08b84b999fdb137",
   "TestOptimusPR.expected_matrix_hash": "aec7a79dc7b85a5d621509a3f4fa2192",
-  "TestOptimusPR.expected_cell_metric_hash": "1efd1cd4fdd7d0dde9be0c1f93aa6351",
-  "TestOptimusPR.expected_gene_metric_hash": "bdb60844ab8bf35d2f632af0feb60eeb",
+  "TestOptimusPR.expected_cell_metric_hash": "45cc8be253445201b02d102d2d096a0c",
+  "TestOptimusPR.expected_gene_metric_hash": "d636671dfcff6ec8068987d0f5780334",
   "TestOptimusPR.r1_fastq": [
     "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_R1_001.fastq.gz",
     "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_R1_001.fastq.gz"
