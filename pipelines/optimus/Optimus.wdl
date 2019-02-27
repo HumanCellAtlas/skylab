@@ -130,12 +130,14 @@ workflow Optimus {
     call MarkDuplicates.MarkDuplicatesUmiTools as MarkDuplicates {
       input:
         bam_input = PreUMISort.bam_output,
-        bam_index = PreUMISort.bam_index
+        bam_index = PreUMISort.bam_index,
+        preemptible = preemptible
     }
 
     call Picard.SortBamAndIndex as PostUMISort {
       input:
-        bam_input = MarkDuplicates.bam_output
+        bam_input = MarkDuplicates.bam_output,
+        preemptible = preemptible
     }
 
     call TagSortBam.GeneSortBam {

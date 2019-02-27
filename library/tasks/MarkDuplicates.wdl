@@ -12,7 +12,7 @@ task MarkDuplicatesUmiTools {
     Int machine_mem_mb = 10000
     Int cpu = 1
     Int disk = ceil(size(bam_input, "G") * 6) + 50
-    Int preemptible = 0
+    Int preemptible = 3
 
     meta {
         description: "Marks duplicates using umitools group specifically for single-cell experiments"

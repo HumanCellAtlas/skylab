@@ -48,7 +48,7 @@ task SortBamAndIndex {
     Int command_mem_mb = machine_mem_mb - machine_overhead_mb
     Int cpu = 1
     Int disk = ceil(size(bam_input, "G") * 6) + 50
-    Int preemptible = 0
+    Int preemptible = 3
 
     meta {
         description: "Sorts bam by genomic position"
