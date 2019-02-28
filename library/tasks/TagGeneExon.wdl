@@ -7,7 +7,7 @@ task TagGeneExon {
   Int machine_mem_mb = 7500
   Int cpu = 1
   Int disk = ceil((size(bam_input, "G") + size(annotations_gtf, "G")) * 2)
-  Int preemptible = 0
+  Int preemptible = 3
 
   meta {
     description: "Tags any read in bam_input that overlaps an intron or exon interval with the gene that those interals correspond to."

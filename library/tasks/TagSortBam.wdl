@@ -6,7 +6,7 @@ task CellSortBam {
   Int machine_mem_mb = 40000
   Int cpu = 2
   Int disk = ceil(size(bam_input, "G") * 8)
-  Int preemptible = 0
+  Int preemptible = 3
 
   meta {
     description: "Sort bam_input by cell, then molecule, then gene."
@@ -48,7 +48,7 @@ task GeneSortBam {
   Int machine_mem_mb = 40000
   Int cpu = 2
   Int disk = ceil(size(bam_input, "G") * 4)
-  Int preemptible = 0
+  Int preemptible = 3
 
   meta {
     description: "Sort bam_input by gene, then cell, then molecule."

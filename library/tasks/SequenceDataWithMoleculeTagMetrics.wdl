@@ -6,7 +6,7 @@ task CalculateGeneMetrics {
   Int machine_mem_mb = 10000
   Int cpu = 1
   Int disk = ceil(size(bam_input, "G") * 4)
-  Int preemptible = 0
+  Int preemptible = 3
 
   meta {
     description: "Calculate gene metrics from the reads in bam_input."
@@ -48,7 +48,7 @@ task CalculateCellMetrics {
   Int machine_mem_mb = 3500
   Int cpu = 1
   Int disk = ceil(size(bam_input, "G") * 2)
-  Int preemptible = 0
+  Int preemptible = 3
 
   meta {
     description: "Calculate cell metrics from the reads in bam_input."
@@ -91,7 +91,7 @@ task MergeGeneMetrics {
   Int machine_mem_mb = 3500
   Int cpu = 1
   Int disk = 20
-  Int preemptible = 0
+  Int preemptible = 3
 
   meta {
     description: "Merge an array of gene metric files with the same metric categories and potentially overlapping sets of gene features"
@@ -133,7 +133,7 @@ task MergeCellMetrics {
   Int machine_mem_mb = 3500
   Int cpu = 1
   Int disk = 20
-  Int preemptible = 0
+  Int preemptible = 3
 
   meta {
     description: "Concatenate multiple cell metrics files into a single matrix"

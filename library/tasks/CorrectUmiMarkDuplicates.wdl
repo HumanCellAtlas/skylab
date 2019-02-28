@@ -9,7 +9,7 @@ task SortAndCorrectUmiMarkDuplicates {
   Int cpu = 1
   # mark duplicates swaps a large amount of data to disk, has high disk requirements.
   Int disk = ceil(size(bam_input, "G") * 6) + 50
-  Int preemptible = 0
+  Int preemptible = 3
 
   meta {
     description: "Iterates over reads in a bam file, marking duplicate reads by setting bit 0x400 in the SAM flag and correcting any barcodes with errors by storing the original barcode in tag UR."
