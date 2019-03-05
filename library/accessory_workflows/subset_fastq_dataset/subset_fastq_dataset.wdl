@@ -5,7 +5,7 @@ task SubsetFastqDatasetTask {
 
      command {
        mkdir output/
-       prepSubset.sh -a ${star_align_bucket} -f ${fastq_bucket} -r ${keep_region} -o output
+       prepSubset.sh -a ${star_align_bucket} -f ${fastq_bucket} -r ${keep_region} -o output/
        tar cvzf output.tar.gz output/
      }
 
