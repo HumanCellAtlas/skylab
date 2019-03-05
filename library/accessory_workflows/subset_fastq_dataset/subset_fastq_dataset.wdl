@@ -12,7 +12,7 @@ task SubsetFastqDatasetTask {
      runtime {
        docker: "quay.io/humancellatlas/secondary-analysis-subset-fastq:0.0.1"
        memory: "28 GB"
-       disks: "local-disk 100 HDD"
+       disks: "local-disk 3000 HDD"
        cpu: "8"
      }
 
