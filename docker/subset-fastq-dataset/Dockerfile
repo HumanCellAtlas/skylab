@@ -4,7 +4,7 @@ LABEL maintainer="Mint Team <mintteam@broadinstitute.org>" \
       software="python 3.6.2" \
       description="python 3.6.2 with pysam, sctools, requests, and a basic science stack"
 
-# RUN apt update && apt install -y samtools
+
 
 RUN pip3 install \
     Click==7.0 \
@@ -31,3 +31,6 @@ WORKDIR /tools
 RUN wget https://github.com/samtools/samtools/releases/download/1.9/samtools-1.9.tar.bz2 && tar xvjf samtools-1.9.tar.bz2
 WORKDIR /tools/samtools-1.9
 RUN ./configure && make -j 4 && cp samtools ..
+
+## Install pigz
+RUN apt update && apt install -y pigz
