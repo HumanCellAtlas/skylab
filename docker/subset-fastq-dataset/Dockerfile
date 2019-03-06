@@ -4,18 +4,13 @@ LABEL maintainer="Mint Team <mintteam@broadinstitute.org>" \
       software="python 3.6.2" \
       description="python 3.6.2 with pysam, sctools, requests, and a basic science stack"
 
-
-
 RUN pip3 install \
     Click==7.0 \
     numpy==1.16.1 \
     pysam==0.15.2
 
+## Make directory for tools and put them in the path
 RUN mkdir /tools
-
-COPY filterFastqByReadName.py /tools/
-COPY prepSubset.sh /tools/
-
 ENV PATH=/tools/:${PATH}
 
 ## Note that this string is specific this linux base
@@ -34,3 +29,7 @@ RUN ./configure && make -j 4 && cp samtools ..
 
 ## Install pigz
 RUN apt update && apt install -y pigz
+
+## Copy Scripts
+COPY filterFastqByReadName.py /tools/
+COPY prepSubset.sh /tools/
