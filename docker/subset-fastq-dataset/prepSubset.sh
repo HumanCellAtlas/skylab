@@ -87,7 +87,7 @@ gsutil cp -r $starAlignOutBucket starAlignOut/
 ## Get the fastqs
 echo Downloading fastqs...
 mkdir fastqs
-gsutil cp -r $inFastqBucket fastqs/
+gsutil cp $inFastqBucket/* fastqs/
 
 ## Merge the bams into one file
 echo Concatenating alignments...
