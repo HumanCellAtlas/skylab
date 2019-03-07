@@ -6,8 +6,9 @@ LABEL maintainer="Mint Team <mintteam@broadinstitute.org>" \
 
 RUN pip3 install \
     Click==7.0 \
-    numpy==1.16.1 \
-    pysam==0.15.2
+    numpy==1.16.2 \
+    pysam==0.15.2 \
+    biopython==1.73
 
 ## Make directory for tools and put them in the path
 RUN mkdir /tools
