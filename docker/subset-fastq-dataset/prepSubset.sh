@@ -108,7 +108,7 @@ for infastqgz in `ls fastqs/*.fastq.gz`
 do
     echo Processing ${infastqgz}
     outfastqgz=${outputPrefix}/`basename ${infastqgz}`
-    filterFastqByReadName \
+    filterFastqByReadName.py \
              --in-fastq-gz $infastqgz \
              --out-fastq-gz $outfastqgz \
              --keep-reads-gz $keepreadsgz \
