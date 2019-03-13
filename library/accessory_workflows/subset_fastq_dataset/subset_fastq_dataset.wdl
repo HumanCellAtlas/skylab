@@ -48,8 +48,8 @@ task DownloadMergeBams {
 
     command {
         mkdir starAlignOutputs
-        gsutil -m cp -r ${star_align_bucket} starAlignOutputs
-        samtools cat `find ./starAlignOut/ -name '*.bam' -printf '%p '` > concat.bam
+        gsutil -m cp -r ${star_align_bucket} starAlignOutputs/
+        samtools cat `find ./starAlignOutputs/ -name '*.bam' -printf '%p '` > concat.bam
     }
 
      runtime {
@@ -113,8 +113,8 @@ task DownloadFastqs {
 
     command {
         mkdir fastqs
-        gsutil -m cp -r ${in_fastq_bucket} fastqs
-        ls *.fastq > fastq-list.txt
+        gsutil -m cp -r ${in_fastq_bucket} fastqs/
+        find . -name '*.fastq.gz' > fastq-list.txt
     }
 
      runtime {
