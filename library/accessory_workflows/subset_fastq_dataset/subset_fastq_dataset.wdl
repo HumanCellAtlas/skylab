@@ -134,9 +134,10 @@ task FilterFastq {
     File keep_read_names_gz
 
     command {
+        outfastqgz=`basename ${fastq}`
         filterFastqBtReadName.py \
             --in-fastq-gz ${fastq} \
-            --out-fastq-gz output.gz \
+            --out-fastq-gz $outfastqgz \
             --keep-reads-gz ${keep_read_names_gz} \
             --verbose
     }
