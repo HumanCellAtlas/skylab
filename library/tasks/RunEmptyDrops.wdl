@@ -6,13 +6,13 @@ task RunEmptyDrops {
 
     # emptyDrops Params
     Float niters = 10000
-    Float fdr_cutoff = 0.10
+    Float fdr_cutoff = 0.01
 
     # other params
-    Int min_molecules = 1000
+    Int min_molecules = 100
 
     # runtime values
-    String docker = "quay.io/humancellatlas/secondary-analysis-dropletutils:test-nb"
+    String docker = "quay.io/humancellatlas/secondary-analysis-dropletutils:0.1.1"
     Int machine_mem_mb = 4000
     Int cpu = 1
     Int disk = 20
