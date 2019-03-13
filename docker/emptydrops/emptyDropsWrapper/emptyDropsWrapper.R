@@ -83,7 +83,12 @@ option_list <- list(
     make_option(c('--emptydrops-alpha'),
                 default=NULL, ## as per emptyDrops package
                 help='emptyDrops alpha parameter',
-                dest='ed_alpha')
+                dest='ed_alpha'),
+    make_option(c('--min-molecules'),
+		default=1000,
+		help='minimum number of molecules for a droplet to be called a cell',
+		dest='min_molecules')
+	
     ## TODO: Expose parallel functionality
 )
 
@@ -96,6 +101,7 @@ if(is.null(opt$input_rds))  errorExit("Input RDS is not specified\n");
 if(is.null(opt$output_csv)) errorExit("Output CSV is not specified\n");
 if(!file.exists(opt$input_rds)) errorExit("Input RDS doesn't exist!\n");
 if(file.exists(opt$output_csv)) errorExit("Output CSV file exists!\n");
+if(is.null(opt$min_molecules)) errorExit("Minimum number of molecules is not specified\n");
 
 ## Load the required libraries here
 ## NOTE: We do this after parsing arguments so that --help returns immediatedly
@@ -122,6 +128,7 @@ ed_param_test.ambient <- opt$ed_test_ambient
 ed_param_ignore <- opt$ed_ignore
 ed_param_alpha <- opt$ed_alpha
 ed_param_BPPARAM <- SerialParam() ## TODO: Allow serial or parallele, with ncore specification
+min_molecules <- opt$min_molecules
 
 ## Read the input file
 inputMatrix <- readRDS(inputRDS)
@@ -208,7 +215,7 @@ emptyDrops_result$CellId <- rownames(emptyDrops_result)
 rownames(emptyDrops_result) <- NULL
 
 ## Call the cells according to the cutoff
-emptyDrops_result$IsCell <- NA2FALSE(emptyDrops_result$FDR < FDRcutoff)
+emptyDrops_result$IsCell <- NA2FALSE(emptyDrops_result$FDR < FDRcutoff & emptyDrops_result$Total >= min_molecules)
 
 ## Define a column order
 colOrder <- c("CellId","Total", "LogProb", "PValue", "Limited", "FDR", "IsCell")
