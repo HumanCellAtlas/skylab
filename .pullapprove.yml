@@ -1,45 +1,44 @@
-# You *must* specify "version: 2"
-version: 2
+version: 3
 
-requirements:
-  signed_off_by:
-    required: false
-
-always_pending:  # A pull request matching any of these conditions will always have a "pending" status for this group.
-  title_regex: '(WIP|wip)'
-  explanation: 'Work in progress...'
-
-# Group settings to apply to all groups by default, optionally being overridden later
-group_defaults:
-  reset_on_push: # Whether or not approval statuses get reset to "pending" when new commits are pushed to a PR
-    enabled: false # Set to false for efficiency
-  reset_on_reopened: # Whether or not approval statuses get reset to "pending" when a pull request is re-opened
-    enabled: true
-  author_approval: # Whether or not the author must approve the pull request.
-    required: false
-    ignored: true
-  approve_by_comment:
-    enabled: false
-  reject_value: -1 # Essentially allows rejections to cancel out approvals
-
-# Groups of reviewers and their respective settings
 groups:
-  computational-biologists:
-    required: 1 # Require approval from at least one computational biologist
+  pullapprove-admins:
     conditions:
-      labels:
-        exclude:
-          - ENG-ONLY
-    users:
-      - ambrosejcarr
-      - jishuxu
-      - mckinsel
-      - mbabadi
-      - kishorikonwar
+    - "'.pullapprove.yml' in files"
 
-  software-engineers:
-    required: 1 # Require approval from at least one software engineer
-    users:
-      - dshiga
-      - samanehsan
-      - rexwangcc
+    reviews:
+      required: 1
+      author_value: 1 # if author in group reduce number of approvals needed by this number
+
+    reviewers:
+      users:
+      - rhiananthony
+      teams:
+      - secops
+
+  software-review:
+    reviews:
+      required: 2
+      author_value: 1 # if author in group reduce number of approvals needed by this number
+      request_order: random  # reviewers will be chosen in a random order
+
+    reviewers:
+      teams:
+      - pipelines-software-engineers
+      - pipelines-devops
+
+  computational-review:
+    conditions:
+      - "'ENG-ONLY' not in labels"
+    reviews:
+      required: 1
+      author_value: 1 # if author in group reduce number of approvals needed by this number
+      request_order: random  # reviewers will be chosen in a random order
+
+    reviewers:
+      teams:
+      - pipelines-computational-biologists
+
+notifications:
+- when: pullapprove.approved
+  if: "author_association == 'CONTRIBUTOR'"
+  comment: "The review is completed. Thanks @{{ author }}."
