@@ -83,7 +83,7 @@ task IndexSortConcatenated {
 
     output {
         File output_sorted_bam = "concat.sorted.bam"
-        File output_sorted_bai = "concat.sorted.bai"
+        File output_sorted_bai = "concat.sorted.bam.bai"
     }
 }
 
@@ -112,9 +112,7 @@ task DownloadFastqs {
     String in_fastq_bucket
 
     command {
-        mkdir fastqs
-        gsutil -m cp -r ${in_fastq_bucket} fastqs/
-        find . -name '*.fastq.gz' > fastq-list.txt
+        gsutil -m cp -r ${in_fastq_bucket} ./
     }
 
      runtime {
@@ -125,7 +123,7 @@ task DownloadFastqs {
      }
 
     output {
-        Array[File] output_fastqs = read_lines("fastq-list.txt")
+        Array[File] output_fastqs = glob("*.fastq.gz")
     }
 }
 
