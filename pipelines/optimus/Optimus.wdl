@@ -41,7 +41,10 @@ workflow Optimus {
   # whether to convert the outputs to Zarr format, by default it's set to true
   Boolean output_zarr = true
 
+  # try to use preemptible VMs for 3 times
   Int preemptible = 3
+  # do not use preemptible VMs
+  Int no_preemptible = 0
 
   parameter_meta {
     r1_fastq: "forward read, contains cell barcodes and molecule barcodes"
@@ -75,7 +78,7 @@ workflow Optimus {
           i1_fastq = non_optional_i1_fastq[index],
           r2_unmapped_bam = FastqToUBam.bam_output,
           whitelist = whitelist,
-          preemptible = preemptible
+          preemptible = no_preemptible
       }
     }
 
@@ -86,7 +89,7 @@ workflow Optimus {
           r1_fastq = r1_fastq[index],
           r2_unmapped_bam = FastqToUBam.bam_output,
           whitelist = whitelist,
-          preemptible = preemptible
+          preemptible = no_preemptible
       }
     }
 
@@ -111,7 +114,7 @@ workflow Optimus {
       input:
         bam_input = bam,
         tar_star_reference = tar_star_reference,
-        preemptible = preemptible
+        preemptible = no_preemptible
     }
 
     call TagGeneExon.TagGeneExon as TagGenes {
