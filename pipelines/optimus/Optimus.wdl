@@ -40,8 +40,29 @@ workflow Optimus {
 
   # whether to convert the outputs to Zarr format, by default it's set to true
   Boolean output_zarr = true
-
-  Int preemptible = 3
+  
+  # a list of finer switches to control the preemptible settings on each step
+  Int preemptible_FastqToUBam = 3
+  Int preemptible_AttachBarcodes = 1
+  Int preemptible_MergeUnsorted = 3
+  Int preemptible_SplitBamByCellBarcode = 3
+  Int preemptible_StarAlign = 0
+  Int preemptible_TagGenes = 3
+  Int preemptible_PreUMISort = 3
+  Int preemptible_MarkDuplicates = 3
+  Int preemptible_PostUMISort = 3
+  Int preemptible_GeneSortBam = 3
+  Int preemptible_CellSortBam = 3
+  Int preemptible_CalculateGeneMetrics = 3
+  Int preemptible_CalculateCellMetrics = 3
+  Int preemptible_PreCountSort = 3
+  Int preemptible_CreateSparseCountMatrix = 3
+  Int preemptible_MergeSorted = 3
+  Int preemptible_MergeGeneMetrics = 3
+  Int preemptible_MergeCellMetrics = 3
+  Int preemptible_MergeCountFiles = 3
+  Int preemptible_RunEmptyDrops = 3
+  Int preemptible_OptimusZarrConversion = 3
 
   parameter_meta {
     r1_fastq: "forward read, contains cell barcodes and molecule barcodes"
@@ -63,7 +84,7 @@ workflow Optimus {
         fastq_file = r2_fastq[index],
         sample_id = sample_id,
         fastq_suffix = fastq_suffix,
-        preemptible = preemptible
+        preemptible = preemptible_FastqToUBam
     }
 
     # if the index is passed, attach it to the bam file
@@ -75,7 +96,7 @@ workflow Optimus {
           i1_fastq = non_optional_i1_fastq[index],
           r2_unmapped_bam = FastqToUBam.bam_output,
           whitelist = whitelist,
-          preemptible = preemptible
+          preemptible = preemptible_AttachBarcodes
       }
     }
 
@@ -86,7 +107,7 @@ workflow Optimus {
           r1_fastq = r1_fastq[index],
           r2_unmapped_bam = FastqToUBam.bam_output,
           whitelist = whitelist,
-          preemptible = preemptible
+          preemptible = preemptible_AttachBarcodes
       }
     }
 
@@ -97,13 +118,13 @@ workflow Optimus {
     input:
       bam_inputs = barcoded_bam,
       sort_order = "unsorted",
-      preemptible = preemptible
+      preemptible = preemptible_MergeUnsorted
   }
 
   call Split.SplitBamByCellBarcode {
     input:
       bam_input = MergeUnsorted.output_bam,
-      preemptible = preemptible
+      preemptible = preemptible_SplitBamByCellBarcode
   }
 
   scatter (bam in SplitBamByCellBarcode.bam_output_array) {
@@ -111,71 +132,71 @@ workflow Optimus {
       input:
         bam_input = bam,
         tar_star_reference = tar_star_reference,
-        preemptible = preemptible
+        preemptible = preemptible_StarAlign
     }
 
     call TagGeneExon.TagGeneExon as TagGenes {
       input:
         bam_input = StarAlign.bam_output,
         annotations_gtf = annotations_gtf,
-        preemptible = preemptible
+        preemptible = preemptible_TagGenes
     }
 
     call Picard.SortBamAndIndex as PreUMISort {
       input:
         bam_input = TagGenes.bam_output,
-        preemptible = preemptible
+        preemptible = preemptible_PreUMISort
     }
 
     call MarkDuplicates.MarkDuplicatesUmiTools as MarkDuplicates {
       input:
         bam_input = PreUMISort.bam_output,
         bam_index = PreUMISort.bam_index,
-        preemptible = preemptible
+        preemptible = preemptible_MarkDuplicates
     }
 
     call Picard.SortBamAndIndex as PostUMISort {
       input:
         bam_input = MarkDuplicates.bam_output,
-        preemptible = preemptible
+        preemptible = preemptible_PostUMISort
     }
 
     call TagSortBam.GeneSortBam {
       input:
         bam_input = MarkDuplicates.bam_output,
-        preemptible = preemptible
+        preemptible = preemptible_GeneSortBam
     }
 
     call TagSortBam.CellSortBam {
       input:
         bam_input = MarkDuplicates.bam_output,
-        preemptible = preemptible
+        preemptible = preemptible_CellSortBam
     }
 
     call Metrics.CalculateGeneMetrics {
       input:
         bam_input = GeneSortBam.bam_output,
-        preemptible = preemptible
+        preemptible = preemptible_CalculateGeneMetrics
     }
 
     call Metrics.CalculateCellMetrics {
       input:
         bam_input = CellSortBam.bam_output,
-        preemptible = preemptible
+        preemptible = preemptible_CalculateCellMetrics
     }
 
     call Picard.SortBam as PreCountSort {
       input:
         bam_input = MarkDuplicates.bam_output,
         sort_order = "queryname",
-        preemptible = preemptible
+        preemptible = preemptible_PreCountSort
     }
 
     call Count.CreateSparseCountMatrix {
       input:
         bam_input = PreCountSort.bam_output,
         gtf_file = annotations_gtf,
-        preemptible = preemptible
+        preemptible = preemptible_CreateSparseCountMatrix
     }
   }
 
@@ -183,19 +204,19 @@ workflow Optimus {
     input:
       bam_inputs = PostUMISort.bam_output,
       sort_order = "coordinate",
-      preemptible = preemptible
+      preemptible = preemptible_MergeSorted
   }
 
   call Metrics.MergeGeneMetrics {
     input:
       metric_files = CalculateGeneMetrics.gene_metrics,
-      preemptible = preemptible
+      preemptible = preemptible_MergeGeneMetrics
   }
 
   call Metrics.MergeCellMetrics {
     input:
       metric_files = CalculateCellMetrics.cell_metrics,
-      preemptible = preemptible
+      preemptible = preemptible_MergeCellMetrics
   }
 
   call Count.MergeCountFiles {
@@ -203,7 +224,7 @@ workflow Optimus {
       sparse_count_matrices = CreateSparseCountMatrix.sparse_count_matrix,
       row_indices = CreateSparseCountMatrix.row_index,
       col_indices = CreateSparseCountMatrix.col_index,
-      preemptible = preemptible
+      preemptible = preemptible_MergeCountFiles
   }
 
   call RunEmptyDrops.RunEmptyDrops {
@@ -211,7 +232,7 @@ workflow Optimus {
       sparse_count_matrix = MergeCountFiles.sparse_count_matrix,
       row_index = MergeCountFiles.row_index,
       col_index = MergeCountFiles.col_index,
-      preemptible = preemptible
+      preemptible = preemptible_RunEmptyDrops
   }
 
   if (output_zarr) {
@@ -224,7 +245,7 @@ workflow Optimus {
         cell_id = MergeCountFiles.row_index,
         gene_id = MergeCountFiles.col_index,
         empty_drops_result = RunEmptyDrops.empty_drops_result,
-        preemptible = preemptible
+        preemptible = preemptible_OptimusZarrConversion
     }
 }
 
