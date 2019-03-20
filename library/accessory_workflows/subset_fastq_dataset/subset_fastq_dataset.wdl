@@ -1,16 +1,16 @@
 workflow SubsetFastqDataset {
-    String alignment_location
-    String fastq_location
+    Array[File] bams
+    Array[File] fastqs
     String keepregion
 
-    call DownloadMergeBams {
+    call MergeBams {
         input:
-        star_align_bucket = alignment_location
+        aligned_bams = bams
     }
 
     call IndexSortConcatenated {
         input:
-        concat_bam = DownloadMergeBams.output_concat_bam
+        concat_bam = MergeBams.output_concat_bam
     }
 
     call ExtractReadNames {
@@ -20,12 +20,7 @@ workflow SubsetFastqDataset {
         subset_region = keepregion
     }
 
-    call DownloadFastqs {
-        input:
-        in_fastq_bucket = fastq_location
-    }
-
-    scatter (fastq in DownloadFastqs.output_fastqs) {
+    scatter (fastq in fastqs) {
         call FilterFastq {
             input:
             fastq = fastq,
@@ -43,20 +38,18 @@ workflow SubsetFastqDataset {
     }
 }
 
-task DownloadMergeBams {
-    String star_align_bucket
+task MergeBams {
+    Array[File] aligned_bams
 
     command {
-        mkdir starAlignOutputs
-        gsutil -m cp -r ${star_align_bucket} starAlignOutputs/
-        samtools cat `find ./starAlignOutputs/ -name '*.bam' -printf '%p '` > concat.bam
+        samtools cat ${sep=' ' aligned_bams} > concat.bam
     }
 
      runtime {
        docker: "quay.io/humancellatlas/secondary-analysis-subset-fastq:0.0.1"
-       memory: "28 GB"
+       memory: "8 GB"
        disks: "local-disk 3000 HDD"
-       cpu: "8"
+       cpu: "2"
      }
 
     output {
@@ -91,9 +84,11 @@ task ExtractReadNames {
     File sorted_bam
     File sorted_bai
     String subset_region
+    Int samtools_sort_cores = 4
+    String samtools_mem_per_core = "5G"
 
     command {
-        samtools view ${sorted_bam} ${subset_region} | cut -f 1 | pigz > kept_reads.gz
+        samtools view -@ ${samtools_sort_cores} -m ${samtools_mem_per_core} ${sorted_bam} ${subset_region} | cut -f 1 | pigz > kept_reads.gz
     }
 
      runtime {
@@ -108,32 +103,14 @@ task ExtractReadNames {
     }
 }
 
-task DownloadFastqs {
-    String in_fastq_bucket
-
-    command {
-        gsutil -m cp -r ${in_fastq_bucket} ./
-    }
-
-     runtime {
-       docker: "quay.io/humancellatlas/secondary-analysis-subset-fastq:0.0.1"
-       memory: "28 GB"
-       disks: "local-disk 3000 HDD"
-       cpu: "8"
-     }
-
-    output {
-        Array[File] output_fastqs = glob("*.fastq.gz")
-    }
-}
-
 task FilterFastq {
     File fastq
     File keep_read_names_gz
 
+    String output_file_name = basename(fastq, ".fastq.gz") + ".filtered.fastq.gz"
     command {
-        outfastqgz=`basename ${fastq}`
-        filterFastqBtReadName.py \
+        outfastqgz=${output_file_name}
+        filterFastqByReadName.py \
             --in-fastq-gz ${fastq} \
             --out-fastq-gz $outfastqgz \
             --keep-reads-gz ${keep_read_names_gz} \
@@ -148,7 +125,7 @@ task FilterFastq {
      }
 
     output {
-        File output_filtered_fastq_gz = "output.gz"
+        File output_filtered_fastq_gz = output_file_name
     }
 }
 
@@ -156,7 +133,7 @@ task TarFilteredFastq {
     Array[File] filtered_fastqs
 
     command {
-        tar cvzf output.tar.gz ${filtered_fastqs}
+        tar -cvzf output.tar.gz ${sep=' ' filtered_fastqs}
     }
 
      runtime {
