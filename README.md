@@ -1,6 +1,9 @@
 # skylab
 Secondary analysis pipelines for the Human Cell Atlas.
 
+[![Snyk Vulnerabilities for GitHub Repo (Specific Manifest)](https://img.shields.io/snyk/vulnerabilities/github/HumanCellAtlas/skylab/docker/cellranger/requirements.txt.svg?label=Snyk%20Scripts%20Vulnerabilities&logo=Snyk)](https://snyk.io/test/github/HumanCellAtlas/skylab?targetFile=docker/cellranger/requirements.txt)
+
+
 ## Pipelines
 - [Smart-seq2](https://github.com/HumanCellAtlas/skylab/tree/master/pipelines/smartseq2_single_sample) secondary analysis pipeline
 
