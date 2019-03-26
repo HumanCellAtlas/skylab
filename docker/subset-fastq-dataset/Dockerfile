@@ -10,10 +10,6 @@ RUN pip3 install \
     pysam==0.15.2 \
     biopython==1.73
 
-## Make directory for tools and put them in the path
-
-ENV PATH=/tools/:${PATH}
-
 ## Install software
 RUN apt-get update && \
     apt-get install -y lsb-release && \
@@ -31,6 +27,9 @@ RUN mkdir /tools && \
     ./configure && \
     make -j 4 && \
     cp samtools ..
+
+## Append tools to path
+ENV PATH=/tools/:${PATH}
 
 ## Copy Scripts
 COPY filterFastqByReadName.py /tools/
