@@ -10,6 +10,12 @@ For now, use `git clone git@github.com:HumanCellAtlas/skylab.git` and run the pi
 1. WDL and Cromwell [Documentation](https://software.broadinstitute.org/wdl/)
 2. Running WDLs in [Cromwell](https://software.broadinstitute.org/wdl/documentation/execution.php)
 
+### preemptible
+
+Tasks on Cromwell may be run on what are known as "preemptible" machines to reduce costs by a significant amount. The catch with preemptible machines is that they may be "preempted" at any given moment--as in, google may shut down the task to re-use the resources.
+
+Many tasks are set to automatically be `preemptible = 3`, aka they will be run on preemptible instances for up to 3 instances of preemption, after which it will be run on a non-preemptible machine. The Optimus pipeline in particular also has a `preemptible` input that overrides the default preemptible parameter on all tasks run through optimus. This option may be set to 0 to run the entire workflow without using preemptible machines.
+
 ### maxRetries
 
 Some tasks have a maxRetries runtime attribute specified, with the default value set to zero. You probably shouldn't override the default and even if you do, you should do so with caution.

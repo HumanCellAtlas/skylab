@@ -11,7 +11,7 @@ task FastqToUBam {
   Int cpu = 1
   # estimate that bam is approximately equal in size to fastq, add 20% buffer
   Int disk = ceil(size(fastq_file, "G") * 2.2)
-  Int preemptible = 0
+  Int preemptible = 3
 
   meta {
     description: "Converts a fastq file into an unaligned bam file."

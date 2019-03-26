@@ -5,12 +5,12 @@ import "MergeSortBam.wdl" as Merge
 import "CreateCountMatrix.wdl" as Count
 import "StarAlignBamSingleEnd.wdl" as StarAlignBam
 import "TagGeneExon.wdl" as TagGeneExon
-import "CorrectUmiMarkDuplicates.wdl" as CorrectUmiMarkDuplicates
 import "SequenceDataWithMoleculeTagMetrics.wdl" as Metrics
 import "TagSortBam.wdl" as TagSortBam
 import "RunEmptyDrops.wdl" as RunEmptyDrops
 import "ZarrUtils.wdl" as ZarrUtils
 import "Picard.wdl" as Picard
+import "MarkDuplicates.wdl" as MarkDuplicates
 
 workflow Optimus {
   meta {
@@ -41,6 +41,8 @@ workflow Optimus {
   # whether to convert the outputs to Zarr format, by default it's set to true
   Boolean output_zarr = true
 
+  Int preemptible = 3
+
   parameter_meta {
     r1_fastq: "forward read, contains cell barcodes and molecule barcodes"
     r2_fastq: "reverse read, contains cDNA fragment generated from captured mRNA"
@@ -52,6 +54,7 @@ workflow Optimus {
     whitelist: "10x genomics cell barcode whitelist for 10x V2"
     fastq_suffix: "when running in green box, need to add '.gz' for picard to detect the compression"
     output_zarr: "whether to run the taks that converts the outputs to Zarr format, by default it's true"
+    preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
   }
 
   scatter (index in indices) {
@@ -59,7 +62,8 @@ workflow Optimus {
       input:
         fastq_file = r2_fastq[index],
         sample_id = sample_id,
-        fastq_suffix = fastq_suffix
+        fastq_suffix = fastq_suffix,
+        preemptible = preemptible
     }
 
     # if the index is passed, attach it to the bam file
@@ -70,7 +74,8 @@ workflow Optimus {
           r1_fastq = r1_fastq[index],
           i1_fastq = non_optional_i1_fastq[index],
           r2_unmapped_bam = FastqToUBam.bam_output,
-          whitelist = whitelist
+          whitelist = whitelist,
+          preemptible = preemptible
       }
     }
 
@@ -80,7 +85,8 @@ workflow Optimus {
         input:
           r1_fastq = r1_fastq[index],
           r2_unmapped_bam = FastqToUBam.bam_output,
-          whitelist = whitelist
+          whitelist = whitelist,
+          preemptible = preemptible
       }
     }
 
@@ -90,93 +96,122 @@ workflow Optimus {
   call Merge.MergeSortBamFiles as MergeUnsorted {
     input:
       bam_inputs = barcoded_bam,
-      sort_order = "unsorted"
+      sort_order = "unsorted",
+      preemptible = preemptible
   }
 
   call Split.SplitBamByCellBarcode {
     input:
-      bam_input = MergeUnsorted.output_bam
+      bam_input = MergeUnsorted.output_bam,
+      preemptible = preemptible
   }
 
   scatter (bam in SplitBamByCellBarcode.bam_output_array) {
     call StarAlignBam.StarAlignBamSingleEnd as StarAlign {
       input:
         bam_input = bam,
-        tar_star_reference = tar_star_reference
+        tar_star_reference = tar_star_reference,
+        preemptible = preemptible
     }
 
     call TagGeneExon.TagGeneExon as TagGenes {
       input:
         bam_input = StarAlign.bam_output,
-        annotations_gtf = annotations_gtf
+        annotations_gtf = annotations_gtf,
+        preemptible = preemptible
     }
 
-    call CorrectUmiMarkDuplicates.SortAndCorrectUmiMarkDuplicates {
+    call Picard.SortBamAndIndex as PreUMISort {
       input:
-        bam_input = TagGenes.bam_output
+        bam_input = TagGenes.bam_output,
+        preemptible = preemptible
+    }
+
+    call MarkDuplicates.MarkDuplicatesUmiTools as MarkDuplicates {
+      input:
+        bam_input = PreUMISort.bam_output,
+        bam_index = PreUMISort.bam_index,
+        preemptible = preemptible
+    }
+
+    call Picard.SortBamAndIndex as PostUMISort {
+      input:
+        bam_input = MarkDuplicates.bam_output,
+        preemptible = preemptible
     }
 
     call TagSortBam.GeneSortBam {
       input:
-        bam_input = SortAndCorrectUmiMarkDuplicates.bam_output
+        bam_input = MarkDuplicates.bam_output,
+        preemptible = preemptible
     }
 
     call TagSortBam.CellSortBam {
       input:
-        bam_input = SortAndCorrectUmiMarkDuplicates.bam_output
+        bam_input = MarkDuplicates.bam_output,
+        preemptible = preemptible
     }
 
     call Metrics.CalculateGeneMetrics {
       input:
-        bam_input = GeneSortBam.bam_output
+        bam_input = GeneSortBam.bam_output,
+        preemptible = preemptible
     }
 
     call Metrics.CalculateCellMetrics {
       input:
-        bam_input = CellSortBam.bam_output
+        bam_input = CellSortBam.bam_output,
+        preemptible = preemptible
     }
 
     call Picard.SortBam as PreCountSort {
       input:
-        bam_input = SortAndCorrectUmiMarkDuplicates.bam_output,
-        sort_order = "queryname"
+        bam_input = MarkDuplicates.bam_output,
+        sort_order = "queryname",
+        preemptible = preemptible
     }
 
     call Count.CreateSparseCountMatrix {
       input:
         bam_input = PreCountSort.bam_output,
-        gtf_file = annotations_gtf
+        gtf_file = annotations_gtf,
+        preemptible = preemptible
     }
   }
 
   call Merge.MergeSortBamFiles as MergeSorted {
     input:
-      bam_inputs = SortAndCorrectUmiMarkDuplicates.bam_output,
-      sort_order = "coordinate"
+      bam_inputs = PostUMISort.bam_output,
+      sort_order = "coordinate",
+      preemptible = preemptible
   }
 
   call Metrics.MergeGeneMetrics {
     input:
-      metric_files = CalculateGeneMetrics.gene_metrics
+      metric_files = CalculateGeneMetrics.gene_metrics,
+      preemptible = preemptible
   }
 
   call Metrics.MergeCellMetrics {
     input:
-      metric_files = CalculateCellMetrics.cell_metrics
+      metric_files = CalculateCellMetrics.cell_metrics,
+      preemptible = preemptible
   }
 
   call Count.MergeCountFiles {
     input:
       sparse_count_matrices = CreateSparseCountMatrix.sparse_count_matrix,
       row_indices = CreateSparseCountMatrix.row_index,
-      col_indices = CreateSparseCountMatrix.col_index
+      col_indices = CreateSparseCountMatrix.col_index,
+      preemptible = preemptible
   }
 
   call RunEmptyDrops.RunEmptyDrops {
     input:
-       sparse_count_matrix = MergeCountFiles.sparse_count_matrix,
-       row_index = MergeCountFiles.row_index,
-       col_index = MergeCountFiles.col_index
+      sparse_count_matrix = MergeCountFiles.sparse_count_matrix,
+      row_index = MergeCountFiles.row_index,
+      col_index = MergeCountFiles.col_index,
+      preemptible = preemptible
   }
 
   if (output_zarr) {
@@ -188,7 +223,8 @@ workflow Optimus {
         sparse_count_matrix = MergeCountFiles.sparse_count_matrix,
         cell_id = MergeCountFiles.row_index,
         gene_id = MergeCountFiles.col_index,
-        empty_drops_result = RunEmptyDrops.empty_drops_result
+        empty_drops_result = RunEmptyDrops.empty_drops_result,
+        preemptible = preemptible
     }
 }
 
