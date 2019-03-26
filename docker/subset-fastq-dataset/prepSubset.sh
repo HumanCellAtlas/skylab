@@ -100,7 +100,7 @@ samtools index concat.sorted.bam
 
 ## Extract read names
 echo Extracting read names for $samtoolsRegion
-samtools view concat.sorted.bam $samtoolsRegionn | cut -f 1 | pigz > $keepreadsgz
+samtools view concat.sorted.bam $samtoolsRegion | cut -f 1 | pigz > $keepreadsgz
 
 ## Filter all the input fastqs in parallel
 echo Filtering fastqs...
