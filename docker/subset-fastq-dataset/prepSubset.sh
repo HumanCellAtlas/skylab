@@ -82,12 +82,12 @@ samtoolsMemPerCore=5G
 ## Get the aligned files
 echo Downloading alignments...
 mkdir starAlignOut
-gsutil cp -r $starAlignOutBucket starAlignOut/
+gsutil -m cp -r $starAlignOutBucket starAlignOut/
 
 ## Get the fastqs
 echo Downloading fastqs...
 mkdir fastqs
-gsutil cp $inFastqBucket/* fastqs/
+gsutil -m cp $inFastqBucket/* fastqs/
 
 ## Merge the bams into one file
 echo Concatenating alignments...
