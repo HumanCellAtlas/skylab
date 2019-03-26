@@ -1,144 +1,136 @@
 workflow SubsetFastqDataset {
-    Array[File] bams
-    Array[File] fastqs
-    String keepregion
+  Array[File] bams
+  Array[File] fastqs
+  String keepregion
 
-    call MergeBams {
-        input:
-        aligned_bams = bams
-    }
+  call MergeBams {
+    input:
+      aligned_bams = bams
+  }
 
-    call IndexSortConcatenated {
-        input:
-        concat_bam = MergeBams.output_concat_bam
-    }
+  call IndexSortConcatenated {
+    input:
+      concat_bam = MergeBams.merged_bam
+  }
 
-    call ExtractReadNames {
-        input:
-        sorted_bam = IndexSortConcatenated.output_sorted_bam,
-        sorted_bai = IndexSortConcatenated.output_sorted_bai,
-        subset_region = keepregion
-    }
+  call ExtractReadNames {
+    input:
+      sorted_bam = IndexSortConcatenated.output_sorted_bam,
+      sorted_bai = IndexSortConcatenated.output_sorted_bai,
+      subset_region = keepregion
+  }
 
-    scatter (fastq in fastqs) {
-        call FilterFastq {
-            input:
-            fastq = fastq,
-            keep_read_names_gz = ExtractReadNames.output_kept_reads
-        }
+  scatter (fastq in fastqs) {
+    call FilterFastq {
+      input:
+        fastq = fastq,
+        keep_read_names = ExtractReadNames.kept_reads
     }
+  }
 
-    output {
-        Array[File] output_filtered_fastq_gz = FilterFastq.output_filtered_fastq_gz
-    }
+  output {
+    Array[File] filtered_fastqs = FilterFastq.filtered_fastq
+  }
 }
 
 task MergeBams {
-    Array[File] aligned_bams
+  Array[File] aligned_bams
 
-    command {
-        samtools cat ${sep=' ' aligned_bams} > concat.bam
-    }
+  Int disk_size = ceil(size(aligned_bams, "GB") * 2) + 10
 
-    runtime {
-        docker: "quay.io/humancellatlas/secondary-analysis-subset-fastq:0.0.1"
-        memory: "8 GB"
-        disks: "local-disk 3000 HDD"
-        cpu: "2"
-    }
+  command {
+    samtools cat ${sep=' ' aligned_bams} > concat.bam
+  }
 
-    output {
-        File output_concat_bam = "concat.bam"
-    }
+  runtime {
+    docker: "quay.io/humancellatlas/secondary-analysis-subset-fastq:0.0.1"
+    memory: "4 GB"
+    disks: "local-disk ${disk_size} HDD"
+    cpu: 1
+  }
+
+  output {
+    File merged_bam = "concat.bam"
+  }
 }
 
 task IndexSortConcatenated {
-    File concat_bam
-    Int samtools_sort_cores = 4
-    String samtools_mem_per_core = "5G"
+  File concat_bam
+  Int samtools_sort_cores = 4
+  Int samtools_mem_gb_per_core = 5
 
-    command {
-        samtools sort -@ ${samtools_sort_cores} -m ${samtools_mem_per_core} ${concat_bam} > concat.sorted.bam
-        samtools index concat.sorted.bam
-    }
+  Int disk_size = ceil(size(concat_bam, "GB") * 2) + 20
 
-    runtime {
-        docker: "quay.io/humancellatlas/secondary-analysis-subset-fastq:0.0.1"
-        memory: "8 GB"
-        disks: "local-disk 3000 HDD"
-        cpu: "2"
-    }
+  command {
+    samtools sort \
+      -@ ${samtools_sort_cores} \
+      -m ${samtools_mem_gb_per_core}G \
+      ${concat_bam} > concat.sorted.bam
 
-    output {
-        File output_sorted_bam = "concat.sorted.bam"
-        File output_sorted_bai = "concat.sorted.bam.bai"
-    }
+    samtools index concat.sorted.bam
+  }
+
+  runtime {
+    docker: "quay.io/humancellatlas/secondary-analysis-subset-fastq:0.0.1"
+    memory: samtools_mem_gb_per_core * samtools_sort_cores
+    disks: "local-disk ${disk_size} HDD"
+    cpu: ceil((samtools_sort_cores / 2)) + 1
+  }
+
+  output {
+    File output_sorted_bam = "concat.sorted.bam"
+    File output_sorted_bai = "concat.sorted.bam.bai"
+  }
 }
 
 task ExtractReadNames {
-    File sorted_bam
-    File sorted_bai
-    String subset_region
-    Int samtools_sort_cores = 4
-    String samtools_mem_per_core = "5G"
+  File sorted_bam
+  File sorted_bai
+  String subset_region
 
-    command {
-        samtools view -@ ${samtools_sort_cores} -m ${samtools_mem_per_core} ${sorted_bam} ${subset_region} | cut -f 1 | pigz > kept_reads.gz
-    }
+  Int disk_size = ceil(size(sorted_bam, "GB")) + 20
 
-    runtime {
-        docker: "quay.io/humancellatlas/secondary-analysis-subset-fastq:0.0.1"
-        memory: "28 GB"
-        disks: "local-disk 3000 HDD"
-        cpu: "8"
-    }
+  command {
+    samtools view \
+      ${sorted_bam} \
+      ${subset_region} | cut -f 1  > kept_reads
+  }
 
-    output {
-        File output_kept_reads = "kept_reads.gz"
-    }
+  runtime {
+    docker: "quay.io/humancellatlas/secondary-analysis-subset-fastq:0.0.1"
+    memory: "4 GB"
+    disks: "local-disk ${disk_size} HDD"
+    cpu: 1
+  }
+
+  output {
+    File kept_reads = "kept_reads"
+  }
 }
 
 task FilterFastq {
-    File fastq
-    File keep_read_names_gz
+  File fastq
+  File keep_read_names
 
-    String output_file_name = basename(fastq, ".fastq.gz") + ".filtered.fastq.gz"
-    command {
-        outfastqgz=${output_file_name}
-        filterFastqByReadName.py \
-            --in-fastq-gz ${fastq} \
-            --out-fastq-gz $outfastqgz \
-            --keep-reads-gz ${keep_read_names_gz} \
-            --verbose
-    }
+  String output_file_name = basename(fastq, ".fastq") + ".filtered.fastq"
+  Int disk_size = ceil(size(fastq, "GB") * 2) + ceil(size(keep_read_names, "GB")) + 20
 
-    runtime {
-        docker: "quay.io/humancellatlas/secondary-analysis-subset-fastq:0.0.1"
-        memory: "28 GB"
-        disks: "local-disk 3000 HDD"
-        cpu: "8"
-    }
+  command {
+    filterFastqByReadName.py \
+      --in-fastq ${fastq} \
+      --out-fastq ${output_file_name} \
+      --keep-reads ${keep_read_names} \
+      --verbose
+  }
 
-    output {
-        File output_filtered_fastq_gz = output_file_name
-    }
-}
+  runtime {
+    docker: "quay.io/humancellatlas/secondary-analysis-subset-fastq:0.0.1"
+    memory: "2 GB"
+    disks: "local-disk ${disk_size} HDD"
+    cpu: 1
+  }
 
-task TarFilteredFastq {
-    Array[File] filtered_fastqs
-
-    command {
-        tar -cvzf output.tar.gz ${sep=' ' filtered_fastqs}
-    }
-
-    runtime {
-        docker: "quay.io/humancellatlas/secondary-analysis-subset-fastq:0.0.1"
-        memory: "28 GB"
-        disks: "local-disk 3000 HDD"
-        cpu: "8"
-    }
-
-    output {
-        File output_tarred_fastqs = "output.tar.gz"
-    }
+  output {
+    File filtered_fastq = output_file_name
+  }
 }

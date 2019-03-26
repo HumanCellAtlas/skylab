@@ -1,4 +1,4 @@
-FROM python:3.6.2
+FROM python:3.7.2
 
 LABEL maintainer="Mint Team <mintteam@broadinstitute.org>" \
       software="python 3.6.2" \
@@ -14,14 +14,14 @@ RUN pip3 install \
 
 ENV PATH=/tools/:${PATH}
 
-## Note that this string is specific this linux base
-ENV CLOUD_SDK_REPO="cloud-sdk-jessie"
-
 ## Install software
-RUN echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" |  tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && \
+RUN apt-get update && \
+    apt-get install -y lsb-release && \
+    export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" && \
+    echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" |  tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && \
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg |  apt-key add - && \
-    apt update && \
-    apt install -y google-cloud-sdk pigz
+    apt-get update && \
+    apt-get install -y google-cloud-sdk
 
 ## Install latest samtools from source
 RUN mkdir /tools && \
