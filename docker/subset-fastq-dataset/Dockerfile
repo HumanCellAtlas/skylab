@@ -20,7 +20,7 @@ ENV CLOUD_SDK_REPO="cloud-sdk-jessie"
 ## Install software
 RUN echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" |  tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && \
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg |  apt-key add - && \
-    apt update && apt install -y google-cloud-sdk pigz
+    apt update && apt install -y google-cloud-sdk
 
 ## Install latest samtools from source
 RUN mkdir /tools && \
