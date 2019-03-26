@@ -28,13 +28,8 @@ workflow SubsetFastqDataset {
         }
     }
 
-    call TarFilteredFastq {
-        input:
-        filtered_fastqs = FilterFastq.output_filtered_fastq_gz
-    }
-
     output {
-        File output_tar = TarFilteredFastq.output_tarred_fastqs
+        Array[File] output_filtered_fastq_gz = FilterFastq.output_filtered_fastq_gz
     }
 }
 
@@ -45,12 +40,12 @@ task MergeBams {
         samtools cat ${sep=' ' aligned_bams} > concat.bam
     }
 
-     runtime {
-       docker: "quay.io/humancellatlas/secondary-analysis-subset-fastq:0.0.1"
-       memory: "8 GB"
-       disks: "local-disk 3000 HDD"
-       cpu: "2"
-     }
+    runtime {
+        docker: "quay.io/humancellatlas/secondary-analysis-subset-fastq:0.0.1"
+        memory: "8 GB"
+        disks: "local-disk 3000 HDD"
+        cpu: "2"
+    }
 
     output {
         File output_concat_bam = "concat.bam"
@@ -67,12 +62,12 @@ task IndexSortConcatenated {
         samtools index concat.sorted.bam
     }
 
-     runtime {
-       docker: "quay.io/humancellatlas/secondary-analysis-subset-fastq:0.0.1"
-       memory: "28 GB"
-       disks: "local-disk 3000 HDD"
-       cpu: "8"
-     }
+    runtime {
+        docker: "quay.io/humancellatlas/secondary-analysis-subset-fastq:0.0.1"
+        memory: "8 GB"
+        disks: "local-disk 3000 HDD"
+        cpu: "2"
+    }
 
     output {
         File output_sorted_bam = "concat.sorted.bam"
@@ -91,12 +86,12 @@ task ExtractReadNames {
         samtools view -@ ${samtools_sort_cores} -m ${samtools_mem_per_core} ${sorted_bam} ${subset_region} | cut -f 1 | pigz > kept_reads.gz
     }
 
-     runtime {
-       docker: "quay.io/humancellatlas/secondary-analysis-subset-fastq:0.0.1"
-       memory: "28 GB"
-       disks: "local-disk 3000 HDD"
-       cpu: "8"
-     }
+    runtime {
+        docker: "quay.io/humancellatlas/secondary-analysis-subset-fastq:0.0.1"
+        memory: "28 GB"
+        disks: "local-disk 3000 HDD"
+        cpu: "8"
+    }
 
     output {
         File output_kept_reads = "kept_reads.gz"
@@ -117,12 +112,12 @@ task FilterFastq {
             --verbose
     }
 
-     runtime {
-       docker: "quay.io/humancellatlas/secondary-analysis-subset-fastq:0.0.1"
-       memory: "28 GB"
-       disks: "local-disk 3000 HDD"
-       cpu: "8"
-     }
+    runtime {
+        docker: "quay.io/humancellatlas/secondary-analysis-subset-fastq:0.0.1"
+        memory: "28 GB"
+        disks: "local-disk 3000 HDD"
+        cpu: "8"
+    }
 
     output {
         File output_filtered_fastq_gz = output_file_name
@@ -136,12 +131,12 @@ task TarFilteredFastq {
         tar -cvzf output.tar.gz ${sep=' ' filtered_fastqs}
     }
 
-     runtime {
-       docker: "quay.io/humancellatlas/secondary-analysis-subset-fastq:0.0.1"
-       memory: "28 GB"
-       disks: "local-disk 3000 HDD"
-       cpu: "8"
-     }
+    runtime {
+        docker: "quay.io/humancellatlas/secondary-analysis-subset-fastq:0.0.1"
+        memory: "28 GB"
+        disks: "local-disk 3000 HDD"
+        cpu: "8"
+    }
 
     output {
         File output_tarred_fastqs = "output.tar.gz"
