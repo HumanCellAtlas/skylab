@@ -59,8 +59,7 @@ workflow Optimus {
       input:
         fastq_file = r2_fastq[index],
         sample_id = sample_id,
-        fastq_suffix = fastq_suffix,
-        preemptible = preemptible
+        fastq_suffix = fastq_suffix
     }
 
     # if the index is passed, attach it to the bam file
@@ -71,8 +70,7 @@ workflow Optimus {
           r1_fastq = r1_fastq[index],
           i1_fastq = non_optional_i1_fastq[index],
           r2_unmapped_bam = FastqToUBam.bam_output,
-          whitelist = whitelist,
-          preemptible = no_preemptible
+          whitelist = whitelist
       }
     }
 
@@ -82,8 +80,7 @@ workflow Optimus {
         input:
           r1_fastq = r1_fastq[index],
           r2_unmapped_bam = FastqToUBam.bam_output,
-          whitelist = whitelist,
-          preemptible = no_preemptible
+          whitelist = whitelist
       }
     }
 
@@ -93,122 +90,104 @@ workflow Optimus {
   call Merge.MergeSortBamFiles as MergeUnsorted {
     input:
       bam_inputs = barcoded_bam,
-      sort_order = "unsorted",
-      preemptible = preemptible
+      sort_order = "unsorted"
   }
 
   call Split.SplitBamByCellBarcode {
     input:
-      bam_input = MergeUnsorted.output_bam,
-      preemptible = preemptible
+      bam_input = MergeUnsorted.output_bam
   }
 
   scatter (bam in SplitBamByCellBarcode.bam_output_array) {
     call StarAlignBam.StarAlignBamSingleEnd as StarAlign {
       input:
         bam_input = bam,
-        tar_star_reference = tar_star_reference,
-        preemptible = no_preemptible
+        tar_star_reference = tar_star_reference
     }
 
     call TagGeneExon.TagGeneExon as TagGenes {
       input:
         bam_input = StarAlign.bam_output,
-        annotations_gtf = annotations_gtf,
-        preemptible = preemptible
+        annotations_gtf = annotations_gtf
     }
 
     call Picard.SortBamAndIndex as PreUMISort {
       input:
-        bam_input = TagGenes.bam_output,
-        preemptible = preemptible
+        bam_input = TagGenes.bam_output
     }
 
     call MarkDuplicates.MarkDuplicatesUmiTools as MarkDuplicates {
       input:
         bam_input = PreUMISort.bam_output,
-        bam_index = PreUMISort.bam_index,
-        preemptible = preemptible
+        bam_index = PreUMISort.bam_index
     }
 
     call Picard.SortBamAndIndex as PostUMISort {
       input:
-        bam_input = MarkDuplicates.bam_output,
-        preemptible = preemptible
+        bam_input = MarkDuplicates.bam_output
     }
 
     call TagSortBam.GeneSortBam {
       input:
-        bam_input = MarkDuplicates.bam_output,
-        preemptible = preemptible
+        bam_input = MarkDuplicates.bam_output
     }
 
     call TagSortBam.CellSortBam {
       input:
-        bam_input = MarkDuplicates.bam_output,
-        preemptible = preemptible
+        bam_input = MarkDuplicates.bam_output
     }
 
     call Metrics.CalculateGeneMetrics {
       input:
-        bam_input = GeneSortBam.bam_output,
-        preemptible = preemptible
+        bam_input = GeneSortBam.bam_output
     }
 
     call Metrics.CalculateCellMetrics {
       input:
-        bam_input = CellSortBam.bam_output,
-        preemptible = preemptible
+        bam_input = CellSortBam.bam_output
     }
 
     call Picard.SortBam as PreCountSort {
       input:
         bam_input = MarkDuplicates.bam_output,
-        sort_order = "queryname",
-        preemptible = preemptible
+        sort_order = "queryname"
     }
 
     call Count.CreateSparseCountMatrix {
       input:
         bam_input = PreCountSort.bam_output,
-        gtf_file = annotations_gtf,
-        preemptible = preemptible
+        gtf_file = annotations_gtf
     }
   }
 
   call Merge.MergeSortBamFiles as MergeSorted {
     input:
       bam_inputs = PostUMISort.bam_output,
-      sort_order = "coordinate",
-      preemptible = preemptible
+      sort_order = "coordinate"
   }
 
   call Metrics.MergeGeneMetrics {
     input:
-      metric_files = CalculateGeneMetrics.gene_metrics,
-      preemptible = preemptible
+      metric_files = CalculateGeneMetrics.gene_metrics
   }
 
   call Metrics.MergeCellMetrics {
     input:
-      metric_files = CalculateCellMetrics.cell_metrics,
-      preemptible = preemptible
+      metric_files = CalculateCellMetrics.cell_metrics
   }
 
   call Count.MergeCountFiles {
     input:
       sparse_count_matrices = CreateSparseCountMatrix.sparse_count_matrix,
       row_indices = CreateSparseCountMatrix.row_index,
-      col_indices = CreateSparseCountMatrix.col_index,
-      preemptible = preemptible
+      col_indices = CreateSparseCountMatrix.col_index
   }
 
   call RunEmptyDrops.RunEmptyDrops {
     input:
       sparse_count_matrix = MergeCountFiles.sparse_count_matrix,
       row_index = MergeCountFiles.row_index,
-      col_index = MergeCountFiles.col_index,
-      preemptible = preemptible
+      col_index = MergeCountFiles.col_index
   }
 
   if (output_zarr) {
@@ -220,8 +199,7 @@ workflow Optimus {
         sparse_count_matrix = MergeCountFiles.sparse_count_matrix,
         cell_id = MergeCountFiles.row_index,
         gene_id = MergeCountFiles.col_index,
-        empty_drops_result = RunEmptyDrops.empty_drops_result,
-        preemptible = preemptible
+        empty_drops_result = RunEmptyDrops.empty_drops_result
     }
 }
 
