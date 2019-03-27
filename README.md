@@ -20,7 +20,7 @@ For now, use `git clone git@github.com:HumanCellAtlas/skylab.git` and run the pi
 
 Tasks on Cromwell may be run on what are known as "preemptible" machines to reduce costs by a significant amount. The catch with preemptible machines is that they may be "preempted" at any given moment--as in, google may shut down the task to re-use the resources.
 
-Many tasks are set to automatically be `preemptible = 3`, aka they will be run on preemptible instances for up to 3 instances of preemption, after which it will be run on a non-preemptible machine. This option may be set to 0 to run the task without using preemptible machines for those long-running tasks.
+Many tasks are set to automatically be `preemptible = 3`, aka they will be run on preemptible instances for up to 3 instances of preemption, after which it will be run on a non-preemptible machine. This option may be set to 0 by passing a task-level input to the workflow (i.e. Optimus.StarAlign.preemptible), causing the task to be run without using preemptible machines. This option is especially useful for long-running tasks, which have a chance to take a very long time to run due to being preempted multiple times.
 
 ### maxRetries
 
