@@ -41,11 +41,6 @@ workflow Optimus {
   # whether to convert the outputs to Zarr format, by default it's set to true
   Boolean output_zarr = true
 
-  # try to use preemptible VMs for 3 times
-  Int preemptible = 3
-  # do not use preemptible VMs
-  Int no_preemptible = 0
-
   parameter_meta {
     r1_fastq: "forward read, contains cell barcodes and molecule barcodes"
     r2_fastq: "reverse read, contains cDNA fragment generated from captured mRNA"
@@ -57,7 +52,6 @@ workflow Optimus {
     whitelist: "10x genomics cell barcode whitelist for 10x V2"
     fastq_suffix: "when running in green box, need to add '.gz' for picard to detect the compression"
     output_zarr: "whether to run the taks that converts the outputs to Zarr format, by default it's true"
-    preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
   }
 
   scatter (index in indices) {
