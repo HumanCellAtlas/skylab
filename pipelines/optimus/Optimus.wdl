@@ -41,6 +41,11 @@ workflow Optimus {
   # whether to convert the outputs to Zarr format, by default it's set to true
   Boolean output_zarr = true
 
+  # this pipeline does not set any preemptible varibles and only relies on the task-level preemptible settings
+  # you could override the tasklevel preemptible settings by passing it as one of the workflows inputs
+  # for example: `"Optimus.StarAlign.preemptible": 3` will let the StarAlign task, which by default disables the
+  # usage of preemptible machines, attempt to request for preemptible instance up to 3 times. 
+
   parameter_meta {
     r1_fastq: "forward read, contains cell barcodes and molecule barcodes"
     r2_fastq: "reverse read, contains cDNA fragment generated from captured mRNA"
