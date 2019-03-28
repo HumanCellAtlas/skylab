@@ -1,4 +1,4 @@
-FROM python:3.7.2-stretch
+FROM python:3.7.2
 
 LABEL maintainer="Mint Team <mintteam@broadinstitute.org>" \
       software="python 3.6.2" \
