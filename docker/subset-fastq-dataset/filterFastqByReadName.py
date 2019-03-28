@@ -12,7 +12,7 @@ from Bio import SeqIO
 @click.option('--verbose', help='verbose', default=False, is_flag=True, flag_value=True)
 def filter_by_read_name(in_fastq, out_fastq, keep_reads, verbose):
     # Put reads that are in the keep list in the output file
-    keep_read_set = set(line.decode('ascii').rstrip() for line in open(keep_reads, 'rb'))
+    keep_read_set = set(line.decode('ISO-8859-1').rstrip() for line in open(keep_reads, 'rb'))
     if verbose:
         print('Done loading keep read list', file=sys.stderr)
 
