@@ -44,7 +44,7 @@ task MergeBams {
     Array[File] aligned_bams
   }
 
-  Int disk_size = ceil(size(aligned_bams, "GiB") * 2) + 10
+  Int disk_size = ceil(size(aligned_bams, "GiB") * 10) + 100
 
   command {
     samtools cat ~{sep=' ' aligned_bams} > concat.bam
