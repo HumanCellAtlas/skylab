@@ -129,19 +129,19 @@ task FilterFastq {
     File keep_read_names
   }
 
-  String output_file_name = basename(fastq, ".fastq") + ".filtered.fastq"
+  String output_file_name = basename(fastq, ".fastq.gz") + ".filtered.fastq.gz"
   Int disk_size = ceil(size(fastq, "GiB") * 2) + ceil(size(keep_read_names, "GiB")) + 20
 
   command {
     filterFastqByReadName.py \
-      --in-fastq ~{fastq} \
-      --out-fastq ~{output_file_name} \
+      --in-fastq-gz ~{fastq} \
+      --out-fastq-gz ~{output_file_name} \
       --keep-reads ~{keep_read_names} \
       --verbose
   }
 
   runtime {
-    docker: "quay.io/humancellatlas/secondary-analysis-subset-fastq:0.0.1"
+    docker: "quay.io/humancellatlas/secondary-analysis-subset-fastq@sha256:58bacaae91c49a594368ec11afef961622eeeb25c2b3c98f3ede342f8ae2004d"
     memory: "2 GiB"
     disks: "local-disk ~{disk_size} HDD"
     cpu: 1
