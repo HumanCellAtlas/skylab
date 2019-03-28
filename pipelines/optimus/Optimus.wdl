@@ -1,16 +1,17 @@
-import "FastqToUBam.wdl" as FastqToUBam
-import "Attach10xBarcodes.wdl" as Attach
-import "SplitBamByCellBarcode.wdl" as Split
-import "MergeSortBam.wdl" as Merge
-import "CreateCountMatrix.wdl" as Count
-import "StarAlignBamSingleEnd.wdl" as StarAlignBam
-import "TagGeneExon.wdl" as TagGeneExon
-import "SequenceDataWithMoleculeTagMetrics.wdl" as Metrics
-import "TagSortBam.wdl" as TagSortBam
-import "RunEmptyDrops.wdl" as RunEmptyDrops
-import "ZarrUtils.wdl" as ZarrUtils
-import "Picard.wdl" as Picard
-import "MarkDuplicates.wdl" as MarkDuplicates
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/optimus_v1.0.0/library/tasks/FastqToUBam.wdl" as FastqToUBam
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/optimus_v1.0.0/library/tasks/Attach10xBarcodes.wdl" as Attach
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/optimus_v1.0.0/library/tasks/SplitBamByCellBarcode.wdl" as Split
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/optimus_v1.0.0/library/tasks/MergeSortBam.wdl" as Merge
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/optimus_v1.0.0/library/tasks/CreateCountMatrix.wdl" as Count
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/optimus_v1.0.0/library/tasks/StarAlignBamSingleEnd.wdl" as StarAlignBam
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/optimus_v1.0.0/library/tasks/TagGeneExon.wdl" as TagGeneExon
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/optimus_v1.0.0/library/tasks/SequenceDataWithMoleculeTagMetrics.wdl" as Metrics
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/optimus_v1.0.0/library/tasks/TagSortBam.wdl" as TagSortBam
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/optimus_v1.0.0/library/tasks/RunEmptyDrops.wdl" as RunEmptyDrops
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/optimus_v1.0.0/library/tasks/ZarrUtils.wdl" as ZarrUtils
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/optimus_v1.0.0/library/tasks/Picard.wdl" as Picard
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/optimus_v1.0.0/library/tasks/MarkDuplicates.wdl" as MarkDuplicates
+
 
 workflow Optimus {
   meta {
