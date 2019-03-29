@@ -3,7 +3,7 @@ import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/optimus_v1.0.0/l
 import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/optimus_v1.0.0/library/tasks/SplitBamByCellBarcode.wdl" as Split
 import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/optimus_v1.0.0/library/tasks/MergeSortBam.wdl" as Merge
 import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/optimus_v1.0.0/library/tasks/CreateCountMatrix.wdl" as Count
-import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/optimus_v1.0.0/library/tasks/StarAlignBamSingleEnd.wdl" as StarAlignBam
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/terra-optimus/library/tasks/StarAlignBamSingleEnd.wdl" as StarAlignBam
 import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/optimus_v1.0.0/library/tasks/TagGeneExon.wdl" as TagGeneExon
 import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/optimus_v1.0.0/library/tasks/SequenceDataWithMoleculeTagMetrics.wdl" as Metrics
 import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/optimus_v1.0.0/library/tasks/TagSortBam.wdl" as TagSortBam
