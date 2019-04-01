@@ -141,7 +141,7 @@ task FilterFastq {
   }
 
   runtime {
-    docker: "quay.io/humancellatlas/secondary-analysis-subset-fastq:0.0.1""
+    docker: "quay.io/humancellatlas/secondary-analysis-subset-fastq:0.0.1"
     memory: "2 GiB"
     disks: "local-disk ~{disk_size} HDD"
     cpu: 1
