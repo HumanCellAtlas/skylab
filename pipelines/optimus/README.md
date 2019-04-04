@@ -18,12 +18,12 @@ Optimus can deployed using [Cromwell](https://software.broadinstitute.org/wdl/),
 ### Running Optimus
 * "Optimus.wdl" in the pipelines/optimus folder,  of the repository, implements the workflow by importing individual tasks in task based WDLs in skylab/library.
 
-####Inputs
+#### Inputs
 The input file locations are specified in a jason file, e.g., optimus/example_test_inputs.json.
 
 
 
-####Outputs
+#### Outputs
 The outputs from the Optimus pipeline can be identified from the outputs of the individual tasks, e.g. optimus/example_test_outputs.json
 
 Following are the the types of files produced from the pipeline.
@@ -42,6 +42,5 @@ Following are the the types of files produced from the pipeline.
 
 ### Contributing to Optimus
 The source code is available from [Github](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Optimus.wdl), an overview of the pipeline can be found on the [HCA Data Portal](https://prod.data.humancellatlas.org/) and the benchmarking that was performed on the pipeline can be found [here](https://docs.google.com/document/d/158ba_xQM9AYyu8VcLWsIvSoEYps6PQhgddTr9H0BFmY/edit#heading=h.calfpviouwbg).  
-
 
 
