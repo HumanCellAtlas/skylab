@@ -1,4 +1,4 @@
-# Optimus Pipeline
+# Optimus Pipeline Overview
 
 ![Diagram](Optimus_diagram.png)
 
@@ -9,7 +9,7 @@ Optimus is a alignment and transcriptome quantification pipeline. Optimus correc
 More details can be found in the [Optimus Acceptance Report](https://docs.google.com/document/d/158ba_xQM9AYyu8VcLWsIvSoEYps6PQhgddTr9H0BFmY/edit)
 
 
-## Installation:  
+### Installation  
 The Optimus pipeline code can be downloaded by cloning the github repository [Skylab](https://github.com/HumanCellAtlas/skylab/) 
 
 ### Requirements  
