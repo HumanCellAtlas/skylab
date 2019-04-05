@@ -10,7 +10,7 @@ More details can be found in the [Optimus Acceptance Report](https://docs.google
 
 
 ### Installation  
-The Optimus pipeline code can be downloaded by cloning the github repository [Skylab](https://github.com/HumanCellAtlas/skylab/) 
+The Optimus pipeline code can be downloaded by cloning the github repository [Skylab](https://github.com/HumanCellAtlas/skylab/). For the latest release of Optimus please see the realease tags prefixed with ``Optimus" [here](https://github.com/HumanCellAtlas/skylab/releases)
 
 ### Requirements  
 Optimus can be deployed using [Cromwell](https://software.broadinstitute.org/wdl/), a GA4GH compliant, flexible workflow management system that supports multiple computing platforms.
