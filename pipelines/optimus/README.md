@@ -16,7 +16,7 @@ The Optimus pipeline code can be downloaded by cloning the github repository [Sk
 Optimus can deployed using [Cromwell](https://software.broadinstitute.org/wdl/), a GA4GH compliant, flexible workflow management system that supports multiple computing platforms
 
 ### Running Optimus
-* [Optimus.wdl] (https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Optimus.wdl) in the pipelines/optimus folder,  of the repository, implements the workflow by importing individual tasks in task based WDLs in skylab/library.
+* [Optimus.wdl](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Optimus.wdl) in the pipelines/optimus folder,  of the repository, implements the workflow by importing individual tasks in task based WDLs in skylab/library.
 
 #### Inputs
 The input file locations are specified in a json file, e.g., [here](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/example_test_inputs.json).
