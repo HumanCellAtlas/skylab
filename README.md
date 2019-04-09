@@ -29,3 +29,4 @@ Some tasks have a maxRetries runtime attribute specified, with the default value
 Setting it to an integer n greater than zero will make Cromwell retry the task up to n times if it fails for any reason. This can be useful when running a task over and over in a production setting where a high proportion of failures are due to transient problems (e.g. VM dies while job is running) that do not persist when the task is rerun. Even in that situation, it is probably best to set maxRetries to no more than 1 or 2, since if you're running in the cloud you will incur additional charges for each retry.
 
 See the [Cromwell documentation](http://cromwell.readthedocs.io/en/develop/RuntimeAttributes/#maxretries) for more information.
+
