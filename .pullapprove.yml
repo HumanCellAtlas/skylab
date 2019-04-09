@@ -4,12 +4,15 @@ pullapprove_conditions:
 - condition: "'ci/circleci: build' in statuses.successful"
   unmet_status: failure
   explanation: "Circle CI tests must pass before review starts"
+
 - condition: "'ci/circleci: test_emptyDropsWrapper' in statuses.successful"
   unmet_status: failure
   explanation: "Circle CI tests must pass before review starts"
+
 - condition: "'ci/circleci: test_npz2rds' in statuses.successful"
   unmet_status: failure
   explanation: "Circle CI tests must pass before review starts"
+  
 - condition: "'security/snyk - docker/cellranger/requirements.txt' in statuses.successful"
   unmet_status: failure
   explanation: "Snyk tests must pass before review starts"
