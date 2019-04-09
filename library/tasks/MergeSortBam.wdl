@@ -12,7 +12,8 @@ task MergeSortBamFiles {
   Int cpu = 1
   # default to 500GB of space
   Int disk = 500
-  Int preemptible = 3
+  # by default request non preemptible machine to make sure the slow mergsort step completes
+  Int preemptible = 0
 
   meta {
     description: "Merge multiple bam files in the specified sort order"

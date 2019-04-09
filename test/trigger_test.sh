@@ -26,7 +26,7 @@ docker run --rm \
   -v ${WD}:/working \
   -w /working \
   --privileged \
-  humancellatlas/cromwell-tools:1.0.1 \
+  quay.io/broadinstitute/cromwell-tools:v1.1.1 \
   /working/test/test_cromwell_workflow.sh \
     "${CROMWELL_USER}" \
     "${CROMWELL_PASSWORD}" \
