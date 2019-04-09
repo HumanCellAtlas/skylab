@@ -10,7 +10,8 @@ task Attach10xBarcodes {
   Int cpu = 2
   # estimate that bam is approximately the size of all inputs plus 50%
   Int disk = ceil((size(r2_unmapped_bam, "G") + size(r1_fastq, "G") + if (defined(i1_fastq)) then size(i1_fastq, "G") else 0) * 2.5)
-  Int preemptible = 3
+  # by default request non preemptible machine to make sure the slow attach barcodes step completes
+  Int preemptible = 0
 
   meta {
     description: "attaches barcodes found in r1 (forward) and i1 (index) fastq files to corresponding reads in the r2 (reverse) bam file"
