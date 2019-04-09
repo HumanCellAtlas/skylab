@@ -13,7 +13,7 @@ pullapprove_conditions:
   unmet_status: failure
   explanation: "Circle CI tests must pass before review starts"
 
-- condition: "'security/snyk*' in statuses.successful"
+- condition: "'*snyk*' in statuses.successful"
   unmet_status: failure
   explanation: "Snyk tests must pass before review starts"
 
