@@ -12,7 +12,7 @@ pullapprove_conditions:
 - condition: "'ci/circleci: test_npz2rds' in statuses.successful"
   unmet_status: failure
   explanation: "Circle CI tests must pass before review starts"
-  
+
 - condition: "'security/snyk - docker/cellranger/requirements.txt' in statuses.successful"
   unmet_status: failure
   explanation: "Snyk tests must pass before review starts"
@@ -39,6 +39,7 @@ groups:
     reviewers:
       teams:
       - pipelines-software-engineers-hornet
+      - pipelines-software-engineers-lantern
       - pipelines-devops
 
   computational-review:
