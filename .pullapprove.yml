@@ -12,10 +12,22 @@ pullapprove_conditions:
 - condition: "'ci/circleci: test_npz2rds' in statuses.successful"
   unmet_status: failure
   explanation: "Circle CI tests must pass before review starts"
-  
-- condition: "'security/snyk - docker/cellranger/requirements.txt' in statuses.successful"
+
+- condition: "'*snyk*' in statuses.successful"
   unmet_status: failure
   explanation: "Snyk tests must pass before review starts"
+
+- condition: "'Jenkins Optimus Tests' in statuses.successful"
+  unmet_status: failure
+  explanation: "Jenkins Optimus tests must pass before review starts"
+
+- condition: "'Jenkins SS2 Tests' in statuses.successful"
+  unmet_status: failure
+  explanation: "Jenkins SS2 tests must pass before review starts"
+
+- condition: "'Jenkins Integration Tests' in statuses.successful"
+  unmet_status: failure
+  explanation: "Jenkins Integration tests must pass before review starts"
 
 groups:
   pullapprove-admins:
@@ -39,6 +51,7 @@ groups:
     reviewers:
       teams:
       - pipelines-software-engineers-hornet
+      - pipelines-software-engineers-lantern
       - pipelines-devops
 
   computational-review:
