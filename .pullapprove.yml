@@ -10,20 +10,18 @@ groups:
       author_value: 1 # if author in group reduce number of approvals needed by this number
 
     reviewers:
-      users:
-      - rhiananthony
       teams:
       - secops
 
   software-review:
     reviews:
-      required: 2
-      author_value: 1 # if author in group reduce number of approvals needed by this number
+      required: 1
+      author_value: 0 # if author in group reduce number of approvals needed by this number
       request_order: random  # reviewers will be chosen in a random order
 
     reviewers:
       teams:
-      - pipelines-software-engineers
+      - pipelines-software-engineers-hornet
       - pipelines-devops
 
   computational-review:
@@ -31,7 +29,7 @@ groups:
       - "'ENG-ONLY' not in labels"
     reviews:
       required: 1
-      author_value: 1 # if author in group reduce number of approvals needed by this number
+      author_value: 0 # if author in group reduce number of approvals needed by this number
       request_order: random  # reviewers will be chosen in a random order
 
     reviewers:
