@@ -1,0 +1,4 @@
+{
+    "test_task.wdl": "test/pr/test_task.wdl",
+    "check_task.wdl": "test/pr/check_task.wdl"
+}
