@@ -10,7 +10,7 @@ task Print {
 
     command <<<
 
-        # print the string to file
+        # prints the string to file
         echo "${printed_string}" >> output.txt
 
     >>>
