@@ -13,7 +13,7 @@ task RunEmptyDrops {
 
     # runtime values
     String docker = "quay.io/humancellatlas/secondary-analysis-dropletutils:0.1.1"
-    Int machine_mem_mb = 4000
+    Int machine_mem_mb = 16000
     Int cpu = 1
     Int disk = 20
     Int preemptible = 3
