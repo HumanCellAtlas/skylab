@@ -1,4 +1,4 @@
-task MarkDuplicatesUmiTools {
+task CorrectUMItools {
     File bam_input
     File bam_index
 
@@ -57,7 +57,7 @@ task MarkDuplicatesUmiTools {
 
        rm input.bam input.bam.bai
        samtools cat -o ${output_bam_filename} duplicate_marked.bam untagged.bam
-       
+
     }
 
     runtime {

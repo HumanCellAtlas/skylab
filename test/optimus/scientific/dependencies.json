@@ -12,5 +12,5 @@
   "SequenceDataWithMoleculeTagMetrics.wdl": "library/tasks/SequenceDataWithMoleculeTagMetrics.wdl",
   "TagSortBam.wdl": "library/tasks/TagSortBam.wdl",
   "Picard.wdl": "library/tasks/Picard.wdl",
-  "MarkDuplicates.wdl": "library/tasks/MarkDuplicates.wdl"
+  "UmiCorrection.wdl": "library/tasks/UmiCorrection.wdl"
 }
