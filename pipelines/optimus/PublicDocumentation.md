@@ -44,7 +44,7 @@ Special care is taken to avoid the removal of reads that are not aligned or that
 
 A general overview of the pipeline is shown below, followed by more detailed descriptions of the steps.
 
-![Optimus Pipeline Overview](_images/Optimus_pipieline_overview.png)
+![Optimus Pipeline Overview](Optimus_diagram.png)
 
 ## Input Data Preparation 
 
