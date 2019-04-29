@@ -18,7 +18,7 @@ The bead-specific barcodes and UMIs are encoded on sequencing primers that also 
 
 | Pipeline Features | Description | Source |
 |-------------------|---------------------------------------------------------------|-----------------------|
-|Assay Type | 10x Single Cell Expression (v2, v3) |[10x Genomics](https://www.10xgenomics.com)
+|Assay Type | 10x Single Cell Expression (v2) |[10x Genomics](https://www.10xgenomics.com)
 | Overall Workflow  |Quality control module and transcriptome quantification module | Code available from [Github](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Optimus.wdl) |
 | Workflow Language |WDL          |[openWDL](https://github.com/openwdl/wdl)|
 | Genomic Reference Sequence|GRCh38 human genome primary sequence|[GENCODE](https://www.gencodegenes.org/human/release_27.html)|
@@ -102,7 +102,7 @@ Outputs of the pipeline include:
 
 ## Optimus Pipeline Metrics 
 
-This pipeline processes genomic data generated from the [10x Genomics](https://www.10xgenomics.com/solutions/single-cell/) 3 prime v2 (and v3) assay.  The metrics below are detected using Single Cell Tools ([sctools](https://github.com/HumanCellAtlas/sctools)).
+This pipeline processes genomic data generated from the [10x Genomics](https://www.10xgenomics.com/solutions/single-cell/) 3 prime v2 assay.  The metrics below are detected using Single Cell Tools ([sctools](https://github.com/HumanCellAtlas/sctools)).
 
 | Cell Metrics                      | Program            |Details                 |
 |-----------------------------------|--------------------|------------------------|
