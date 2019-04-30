@@ -10,7 +10,7 @@ task MergeSortBamFiles {
   # give the command 500MiB of overhead
   Int command_mem_mb = machine_mem_mb - 500
   Int cpu = 1
-  # default to 500GB of space
+  # default to 500GiB of space
   Int disk = 500
   # by default request non preemptible machine to make sure the slow mergsort step completes
   Int preemptible = 0
@@ -25,7 +25,7 @@ task MergeSortBamFiles {
     docker: "(optional) the docker image containing the runtime environment for this task"
     machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
-    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    disk: "(optional) the amount of disk space (GiB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
   }
 
