@@ -3,9 +3,9 @@ task CellSortBam {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.2"
-  Int machine_mem_mb = 40000
+  Int machine_mem_mb = (40000 * 1.1)
   Int cpu = 2
-  Int disk = ceil(size(bam_input, "G") * 8)
+  Int disk = ceil(size(bam_input, "Gi") * 8)
   Int preemptible = 3
 
   meta {
@@ -15,9 +15,9 @@ task CellSortBam {
   parameter_meta {
     bam_input: "Input bam file containing reads marked with tags for cell barcodes (CB), molecule barcodes (UB) and gene ids (GE)"
     docker: "(optional) the docker image containing the runtime environment for this task"
-    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
-    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    disk: "(optional) the amount of disk space (GiB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
   }
   
@@ -29,7 +29,7 @@ task CellSortBam {
   
   runtime {
     docker: docker
-    memory: "${machine_mem_mb} MB"
+    memory: "${machine_mem_mb} MiB"
     disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible
@@ -45,9 +45,9 @@ task GeneSortBam {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.2"
-  Int machine_mem_mb = 40000
+  Int machine_mem_mb = (40000 * 1.1)
   Int cpu = 2
-  Int disk = ceil(size(bam_input, "G") * 4)
+  Int disk = ceil(size(bam_input, "Gi") * 4)
   Int preemptible = 3
 
   meta {
@@ -57,9 +57,9 @@ task GeneSortBam {
   parameter_meta {
     bam_input: "Input bam file containing reads marked with tags for cell barcodes (CB), molecule barcodes (UB) and gene ids (GE)"
     docker: "(optional) the docker image containing the runtime environment for this task"
-    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
-    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    disk: "(optional) the amount of disk space (GiB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
   }
 
@@ -71,7 +71,7 @@ task GeneSortBam {
 
   runtime {
     docker: docker
-    memory: "${machine_mem_mb} MB"
+    memory: "${machine_mem_mb} MiB"
     disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible

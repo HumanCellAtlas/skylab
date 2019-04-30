@@ -3,9 +3,9 @@ task CalculateGeneMetrics {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.3"
-  Int machine_mem_mb = 20000
+  Int machine_mem_mb = (20000 * 1.1)
   Int cpu = 1
-  Int disk = ceil(size(bam_input, "G") * 4)
+  Int disk = ceil(size(bam_input, "Gi") * 4)
   Int preemptible = 3
 
   meta {
@@ -15,9 +15,9 @@ task CalculateGeneMetrics {
   parameter_meta {
     bam_input: "An aligned bam file augmented with CB, UB, GE, CY, UY, and XF tags."
     docker: "(optional) the docker image containing the runtime environment for this task"
-    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
-    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    disk: "(optional) the amount of disk space (GiB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
   }
 
@@ -29,7 +29,7 @@ task CalculateGeneMetrics {
 
   runtime {
     docker: docker
-    memory: "${machine_mem_mb} MB"
+    memory: "${machine_mem_mb} MiB"
     disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible
@@ -45,9 +45,9 @@ task CalculateCellMetrics {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.3"
-  Int machine_mem_mb = 3500
+  Int machine_mem_mb = (3500 * 1.1)
   Int cpu = 1
-  Int disk = ceil(size(bam_input, "G") * 2)
+  Int disk = ceil(size(bam_input, "Gi") * 2)
   Int preemptible = 3
 
   meta {
@@ -57,9 +57,9 @@ task CalculateCellMetrics {
   parameter_meta {
     bam_input: "An aligned bam file augmented with CB, UB, GE, CY, UY, and XF tags."
     docker: "(optional) the docker image containing the runtime environment for this task"
-    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
-    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    disk: "(optional) the amount of disk space (GiB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
   }
 
@@ -71,7 +71,7 @@ task CalculateCellMetrics {
 
   runtime {
     docker: docker
-    memory: "${machine_mem_mb} MB"
+    memory: "${machine_mem_mb} MiB"
     disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible
@@ -88,7 +88,7 @@ task MergeGeneMetrics {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.3"
-  Int machine_mem_mb = 3500
+  Int machine_mem_mb = (3500 * 1.1)
   Int cpu = 1
   Int disk = 20
   Int preemptible = 3
@@ -100,9 +100,9 @@ task MergeGeneMetrics {
   parameter_meta {
     metric_files: "A set of metrics files, each measuring a potentially overlapping set of genes in disjoint sets of cells"
     docker: "(optional) the docker image containing the runtime environment for this task"
-    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
-    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    disk: "(optional) the amount of disk space (GiB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
   }
 
@@ -114,7 +114,7 @@ task MergeGeneMetrics {
 
   runtime {
     docker: docker
-    memory: "${machine_mem_mb} MB"
+    memory: "${machine_mem_mb} MiB"
     disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible
@@ -130,7 +130,7 @@ task MergeCellMetrics {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.3"
-  Int machine_mem_mb = 3500
+  Int machine_mem_mb = (3500 * 1.1)
   Int cpu = 1
   Int disk = 20
   Int preemptible = 3
@@ -142,9 +142,9 @@ task MergeCellMetrics {
   parameter_meta {
     metric_files: "An array of cell metrics files that contain the same metric types, but different sets of cells"
     docker: "(optional) the docker image containing the runtime environment for this task"
-    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
-    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    disk: "(optional) the amount of disk space (GiB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
   }
 
@@ -156,7 +156,7 @@ task MergeCellMetrics {
 
   runtime {
     docker: docker
-    memory: "${machine_mem_mb} MB"
+    memory: "${machine_mem_mb} MiB"
     disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible

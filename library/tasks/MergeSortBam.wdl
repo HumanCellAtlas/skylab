@@ -6,8 +6,8 @@ task MergeSortBamFiles {
 
   # runtime values
   String docker = "us.gcr.io/broad-gotc-prod/genomes-in-the-cloud:2.3.3-1513176735"
-  Int machine_mem_mb = 16500
-  # give the command 500MB of overhead
+  Int machine_mem_mb = (16500 * 1.1)
+  # give the command 500MiB of overhead
   Int command_mem_mb = machine_mem_mb - 500
   Int cpu = 1
   # default to 500GB of space
@@ -23,7 +23,7 @@ task MergeSortBamFiles {
     bam_inputs: "Merges Sam/Bam files"
     sort_order: "sort order of output bam"
     docker: "(optional) the docker image containing the runtime environment for this task"
-    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
     disk: "(optional) the amount of disk space (GB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
@@ -42,7 +42,7 @@ task MergeSortBamFiles {
 
   runtime {
     docker: docker
-    memory: "${machine_mem_mb} MB"
+    memory: "${machine_mem_mb} MiB"
     disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible

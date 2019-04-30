@@ -5,10 +5,10 @@ task RSEMExpression {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-rsem:v0.2.2-1.3.0"
-  Int machine_mem_mb = 3500
+  Int machine_mem_mb = (3500 * 1.1)
   Int cpu = 4
   # use provided disk number or dynamically size on our own, with 20GB of additional disk
-  Int disk = ceil(size(trans_aligned_bam, "GB") + size(rsem_genome, "GB") + 20)
+  Int disk = ceil(size(trans_aligned_bam, "GiB") + size(rsem_genome, "GiB") + 20)
   Int preemptible = 5
   Int max_retries = 0
 
@@ -21,9 +21,9 @@ task RSEMExpression {
     rsem_genome: "tar'd RSEM genome"
     output_basename: "basename used for output files"
     docker: "(optional) the docker image containing the runtime environment for this task"
-    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
-    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    disk: "(optional) the amount of disk space (GiB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
     max_retries: "(optional) retry this number of times if task fails -- use with caution, see skylab README for details"
   }
@@ -46,7 +46,7 @@ task RSEMExpression {
 
   runtime {
     docker: docker
-    memory: "${machine_mem_mb} MB"
+    memory: "${machine_mem_mb} MiB"
     disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible

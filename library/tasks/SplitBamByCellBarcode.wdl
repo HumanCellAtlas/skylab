@@ -4,10 +4,10 @@ task SplitBamByCellBarcode {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.2"
-  Int machine_mem_mb = 3500
+  Int machine_mem_mb = (3500 * 1.1)
   Int cpu = 1
   # estimate that bam is approximately equal in size to the input bam, add 20% buffer
-  Int disk = ceil(size(bam_input, "G") * 2.2)
+  Int disk = ceil(size(bam_input, "Gi") * 2.2)
   # by default request non preemptible machine to make sure the slow cell barcode split step completes
   Int preemptible = 0
 
@@ -19,9 +19,9 @@ task SplitBamByCellBarcode {
     bam_input: "input bam file"
     size_in_mb: "target size for each output chunk"
     docker: "(optional) the docker image containing the runtime environment for this task"
-    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
-    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    disk: "(optional) the amount of disk space (GiB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
   }
 
@@ -37,7 +37,7 @@ task SplitBamByCellBarcode {
   
   runtime {
     docker: docker
-    memory: "${machine_mem_mb} MB"
+    memory: "${machine_mem_mb} MiB"
     disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible

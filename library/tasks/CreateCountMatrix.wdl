@@ -4,9 +4,9 @@ task DropSeqToolsDigitalExpression {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-dropseqtools:v0.2.2-1.12"
-  Int machine_mem_mb = 7500
+  Int machine_mem_mb = (7500 * 1.1)
   Int cpu = 1
-  Int disk = ceil((size(bam_input, "G") + size(whitelist, "G")) * 4.0) + 1
+  Int disk = ceil((size(bam_input, "Gi") + size(whitelist, "Gi")) * 4.0) + 1
   Int preemptible = 3
 
   meta {
@@ -17,9 +17,9 @@ task DropSeqToolsDigitalExpression {
     bam_input: "input bam file marked with cell barcodes (CB), molecule barcodes (UB) and gene ids (GE)"
     whitelist: "10x genomics cell barcode whitelist for 10x V2. Only CB found in this list are included in the count matrix"
     docker: "(optional) the docker image containing the runtime environment for this task"
-    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
-    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    disk: "(optional) the amount of disk space (GiB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
   }
 
@@ -39,7 +39,7 @@ task DropSeqToolsDigitalExpression {
 
   runtime {
     docker: docker
-    memory: "${machine_mem_mb} MB"
+    memory: "${machine_mem_mb} MiB"
     disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible
@@ -58,9 +58,9 @@ task CreateSparseCountMatrix {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.2"
-  Int machine_mem_mb = 7500
+  Int machine_mem_mb = (7500 * 1.1)
   Int cpu = 1
-  Int disk = ceil((size(bam_input, "G") + size(gtf_file, "G")) * 4.0) + 1
+  Int disk = ceil((size(bam_input, "Gi") + size(gtf_file, "Gi")) * 4.0) + 1
   Int preemptible = 3
 
   meta {
@@ -71,9 +71,9 @@ task CreateSparseCountMatrix {
     bam_input: "input bam file marked with cell barcodes (CB), molecule barcodes (UB) and gene ids (GE)"
     gtf_file: "the annotation file that was used to align the bam file passed to this function"
     docker: "(optional) the docker image containing the runtime environment for this task"
-    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
-    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    disk: "(optional) the amount of disk space (GiB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
   }
 
@@ -92,7 +92,7 @@ task CreateSparseCountMatrix {
 
   runtime {
     docker: docker
-    memory: "${machine_mem_mb} MB"
+    memory: "${machine_mem_mb} MiB"
     disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible
@@ -112,7 +112,7 @@ task MergeCountFiles {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.2"
-  Int machine_mem_mb = 7500
+  Int machine_mem_mb = (7500 * 1.1)
   Int cpu = 1
   Int disk = 20  # todo find out how to make this adaptive with Array[file] input
   Int preemptible = 3
@@ -124,9 +124,9 @@ task MergeCountFiles {
   parameter_meta {
     sparse_count_matrices: "array of count matrices in csr format, saved as numpy archives (.npy)"
     docker: "(optional) the docker image containing the runtime environment for this task"
-    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
-    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    disk: "(optional) the amount of disk space (GiB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
   }
 
@@ -141,7 +141,7 @@ task MergeCountFiles {
 
   runtime {
     docker: docker
-    memory: "${machine_mem_mb} MB"
+    memory: "${machine_mem_mb} MiB"
     disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible
