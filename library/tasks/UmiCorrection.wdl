@@ -9,7 +9,7 @@ task CorrectUMItools {
     String groupout_filename = "groupout.tsv"
 
     ## TODO: Optimize these values
-    Int machine_mem_mb = (10000 * 1.1)
+    Int machine_mem_mb = 11000
     Int cpu = 1
     Int disk = ceil(size(bam_input, "Gi") * 6) + 50
     Int preemptible = 3

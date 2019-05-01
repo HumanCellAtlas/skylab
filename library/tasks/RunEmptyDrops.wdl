@@ -5,7 +5,7 @@ task RunEmptyDrops {
     File row_index
 
     # emptyDrops Params
-    Float niters = 10000
+    Float niters = 10000.0
     Float fdr_cutoff = 0.01
 
     # other params
@@ -13,7 +13,7 @@ task RunEmptyDrops {
 
     # runtime values
     String docker = "quay.io/humancellatlas/secondary-analysis-dropletutils:0.1.1"
-    Int machine_mem_mb = (4000 * 1.1)
+    Int machine_mem_mb = 4400
     Int cpu = 1
     Int disk = 20
     Int preemptible = 3

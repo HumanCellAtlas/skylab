@@ -4,7 +4,7 @@ task DropSeqToolsDigitalExpression {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-dropseqtools:v0.2.2-1.12"
-  Int machine_mem_mb = (7500 * 1.1)
+  Int machine_mem_mb = 8250
   Int cpu = 1
   Int disk = ceil((size(bam_input, "Gi") + size(whitelist, "Gi")) * 4.0) + 1
   Int preemptible = 3
@@ -58,7 +58,7 @@ task CreateSparseCountMatrix {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.2"
-  Int machine_mem_mb = (7500 * 1.1)
+  Int machine_mem_mb = 8250
   Int cpu = 1
   Int disk = ceil((size(bam_input, "Gi") + size(gtf_file, "Gi")) * 4.0) + 1
   Int preemptible = 3
@@ -112,7 +112,7 @@ task MergeCountFiles {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.2"
-  Int machine_mem_mb = (7500 * 1.1)
+  Int machine_mem_mb = 8250
   Int cpu = 1
   Int disk = 20  # todo find out how to make this adaptive with Array[file] input
   Int preemptible = 3

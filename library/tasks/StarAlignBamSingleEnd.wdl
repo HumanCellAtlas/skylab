@@ -4,7 +4,7 @@ task StarAlignBamSingleEnd {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-star:v0.2.2-2.5.3a-40ead6e"
-  Int machine_mem_mb = ((ceil(size(tar_star_reference, "Gi")) + 6) * 1000) * 1.1
+  Int machine_mem_mb = ceil((size(tar_star_reference, "Gi")) + 6) * 1100
   Int cpu = 16
   # multiply input size by 2.2 to account for output bam file + 20% overhead, add size of reference.
   Int disk = ceil((size(tar_star_reference, "Gi") * 2) + (size(bam_input, "Gi") * 2.2))

@@ -3,7 +3,7 @@ task CalculateGeneMetrics {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.3"
-  Int machine_mem_mb = (20000 * 1.1)
+  Int machine_mem_mb = 22000
   Int cpu = 1
   Int disk = ceil(size(bam_input, "Gi") * 4)
   Int preemptible = 3
@@ -45,7 +45,7 @@ task CalculateCellMetrics {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.3"
-  Int machine_mem_mb = (3500 * 1.1)
+  Int machine_mem_mb = 3850
   Int cpu = 1
   Int disk = ceil(size(bam_input, "Gi") * 2)
   Int preemptible = 3
@@ -88,7 +88,7 @@ task MergeGeneMetrics {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.3"
-  Int machine_mem_mb = (3500 * 1.1)
+  Int machine_mem_mb = 3850
   Int cpu = 1
   Int disk = 20
   Int preemptible = 3
@@ -130,7 +130,7 @@ task MergeCellMetrics {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.3"
-  Int machine_mem_mb = (3500 * 1.1)
+  Int machine_mem_mb = 3850
   Int cpu = 1
   Int disk = 20
   Int preemptible = 3

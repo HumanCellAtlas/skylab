@@ -8,7 +8,7 @@ task HISAT2PairedEnd {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
-  Int machine_mem_mb = (15000 * 1.1)
+  Int machine_mem_mb = 16500
   Int cpu = 4
   # Using (fastq1 + fastq2) x 100 gives factor of a few buffer. BAM can be up to ~5 x (fastq1 + fastq2).
   # Need room for unsorted + sorted bam + temp sorting space + zipped and unzipped ref. Add 10 GiB buffer.
@@ -104,7 +104,7 @@ task HISAT2RSEM {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
-  Int machine_mem_mb = (15000 * 1.1)
+  Int machine_mem_mb = 16500
   Int cpu = 4
   # Using (fastq1 + fastq2) x 100 gives factor of a few buffer. BAM can be up to ~5 x (fastq1 + fastq2).
   # Need room for unsorted + sorted bam + temp sorting space + zipped and unzipped ref. Add 10 GiB buffer.
@@ -205,7 +205,7 @@ task HISAT2SingleEnd {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
-  Int machine_mem_mb = (15000 * 1.1)
+  Int machine_mem_mb = 16500
   Int cpu = 4
   # Using fastq x 100 gives factor of a few buffer. BAM can be up to ~5 x fastq.
   # Need room for unsorted + sorted bam + temp sorting space + zipped and unzipped ref. Add 10 GiB buffer.
@@ -265,7 +265,7 @@ task HISAT2InspectIndex {
 
   # runtime values
   String docker =  "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
-  Int machine_mem_mb = (3500 * 1.1)
+  Int machine_mem_mb = 3850
   Int cpu = 1
   # use provided disk number or dynamically size on our own, with 10GiB of additional disk
   Int disk = ceil(size(hisat2_ref, "GiB") + 10)

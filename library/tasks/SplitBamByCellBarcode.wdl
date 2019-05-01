@@ -4,7 +4,7 @@ task SplitBamByCellBarcode {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.2"
-  Int machine_mem_mb = (3500 * 1.1)
+  Int machine_mem_mb = 3850
   Int cpu = 1
   # estimate that bam is approximately equal in size to the input bam, add 20% buffer
   Int disk = ceil(size(bam_input, "Gi") * 2.2)

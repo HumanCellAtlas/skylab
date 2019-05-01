@@ -5,7 +5,7 @@ task FastqToUBam {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
-  Int machine_mem_mb = (3500 * 1.1)
+  Int machine_mem_mb = 3850
   # give the command 500MB of overhead
   Int command_mem_mb = machine_mem_mb - 500
   Int cpu = 1

@@ -4,7 +4,7 @@ task SortBam {
 
     # runtime values
     String docker = "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
-    Int machine_mem_mb = (7500 * 1.1)
+    Int machine_mem_mb = 8250
     Int machine_overhead_mb = 500
     Int command_mem_mb = machine_mem_mb - machine_overhead_mb
     Int cpu = 1
@@ -43,7 +43,7 @@ task SortBamAndIndex {
 
     # runtime values
     String docker = "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
-    Int machine_mem_mb = (7500 * 1.1)
+    Int machine_mem_mb = 8250
     Int machine_overhead_mb = 500
     Int command_mem_mb = machine_mem_mb - machine_overhead_mb
     Int cpu = 1
@@ -86,7 +86,7 @@ task CollectMultipleMetrics {
 
   # runtime values
   String docker ="quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
-  Int machine_mem_mb = (7500 * 1.1)
+  Int machine_mem_mb = 8250
   # give the command 1 GiB of overhead
   Int command_mem_mb = machine_mem_mb - 1000
   Int cpu = 1
@@ -170,7 +170,7 @@ task CollectRnaMetrics {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
-  Int machine_mem_mb = (3500 * 1.1)
+  Int machine_mem_mb = 3850
   # give the command 500 MiB of overhead
   Int command_mem_mb = machine_mem_mb - 500
   Int cpu = 1
@@ -233,7 +233,7 @@ task CollectDuplicationMetrics {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
-  Int machine_mem_mb = (7500 * 1.1)
+  Int machine_mem_mb = 8250
   # give the command 1 GiB of overhead
   Int command_mem_mb = machine_mem_mb - 1000
   Int cpu = 2
