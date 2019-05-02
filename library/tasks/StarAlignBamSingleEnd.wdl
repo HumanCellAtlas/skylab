@@ -7,7 +7,7 @@ task StarAlignBamSingleEnd {
   Int machine_mem_mb = ceil((size(tar_star_reference, "Gi")) + 6) * 1100
   Int cpu = 16
   # multiply input size by 2.2 to account for output bam file + 20% overhead, add size of reference.
-  Int disk = ceil((size(tar_star_reference, "Gi") * 2) + (size(bam_input, "Gi") * 2.2))
+  Int disk = ceil((size(tar_star_reference, "Gi") * 2.5) + (size(bam_input, "Gi") * 2.5))
   # by default request non preemptible machine to make sure the slow star alignment step completes
   Int preemptible = 0
 
