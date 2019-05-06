@@ -10,7 +10,7 @@ import "TagSortBam.wdl" as TagSortBam
 import "RunEmptyDrops.wdl" as RunEmptyDrops
 import "ZarrUtils.wdl" as ZarrUtils
 import "Picard.wdl" as Picard
-import "MarkDuplicates.wdl" as MarkDuplicates
+import "UmiCorrection.wdl" as UmiCorrection
 
 workflow Optimus {
   meta {
@@ -121,25 +121,25 @@ workflow Optimus {
         bam_input = TagGenes.bam_output
     }
 
-    call MarkDuplicates.MarkDuplicatesUmiTools as MarkDuplicates {
+    call UmiCorrection.CorrectUMItools as CorrectUMItools {
       input:
         bam_input = PreUMISort.bam_output,
         bam_index = PreUMISort.bam_index
     }
 
-    call Picard.SortBamAndIndex as PostUMISort {
+    call Picard.SortBamAndIndex as PreMergeSort {
       input:
-        bam_input = MarkDuplicates.bam_output
+        bam_input = CorrectUMItools.bam_output
     }
 
     call TagSortBam.GeneSortBam {
       input:
-        bam_input = MarkDuplicates.bam_output
+        bam_input = CorrectUMItools.bam_output
     }
 
     call TagSortBam.CellSortBam {
       input:
-        bam_input = MarkDuplicates.bam_output
+        bam_input = CorrectUMItools.bam_output
     }
 
     call Metrics.CalculateGeneMetrics {
@@ -154,7 +154,7 @@ workflow Optimus {
 
     call Picard.SortBam as PreCountSort {
       input:
-        bam_input = MarkDuplicates.bam_output,
+        bam_input = CorrectUMItools.bam_output,
         sort_order = "queryname"
     }
 
@@ -167,7 +167,7 @@ workflow Optimus {
 
   call Merge.MergeSortBamFiles as MergeSorted {
     input:
-      bam_inputs = PostUMISort.bam_output,
+      bam_inputs = PreMergeSort.bam_output,
       sort_order = "coordinate"
   }
 
@@ -206,7 +206,7 @@ workflow Optimus {
         gene_id = MergeCountFiles.col_index,
         empty_drops_result = RunEmptyDrops.empty_drops_result
     }
-}
+   }
 
   output {
       # version of this pipeline
