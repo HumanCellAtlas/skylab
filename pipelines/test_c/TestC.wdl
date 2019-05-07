@@ -12,7 +12,7 @@ workflow TestC {
   }
 
   output {
-    File output_a_file = write_lines([TaskC.output_string])
+    File output_a_file = TaskC.output_file
     String output_a_string = TaskC.output_string
   }
 }
@@ -24,14 +24,16 @@ task TaskC {
 
   command {
     echo ~{string_input}
+    echo ~{string_input} > output_file
   }
 
   output {
-    String output_string = stdout()
+    String output_string = read_lines(stdout())[0]
+    File output_file = "output_file"
   }
 
   runtime {
-    docker: "alpine:latest"
+    docker: "us.gcr.io/broad-gotc-prod/python:2.7"
     cpu: 1
     memory: "3.75 GiB"
     disk: "local-disk 10 HDD"
