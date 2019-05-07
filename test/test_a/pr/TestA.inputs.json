@@ -1,1 +1,3 @@
-{}
+{
+  "TestA.input_a": "Input to TestA.wdl"
+}

@@ -22,10 +22,18 @@ function testDirShouldBeSkipped() {
 function findPipelinesToTest() {
   for testDir in $(find ${GIT_ROOT}/test -type d -maxdepth 1 -mindepth 1); do
     testDirName=$(basename ${testDir})
+
+    # if this directory shouldn't be tested, skip it
     if $(testDirShouldBeSkipped ${testDir}); then
       continue
     fi
-    echo
+
+    wdlDir=${GIT_ROOT}/pipelines/${testDirName}
+    # there should only be one WDL in the pipelines dir
+    wdlName=$(find ${wdlDir} -type f -name '*.wdl' | head -n 1)
+
+    echo ${wdlName} has a PR test
+
 
   done
 }
