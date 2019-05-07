@@ -12,7 +12,7 @@ workflow TestA {
   }
 
   output {
-    File output_a_file = read_lines(TaskA.output_string)
+    File output_a_file = write_lines([TaskA.output_string])
     String output_a_string = TaskA.output_string
   }
 }
