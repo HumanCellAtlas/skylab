@@ -6,10 +6,10 @@ task Attach10xBarcodes {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.2"
-  Int machine_mem_mb = 7500
+  Int machine_mem_mb = 8250
   Int cpu = 2
   # estimate that bam is approximately the size of all inputs plus 50%
-  Int disk = ceil((size(r2_unmapped_bam, "G") + size(r1_fastq, "G") + if (defined(i1_fastq)) then size(i1_fastq, "G") else 0) * 2.5)
+  Int disk = ceil((size(r2_unmapped_bam, "Gi") + size(r1_fastq, "Gi") + if (defined(i1_fastq)) then size(i1_fastq, "Gi") else 0) * 2.5)
   # by default request non preemptible machine to make sure the slow attach barcodes step completes
   Int preemptible = 0
 
@@ -23,9 +23,9 @@ task Attach10xBarcodes {
     r2_unmapped_bam: "reverse unmapped bam file; contains alignable genomic information"
     whitelist: "10x genomics cell barcode whitelist for 10x V2"
     docker: "(optional) the docker image containing the runtime environment for this task"
-    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
-    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    disk: "(optional) the amount of disk space (GiB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
   }
 
@@ -42,7 +42,7 @@ task Attach10xBarcodes {
   
   runtime {
     docker: docker
-    memory: "${machine_mem_mb} MB"
+    memory: "${machine_mem_mb} MiB"
     disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible

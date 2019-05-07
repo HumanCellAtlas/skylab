@@ -5,12 +5,12 @@ task FastqToUBam {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
-  Int machine_mem_mb = 3500
+  Int machine_mem_mb = 3850
   # give the command 500MB of overhead
   Int command_mem_mb = machine_mem_mb - 500
   Int cpu = 1
   # estimate that bam is approximately equal in size to fastq, add 20% buffer
-  Int disk = ceil(size(fastq_file, "G") * 2.2)
+  Int disk = ceil(size(fastq_file, "Gi") * 2.2)
   Int preemptible = 3
 
   meta {
@@ -22,9 +22,9 @@ task FastqToUBam {
     sample_id: "name of sample matching this file, inserted into read group header"
     fastq_suffix: "a suffix to add to the fastq file; useful with mangled file IDs, since picard requires that the file end in .gz or it will not detect the gzipping."
     docker: "(optional) the docker image containing the runtime environment for this task"
-    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
-    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    disk: "(optional) the amount of disk space (GiB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
   }
 
@@ -46,7 +46,7 @@ task FastqToUBam {
   
   runtime {
     docker: docker
-    memory: "${machine_mem_mb} MB"
+    memory: "${machine_mem_mb} MiB"
     disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible

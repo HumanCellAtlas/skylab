@@ -16,9 +16,9 @@ task SmartSeq2ZarrConversion {
   }
 
   parameter_meta {
-    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
-    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    disk: "(optional) the amount of disk space (GiB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
     max_retries: "(optional) retry this number of times if task fails -- use with caution, see skylab README for details"
   }
@@ -46,7 +46,7 @@ task SmartSeq2ZarrConversion {
   runtime {
     docker: docker
     cpu: 4  # note that only 1 thread is supported by pseudobam
-    memory: "16 GB"
+    memory: "18 GiB"
     disks: "local-disk 100 HDD"
     preemptible: preemptible
   }
@@ -82,9 +82,9 @@ task OptimusZarrConversion {
   }
 
   parameter_meta {
-    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
-    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    disk: "(optional) the amount of disk space (GiB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
     max_retries: "(optional) retry this number of times if task fails -- use with caution, see skylab README for details"
   }
@@ -115,7 +115,7 @@ task OptimusZarrConversion {
   runtime {
     docker: docker
     cpu: 4  # note that only 1 thread is supported by pseudobam
-    memory: "16 GB"
+    memory: "18 GiB"
     disks: "local-disk 100 HDD"
     preemptible: preemptible
   }
