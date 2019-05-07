@@ -1,23 +1,23 @@
 version 1.0
 
-workflow TestA {
+workflow TestC {
 
   input {
-    String input_a
+    String input_c
   }
 
-  call TaskA {
+  call TaskC {
     input:
-      string_input = input_a
+      string_input = input_c
   }
 
   output {
-    File output_a_file = write_lines([TaskA.output_string])
-    String output_a_string = TaskA.output_string
+    File output_a_file = write_lines([TaskC.output_string])
+    String output_a_string = TaskC.output_string
   }
 }
 
-task TaskA {
+task TaskC {
   input {
     String string_input
   }
