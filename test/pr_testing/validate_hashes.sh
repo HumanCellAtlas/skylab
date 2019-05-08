@@ -7,7 +7,6 @@ declare -a KEYS=$(jq -r 'keys' ${HASHES_FILE})
 declare -r HASH="0cc175b9c0f1b6a831c399e269772661"
 for KEY in $(echo "${KEYS}" | jq -r '.[]')
 do
-  echo "KEY: $KEY"
   # need `jq -r` to get results without surrounding double-quotes
   if [[ $HASH = $(jq -r '.["'$KEY'"]' $HASHES_FILE) ]]
   then
