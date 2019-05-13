@@ -10,8 +10,8 @@ OPTIONS_FILE=$5
 DEPENDENCIES_JSON=$6
 COLLECTION=$7
 # Read list of dependency files into an array to pass to cromwell-tools
-DEPENDENCIES_LIST=$(cat ${DEPENDENCIES_JSON} | python3 -c "import json,sys;obj=json.load(sys.stdin);print(' '.join(obj.values()));")
-echo ${DEPENDENCIES_LIST[@]}
+DEPENDENCIES_LIST=($(cat ${DEPENDENCIES_JSON} | python3 -c "import json,sys;obj=json.load(sys.stdin);print(' '.join(obj.values()));"))
+echo DEPENDENCIES_LIST=${DEPENDENCIES_LIST[@]}
 
 echo "Starting workflow."
 
@@ -22,7 +22,7 @@ WORKFLOW_HASH=$(cromwell-tools submit \
   --wdl-file "${WDL_FILE}" \
   --options-file "${OPTIONS_FILE}" \
   --collection-name "${COLLECTION}" \
-  --deps-file ${DEPENDENCIES_LIST[@]} \
+  --deps-file "${DEPENDENCIES_LIST[@]}" \
 )
 
 # Get workflow id from cromwell-tools response: {"id": "XXXXX", "status": "Submitted"}
