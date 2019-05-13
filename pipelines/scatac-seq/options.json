@@ -1,0 +1,10 @@
+{
+    "default_runtime_attributes": {
+      "preemptible": 3
+    },
+    "write_to_cache": true,
+    "read_from_cache": true,
+    "monitoring_script": "gs://broad-biccn-dev-test-data/monitoring.sh",
+    "workflow_failure_mode": "ContinueWhilePossible"
+  }
+  

@@ -1,0 +1,14 @@
+{
+    "scATAC.input_reference": "gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/snaptools_test/mm10.fa",
+    "scATAC.input_fastq1": "gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/snaptools_test/demo.R1.fastq.gz",
+    "scATAC.input_fastq2": "gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/snaptools_test/demo.R2.fastq.gz",
+    "scATAC.output_bam": "demo.bam",
+    "scATAC.aligner": "bwa",
+    "scATAC.path_aligner": "/tools/",
+    "scATAC.read_fastq_command": "zcat",
+    "scATAC.min_cov": 0,
+    "scATAC.num_threads": 5,
+    "scATAC.sort": true,
+    "scATAC.tmp_folder": "/tmp",
+    "scATAC.overwrite" : true
+}
