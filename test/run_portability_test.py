@@ -40,7 +40,7 @@ def gather_test_inputs(test_dir):
     errors = []
 
     # Test WDL
-    if test_dir == "bulk_rna_encode":
+    if test_dir == "test/bulk_rna_encode/pr":
         wdl_paths = list("https://raw.githubusercontent.com/ENCODE-DCC/rna-seq-pipeline/v1.0/rna-seq-pipeline.wdl")
     else:
         wdl_glob = os.path.join(test_dir, TEST_DIR_LAYOUT["test"])
