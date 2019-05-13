@@ -6,10 +6,8 @@ workflow scATAC {
         File input_fastq2
         File input_reference
         String output_bam
-
-	String genome_name
-	File genome_fize_file
-
+        String genome_name
+        File genome_fize_file
     }
     call AlignPairedEnd {
         input:
@@ -23,9 +21,9 @@ workflow scATAC {
     call SnapPre {
         input:
             input_bam = AlignPairedEnd.aligned_bam,
-	    output_snap_basename = 'output.snap',
-	    genome_name='mm10',
-	    genome_file_size=genome_file_size
+            output_snap_basename = 'output.snap',
+            genome_name='mm10',
+            genome_file_size=genome_file_size
     }
     call SnapCellByBin {
     	 input:
@@ -42,7 +40,7 @@ task AlignPairedEnd {
         File output_bam
         Int min_cov=0
         Int num_threads=1
-	String docker_image = "hisplan/snaptools:latest"
+        String docker_image = "hisplan/snaptools:latest"
     }
 
     Float input_size = size(input_fastq1, "GiB") + size(input_fastq2, 'GiB') + size(input_reference,'GiB')
@@ -78,13 +76,13 @@ task AlignPairedEnd {
     }
 }
 
-task snapPre {
+task SnapPre {
     input {
-    	  File input_bam
-	  String output_snap_basename
-	  String genome_name
-	  File genome_size_file
-          String docker_image = "hisplan/snaptools:latest"
+        File input_bam
+        String output_snap_basename
+        String genome_name
+        File genome_size_file
+String docker_image = "hisplan/snaptools:latest"
     }
     command {
         set -euo pipefail
@@ -93,20 +91,20 @@ task snapPre {
             --output-snap=~{output_snap_basenname} \
             --genome-name=~{genome_name} \
             --genome-size=~{genome_size_file} \
-	    --min-mapq=30  \
-	    --min-flen=0  \
-	    --max-flen=1000  \
-	    --keep-chrm=TRUE  \
-	    --keep-single=TRUE  \
-	    --keep-secondary=False  \
-	    --overwrite=True  \
-	    --max-num=1000000  \
-	    --min-cov=100  \
-	    --verbose=True
+            --min-mapq=30  \
+            --min-flen=0  \
+            --max-flen=1000  \
+            --keep-chrm=TRUE  \
+            --keep-single=TRUE  \
+            --keep-secondary=False  \
+            --overwrite=True  \
+            --max-num=1000000  \
+            --min-cov=100  \
+            --verbose=True
     }
     output {
-    	   File output_snap = output_snap_basename
-	   File output_snap_qc = output_snap_basename + ".qc"
+        File output_snap = output_snap_basename
+        File output_snap_qc = output_snap_basename + ".qc"
     }
     runtime {
         docker: docker_image
@@ -118,20 +116,20 @@ task snapPre {
 
 task snapCellByBin {
      input {
-     	  File snap_input
-          String bin_size_list
-          String docker_image = "hisplan/snaptools:latest"
+        File snap_input
+        String bin_size_list
+        String docker_image = "hisplan/snaptools:latest"
      }
      command {
-         set -euo pipefail
-     	  # Check if this work, because we are just mutating the file
-          snaptools snap-add-bmat  \
-     	  	    --snap-file=~{snap_input}  \
-     		    --bin-size-list ~{bin_size_list}  \
-     		    --verbose=True
+        set -euo pipefail
+        # Check if this work, because we are just mutating the file
+        snaptools snap-add-bmat  \
+            --snap-file=~{snap_input}  \
+            --bin-size-list ~{bin_size_list}  \
+            --verbose=True
      }
      output {
-     	    File output_snap = snap_input
+        File output_snap = snap_input
      }
     runtime {
         docker: docker_image
