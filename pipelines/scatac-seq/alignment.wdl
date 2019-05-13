@@ -40,6 +40,7 @@ task AlignPairedEnd {
         File input_fastq1
         File input_fastq2
         File input_reference
+        String reference_unpack_name = "genome/genome.fa"
         String output_bam
         Int min_cov = 0
         String docker_image = "hisplan/snaptools:latest"
@@ -54,7 +55,7 @@ task AlignPairedEnd {
         # TODO: unzip the reference bundle
         tar xf ~{input_reference}
         snaptools align-paired-end \
-            --input-reference=mm10/mm10.fa \
+            --input-reference=~{reference_unpack_name} \
             --input-fastq1=~{input_fastq1} \
             --input-fastq2=~{input_fastq2} \
             --output-bam=~{output_bam} \
