@@ -14,16 +14,14 @@ workflow scATAC {
             input_fastq1 = input_fastq1,
             input_fastq2 = input_fastq2,
             input_reference = input_reference,
-            output_bam = output_bam,
-            min_cov = min_cov,
-            num_threads = num_threads,
+            output_bam = output_bam
     }
     call SnapPre {
         input:
             input_bam = AlignPairedEnd.aligned_bam,
             output_snap_basename = 'output.snap',
-            genome_name='mm10',
-            genome_file_size=genome_file_size
+            genome_name = 'mm10',
+            genome_file_size = genome_file_size
     }
     call SnapCellByBin {
     	 input:
@@ -38,11 +36,11 @@ task AlignPairedEnd {
         File input_fastq2
         File input_reference
         File output_bam
-        Int min_cov=0
-        Int num_threads=1
+        Int min_cov = 0
         String docker_image = "hisplan/snaptools:latest"
     }
 
+    Int num_threads = 1
     Float input_size = size(input_fastq1, "GiB") + size(input_fastq2, 'GiB') + size(input_reference,'GiB')
 
     command {
@@ -84,11 +82,14 @@ task SnapPre {
         File genome_size_file
         String docker_image = "hisplan/snaptools:latest"
     }
+
+    Int num_threads=1
+
     command {
         set -euo pipefail
         snaptools snap-pre \
             --input-file=~{input_bam} \
-            --output-snap=~{output_snap_basenname} \
+            --output-snap=~{output_snap_basename} \
             --genome-name=~{genome_name} \
             --genome-size=~{genome_size_file} \
             --min-mapq=30  \
@@ -114,12 +115,15 @@ task SnapPre {
     }
 }
 
-task snapCellByBin {
+task SnapCellByBin {
      input {
         File snap_input
         String bin_size_list
         String docker_image = "hisplan/snaptools:latest"
      }
+
+     Int num_threads = 1
+
      command {
         set -euo pipefail
         # Check if this work, because we are just mutating the file
