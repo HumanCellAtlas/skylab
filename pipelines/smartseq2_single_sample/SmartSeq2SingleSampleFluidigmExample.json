@@ -8,8 +8,8 @@
   "SmartSeq2SingleCell.gene_ref_flat": "gs://hca-dcp-mint-test-data/reference/GRCh38_Gencode/GRCh38_gencode.v27.refFlat.txt",
   "SmartSeq2SingleCell.hisat2_ref_name": "genome_snp_tran",
   "SmartSeq2SingleCell.stranded":"NONE",
-  "SmartSeq2SingleCell.fastq1":"gs://hca-dcp-mint-test-data/smartseq2_single_sample/patel_ap/SRR1294925_1.fastq.gz",
-  "SmartSeq2SingleCell.fastq2":"gs://hca-dcp-mint-test-data/smartseq2_single_sample/patel_ap/SRR1294925_2.fastq.gz",
-  "SmartSeq2SingleCell.sample_name":"SRR1294925",
-  "SmartSeq2SingleCell.output_name":"SRR1294925"
+  "SmartSeq2SingleCell.fastq1":"gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/SmartSeq2SingleCellUnpaired/LIB008983_TRA00020165_GTAGAGGA-ACTGCATA_L001_R1.fastq.gz",
+  "SmartSeq2SingleCell.fastq2":"gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/SmartSeq2SingleCellUnpaired/LIB008983_TRA00020165_GTAGAGGA-ACTGCATA_L001_R2.fastq.gz",
+  "SmartSeq2SingleCell.sample_name":"140221_HSQ700642",
+  "SmartSeq2SingleCell.output_name":"140221_HSQ700642"
 }

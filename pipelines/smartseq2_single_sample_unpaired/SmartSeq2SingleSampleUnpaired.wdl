@@ -57,7 +57,7 @@ workflow SmartSeq2SingleCellUnpaired {
       ref_name = hisat2_ref_name,
       sample_name = sample_name,
       output_basename = quality_control_output_basename,
-      max_retries = max_retries,
+      max_retries = max_retries
   }
 
   call Picard.CollectMultipleMetrics {
@@ -65,7 +65,7 @@ workflow SmartSeq2SingleCellUnpaired {
       aligned_bam = HISAT2SingleEnd.output_bam,
       genome_ref_fasta = genome_ref_fasta,
       output_basename = quality_control_output_basename,
-      max_retries = max_retries,
+      max_retries = max_retries
   }
 
   call Picard.CollectRnaMetrics {
@@ -75,14 +75,14 @@ workflow SmartSeq2SingleCellUnpaired {
       rrna_intervals = rrna_intervals,
       output_basename = quality_control_output_basename,
       stranded = stranded,
-      max_retries = max_retries,
+      max_retries = max_retries
   }
 
   call Picard.CollectDuplicationMetrics {
     input:
       aligned_bam = HISAT2SingleEnd.output_bam,
       output_basename = quality_control_output_basename,
-      max_retries = max_retries,
+      max_retries = max_retries
   }
 
   String data_output_basename = output_name + "_rsem"
@@ -94,7 +94,7 @@ workflow SmartSeq2SingleCellUnpaired {
       ref_name = hisat2_ref_trans_name,
       sample_name = sample_name,
       output_basename = data_output_basename,
-      max_retries = max_retries,
+      max_retries = max_retries
   }
 
   call RSEM.RSEMExpression {
@@ -120,7 +120,7 @@ workflow SmartSeq2SingleCellUnpaired {
       input:
         rsem_gene_results = RSEMExpression.rsem_gene,
         smartseq_qc_files = GroupQCOutputs.group_files,
-        sample_name=sample_name
+        sample_name = sample_name
     }
   }
 
@@ -134,6 +134,7 @@ workflow SmartSeq2SingleCellUnpaired {
     File quality_distribution_metrics = CollectMultipleMetrics.quality_distribution_metrics
     File quality_by_cycle_metrics = CollectMultipleMetrics.quality_by_cycle_metrics
     File bait_bias_summary_metrics = CollectMultipleMetrics.bait_bias_summary_metrics
+    File alignment_summary_metrics = CollectMultipleMetrics.alignment_summary_metrics
     File rna_metrics = CollectRnaMetrics.rna_metrics
     Array[File] group_results = GroupQCOutputs.group_files
     # data outputs

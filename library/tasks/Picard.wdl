@@ -111,8 +111,15 @@ task CollectMultipleMetrics {
     max_retries: "(optional) retry this number of times if task fails -- use with caution, see skylab README for details"
   }
 
-  command {
-    java -Xmx${command_mem_mb}m -jar /usr/picard/picard.jar CollectMultipleMetrics \
+  command <<<
+      set -e
+
+      # Create empty insert size metrics files to satisfy unpaired workflows which don't
+      # generate insert size metrics (this is to allow for a pseudo-optional output)
+      touch "${output_basename}.insert_size_histogram.pdf"
+      touch "${output_basename}.insert_size_metrics.txt"
+
+      java -Xmx${command_mem_mb}m -jar /usr/picard/picard.jar CollectMultipleMetrics \
       VALIDATION_STRINGENCY=SILENT \
       METRIC_ACCUMULATION_LEVEL=ALL_READS \
       INPUT="${aligned_bam}" \
@@ -129,7 +136,7 @@ task CollectMultipleMetrics {
       PROGRAM=CollectQualityYieldMetrics \
       REFERENCE_SEQUENCE="${genome_ref_fasta}" \
       ASSUME_SORTED=true
-  }
+  >>>
   
   runtime {
     docker: docker
@@ -233,7 +240,11 @@ task CollectDuplicationMetrics {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
+<<<<<<< HEAD
   Int machine_mem_mb = 8250
+=======
+  Int machine_mem_mb = 7500
+>>>>>>> 3be05d2... GB --> GiB
   # give the command 1 GiB of overhead
   Int command_mem_mb = machine_mem_mb - 1000
   Int cpu = 2

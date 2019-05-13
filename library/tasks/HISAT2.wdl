@@ -353,13 +353,13 @@ task HISAT2RSEMSingleEnd {
     # fix names if necessary.
     if [ "${fastq}" != *.fastq.gz ]; then
         FQ=${fastq}.fastq.gz
-        mv ${fastq} ${fastq}.fastq.gz
+        mv ${fastq} $FQ
     else
         FQ=${fastq}
     fi
 
 
-    tar --no-same-owner -xvf "${hisat2_ref}"
+    tar -xvf "${hisat2_ref}"
 
     # increase gap alignment penalty to avoid gap alignment
     # --mp 1,1 --np 1 --score-min L,0,-0.1 is default paramesters when rsem runs alignment by using bowtie2/Bowtie
