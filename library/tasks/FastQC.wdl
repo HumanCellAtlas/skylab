@@ -1,17 +1,5 @@
 version 1.0
 
-workflow testFastQC {
-    input {
-        Array[File] fastqs
-    }
-
-    call FastQC {
-        input:
-            fastq_files = fastqs
-    }
-
-}
-
 task FastQC {
     input {
         Array[File] fastq_files
