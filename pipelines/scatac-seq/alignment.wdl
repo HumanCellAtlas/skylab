@@ -47,8 +47,7 @@ task AlignPairedEnd {
 
     command {
         set -euo pipefail
-	mkdir -p tmp/
-	tempdir=`mktemp -d tmpdir_XXXXXXX`
+        declare -r TEMP_DIR=$(mktemp -d tmpdir_XXXXXX)
         snaptools align-paired-end \
             --input-reference=~{input_reference} \
             --input-fastq1=~{input_fastq1} \
@@ -59,7 +58,7 @@ task AlignPairedEnd {
             --read-fastq-command=zcat \
             --min-cov=~{min_cov} \
             --num-threads=~{num_threads} \
-            --tmp-folder=${tempdir}
+            --tmp-folder=$TEMP_DIR \
             --overwrite=TRUE \
             --if-sort=True
     }
@@ -74,7 +73,6 @@ task AlignPairedEnd {
         memory: "16 GB"
         disks: "local-disk 150 HDD"
     }
-
 }
 
 task snapPre {
@@ -113,7 +111,6 @@ task snapPre {
         memory: "16 GB"
         disks: "local-disk 150 HDD"
     }
-
 }
 
 task snapCellByBin {
@@ -139,5 +136,4 @@ task snapCellByBin {
         memory: "16 GB"
         disks: "local-disk 150 HDD"
     }
-
 }
