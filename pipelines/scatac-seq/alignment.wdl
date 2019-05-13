@@ -95,3 +95,36 @@ task alignPairedEnd {
     }
 
 }
+
+task snapPre {
+    input {
+
+    }
+    command {
+        set -e pipefail \
+        snaptools snap-pre \
+            --input-file=${input_bam} \
+            --output-snap=${output_snap} \
+            --genome-name=${genome_name} \
+            --genome-size=${genome_size_file} \
+	    --min-mapq=30  \
+	    --min-flen=0  \
+	    --max-flen=1000  \
+	    --keep-chrm=TRUE  \
+	    --keep-single=TRUE  \
+	    --keep-secondary=False  \
+	    --overwrite=True  \
+	    --max-num=1000000  \
+	    --min-cov=100  \
+	    --verbose=True
+    }   
+    output {
+    	   File output_snap
+	   file output_snap_qc
+    }    
+}
+
+task snapCellByBin {
+     input {
+
+}
