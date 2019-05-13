@@ -24,9 +24,13 @@ workflow scATAC {
             genome_size_file = genome_size_file
     }
     call SnapCellByBin {
-    	 input:
-		    snap_input=SnapPre.output_snap,
+        input:
+            snap_input=SnapPre.output_snap,
             bin_size_list = "5000 10000"
+    }
+    output {
+        File output_snap_qc = SnapPre.output_snap_qc
+        File output_snap = SnapCellByBin.output_snap
     }
 }
 
@@ -35,13 +39,13 @@ task AlignPairedEnd {
         File input_fastq1
         File input_fastq2
         File input_reference
-        File output_bam
+        String output_bam
         Int min_cov = 0
         String docker_image = "hisplan/snaptools:latest"
     }
 
     Int num_threads = 1
-    Float input_size = size(input_fastq1, "GiB") + size(input_fastq2, 'GiB') + size(input_reference,'GiB')
+    Float input_size = size(input_fastq1, "GiB") + size(input_fastq2, "GiB") + size(input_reference, "GiB")
 
     command {
         # TODO: unzip the reference bundle
