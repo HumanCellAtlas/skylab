@@ -60,24 +60,24 @@ task alignPairedEnd {
         set -e pipefail
 
         snaptools align-paired-end \
-            --input-reference=${input_reference} \
-            --input-fastq1=${input_fastq1} \
-            --input-fastq2=${input_fastq2} \
-            --output-bam=${output_bam} \
-            --aligner=${aligner} \
-            --path-to-aligner=${path_aligner} \
-            --read-fastq-command=${read_fastq_command} \
-            --min-cov=${min_cov} \
-            --num-threads=${num_threads} \
-            --tmp-folder=${tmp_folder} \
-            --overwrite=${overwrite} \
-            --if-sort=${sort}
+            --input-reference=~{input_reference} \
+            --input-fastq1=~{input_fastq1} \
+            --input-fastq2=~{input_fastq2} \
+            --output-bam=~{output_bam} \
+            --aligner=~{aligner} \
+            --path-to-aligner=~{path_aligner} \
+            --read-fastq-command=~{read_fastq_command} \
+            --min-cov=~{min_cov} \
+            --num-threads=~{num_threads} \
+            --tmp-folder=~{tmp_folder} \
+            --overwrite=~{overwrite} \
+            --if-sort=~{sort}
 
     }
 
     output {
 
-        String path_output = "${output_bam}"
+        String path_output = "~{output_bam}"
     }
 
     runtime {
@@ -93,10 +93,10 @@ task snapPre {
     command {
         set -e pipefail \
         snaptools snap-pre \
-            --input-file=${input_bam} \
-            --output-snap=${output_snap} \
-            --genome-name=${genome_name} \
-            --genome-size=${genome_size_file} \
+            --input-file=~{input_bam} \
+            --output-snap=~{output_snap} \
+            --genome-name=~{genome_name} \
+            --genome-size=~{genome_size_file} \
 	    --min-mapq=30  \
 	    --min-flen=0  \
 	    --max-flen=1000  \
@@ -121,8 +121,8 @@ task snapCellByBin {
      }
      command {
           snaptools snap-add-bmat  \
-     	  	    --snap-file=${snap_input}  \
-     		    --bin-size-list ${bin_size_list}  \
+     	  	    --snap-file=~{snap_input}  \
+     		    --bin-size-list ~{bin_size_list}  \
      		    --verbose=True
      }
 }
