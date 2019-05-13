@@ -22,7 +22,7 @@ WORKFLOW_HASH=$(cromwell-tools submit \
   --wdl-file "${WDL_FILE}" \
   --options-file "${OPTIONS_FILE}" \
   --collection-name "${COLLECTION}" \
-  --deps-file "${DEPENDENCIES_LIST[@]}" \
+  --deps-file ${DEPENDENCIES_LIST[@]} \
 )
 
 # Get workflow id from cromwell-tools response: {"id": "XXXXX", "status": "Submitted"}
