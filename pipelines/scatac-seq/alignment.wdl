@@ -7,7 +7,7 @@ workflow scATAC {
         File input_reference
         String output_bam
         String genome_name
-        File genome_fize_file
+        File genome_size_file
     }
     call AlignPairedEnd {
         input:
@@ -21,7 +21,7 @@ workflow scATAC {
             input_bam = AlignPairedEnd.aligned_bam,
             output_snap_basename = 'output.snap',
             genome_name = 'mm10',
-            genome_file_size = genome_file_size
+            genome_size_file = genome_size_file
     }
     call SnapCellByBin {
     	 input:
