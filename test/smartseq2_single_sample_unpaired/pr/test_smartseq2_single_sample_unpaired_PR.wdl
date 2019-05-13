@@ -19,8 +19,7 @@ workflow TestSmartSeq2SingleCellUnpairedPR {
   String stranded
   String sample_name
   String output_name
-  File fastq1
-  File fastq2
+  File fastq
 
   call target_wdl.SmartSeq2SingleCellUnpaired as target_workflow {
     input:
@@ -35,8 +34,7 @@ workflow TestSmartSeq2SingleCellUnpairedPR {
       stranded = stranded,
       sample_name = sample_name,
       output_name = output_name,
-      fastq1 = fastq1,
-      fastq2 = fastq2
+      fastq = fastq,
   }
 
   call checker_wdl.ValidateSmartSeq2SingleCell as checker_workflow {
