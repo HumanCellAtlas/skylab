@@ -26,7 +26,7 @@ docker run --rm \
   -v "${WD}":/working \
   -w /working \
   --privileged \
-  --no-cache \
+
   quay.io/broadinstitute/cromwell-tools:v2.1.0 \
   /working/test/test_cromwell_workflow.sh \
     "${CROMWELL_KEY_FILE}" \
