@@ -18,7 +18,7 @@ echo "Starting workflow."
 WORKFLOW_HASH=$(cromwell-tools submit \
   --service-account-key "${CROMWELL_KEY_FILE}" \
   --url "${CROMWELL_URL}" \
-  --inputs_files "${INPUTS_JSON}" \
+  --inputs-files "${INPUTS_JSON}" \
   --wdl-file "${WDL_FILE}" \
   --options-file "${OPTIONS_FILE}" \
   --collection-name ${COLLECTION} \
