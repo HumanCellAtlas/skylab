@@ -9,6 +9,14 @@ workflow scATAC {
         String genome_name
         File genome_size_file
     }
+    parameter_meta {
+        input_fastq1: "read 1 input fastq"
+        input_fastq2: "read 2 input fastq"
+        input_reference: "tar file with BWA reference"
+        output_bam: "output BAM file"
+        genome_name: "name of the genome for snap atac"
+        genome_size_file: "two column tsv file with contig names and lengths"
+    }
     call AlignPairedEnd {
         input:
             input_fastq1 = input_fastq1,
@@ -20,7 +28,7 @@ workflow scATAC {
         input:
             input_bam = AlignPairedEnd.aligned_bam,
             output_snap_basename = 'output.snap',
-            genome_name = 'mm10',
+            genome_name = genome_name,
             genome_size_file = genome_size_file
     }
     call SnapCellByBin {
@@ -51,9 +59,14 @@ task AlignPairedEnd {
 
     command {
         set -euo pipefail
+
+        # Make temp directory
         declare -r TEMP_DIR=`mktemp -d tmpdir_XXXXXX`
-        # TODO: unzip the reference bundle
+
+        # Unpack the reference
         tar xf ~{input_reference}
+
+        # Run snaptools alignment
         snaptools align-paired-end \
             --input-reference=~{reference_unpack_name} \
             --input-fastq1=~{input_fastq1} \
@@ -90,10 +103,12 @@ task SnapPre {
         String docker_image = "hisplan/snaptools:latest"
     }
 
-    Int num_threads=1
+    Int num_threads = 1
 
     command {
         set -euo pipefail
+
+        # Does the main counting
         snaptools snap-pre \
             --input-file=~{input_bam} \
             --output-snap=~{output_snap_basename} \
@@ -133,7 +148,8 @@ task SnapCellByBin {
 
      command {
         set -euo pipefail
-        # Check if this work, because we are just mutating the file
+
+        # This is mutating the file in-place
         snaptools snap-add-bmat  \
             --snap-file=~{snap_input}  \
             --bin-size-list ~{bin_size_list}  \
