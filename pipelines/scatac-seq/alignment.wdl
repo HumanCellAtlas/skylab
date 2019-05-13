@@ -47,6 +47,7 @@ task AlignPairedEnd {
     command {
         set -euo pipefail
 	mkdir -p tmp/
+	tempdir=`mktemp -d tmpdir_XXXXXXX`
         snaptools align-paired-end \
             --input-reference=~{input_reference} \
             --input-fastq1=~{input_fastq1} \
@@ -57,7 +58,7 @@ task AlignPairedEnd {
             --read-fastq-command=zcat \
             --min-cov=~{min_cov} \
             --num-threads=~{num_threads} \
-            --tmp-folder=tmp/
+            --tmp-folder=${tempdir}
             --overwrite=TRUE \
             --if-sort=True
     }
