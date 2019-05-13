@@ -31,6 +31,7 @@ workflow scATAC {
     output {
         File output_snap_qc = SnapPre.output_snap_qc
         File output_snap = SnapCellByBin.output_snap
+        File output_bam = AlignPairedEnd.aligned_bam
     }
 }
 
