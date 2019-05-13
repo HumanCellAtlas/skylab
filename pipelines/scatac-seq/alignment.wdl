@@ -1,7 +1,6 @@
 version 1.0
 
 workflow scATAC {
-
     input {
         File input_fastq1
         File input_fastq2
@@ -15,9 +14,7 @@ workflow scATAC {
         Boolean sort
         String tmp_folder
         Boolean overwrite
-
     }
-
     call alignPairedEnd {
         input:
             input_fastq1 = input_fastq1,
@@ -33,13 +30,10 @@ workflow scATAC {
             tmp_folder = tmp_folder,
             overwrite = overwrite
     }
-
 }
 
 task alignPairedEnd {
-
     input {
-
         File input_fastq1
         File input_fastq2
         File input_reference
@@ -52,11 +46,9 @@ task alignPairedEnd {
         Boolean sort
         String tmp_folder
         Boolean overwrite
-
     }
 
     command {
-
         set -e pipefail
 
         snaptools align-paired-end \
@@ -72,11 +64,9 @@ task alignPairedEnd {
             --tmp-folder=~{tmp_folder} \
             --overwrite=~{overwrite} \
             --if-sort=~{sort}
-
     }
 
     output {
-
         String path_output = "~{output_bam}"
     }
 
@@ -88,7 +78,10 @@ task alignPairedEnd {
 
 task snapPre {
     input {
-
+    	  File input_bam
+	  File output_snap
+	  String genome_name
+	  File genome_size_file
     }
     command {
         set -e pipefail \
@@ -110,7 +103,7 @@ task snapPre {
     }   
     output {
     	   File output_snap
-	   file output_snap_qc
+	   File output_snap_qc
     }    
 }
 
