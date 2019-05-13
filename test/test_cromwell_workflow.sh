@@ -34,6 +34,8 @@ echo ${WORKFLOW_ID}
 # https://github.com/broadinstitute/cromwell-tools/issues/62
 sleep 10
 
+cromwell-tools --version
+
 echo "Waiting for workflow ${WORKFLOW_ID} to complete..."
 cromwell-tools wait "${WORKFLOW_ID}" \
   --service-account-key "${CROMWELL_KEY_FILE}" \
