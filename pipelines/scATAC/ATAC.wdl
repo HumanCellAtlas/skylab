@@ -149,7 +149,7 @@ task Align {
   String bam_align_output_name = output_base_name + ".aligned.bam"
 
   # input file size
-  Float input_size = size(fastq_input_read1, "GB") + size(fastq_input_read2, "GB")
+  Float input_size = size(fastq_input_read1, "GB") + size(fastq_input_read2, "GB") + size(reference_fasta, "GB")
 
   # sort with samtools
   command <<<
