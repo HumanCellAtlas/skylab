@@ -4,7 +4,7 @@ import "RSEM.wdl" as RSEM
 import "GroupMetricsOutputs.wdl" as GroupQCs
 import "ZarrUtils.wdl" as ZarrUtils
 
-workflow SmartSeq2SingleCell {
+workflow SmartSeq2SingleCellPaired {
   meta {
     description: "Process SmartSeq2 scRNA-Seq data, include reads alignment, QC metrics collection, and gene expression quantitication"
   }
