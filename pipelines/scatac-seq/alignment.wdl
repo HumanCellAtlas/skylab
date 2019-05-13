@@ -6,19 +6,14 @@ workflow scATAC {
         File input_fastq1
         File input_fastq2
         File input_reference
-
         String output_bam
         String aligner
         String path_aligner
         String read_fastq_command
-
         Int min_cov
         Int num_threads
-
         Boolean sort
-
         String tmp_folder
-
         Boolean overwrite
 
     }
@@ -45,22 +40,17 @@ task alignPairedEnd {
 
     input {
 
-        String input_fastq1
-        String input_fastq2
-        String input_reference
-
+        File input_fastq1
+        File input_fastq2
+        File input_reference
         String output_bam
         String aligner
         String path_aligner
         String read_fastq_command
-
         Int min_cov
         Int num_threads
-
         Boolean sort
-
         String tmp_folder
-
         Boolean overwrite
 
     }
