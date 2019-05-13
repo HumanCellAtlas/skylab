@@ -12,9 +12,8 @@ task ValidateSmartSeq2SingleCell {
     # makes later columns non-deterministic.
     gene_counts_hash=$(cut -f 1-7 "${gene_counts}" | md5sum | awk '{print $1}')
 
-
-    if [ "$counts_hash" != "${expected_gene_counts_hash}" ]; then
-      >&2 echo "counts_hash ($counts_hash) did not match expected hash (${expected_counts_hash})"
+    if [ "$gene_counts_hash" != "${expected_gene_counts_hash}" ]; then
+      >&2 echo "counts_hash ($gene_counts_hash) did not match expected hash (${expected_gene_counts_hash})"
       fail=true
     fi
 
