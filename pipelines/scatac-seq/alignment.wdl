@@ -116,5 +116,13 @@ task snapPre {
 
 task snapCellByBin {
      input {
-
+     	   File snap_input
+     	   String bin_size_list = "5000 10000"
+     }
+     command {
+          snaptools snap-add-bmat  \
+     	  	    --snap-file=${snap_input}  \
+     		    --bin-size-list ${bin_size_list}  \
+     		    --verbose=True
+     }
 }
