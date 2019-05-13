@@ -2,13 +2,13 @@ task BuildHISAT2Trans {
   String ref_name ## name of the tar.gz file without tar.gz suffix
   String gtf_version
   command {
-    
+    set -eo pipefail
     ##download fasta
-    wget ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_mouse/release_${gtf_version}/GRCm38.primary_assembly.genome.fa.gz
+    wget ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_${gtf_version}/GRCm38.primary_assembly.genome.fa.gz
     gunzip GRCm38.primary_assembly.genome.fa.gz
     mv GRCm38.primary_assembly.genome.fa genome.fa
     ##download gtf file
-    wget ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_mouse/release_${gtf_version}/gencode.v${gtf_version}.primary_assembly.annotation.gtf.gz
+    wget ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_${gtf_version}/gencode.v${gtf_version}.primary_assembly.annotation.gtf.gz
     gunzip gencode.v${gtf_version}.primary_assembly.annotation.gtf.gz 
     mv gencode.v${gtf_version}.primary_assembly.annotation.gtf transcripts.gtf
     ##extract transcriptome fa
