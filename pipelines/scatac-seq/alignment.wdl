@@ -82,7 +82,7 @@ task SnapPre {
         String output_snap_basename
         String genome_name
         File genome_size_file
-String docker_image = "hisplan/snaptools:latest"
+        String docker_image = "hisplan/snaptools:latest"
     }
     command {
         set -euo pipefail
