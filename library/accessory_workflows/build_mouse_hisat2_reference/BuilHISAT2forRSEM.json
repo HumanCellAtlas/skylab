@@ -1,0 +1,4 @@
+{
+  "HISAT2Ref.rsem_index": "gs://broad-dsde-mint-dev-teststorage/reference/rsem_ref/gencode_v27_primary.tar",
+  "HISAT2Ref.ref_name": "gencode_v27_trans_rsem"
+}
