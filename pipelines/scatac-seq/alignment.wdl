@@ -6,14 +6,10 @@ workflow scATAC {
         File input_fastq2
         File input_reference
         String output_bam
-        String aligner
-        String path_aligner
-        String read_fastq_command
-        Int min_cov
-        Int num_threads
-        Boolean sort
-        String tmp_folder
-        Boolean overwrite
+
+	String genome_name
+	File genome_fize_file
+
     }
     call alignPairedEnd {
         input:
@@ -27,8 +23,19 @@ workflow scATAC {
             min_cov = min_cov,
             num_threads = num_threads,
             sort = sort,
-            tmp_folder = tmp_folder,
             overwrite = overwrite
+    }
+    call snapPre {
+        input:
+            input_bam = alignPairedEnd.output_bam,
+	    output_snap_basename = 'output.snap',
+	    genome_name='mm10',
+	    genome_file_size=genome_file_size
+    }
+    call snapCellByBin {
+    	 input:
+		snap_input=snapPre.output_snap,
+                String bin_size_list = "5000 10000"
     }
 }
 
@@ -37,41 +44,38 @@ task alignPairedEnd {
         File input_fastq1
         File input_fastq2
         File input_reference
-        String output_bam
-        String aligner
-        String path_aligner
-        String read_fastq_command
-        Int min_cov
-        Int num_threads
-        Boolean sort
-        String tmp_folder
-        Boolean overwrite
+        File output_bam
+        Int min_cov=0
+        Int num_threads=1
     }
 
     command {
-        set -e pipefail
-
+        set -euo pipefail
+	mkdir -p tmp/
         snaptools align-paired-end \
             --input-reference=~{input_reference} \
             --input-fastq1=~{input_fastq1} \
             --input-fastq2=~{input_fastq2} \
             --output-bam=~{output_bam} \
-            --aligner=~{aligner} \
-            --path-to-aligner=~{path_aligner} \
-            --read-fastq-command=~{read_fastq_command} \
+            --aligner=bwa \
+            --path-to-aligner=/tools/ \
+            --read-fastq-command=zcat \
             --min-cov=~{min_cov} \
             --num-threads=~{num_threads} \
-            --tmp-folder=~{tmp_folder} \
-            --overwrite=~{overwrite} \
-            --if-sort=~{sort}
+            --tmp-folder=tmp/
+            --overwrite=TRUE \
+            --if-sort=True
     }
 
     output {
-        String path_output = "~{output_bam}"
+        File path_output = "~{output_bam}"
     }
 
     runtime {
         docker: "hisplan/snaptools:latest"
+        cpu: 1
+        memory: "16 GB"
+        disks: "local-disk 150 HDD"
     }
 
 }
@@ -79,15 +83,15 @@ task alignPairedEnd {
 task snapPre {
     input {
     	  File input_bam
-	  File output_snap
+	  String output_snap_basename
 	  String genome_name
 	  File genome_size_file
     }
     command {
-        set -e pipefail \
+        set -euo pipefail \
         snaptools snap-pre \
             --input-file=~{input_bam} \
-            --output-snap=~{output_snap} \
+            --output-snap=~{output_snap_basenname} \
             --genome-name=~{genome_name} \
             --genome-size=~{genome_size_file} \
 	    --min-mapq=30  \
@@ -102,20 +106,24 @@ task snapPre {
 	    --verbose=True
     }   
     output {
-    	   File output_snap
-	   File output_snap_qc
+    	   File output_snap = output_snap_basename
+	   File output_snap_qc = output_snap_basename + ".qc"
     }    
 }
 
 task snapCellByBin {
      input {
      	   File snap_input
-     	   String bin_size_list = "5000 10000"
+	   String bin_size_list
      }
      command {
+     	  # Check if this work, because we are just mutating the file
           snaptools snap-add-bmat  \
      	  	    --snap-file=~{snap_input}  \
      		    --bin-size-list ~{bin_size_list}  \
      		    --verbose=True
+     }
+     output {
+     	    File output_snap = snap_input
      }
 }
