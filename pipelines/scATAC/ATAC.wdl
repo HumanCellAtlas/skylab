@@ -34,6 +34,18 @@ workflow ATAC {
       output_base_name = output_base_name
   }
 
+  call CreateUnmappedBam as CreateUnmappedBamRead1 {
+    input:
+      fastq_input = TrimAdapters.fastq_trimmed_adapter_output_read1,
+      output_base_name = output_base_name + ".R1"
+  }
+
+  call CreateUnmappedBam as CreateUnmappedBamRead2 {
+    input:
+      fastq_input = TrimAdapters.fastq_trimmed_adapter_output_read2,
+      output_base_name = output_base_name + ".R2"
+  }
+
   call Align {
     input:
       fastq_input_read1 = TrimAdapters.fastq_trimmed_adapter_output_read1,
@@ -110,11 +122,12 @@ task TrimAdapters {
     cutadapt \
       -f fastq \
       --minimum-length ~{min_length} \
-      --quality-cutoff ~{quality_cutoff}
+      --quality-cutoff ~{quality_cutoff} \
       --adapter ~{adapter_seq_read1} \
       -A ~{adapter_seq_read2} \
       --output ~{fastq_trimmed_adapter_output_name_read1} \
-      --paired-output ~{fastq_trimmed_adapter_output_name_read2}
+      --paired-output ~{fastq_trimmed_adapter_output_name_read2} \
+      ~{fastq_input_read1} ~{fastq_input_read2}
   >>>
 
   # use docker image for given tool cutadapat
@@ -134,6 +147,45 @@ task TrimAdapters {
   }
 }
 
+task CreateUnmappedBam   {
+  input {
+    File fastq_input
+    String output_base_name
+    String docker_image = "quay.io/broadinstitute/picard:2.18.23"
+  }
+
+  # input file size
+  Float input_size = size(fastq_input, "GB")
+
+  # output names for bam with
+  String unmapped_bam_output_name = output_base_name + ".unmapped.bam"
+
+  command <<<
+    set -euo pipefail
+
+    # create an unmapped bam
+    java -jar /picard-tools/picard.jar FastqToSam \
+      FASTQ=~{fastq_input} \
+      SAMPLE_NAME=~{output_base_name} \
+      OUTPUT=~{unmapped_bam_output_name}
+  >>>
+
+  # use docker image for given tool cutadapat
+  runtime {
+    docker: docker_image
+    # if the input size is less than 1 GB adjust to min input size of 1 GB
+    # disks should be set to 2.25 * input file size
+    disks: "local-disk " + ceil(2.25 * (if input_size < 1 then 1 else input_size)) + " HDD"
+    cpu: 1
+    memory: "3.5 GB"
+  }
+
+  output {
+    File unmapped_bam_output = unmapped_bam_output_name
+    File monitoring_log = "monitoring.log"
+  }
+}
+
 # FIXME
 # map the reads using bwa
 task Align {
@@ -142,7 +194,7 @@ task Align {
     File fastq_input_read2
     File reference_fasta
     String output_base_name
-    String docker_image = "https://cloud.docker.com/u/hisplan/repository/docker/hisplan/snaptools"
+    String docker_image = "hisplan/snaptools:latest"
   }
 
   # output name for sorted bam
