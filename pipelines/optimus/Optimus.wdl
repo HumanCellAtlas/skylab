@@ -11,6 +11,7 @@ import "RunEmptyDrops.wdl" as RunEmptyDrops
 import "ZarrUtils.wdl" as ZarrUtils
 import "Picard.wdl" as Picard
 import "UmiCorrection.wdl" as UmiCorrection
+import "FastQC.wdl" as FastQC
 
 workflow Optimus {
   meta {
@@ -77,6 +78,11 @@ workflow Optimus {
           r2_unmapped_bam = FastqToUBam.bam_output,
           whitelist = whitelist
       }
+
+      call FastQC.FastQC as FastQC {
+        input:
+          fastq_files = [r1_fastq[index], r2_fastq[index], non_optional_i1_fastq[index]]
+      }
     }
 
     # if the index is not passed, proceed without it.
@@ -86,6 +92,11 @@ workflow Optimus {
           r1_fastq = r1_fastq[index],
           r2_unmapped_bam = FastqToUBam.bam_output,
           whitelist = whitelist
+      }
+
+      call FastQC.FastQC as FastQC {
+        input:
+          fastq_files = [r1_fastq[index], r2_fastq[index]]
       }
     }
 

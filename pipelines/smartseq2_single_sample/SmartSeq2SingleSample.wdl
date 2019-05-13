@@ -3,6 +3,7 @@ import "Picard.wdl" as Picard
 import "RSEM.wdl" as RSEM
 import "GroupMetricsOutputs.wdl" as GroupQCs
 import "ZarrUtils.wdl" as ZarrUtils
+import "FastQC.wdl" as FastQC
 
 workflow SmartSeq2SingleCell {
   meta {
@@ -53,6 +54,11 @@ workflow SmartSeq2SingleCell {
   }
 
   String quality_control_output_basename = output_name + "_qc"
+
+  call FastQC.FastQC {
+    input:
+      fastq_files = [fastq1, fastq2]
+  }
 
   call HISAT2.HISAT2PairedEnd {
     input:
