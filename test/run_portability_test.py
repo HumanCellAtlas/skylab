@@ -40,8 +40,11 @@ def gather_test_inputs(test_dir):
     errors = []
 
     # Test WDL
-    wdl_glob = os.path.join(test_dir, TEST_DIR_LAYOUT["test"])
-    wdl_paths = glob.glob(wdl_glob)
+    if test_dir == "bulk_rna_encode":
+        wdl_paths = list("https://raw.githubusercontent.com/ENCODE-DCC/rna-seq-pipeline/v1.0/rna-seq-pipeline.wdl")
+    else:
+        wdl_glob = os.path.join(test_dir, TEST_DIR_LAYOUT["test"])
+        wdl_paths = glob.glob(wdl_glob)
     if not wdl_paths:
         errors.append("Test definition WDL not found.")
     if len(wdl_paths) > 1:
