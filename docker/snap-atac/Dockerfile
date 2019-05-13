@@ -9,7 +9,6 @@ RUN mkdir /install && \
     cd /install && \
     git clone https://github.com/r3fang/SnapTools.git && \
     cd SnapTools && \
-    git reset --hard 23171b85b175225ca7af0c2c3104159cf6387bbd && \
     pip install .
 
 RUN cd /install && \
@@ -19,5 +18,9 @@ RUN cd /install && \
     make && \
     mkdir /tools/ && \
     cp bwa /tools/
+
+# this is a temporary hack
+RUN mkdir -p /home/r3fang/anaconda2/bin/ && \
+    ln -s `which python` /home/r3fang/anaconda2/bin/python
 
 ENV PATH /tools/:$PATH
