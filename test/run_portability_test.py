@@ -41,7 +41,7 @@ def gather_test_inputs(test_dir):
 
     # Test WDL
     if test_dir == "test/bulk_rna_encode/pr":
-        wdl_paths = list("https://raw.githubusercontent.com/ENCODE-DCC/rna-seq-pipeline/v1.0/rna-seq-pipeline.wdl")
+        wdl_paths = ["https://raw.githubusercontent.com/ENCODE-DCC/rna-seq-pipeline/v1.0/rna-seq-pipeline.wdl"]
     else:
         wdl_glob = os.path.join(test_dir, TEST_DIR_LAYOUT["test"])
         wdl_paths = glob.glob(wdl_glob)
@@ -78,6 +78,8 @@ def gather_test_inputs(test_dir):
         errors.append("Dependencies JSON {} could not be read".format(dependencies_json_path))
 
     # Now iterate over the dependencies and load the files.
+    if dependencies_json_string is None:
+        workflow_attachment = None
     dependencies_dict = json.loads(dependencies_json_string)
 
     for key, value in dependencies_dict.items():
