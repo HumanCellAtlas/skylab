@@ -1,5 +1,5 @@
 {
-    "scATAC.input_reference": "gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/snaptools_test/mm10.fa",
+    "scATAC.input_reference": "gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/scATAC-seq/mm10.tar",
     "scATAC.input_fastq1": "gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/snaptools_test/demo.R1.fastq.gz",
     "scATAC.input_fastq2": "gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/snaptools_test/demo.R2.fastq.gz",
     "scATAC.genome_name": "mm10",

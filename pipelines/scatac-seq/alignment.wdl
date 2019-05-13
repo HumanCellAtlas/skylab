@@ -48,11 +48,12 @@ task AlignPairedEnd {
     Float input_size = size(input_fastq1, "GiB") + size(input_fastq2, "GiB") + size(input_reference, "GiB")
 
     command {
-        # TODO: unzip the reference bundle
         set -euo pipefail
         declare -r TEMP_DIR=`mktemp -d tmpdir_XXXXXX`
+        # TODO: unzip the reference bundle
+        tar xvf ~{input_reference}
         snaptools align-paired-end \
-            --input-reference=~{input_reference} \
+            --input-reference=mm10/mm10.fa \
             --input-fastq1=~{input_fastq1} \
             --input-fastq2=~{input_fastq2} \
             --output-bam=~{output_bam} \
