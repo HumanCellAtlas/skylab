@@ -11,35 +11,30 @@ workflow scATAC {
 	File genome_fize_file
 
     }
-    call alignPairedEnd {
+    call AlignPairedEnd {
         input:
             input_fastq1 = input_fastq1,
             input_fastq2 = input_fastq2,
             input_reference = input_reference,
             output_bam = output_bam,
-            aligner = aligner,
-            path_aligner = path_aligner,
-            read_fastq_command = read_fastq_command,
             min_cov = min_cov,
             num_threads = num_threads,
-            sort = sort,
-            overwrite = overwrite
     }
-    call snapPre {
+    call SnapPre {
         input:
-            input_bam = alignPairedEnd.output_bam,
+            input_bam = AlignPairedEnd.output_bam,
 	    output_snap_basename = 'output.snap',
 	    genome_name='mm10',
 	    genome_file_size=genome_file_size
     }
-    call snapCellByBin {
+    call SnapCellByBin {
     	 input:
-		snap_input=snapPre.output_snap,
+		snap_input=SnapPre.output_snap,
                 String bin_size_list = "5000 10000"
     }
 }
 
-task alignPairedEnd {
+task AlignPairedEnd {
     input {
         File input_fastq1
         File input_fastq2
