@@ -29,8 +29,8 @@ workflow scATAC {
     }
     call SnapCellByBin {
     	 input:
-		snap_input=SnapPre.output_snap,
-                String bin_size_list = "5000 10000"
+		    snap_input=SnapPre.output_snap,
+            bin_size_list = "5000 10000"
     }
 }
 
@@ -45,10 +45,10 @@ task AlignPairedEnd {
 	String docker_image = "hisplan/snaptools:latest"
     }
 
-    Float input_size = size(input_fastq1, "GiB") + size(input_fastq2, 'GiB') + size(input_reference,'GiB') 
+    Float input_size = size(input_fastq1, "GiB") + size(input_fastq2, 'GiB') + size(input_reference,'GiB')
 
     command {
-    	# TODO: unzip the reference bundle 
+    	# TODO: unzip the reference bundle
         set -euo pipefail
         declare -r TEMP_DIR=$(mktemp -d tmpdir_XXXXXX)
         snaptools align-paired-end \
@@ -103,11 +103,11 @@ task snapPre {
 	    --max-num=1000000  \
 	    --min-cov=100  \
 	    --verbose=True
-    }   
+    }
     output {
     	   File output_snap = output_snap_basename
 	   File output_snap_qc = output_snap_basename + ".qc"
-    }    
+    }
     runtime {
         docker: docker_image
         cpu: num_threads
