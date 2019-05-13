@@ -64,7 +64,7 @@ workflow ATAC {
 
   call FilterMaxFragmentLength {
     input:
-      bam_input = FilterMinMapQuality.bam_filter_mapq_output_name,
+      bam_input = FilterMinMapQuality.bam_filter_mapq_output,
       max_fragment_length = max_fragment_length,
       output_base_name = output_base_name
   }

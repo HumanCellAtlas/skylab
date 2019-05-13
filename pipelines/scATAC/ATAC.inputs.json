@@ -1,0 +1,21 @@
+{
+  "ATAC.fastq_gzipped_input_read1": "File",
+  "ATAC.FilterMarkDuplicates.docker_image": "String (optional, default = \"quay.io/broadinstitute/picard:2.18.23\")",
+  "ATAC.adapter_seq_read2": "String",
+  "ATAC.min_map_quailty": "Int",
+  "ATAC.Align.docker_image": "String (optional, default = \"https://cloud.docker.com/u/hisplan/repository/docker/hisplan/snaptools\")",
+  "ATAC.quality_cutoff": "Int",
+  "ATAC.adapter_seq_read1": "String",
+  "ATAC.SortCoordinateOrder.docker_image": "String (optional, default = \"quay.io/broadinstitute/picard:2.18.23\")",
+  "ATAC.min_length": "Int",
+  "ATAC.output_base_name": "String",
+  "ATAC.TrimAdapters.docker_image": "String (optional, default = \"quay.io/broadinstitute/cutadapt:1.18\")",
+  "ATAC.FilterMaxFragmentLength.docker_image": "String (optional, default = \"broadinstitute/gatk:4.1.2.0\")",
+  "ATAC.FilterMitochondrialReads.docker_image": "String (optional, default = \"quay.io/broadinstitute/samtools:1.9\")",
+  "ATAC.fastq_gzipped_input_read2": "File",
+  "ATAC.SortQueryName.docker_image": "String (optional, default = \"quay.io/broadinstitute/picard:2.18.23\")",
+  "ATAC.FilterMinMapQuality.docker_image": "String (optional, default = \"quay.io/broadinstitute/samtools:1.9\")",
+  "ATAC.reference_fasta": "File",
+  "ATAC.max_fragment_length": "Int"
+}
+
