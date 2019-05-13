@@ -22,7 +22,7 @@ workflow scATAC {
     }
     call SnapPre {
         input:
-            input_bam = AlignPairedEnd.output_bam,
+            input_bam = AlignPairedEnd.aligned_bam,
 	    output_snap_basename = 'output.snap',
 	    genome_name='mm10',
 	    genome_file_size=genome_file_size
@@ -42,6 +42,7 @@ task AlignPairedEnd {
         File output_bam
         Int min_cov=0
         Int num_threads=1
+	String docker_image = "hisplan/snaptools:latest"
     }
 
     command {
@@ -64,12 +65,12 @@ task AlignPairedEnd {
     }
 
     output {
-        File path_output = "~{output_bam}"
+        File aligned_bam = output_bam
     }
 
     runtime {
-        docker: "hisplan/snaptools:latest"
-        cpu: 1
+        docker: docker_image
+        cpu: ~{num_threads}
         memory: "16 GB"
         disks: "local-disk 150 HDD"
     }
@@ -82,9 +83,10 @@ task snapPre {
 	  String output_snap_basename
 	  String genome_name
 	  File genome_size_file
+          String docker_image = "hisplan/snaptools:latest"
     }
     command {
-        set -euo pipefail \
+        set -euo pipefail
         snaptools snap-pre \
             --input-file=~{input_bam} \
             --output-snap=~{output_snap_basenname} \
@@ -105,14 +107,23 @@ task snapPre {
     	   File output_snap = output_snap_basename
 	   File output_snap_qc = output_snap_basename + ".qc"
     }    
+    runtime {
+        docker: docker_image
+        cpu: ~{num_threads}
+        memory: "16 GB"
+        disks: "local-disk 150 HDD"
+    }
+
 }
 
 task snapCellByBin {
      input {
-     	   File snap_input
-	   String bin_size_list
+     	  File snap_input
+          String bin_size_list
+          String docker_image = "hisplan/snaptools:latest"
      }
      command {
+         set -euo pipefail
      	  # Check if this work, because we are just mutating the file
           snaptools snap-add-bmat  \
      	  	    --snap-file=~{snap_input}  \
@@ -122,4 +133,11 @@ task snapCellByBin {
      output {
      	    File output_snap = snap_input
      }
+    runtime {
+        docker: docker_image
+        cpu: ~{num_threads}
+        memory: "16 GB"
+        disks: "local-disk 150 HDD"
+    }
+
 }
