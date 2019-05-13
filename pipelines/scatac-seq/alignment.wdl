@@ -72,7 +72,7 @@ task AlignPairedEnd {
 
     runtime {
         docker: docker_image
-        cpu: ~{num_threads}
+        cpu: num_threads
         memory: "16 GB"
         disks: "local-disk " + ceil(3.5 * (if input_size < 1 then 1 else input_size )) + " HDD"
     }
@@ -110,7 +110,7 @@ task snapPre {
     }    
     runtime {
         docker: docker_image
-        cpu: ~{num_threads}
+        cpu: num_threads
         memory: "16 GB"
         disks: "local-disk 150 HDD"
     }
@@ -135,7 +135,7 @@ task snapCellByBin {
      }
     runtime {
         docker: docker_image
-        cpu: ~{num_threads}
+        cpu: num_threads
         memory: "16 GB"
         disks: "local-disk 150 HDD"
     }
