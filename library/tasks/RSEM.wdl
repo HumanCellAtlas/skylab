@@ -35,7 +35,7 @@ task RSEMExpression {
     tar --no-same-owner -xvf ${rsem_genome}
     rsem-calculate-expression \
       --bam \
-      ${true="--paired-end" false="" is_paired}
+      ${true="--paired-end" false="" is_paired} \
        -p ${cpu} \
       --time --seed 555 \
       --calc-pme \
