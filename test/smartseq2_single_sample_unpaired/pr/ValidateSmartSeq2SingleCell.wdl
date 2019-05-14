@@ -2,11 +2,24 @@ task ValidateSmartSeq2SingleCell {
       File gene_counts
       String expected_gene_counts_hash
 
+      String dollar='$'
+
   command <<<
 
     # catch intermittent failures
     set -eo pipefail
 
+    # The test data is a cd4+ t cell, so make sure we get a little cd4, cd3d
+    # and cd3g
+    gene_ids=(ENSG00000160654 ENSG00000167286 ENSG00000010610)
+    for gene_id in "${dollar}{gene_ids[@]}"; do
+        tpm=$(grep "$gene_id" SRR6258488_rsem.genes.results | cut -f6)
+        echo $tpm
+        if (( $(echo "$tpm == 0.0" | bc -l) )); then
+            >&2 echo "Count not find gene id $gene_id"
+            fail=true
+        fi
+    done
     # calculate hashes; awk is used to extract the hash from the md5sum output that contains both
     # a hash and the filename that was passed. We parse the first 7 columns because a bug in RSEM
     # makes later columns non-deterministic.
