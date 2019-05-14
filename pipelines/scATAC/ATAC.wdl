@@ -17,7 +17,7 @@ workflow ATAC {
 
    # genome name and genome size file
    String genome_name
-  File genome_size_file
+   File genome_size_file
 
    # filtering options
    Int min_map_quailty
@@ -52,15 +52,15 @@ workflow ATAC {
 
   call StarAlignBamDoubleEnd {
     input:
-      fastq_input_read1 = TrimAdapters.fastq_trimmed_adapter_output_read1,
-      fastq_input_read2 = TrimAdapters.fastq_trimmed_adapter_output_read2,
+      bam_input_read1 = CreateUnmappedBamRead1.unmapped_bam_output,
+      bam_input_read2 = CreateUnmappedBamRead2.unmapped_bam_output,
       tar_star_reference = tar_star_reference,
       output_base_name = output_base_name
   }
 
   call Sort as SortCoordinateOrder {
     input:
-      bam_input = Align.bam_align_output,
+      bam_input = StarAlignBamDoubleEnd.bam_aligned_output,
       sort_order = "coordinate",
       output_base_name = output_base_name
   }
@@ -121,14 +121,14 @@ workflow ATAC {
 
 task TrimAdapters {
   input {
-     Int min_length
-     Int quality_cutoff
-     File fastq_input_read1
-     File fastq_input_read2
-     String adapter_seq_read1
-     String adapter_seq_read2
-     String output_base_name
-     String docker_image = "quay.io/broadinstitute/cutadapt:1.18"
+    Int min_length
+    Int quality_cutoff
+    File fastq_input_read1
+    File fastq_input_read2
+    String adapter_seq_read1
+    String adapter_seq_read2
+    String output_base_name
+    String docker_image = "quay.io/broadinstitute/cutadapt:1.18"
   }
 
   # input file size
@@ -212,8 +212,8 @@ task CreateUnmappedBam   {
 
 task StarAlignBamDoubleEnd {
   input {
-    File fastq_input_read1
-    File fastq_input_read2
+    File bam_input_read1
+    File bam_input_read2
     File tar_star_reference
     Int cpu = 16
     String output_base_name
@@ -221,7 +221,9 @@ task StarAlignBamDoubleEnd {
   }
 
   # input file size
-  Float input_size = size(tar_star_reference, "Gi") * 2.5 + size(fastq_input_read1, "GB") + size(fastq_input_read2, "GB") + size(reference_fasta, "GB")
+  Float input_size = size(tar_star_reference, "Gi") + size(bam_input_read1, "GB") + size(bam_input_read2, "GB") + size(tar_star_reference, "GB")
+
+  String bam_aligned_output_name = output_base_name + ".aligned.bam"
 
   # sort with samtools
   command <<<
@@ -229,14 +231,14 @@ task StarAlignBamDoubleEnd {
 
     # prepare reference
     mkdir genome_reference
-    tar -xf "${tar_star_reference}" -C genome_reference --strip-components 1
-    rm "${tar_star_reference}"
+    tar -xf "~{tar_star_reference}" -C genome_reference --strip-components 1
+    rm "~{tar_star_reference}"
 
     STAR \
       --runMode alignReads \
       --runThreadN ~{cpu} \
       --genomeDir genome_reference \
-      --readFilesIn "${bam_input}" \
+      --readFilesIn ~{bam_input_read1} ~{bam_input_read2} \
       --outSAMtype BAM Unsorted \
       --outSAMmultNmax -1 \
       --outSAMattributes All \
@@ -244,6 +246,7 @@ task StarAlignBamDoubleEnd {
       --readFilesType SAM PE \
       --readFilesCommand samtools view -h \
       --runRNGseed 777
+      --outStd BAM_Unsorted > ~{bam_aligned_output_name}
   >>>
 
   runtime {
@@ -256,7 +259,7 @@ task StarAlignBamDoubleEnd {
   }
 
   output {
-    File bam_align_output = "Aligned.out.bam"
+    File bam_aligned_output = bam_aligned_output_name
   }
 
 }
@@ -479,8 +482,6 @@ task SnapPre {
     String docker_image = "hisplan/snaptools:latest"
   }
 
-  Int num_threads = 1
-
   command {
     set -euo pipefail
 
@@ -490,9 +491,9 @@ task SnapPre {
       --output-snap=~{output_snap_basename} \
       --genome-name=~{genome_name} \
       --genome-size=~{genome_size_file} \
-      --min-mapq=30  \
+      --min-mapq=0  \
       --min-flen=0  \
-      --max-flen=1000  \
+      --max-flen=100000  \
       --keep-chrm=TRUE  \
       --keep-single=TRUE  \
       --keep-secondary=False  \
@@ -507,7 +508,7 @@ task SnapPre {
   }
   runtime {
     docker: docker_image
-    cpu: num_threads
+    cpu: 1
     memory: "16 GB"
     disks: "local-disk 150 HDD"
   }
@@ -519,8 +520,6 @@ task SnapCellByBin {
     String bin_size_list
     String docker_image = "hisplan/snaptools:latest"
   }
-
-  Int num_threads = 1
 
   command {
     set -euo pipefail
@@ -536,7 +535,7 @@ task SnapCellByBin {
   }
   runtime {
     docker: docker_image
-    cpu: num_threads
+    cpu: 1
     memory: "16 GB"
     disks: "local-disk 150 HDD"
   }
