@@ -61,7 +61,8 @@ workflow SmartSeq2SingleCell {
   call FastQC.FastQC {
     input:
       fastq_files = [fastq1, fastq2],
-      limits_file = fastqc_limits
+      limits_file = fastqc_limits,
+      disk = ceil((size(fastq1, "GiB") + size(fastq2, "GiB")) * 2.2)
   }
 
   call HISAT2.HISAT2PairedEnd {

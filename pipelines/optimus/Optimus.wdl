@@ -86,7 +86,8 @@ workflow Optimus {
       call FastQC.FastQC as FastQC {
         input:
           fastq_files = [r1_fastq[index], r2_fastq[index], non_optional_i1_fastq[index]],
-          limits_file = fastqc_limits
+          limits_file = fastqc_limits,
+          disk = ceil((size(r1_fastq[index], "GiB") + size(r2_fastq[index], "GiB") + size(non_optional_i1_fastq[index], "GiB")) * 2.2)
       }
     }
 
@@ -99,10 +100,11 @@ workflow Optimus {
           whitelist = whitelist
       }
 
-      call FastQC.FastQC as FastQC {
+      call FastQC.FastQC as FastQCNoIndex {
         input:
           fastq_files = [r1_fastq[index], r2_fastq[index]],
-          limits_file = fastqc_limits
+          limits_file = fastqc_limits,
+          disk = ceil((size(r1_fastq[index], "GiB") + size(r2_fastq[index], "GiB")) * 2.2)
       }
     }
 
