@@ -35,13 +35,13 @@ task Attach10xBarcodes {
   command {
     set -e
 
-    Attach10xBarcodes \
+    ${if v3 then "AttachBarcodes" else "Attach10xBarcodes"} \
       --r1 "${r1_fastq}" \
       ${"--i1 " + i1_fastq} \
       --u2 "${r2_unmapped_bam}" \
       --output-bamfile barcoded.bam \
       --whitelist "${whitelist}" \
-      ${if v3 then "--molecule-barcode-length 12" else ""}
+      ${if v3 then "--sample-barcode-start-position 0 --sample-barcode-length 8 --cell-barcode-start-position 0 --cell-barcode-length 16 --molecule-barcode-start-position 16 --molecule-barcode-length 12" else ""}
   }
   
   runtime {
