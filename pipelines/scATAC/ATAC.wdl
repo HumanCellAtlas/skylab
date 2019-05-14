@@ -50,7 +50,7 @@ workflow ATAC {
       output_base_name = output_base_name + ".R2"
   }
 
-  call StarAlignBamDoubleEnd {
+  call StarAlignBamPairedEnd {
     input:
       bam_input_read1 = CreateUnmappedBamRead1.unmapped_bam_output,
       bam_input_read2 = CreateUnmappedBamRead2.unmapped_bam_output,
@@ -60,7 +60,7 @@ workflow ATAC {
 
   call Sort as SortCoordinateOrder {
     input:
-      bam_input = StarAlignBamDoubleEnd.bam_aligned_output,
+      bam_input = StarAlignBamPairedEnd.bam_aligned_output,
       sort_order = "coordinate",
       output_base_name = output_base_name
   }
@@ -210,7 +210,7 @@ task CreateUnmappedBam   {
   }
 }
 
-task StarAlignBamDoubleEnd {
+task StarAlignBamPairedEnd {
   input {
     File bam_input_read1
     File bam_input_read2
@@ -230,8 +230,8 @@ task StarAlignBamDoubleEnd {
     set -euo pipefail
 
     # prepare reference
-    mkdir genome_reference
-    tar -xf "~{tar_star_reference}" -C genome_reference --strip-components 1
+    declare -r REF_DIR=$(mktemp -d genome_referenceXXXXXX)
+    tar -xf "~{tar_star_reference}" -C $REF_DIR --strip-components 1
     rm "~{tar_star_reference}"
 
     STAR \
