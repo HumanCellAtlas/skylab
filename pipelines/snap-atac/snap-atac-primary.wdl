@@ -174,6 +174,7 @@ task MakeCompliantBam {
     input {
         File input_bam
         String output_bam_filename = "output.bam"
+        String docker_image = "quay.io/humancellatlas/snaptools:0.0.1"
     }
     Input num_threads = 1
     Float input_size = size(input_bam, "GiB")
