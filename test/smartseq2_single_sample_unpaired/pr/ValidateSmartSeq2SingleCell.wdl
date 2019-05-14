@@ -7,13 +7,13 @@ task ValidateSmartSeq2SingleCell {
   command <<<
 
     # catch intermittent failures
-    set -eo pipefail
+    set -xeo pipefail
 
     # The test data is a cd4+ t cell, so make sure we get a little cd4, cd3d
     # and cd3g
     gene_ids=(ENSG00000160654 ENSG00000167286 ENSG00000010610)
     for gene_id in "${dollar}{gene_ids[@]}"; do
-        tpm=$(grep "$gene_id" SRR6258488_rsem.genes.results | cut -f6)
+        tpm=$(grep "$gene_id" "${gene_counts}" | cut -f6)
         echo $tpm
         if (( $(echo "$tpm == 0.0" | bc -l) )); then
             >&2 echo "Count not find gene id $gene_id"
