@@ -8,6 +8,7 @@
   "ATAC.output_base_name": "scATAC",
   "ATAC.fastq_gzipped_input_read2": "gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/snaptools_test/demo.R2.fastq.gz",
   "ATAC.reference_fasta": "gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/snaptools_test/mm10.fa",
+  "ATAC.genome_name": "mm10",
+  "ATAC.genome_size_file": "gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/snaptools_test/mm10.chrom.size",
   "ATAC.max_fragment_length": 3000
 }
-

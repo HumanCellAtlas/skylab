@@ -15,6 +15,10 @@ workflow ATAC {
    # fasta for alignment
    File reference_fasta
 
+   # genome name and genome size file
+   String genome_name
+  File genome_size_file
+
    # filtering options
    Int min_map_quailty
    Int max_fragment_length
@@ -92,6 +96,26 @@ workflow ATAC {
       bam_input = FilterMitochondrialReads.bam_no_chrM_reads_output,
       sort_order = "queryname",
       output_base_name = output_base_name
+  }
+
+  call SnapPre {
+    input:
+      input_bam = SortQueryName.bam_sort_output,
+      output_snap_basename = output_base_name + ".snap",
+      genome_name = genome_name,
+      genome_size_file = genome_size_file
+  }
+
+  call SnapCellByBin {
+    input:
+        snap_input=SnapPre.output_snap,
+        bin_size_list = "5000 10000"
+  }
+
+  output {
+    File output_snap_qc = SnapPre.output_snap_qc
+    File output_snap = SnapCellByBin.output_snap
+    File output_aligned_bam = SortQueryName.bam_sort_output
   }
 }
 
@@ -445,3 +469,74 @@ task FilterMitochondrialReads {
   }
 }
 
+task SnapPre {
+  input {
+    File input_bam
+    String output_snap_basename
+    String genome_name
+    File genome_size_file
+    String docker_image = "hisplan/snaptools:latest"
+  }
+
+  Int num_threads = 1
+
+  command {
+    set -euo pipefail
+
+    # Does the main counting
+    snaptools snap-pre \
+      --input-file=~{input_bam} \
+      --output-snap=~{output_snap_basename} \
+      --genome-name=~{genome_name} \
+      --genome-size=~{genome_size_file} \
+      --min-mapq=30  \
+      --min-flen=0  \
+      --max-flen=1000  \
+      --keep-chrm=TRUE  \
+      --keep-single=TRUE  \
+      --keep-secondary=False  \
+      --overwrite=True  \
+      --max-num=1000000  \
+      --min-cov=100  \
+      --verbose=True
+  }
+  output {
+    File output_snap = output_snap_basename
+    File output_snap_qc = output_snap_basename + ".qc"
+  }
+  runtime {
+    docker: docker_image
+    cpu: num_threads
+    memory: "16 GB"
+    disks: "local-disk 150 HDD"
+  }
+}
+
+task SnapCellByBin {
+  input {
+    File snap_input
+    String bin_size_list
+    String docker_image = "hisplan/snaptools:latest"
+  }
+
+  Int num_threads = 1
+
+  command {
+    set -euo pipefail
+
+    # This is mutating the file in-place
+    snaptools snap-add-bmat  \
+      --snap-file=~{snap_input}  \
+      --bin-size-list ~{bin_size_list}  \
+      --verbose=True
+  }
+  output {
+    File output_snap = snap_input
+  }
+  runtime {
+    docker: docker_image
+    cpu: num_threads
+    memory: "16 GB"
+    disks: "local-disk 150 HDD"
+  }
+}
