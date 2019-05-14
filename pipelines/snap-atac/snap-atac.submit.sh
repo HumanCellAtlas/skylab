@@ -5,5 +5,5 @@ cromwell-tools submit \
     --collection-name "pipeline-surge" \
     --service-account-key "${HOME}/pipelines_surge_credentials.json" \
     --wdl snap-atac-primary.wdl \
-    -i inputs.json \
-    --options-file options.json
+    --inputs-files snap-atac.inputs.mouse.json \
+    --options-file snap-atac.options.json
