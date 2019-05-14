@@ -7,6 +7,7 @@ import json
 import os
 import sys
 import time
+import urllib2
 
 import requests
 
@@ -40,7 +41,8 @@ def gather_test_inputs(test_dir):
     errors = []
 
     # Test WDL
-    if test_dir == "test/bulk_rna_encode/pr":
+    bulk_rna_test = test_dir == "test/bulk_rna_encode/pr"
+    if bulk_rna_test:
         wdl_paths = ["https://raw.githubusercontent.com/ENCODE-DCC/rna-seq-pipeline/v1.0/rna-seq-pipeline.wdl"]
     else:
         wdl_glob = os.path.join(test_dir, TEST_DIR_LAYOUT["test"])
@@ -53,7 +55,10 @@ def gather_test_inputs(test_dir):
     workflow_attachment = []
     try:
         test_wdl_name = os.path.basename(wdl_paths[0])
-        test_wdl_string = open(wdl_paths[0]).read()
+        if bulk_rna_test:
+            test_wdl_string = urllib2.urlopen(wdl_paths[0]).read()
+        else:
+            test_wdl_string = open(wdl_paths[0]).read()
         workflow_attachment.append((test_wdl_name, test_wdl_string))
     except IOError:
         test_wdl_name, test_wdl_string = None, None
