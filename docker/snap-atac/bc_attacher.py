@@ -1,21 +1,54 @@
 #!/usr/bin/env python
 
-## Author: Nick Barkas <nbarkas@broadinstitute.org>
-## Date: May 9th, 2019
-## Description: Pre-process fastq files by attaching barcodes to read names (generally a bad idea)
+# Author: Nick Barkas <nbarkas@broadinstitute.org>
+# Date: May 9th, 2019
+# Description: Pre-process fastq files by attaching barcodes to read names (generally a bad idea)
 
 import argparse
 from Bio import SeqIO
 import time
 import gzip
 
-parser = argparse.ArgumentParser(description="Extract barcodes from index reads into read names for scATAC-seq BICCN data V1")
-parser.add_argument('--index1', dest='file_i1', help='index1 FASTQ file')
-parser.add_argument('--index2',dest='file_i2',help='index2 FASTQ file')
-parser.add_argument('--read1', dest='file_r1',help='read1 FASTQ file')
-parser.add_argument('--read2',dest='file_r2',help='read2 FASTQ files')
-parser.add_argument('--out-read1', dest='out_file_r1', help='output file read1')
-parser.add_argument('--out-read2', dest='out_file_r2', help='output file read2')
+parser = argparse.ArgumentParser(
+    description="Extract barcodes from index reads into read names for scATAC-seq BICCN data V1"
+)
+
+parser.add_argument(
+    '--index1',
+    required=True,
+    dest='file_i1',
+    help='index1 FASTQ file'
+)
+parser.add_argument(
+    '--index2',
+    required=True,
+    dest='file_i2',
+    help='index2 FASTQ file'
+)
+parser.add_argument(
+    '--read1',
+    required=True,
+    dest='file_r1',
+    help='read1 FASTQ file'
+)
+parser.add_argument(
+    '--read2',
+    required=True,
+    dest='file_r2',
+    help='read2 FASTQ files'
+)
+parser.add_argument(
+    '--out-read1',
+    required=True,
+    dest='out_file_r1',
+    help='output file read1'
+)
+parser.add_argument(
+    '--out-read2',
+    required=True,
+    dest='out_file_r2',
+    help='output file read2'
+)
 
 args = parser.parse_args()
 
@@ -37,15 +70,15 @@ iter_r2 = SeqIO.parse(fh_r2, 'fastq')
 start_time = time.time()
 
 nEntries = 0
-readComplete = False;
+readComplete = False
 while not readComplete:
     if (nEntries % 100000 == 0):
         print("Processed %i records..." % nEntries)
     try:
-        i1_sreq = iter_i1.next();
-        i2_sreq = iter_i2.next();
-        r1_sreq = iter_r1.next();
-        r2_sreq = iter_r2.next();
+        i1_sreq = iter_i1.next()
+        i2_sreq = iter_i2.next()
+        r1_sreq = iter_r1.next()
+        r2_sreq = iter_r2.next()
 
         # Extract CB
         i1a = i1_sreq.seq[1:8]
@@ -72,9 +105,9 @@ while not readComplete:
 
     except StopIteration:
         print('done reading files')
-        readComplete = True;
+        readComplete = True
 
-        ## TODO: Check if all the other iterators do not 'have_next()' if they do we need to issue a user warning
+        # TODO: Check if all the other iterators do not 'have_next()' if they do we need to issue a user warning
 
 
 end_time = time.time()
@@ -89,6 +122,3 @@ fh_r2.close()
 # Close the output filehandles
 fh_out_r1.close()
 fh_out_r2.close()
-
-
-
