@@ -6,7 +6,8 @@ task Attach10xBarcodes {
   Boolean v3 = false
 
   # runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.2"
+  # FIXME: official release with up-to-date sctools (need sctools 09eb7f4)
+  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:mk-unpaired-reads"
   Int machine_mem_mb = 8250
   Int cpu = 2
   # estimate that bam is approximately the size of all inputs plus 50%
