@@ -8,6 +8,7 @@ workflow TestOptimusV3UMI {
   # Optimus inputs (v3 data with 12bp UMI barcodes)
   Array[File] r1_fastq
   Array[File] r2_fastq
+  Array[File] i1_fastq
 
   File whitelist
   File tar_star_reference
@@ -22,6 +23,7 @@ workflow TestOptimusV3UMI {
     input:
       r1_fastq = r1_fastq,
       r2_fastq = r2_fastq,
+      i1_fastq = i1_fastq,
       whitelist = whitelist,
       tar_star_reference = tar_star_reference,
       annotations_gtf = annotations_gtf,
@@ -39,6 +41,7 @@ workflow TestOptimusV3UMI {
     input:
       r1_fastq = r1_fastq,
       r2_fastq = r2_fastq,
+      i1_fastq = i1_fastq,
       whitelist = whitelist,
       tar_star_reference = tar_star_reference,
       annotations_gtf = annotations_gtf,
