@@ -21,13 +21,13 @@
 # DBSNP_RELEASE: dnsnp verison number, ex 150
 
 GENCODE_RELEASE=$1
-GENCODE_BASE=ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_${GENCODE_RELEASE}/
+GENCODE_BASE=ftp://ftp.ebi.ac.uk/pub/gencode/Gencode_mouse/release_${GENCODE_RELEASE}/
 GTF_FILE=gencode.v${GENCODE_RELEASE}.annotation.gtf
-GENCODE_FASTA=ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_${GENCODE_RELEASE}/GRCm38.primary_assembly.genome.fa.gz
+GENCODE_FASTA=ftp://ftp.ebi.ac.uk/pub/gencode/Gencode_mouse/release_${GENCODE_RELEASE}/GRCm38.primary_assembly.genome.fa.gz
 DBSNP_RELEASE=$2
 SNP_FILE=snp${DBSNP_RELEASE}Common.txt
-UCSC_COMMON_SNP=hgdownload.cse.ucsc.edu/goldenPath/mm10/database/${SNP_FILE}.gz
-HISAT2_DIR=$3
+UCSC_COMMON_SNP=http://hgdownload.cse.ucsc.edu/goldenPath/mm10/database/${SNP_FILE}.gz
+HISAT2_DIR='/opt/tools/hisat2-2.1.0'
 get() {
 	file=$1
 	if ! wget --version >/dev/null 2>/dev/null ; then
@@ -93,8 +93,8 @@ fi
 
 
 if [ ! -f $SNP_FILE ] ; then
-       get ${UCSC_COMMON_SNP} || (echo "Error getting ${UCSC_COMMON_SNP}" && exit 1)
-       gunzip ${SNP_FILE} || (echo "Error unzipping ${SNP_FILE}" && exit 1)
+       get ${UCSC_COMMON_SNP}.gz || (echo "Error getting ${UCSC_COMMON_SNP}" && exit 1)
+       gunzip ${SNP_FILE}.gz || (echo "Error unzipping ${SNP_FILE}" && exit 1)
        ## for gencode, do NOT need to strip off chr
        ##awk 'BEGIN{OFS="\t"} {if($2 ~ /^chr/) {$2 = substr($2, 4)}; if($2 == "M") {$2 = "MT"} print}' ${SNP_FILE} > ${SNP_FILE}.tmp
        ##mv ${SNP_FILE}.tmp ${SNP_FILE}
