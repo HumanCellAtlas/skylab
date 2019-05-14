@@ -26,6 +26,9 @@ workflow Optimus {
   Array[File]? i1_fastq
   String sample_id
 
+  # fastqc input
+  File? fastqc_limits
+
   # organism reference parameters
   File tar_star_reference
   File annotations_gtf
@@ -52,6 +55,7 @@ workflow Optimus {
     r2_fastq: "reverse read, contains cDNA fragment generated from captured mRNA"
     i1_fastq: "(optional) index read, for demultiplexing of multiple samples on one flow cell."
     sample_id: "name of sample matching this file, inserted into read group header"
+    fastqc_limits: "(optional) limits file for fastqc"
     tar_star_reference: "star genome reference"
     annotations_gtf: "gtf containing annotations for gene tagging (must match star reference)"
     ref_genome_fasta: "genome fasta file (must match star reference)"
@@ -81,7 +85,8 @@ workflow Optimus {
 
       call FastQC.FastQC as FastQC {
         input:
-          fastq_files = [r1_fastq[index], r2_fastq[index], non_optional_i1_fastq[index]]
+          fastq_files = [r1_fastq[index], r2_fastq[index], non_optional_i1_fastq[index]],
+          limits_file = fastqc_limits
       }
     }
 
@@ -96,7 +101,8 @@ workflow Optimus {
 
       call FastQC.FastQC as FastQC {
         input:
-          fastq_files = [r1_fastq[index], r2_fastq[index]]
+          fastq_files = [r1_fastq[index], r2_fastq[index]],
+          limits_file = fastqc_limits
       }
     }
 

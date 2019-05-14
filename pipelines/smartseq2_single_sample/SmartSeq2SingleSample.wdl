@@ -29,6 +29,8 @@ workflow SmartSeq2SingleCell {
   String output_name
   File fastq1
   File fastq2
+  # fastqc
+  File? fastqc_limits
   Int max_retries = 0
 
   # whether to convert the outputs to Zarr format, by default it's set to true
@@ -49,6 +51,7 @@ workflow SmartSeq2SingleCell {
     output_name: "Output name, can include path"
     fastq1: "R1 in paired end reads"
     fastq2: "R2 in paired end reads"
+    fastqc_limits: "(optional) limits file for fastqc"
     max_retries: "(optional) retry this number of times if task fails -- use with caution, see skylab README for details"
     output_zarr: "whether to run the taks that converts the outputs to Zarr format, by default it's true"
   }
@@ -57,7 +60,8 @@ workflow SmartSeq2SingleCell {
 
   call FastQC.FastQC {
     input:
-      fastq_files = [fastq1, fastq2]
+      fastq_files = [fastq1, fastq2],
+      limits_file = fastqc_limits
   }
 
   call HISAT2.HISAT2PairedEnd {
