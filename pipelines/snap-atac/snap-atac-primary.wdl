@@ -138,15 +138,15 @@ task SnapPre {
 }
 
 task SnapCellByBin {
-     input {
+    input {
         File snap_input
         String bin_size_list
         String docker_image = "hisplan/snaptools:latest"
-     }
+    }
 
-     Int num_threads = 1
+    Int num_threads = 1
 
-     command {
+    command {
         set -euo pipefail
 
         # This is mutating the file in-place
@@ -154,10 +154,10 @@ task SnapCellByBin {
             --snap-file=~{snap_input}  \
             --bin-size-list ~{bin_size_list}  \
             --verbose=True
-     }
-     output {
+    }
+    output {
         File output_snap = snap_input
-     }
+    }
     runtime {
         docker: docker_image
         cpu: num_threads
