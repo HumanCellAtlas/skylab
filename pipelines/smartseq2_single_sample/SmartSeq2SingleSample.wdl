@@ -112,7 +112,7 @@ workflow SmartSeq2SingleCell {
 
   call GroupQCs.GroupQCOutputs {
    input:
-      picard_row_outputs = [CollectMultipleMetrics.alignment_summary_metrics,CollectMultipleMetrics.insert_size_metrics,CollectDuplicationMetrics.dedup_metrics,CollectRnaMetrics.rna_metrics,CollectMultipleMetrics.gc_bias_summary_metrics],
+      picard_row_outputs = [CollectMultipleMetrics.alignment_summary_metrics,CollectMultipleMetrics.insert_size_metrics[0],CollectDuplicationMetrics.dedup_metrics,CollectRnaMetrics.rna_metrics,CollectMultipleMetrics.gc_bias_summary_metrics],
       picard_table_outputs = [CollectMultipleMetrics.base_call_dist_metrics,CollectMultipleMetrics.gc_bias_detail_metrics,CollectMultipleMetrics.pre_adapter_details_metrics,CollectMultipleMetrics.pre_adapter_summary_metrics,CollectMultipleMetrics.bait_bias_detail_metrics,CollectMultipleMetrics.error_summary_metrics],
       hisat2_stats = HISAT2PairedEnd.log_file,
       hisat2_trans_stats = HISAT2Transcriptome.log_file,
@@ -135,7 +135,7 @@ workflow SmartSeq2SingleCell {
     # quality control outputs
     File aligned_bam = HISAT2PairedEnd.output_bam
     File bam_index = HISAT2PairedEnd.bam_index
-    File? insert_size_metrics = CollectMultipleMetrics.insert_size_metrics
+    File insert_size_metrics = CollectMultipleMetrics.insert_size_metrics[0]
     File quality_distribution_metrics = CollectMultipleMetrics.quality_distribution_metrics
     File quality_by_cycle_metrics = CollectMultipleMetrics.quality_by_cycle_metrics
     File bait_bias_summary_metrics = CollectMultipleMetrics.bait_bias_summary_metrics
