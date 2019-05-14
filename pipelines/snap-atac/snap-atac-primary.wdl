@@ -36,6 +36,10 @@ workflow scATAC {
             snap_input=SnapPre.output_snap,
             bin_size_list = "5000 10000"
     }
+    call MakeCompliantBam {
+        input:
+            input_bam = AlignPairedEnd.output_bam
+    }
     output {
         File output_snap_qc = SnapPre.output_snap_qc
         File output_snap = SnapCellByBin.output_snap
