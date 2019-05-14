@@ -12,8 +12,8 @@ workflow ATAC {
    String adapter_seq_read1
    String adapter_seq_read2
 
-   # fasta for alignment
-   File reference_fasta
+   # STAR reference, pre-build
+   File tar_star_reference
 
    # genome name and genome size file
    String genome_name
@@ -54,7 +54,7 @@ workflow ATAC {
     input:
       fastq_input_read1 = TrimAdapters.fastq_trimmed_adapter_output_read1,
       fastq_input_read2 = TrimAdapters.fastq_trimmed_adapter_output_read2,
-      reference_fasta = reference_fasta,
+      tar_star_reference = tar_star_reference,
       output_base_name = output_base_name
   }
 
