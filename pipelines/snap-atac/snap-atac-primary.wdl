@@ -36,10 +36,14 @@ workflow scATAC {
             snap_input=SnapPre.output_snap,
             bin_size_list = "5000 10000"
     }
+    call MakeCompliantBam {
+        input:
+            input_bam = AlignPairedEnd.output_bam
+    }
     output {
         File output_snap_qc = SnapPre.output_snap_qc
         File output_snap = SnapCellByBin.output_snap
-        File output_aligned_bam = AlignPairedEnd.aligned_bam
+        File output_aligned_bam = MakeCompliantBam.output_bam
     }
 }
 
@@ -163,5 +167,27 @@ task SnapCellByBin {
         cpu: num_threads
         memory: "16 GB"
         disks: "local-disk 150 HDD"
+    }
+}
+
+task MakeCompliantBam {
+    input {
+        File input_bam
+        String output_bam_filename = "output.bam"
+        String docker_image = "quay.io/humancellatlas/snaptools:0.0.1"
+    }
+    Input num_threads = 1
+    Float input_size = size(input_bam, "GiB")
+    command {
+        makeCompliantBam.py --input-bam ~input_bam --output-bam ~output_bam_filename
+    }
+    output {
+        File output_bam = output_bam_filename
+    }
+    runtime {
+        docker: docker_image
+        cpu: num_threads
+        memory: "4 GB"
+        disks: "local-disk " + input_size * 2.5 + " HDD"
     }
 }
