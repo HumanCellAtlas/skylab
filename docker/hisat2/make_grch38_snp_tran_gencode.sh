@@ -21,12 +21,12 @@
 # DBSNP_RELEASE: dnsnp verison number, ex 150
 
 GENCODE_RELEASE=$1 
-GENCODE_BASE=ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_human/release_${GENCODE_RELEASE}/
+GENCODE_BASE=ftp://ftp.ebi.ac.uk/pub/gencode/Gencode_human/release_${GENCODE_RELEASE}/
 GTF_FILE=gencode.v${GENCODE_RELEASE}.annotation.gtf
-GENCODE_FASTA=ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_human/release_${GENCODE_RELEASE}/GRCh38.primary_assembly.genome.fa.gz
+GENCODE_FASTA=ftp://ftp.ebi.ac.uk/pub/gencode/Gencode_human/release_${GENCODE_RELEASE}/GRCh38.primary_assembly.genome.fa.gz
 DBSNP_RELEASE=$2
 SNP_FILE=snp${DBSNP_RELEASE}Common.txt
-UCSC_COMMON_SNP=http://hgdownload.cse.ucsc.edu/goldenPath/hg38/database/${SNP_FILE}
+UCSC_COMMON_SNP=http://hgdownload.cse.ucsc.edu/goldenPath/hg38/database/${SNP_FILE}.gz
 HISAT2_DIR='/opt/tools/hisat2-2.1.0'
 get() {
 	file=$1
