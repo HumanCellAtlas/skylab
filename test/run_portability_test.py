@@ -181,7 +181,7 @@ def monitor_tests(test_ids):
             info_endpoint = ENV_VARIABLES["portability_service_url"]  + "/portability_tests/" + \
                 test_id
             response = requests.get(info_endpoint, headers=service_headers)
-            print(response.json())
+            print(json.dumps(response.json(), indent=4))
 
     if not all(k == "Succeeded" for k in terminal_tests.values()):
         raise TestFailure()
