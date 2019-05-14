@@ -1,8 +1,8 @@
-import "SmartSeq2SingleSamplePaired.wdl" as target_wdl
+import "SmartSeq2SingleSample.wdl" as target_wdl
 import "ValidateSmartSeq2SingleCell.wdl" as checker_wdl
 
 # this task will be run by the jenkins script that gets executed on our PRs.
-workflow TestSmartSeq2SingleCellPairedPR {
+workflow TestSmartSeq2SingleCellPR {
 
   # expected hashes of target_workflow outputs
   String expected_counts_hash
@@ -23,7 +23,7 @@ workflow TestSmartSeq2SingleCellPairedPR {
   File fastq1
   File fastq2
 
-  call target_wdl.SmartSeq2SingleCellPaired as target_workflow {
+  call target_wdl.SmartSeq2SingleCell as target_workflow {
     input:
       genome_ref_fasta = genome_ref_fasta,
       rrna_intervals = rrna_intervals,
