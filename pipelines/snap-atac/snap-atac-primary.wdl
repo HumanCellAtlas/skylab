@@ -51,7 +51,7 @@ task AlignPairedEnd {
         String reference_unpack_name = "genome/genome.fa"
         String output_bam
         Int min_cov = 0
-        String docker_image = "hisplan/snaptools:latest"
+        String docker_image = "quay.io/humancellatlas/snaptools:0.0.1"
     }
 
     Int num_threads = 1
@@ -100,7 +100,7 @@ task SnapPre {
         String output_snap_basename
         String genome_name
         File genome_size_file
-        String docker_image = "hisplan/snaptools:latest"
+        String docker_image = "quay.io/humancellatlas/snaptools:0.0.1"
     }
 
     Int num_threads = 1
@@ -141,7 +141,7 @@ task SnapCellByBin {
     input {
         File snap_input
         String bin_size_list
-        String docker_image = "hisplan/snaptools:latest"
+        String docker_image = "quay.io/humancellatlas/snaptools:0.0.1"
     }
 
     Int num_threads = 1
