@@ -87,7 +87,7 @@ workflow Optimus {
         input:
           fastq_files = [r1_fastq[index], r2_fastq[index], non_optional_i1_fastq[index]],
           limits_file = fastqc_limits,
-          disk = ceil((size(r1_fastq[index], "GiB") + size(r2_fastq[index], "GiB") + size(non_optional_i1_fastq[index], "GiB")) * 2.2)
+          disk = ceil((size(r1_fastq[index], "GiB") + size(r2_fastq[index], "GiB") + size(non_optional_i1_fastq[index], "GiB")) * 1.2 + 10)
       }
     }
 
@@ -104,7 +104,7 @@ workflow Optimus {
         input:
           fastq_files = [r1_fastq[index], r2_fastq[index]],
           limits_file = fastqc_limits,
-          disk = ceil((size(r1_fastq[index], "GiB") + size(r2_fastq[index], "GiB")) * 2.2)
+          disk = ceil((size(r1_fastq[index], "GiB") + size(r2_fastq[index], "GiB")) * 1.2 + 10)
       }
     }
 
