@@ -50,7 +50,7 @@ workflow ATAC {
       output_base_name = output_base_name + ".R2"
   }
 
-  call Align {
+  call StarAlignBamDoubleEnd {
     input:
       fastq_input_read1 = TrimAdapters.fastq_trimmed_adapter_output_read1,
       fastq_input_read2 = TrimAdapters.fastq_trimmed_adapter_output_read2,
@@ -210,38 +210,40 @@ task CreateUnmappedBam   {
   }
 }
 
-# FIXME
-# map the reads using bwa
-task Align {
+task StarAlignBamDoubleEnd {
   input {
     File fastq_input_read1
     File fastq_input_read2
-    File reference_fasta
+    File tar_star_reference
+    Int cpu = 16
     String output_base_name
-    String docker_image = "hisplan/snaptools:latest"
+    String docker_image = "quay.io/humancellatlas/secondary-analysis-star:v0.2.2-2.5.3a-40ead6e"
   }
 
-  # output name for sorted bam
-  String bam_align_output_name = output_base_name + ".aligned.bam"
-
   # input file size
-  Float input_size = size(fastq_input_read1, "GB") + size(fastq_input_read2, "GB") + size(reference_fasta, "GB")
+  Float input_size = size(tar_star_reference, "Gi") * 2.5 + size(fastq_input_read1, "GB") + size(fastq_input_read2, "GB") + size(reference_fasta, "GB")
 
   # sort with samtools
   command <<<
     set -euo pipefail
 
-    snaptools align-paired-end \
-      --input-fastq1=~{fastq_input_read1} \
-      --input-fastq2=~{fastq_input_read2} \
-      --input-reference=~{reference_fasta} \
-      --output-bam=~{output_base_name} \
-      --aligner=bwa \
-      --path-to-aligner=/tools/bwa \
-      --read-fastq-command=zcat \
-      --min-cov=0 \
-      --tmp-folder=./ \
-      --overwrite=TRUE
+    # prepare reference
+    mkdir genome_reference
+    tar -xf "${tar_star_reference}" -C genome_reference --strip-components 1
+    rm "${tar_star_reference}"
+
+    STAR \
+      --runMode alignReads \
+      --runThreadN ~{cpu} \
+      --genomeDir genome_reference \
+      --readFilesIn "${bam_input}" \
+      --outSAMtype BAM Unsorted \
+      --outSAMmultNmax -1 \
+      --outSAMattributes All \
+      --outSAMunmapped Within \
+      --readFilesType SAM PE \
+      --readFilesCommand samtools view -h \
+      --runRNGseed 777
   >>>
 
   runtime {
@@ -249,13 +251,12 @@ task Align {
     # if the input size is less than 1 GB adjust to min input size of 1 GB
     # disks should be set to 3.25 * input file size
     disks: "local-disk " + ceil(3.25 * (if input_size < 1 then 1 else input_size)) + " HDD"
-    cpu: 1
+    cpu: cpu
     memory: "3.5 GB"
   }
 
   output {
-    File bam_align_output = bam_align_output_name
-    File monitoring_log = "monitoring.log"
+    File bam_align_output = "Aligned.out.bam"
   }
 
 }
