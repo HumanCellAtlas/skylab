@@ -3,6 +3,7 @@ task Attach10xBarcodes {
   File? i1_fastq
   File r2_unmapped_bam
   File whitelist
+  Boolean v3 = false
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.2"
@@ -21,7 +22,8 @@ task Attach10xBarcodes {
     r1_fastq: "forward fastq file; contains umi, cell barcode"
     i1_fastq: "optional, index fastq file; contains sample barcode"
     r2_unmapped_bam: "reverse unmapped bam file; contains alignable genomic information"
-    whitelist: "10x genomics cell barcode whitelist for 10x V2"
+    whitelist: "10x genomics cell barcode whitelist"
+    v3: "assume 10X Genomics v3 chemistry with 12bp UMI (in contrast to default v2 with 10bp UMI)"
     docker: "(optional) the docker image containing the runtime environment for this task"
     machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
@@ -37,7 +39,8 @@ task Attach10xBarcodes {
       ${"--i1 " + i1_fastq} \
       --u2 "${r2_unmapped_bam}" \
       --output-bamfile barcoded.bam \
-      --whitelist "${whitelist}"
+      --whitelist "${whitelist}" \
+      ${if v3 then "--molecule-barcode-length 12" else ""}
   }
   
   runtime {
