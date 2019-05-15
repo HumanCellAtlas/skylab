@@ -13,7 +13,7 @@ workflow ATAC {
    String adapter_seq_read2
 
    # STAR reference, pre-build
-   File tar_star_reference
+   File tar_bwa_reference
 
    # genome name and genome size file
    String genome_name
@@ -38,29 +38,29 @@ workflow ATAC {
       output_base_name = output_base_name
   }
 
-  call CreateUnmappedBam as CreateUnmappedBamRead1 {
+  call BWAPairedEndALignment {
     input:
-      fastq_input = TrimAdapters.fastq_trimmed_adapter_output_read1,
-      output_base_name = output_base_name + ".R1"
-  }
-
-  call CreateUnmappedBam as CreateUnmappedBamRead2 {
-    input:
-      fastq_input = TrimAdapters.fastq_trimmed_adapter_output_read2,
-      output_base_name = output_base_name + ".R2"
-  }
-
-  call StarAlignBamPairedEnd {
-    input:
-      bam_input_read1 = CreateUnmappedBamRead1.unmapped_bam_output,
-      bam_input_read2 = CreateUnmappedBamRead2.unmapped_bam_output,
-      tar_star_reference = tar_star_reference,
+      fastq_input_read1 = TrimAdapters.fastq_trimmed_adapter_output_read1,
+      fastq_input_read2 = TrimAdapters.fastq_trimmed_adapter_output_read2,
+      tar_bwa_reference = tar_bwa_reference,
       output_base_name = output_base_name
+  }
+
+  call SamToBam {
+    input:
+      sam_input = BWAPairedEndALignment.sam_aligned_output,
+      output_base_name = output_base_name
+  }
+
+  call MakeCompliantBAM as MakeCompliantAlignedBAM {
+    input:
+      bam_input = SamToBam.bam_output,
+      output_base_name = output_base_name + ".aligned"
   }
 
   call Sort as SortCoordinateOrder {
     input:
-      bam_input = StarAlignBamPairedEnd.bam_aligned_output,
+      bam_input = SamToBam.bam_output,
       sort_order = "coordinate",
       output_base_name = output_base_name
   }
@@ -91,6 +91,12 @@ workflow ATAC {
       output_base_name = output_base_name
   }
 
+  call MakeCompliantBAM as MakeCompliantChrMBAM {
+     input:
+      bam_input = FilterMitochondrialReads.bam_chrM_reads_output,
+      output_base_name = output_base_name + ".chrM_reads"
+  }
+
   call Sort as SortQueryName {
     input:
       bam_input = FilterMitochondrialReads.bam_no_chrM_reads_output,
@@ -98,24 +104,32 @@ workflow ATAC {
       output_base_name = output_base_name
   }
 
+  call MakeCompliantBAM as MakeCompliantFilteredAndSortedBAM {
+    input:
+      bam_input = SortQueryName.bam_sort_output,
+      output_base_name = output_base_name + ".filtered_and_sorted"
+  }
+
   call SnapPre {
     input:
-      input_bam = SortQueryName.bam_sort_output,
-      output_snap_basename = output_base_name + ".snap",
+      bam_input= SortQueryName.bam_sort_output,
+      output_base_name = output_base_name,
       genome_name = genome_name,
       genome_size_file = genome_size_file
   }
 
   call SnapCellByBin {
     input:
-        snap_input=SnapPre.output_snap,
-        bin_size_list = "5000 10000"
+      snap_input=SnapPre.snap_file_output,
+      bin_size_list = "5000 10000"
   }
 
   output {
-    File output_snap_qc = SnapPre.output_snap_qc
-    File output_snap = SnapCellByBin.output_snap
-    File output_aligned_bam = SortQueryName.bam_sort_output
+    File bam_aligned_compliant_output = MakeCompliantAlignedBAM.compliant_bam_output
+    File bam_chrM_reads_compliant_output = MakeCompliantChrMBAM.compliant_bam_output
+    File bam_filtered_and_sorted_compliant_output = MakeCompliantFilteredAndSortedBAM.compliant_bam_output
+    File snap_qc_output = SnapPre.snap_qc_output
+    File snap_output = SnapCellByBin.snap_output
   }
 }
 
@@ -131,8 +145,9 @@ task TrimAdapters {
     String docker_image = "quay.io/broadinstitute/cutadapt:1.18"
   }
 
-  # input file size
-  Float input_size = size(fastq_input_read1, "GB") + size(fastq_input_read2, "GB")
+  # runtime requirements based upon input file size
+  Float input_size = size(fastq_input_read1, "GiB") + size(fastq_input_read2, "GiB")
+  Int disk_size = ceil(2 * (if input_size < 1 then 1 else input_size))
 
   # output names for trimmed reads
   String fastq_trimmed_adapter_output_name_read1 = output_base_name + ".R1.trimmed_adapters.fastq.gz"
@@ -157,11 +172,9 @@ task TrimAdapters {
   # use docker image for given tool cutadapat
   runtime {
     docker: docker_image
-    # if the input size is less than 1 GB adjust to min input size of 1 GB
-    # disks should be set to 2 * input file size
-    disks: "local-disk " + ceil(2 * (if input_size < 1 then 1 else input_size)) + " HDD"
+    disks: "local-disk " + disk_size + " HDD"
     cpu: 1
-    memory: "3.5 GB"
+    memory: "3.75 GiB"
   }
 
   output {
@@ -171,59 +184,21 @@ task TrimAdapters {
   }
 }
 
-task CreateUnmappedBam   {
+task BWAPairedEndALignment {
   input {
-    File fastq_input
-    String output_base_name
-    String docker_image = "quay.io/broadinstitute/picard:2.18.23"
-  }
-
-  # input file size
-  Float input_size = size(fastq_input, "GB")
-
-  # output names for bam with
-  String unmapped_bam_output_name = output_base_name + ".unmapped.bam"
-
-  command <<<
-    set -euo pipefail
-
-    # create an unmapped bam
-    java -jar /picard-tools/picard.jar FastqToSam \
-      FASTQ=~{fastq_input} \
-      SAMPLE_NAME=~{output_base_name} \
-      OUTPUT=~{unmapped_bam_output_name}
-  >>>
-
-  # use docker image for given tool cutadapat
-  runtime {
-    docker: docker_image
-    # if the input size is less than 1 GB adjust to min input size of 1 GB
-    # disks should be set to 2.25 * input file size
-    disks: "local-disk " + ceil(2.25 * (if input_size < 1 then 1 else input_size)) + " HDD"
-    cpu: 1
-    memory: "3.5 GB"
-  }
-
-  output {
-    File unmapped_bam_output = unmapped_bam_output_name
-    File monitoring_log = "monitoring.log"
-  }
-}
-
-task StarAlignBamPairedEnd {
-  input {
-    File bam_input_read1
-    File bam_input_read2
-    File tar_star_reference
+    File fastq_input_read1
+    File fastq_input_read2
+    File tar_bwa_reference
     Int cpu = 16
     String output_base_name
-    String docker_image = "quay.io/humancellatlas/secondary-analysis-star:v0.2.2-2.5.3a-40ead6e"
+    String docker_image = "quay.io/humancellatlas/snaptools:0.0.1"
   }
 
-  # input file size
-  Float input_size = size(tar_star_reference, "Gi") + size(bam_input_read1, "GB") + size(bam_input_read2, "GB") + size(tar_star_reference, "GB")
+  # runtime requirements based upon input file size
+  Float input_size = size(fastq_input_read1, "GiB") + size(fastq_input_read2, "GiB") + size(tar_bwa_reference, "GiB")
+  Int disk_size = ceil(3.25 * (if input_size < 1 then 1 else input_size))
 
-  String bam_aligned_output_name = output_base_name + ".aligned.bam"
+  String sam_aligned_output_name = output_base_name + ".aligned.sam"
 
   # sort with samtools
   command <<<
@@ -231,37 +206,66 @@ task StarAlignBamPairedEnd {
 
     # prepare reference
     declare -r REF_DIR=$(mktemp -d genome_referenceXXXXXX)
-    tar -xf "~{tar_star_reference}" -C $REF_DIR --strip-components 1
-    rm "~{tar_star_reference}"
+    tar -xf "~{tar_bwa_reference}" -C $REF_DIR --strip-components 1
+    rm "~{tar_bwa_reference}"
 
-    STAR \
-      --runMode alignReads \
-      --runThreadN ~{cpu} \
-      --genomeDir genome_reference \
-      --readFilesIn ~{bam_input_read1} ~{bam_input_read2} \
-      --outSAMtype BAM Unsorted \
-      --outSAMmultNmax -1 \
-      --outSAMattributes All \
-      --outSAMunmapped Within \
-      --readFilesType SAM PE \
-      --readFilesCommand samtools view -h \
-      --runRNGseed 777
-      --outStd BAM_Unsorted > ~{bam_aligned_output_name}
+    # align w/ BWA: -t for number of cores
+    bwa \
+      mem \
+      -t ~{cpu} \
+      $REF_DIR/genomes.fa \
+      <(zcat ~{fastq_input_read1}) <(zcat ~{fastq_input_read2}) \
+      > ~{sam_aligned_output_name}
   >>>
 
   runtime {
     docker: docker_image
-    # if the input size is less than 1 GB adjust to min input size of 1 GB
-    # disks should be set to 3.25 * input file size
-    disks: "local-disk " + ceil(3.25 * (if input_size < 1 then 1 else input_size)) + " HDD"
-    cpu: cpu
-    memory: "3.5 GB"
+    disks: "local-disk " + disk_size + " HDD"
+    cpu: 1
+    memory: "3.75 GiB"
   }
 
   output {
-    File bam_aligned_output = bam_aligned_output_name
+    File sam_aligned_output = sam_aligned_output_name
+    File monitoring_log = "monitoring.log"
+  }
+}
+
+# filter bam with a minimum mapping quality
+task SamToBam {
+  input {
+    File sam_input
+    String output_base_name
+    String docker_image = "quay.io/broadinstitute/samtools:1.9"
   }
 
+  # output name for filtered read
+  String bam_output_name = output_base_name + ".bam"
+
+  # runtime requirements based upon input file size
+  Float disk_size = ceil(2 * (if size(sam_input, "GiB") < 1 then 1 else size(sam_input, "GiB")))
+
+  command <<<
+    set -euo pipefail
+
+    # converst sam to bam
+    samtools view \
+      -bhS \
+      ~{sam_input} \
+      -o ~{bam_output_name}
+  >>>
+
+  runtime {
+    docker: docker_image
+    disks: "local-disk " + disk_size + " HDD"
+    cpu: 1
+    memory: "3.75 GiB"
+  }
+
+  output {
+    File bam_output = bam_output_name
+    File monitoring_log = "monitoring.log"
+  }
 }
 
 task Sort {
@@ -273,10 +277,10 @@ task Sort {
   }
 
   # output name for sorted bam
-  String bam_sort_output_name = output_base_name + ".sorted.bam"
+  String bam_sort_output_name = output_base_name + ".sorted." + sort_order + ".bam"
 
-  # input file size
-  Float input_size = size(bam_input, "GB")
+  # runtime requirements based upon input file size
+  Int disk_size = ceil(3.25 * (if size(bam_input, "GiB") < 1 then 1 else size(bam_input, "GiB")))
 
   # sort with samtools
   command <<<
@@ -291,11 +295,9 @@ task Sort {
 
   runtime {
     docker: docker_image
-    # if the input size is less than 1 GB adjust to min input size of 1 GB
-    # disks should be set to 3.25 * input file size
-    disks: "local-disk " + ceil(3.25 * (if input_size < 1 then 1 else input_size)) + " HDD"
+    disks: "local-disk " + disk_size + " HDD"
     cpu: 1
-    memory: "3.5 GB"
+    memory: "3.75 GiB"
   }
 
   output {
@@ -316,8 +318,8 @@ task FilterMarkDuplicates {
   String bam_remove_dup_output_name = output_base_name + ".filtered.duplicates.bam"
   String metric_remove_dup_output_name = output_base_name + ".filtered.duplicate_metrics"
 
-  # input file size
-  Float input_size = size(bam_input, "GB")
+  # runtime requirements based upon input file size
+  Int disk_size = ceil(2 * (if size(bam_input, "GiB") < 1 then 1 else size(bam_input, "GiB")))
 
   command <<<
     set -euo pipefail
@@ -330,11 +332,9 @@ task FilterMarkDuplicates {
 
   runtime {
      docker: docker_image
-     # if the input size is less than 1 GB adjust to min input size of 1 GB
-     # disks should be set to 2 * input file size
-     disks: "local-disk " + ceil(2 * (if input_size < 1 then 1 else input_size)) + " HDD"
+     disks: "local-disk " + disk_size + " HDD"
      cpu: 1
-     memory: "3.5 GB"
+     memory: "3.75 GiB"
   }
 
   output {
@@ -356,8 +356,8 @@ task FilterMinMapQuality {
   # output name for filtered read
   String bam_filter_mapq_output_name = output_base_name + ".filtered.min_map_quality.bam"
 
-  # input file size
-  Float input_size = size(bam_input, "GB")
+  # runtime requirements based upon input file size
+  Float disk_size = ceil(2 * (if size(bam_input, "GiB") < 1 then 1 else size(bam_input, "GiB")))
 
   command <<<
     set -euo pipefail
@@ -365,18 +365,17 @@ task FilterMinMapQuality {
     # filter for a map quality
     # -b output is bam, -h include header, -q reads with mapping quality >=
     samtools view \
-      -bhq~{min_map_quality} \
+      -bh \
+      -q~{min_map_quality} \
       ~{bam_input} \
       > ~{bam_filter_mapq_output_name}
   >>>
 
   runtime {
     docker: docker_image
-    # if the input size is less than 1 GB adjust to min input size of 1 GB
-    # disks should be set to 2 * input file size
-    disks: "local-disk " + ceil(2 * (if input_size < 1 then 1 else input_size)) + " HDD"
+    disks: "local-disk " + disk_size + " HDD"
     cpu: 1
-    memory: "3.5 GB"
+    memory: "3.75 GiB"
   }
 
   output {
@@ -397,8 +396,8 @@ task FilterMaxFragmentLength {
   # output name for filtered read
   String bam_filter_fragment_length_output_name = output_base_name + ".filtered.max_fragment_length.bam"
 
-  # input file size
-  Float input_size = size(bam_input, "GB")
+  # runtime requirements based upon input file size
+  Int disk_size = ceil(2 * (if size(bam_input, "GiB") < 1 then 1 else size(bam_input, "GiB")))
 
   command <<<
     set -euo pipefail
@@ -411,11 +410,9 @@ task FilterMaxFragmentLength {
 
   runtime {
     docker: docker_image
-    # if the input size is less than 1 GB adjust to min input size of 1 GB
-    # disks should be set to 2 * input file size
-    disks: "local-disk " + ceil(2 * (if input_size < 1 then 1 else input_size)) + " HDD"
+    disks: "local-disk " + disk_size + " HDD"
     cpu: 1
-    memory: "3.5 GB"
+    memory: "3.75 GiB"
   }
 
   output {
@@ -436,8 +433,8 @@ task FilterMitochondrialReads {
   String bam_chrM_reads_output_name = output_base_name + ".filtered.mitochondrial_reads.bam"
   String bam_no_chrM_reads_output_name = output_base_name +".filtered.no_mitochondrial_reads.bam"
 
-  # input file size
-  Float input_size = size(bam_input, "GB")
+  # runtime requirements based upon input file size
+  Int disk_size = ceil(2 * (if size(bam_input, "GiB") < 1 then 1 else size(bam_input, "GiB")))
 
   # ChrM: mitochondrial chromosome
   command <<<
@@ -446,24 +443,24 @@ task FilterMitochondrialReads {
     # get bam w/o chrM
     list_chrs=`samtools view -H ${input_bam} | grep chr | cut -f2 | sed 's/SN://g' | grep -v 'chrM\|_'`
     samtools view \
-      -b -q 30 -f 0x2 \
+      -bh \
+      -f 0x2 \
       ~{bam_input} \
       -o ~{bam_no_chrM_reads_output_name} `echo $list_chrs`
 
     #get bam with only chrM
     samtools view  \
+      -bh \
       ~{bam_input} \
       ChrM \
-      > ~{bam_chrM_reads_output_name}
+      -o ~{bam_chrM_reads_output_name}
   >>>
 
   runtime {
     docker: docker_image
-    # if the input size is less than 1 GB adjust to min input size of 1 GB
-    # disks should be set to 2 * input file size
-    disks: "local-disk " + ceil(2 * (if input_size < 1 then 1 else input_size)) + " HDD"
+    disks: "local-disk " + disk_size + " HDD"
     cpu: 1
-    memory: "3.5 GB"
+    memory: "3.75 GiB"
   }
 
   output {
@@ -475,20 +472,27 @@ task FilterMitochondrialReads {
 
 task SnapPre {
   input {
-    File input_bam
-    String output_snap_basename
+    File bam_input
+    String output_base_name
     String genome_name
     File genome_size_file
-    String docker_image = "hisplan/snaptools:latest"
+    String docker_image = "quay.io/humancellatlas/snaptools:0.0.1"
   }
+
+  String snap_file_output_name = output_base_name + ".snap"
+  String snap_qc_output_name = snap_file_output_name + ".qc"
+
+
+  # TODO:
+  # update disk size to be dynamilcally updated based off of input file size
 
   command {
     set -euo pipefail
 
     # Does the main counting
     snaptools snap-pre \
-      --input-file=~{input_bam} \
-      --output-snap=~{output_snap_basename} \
+      --input-file=~{bam_input} \
+      --output-snap=~{snap_file_output_name} \
       --genome-name=~{genome_name} \
       --genome-size=~{genome_size_file} \
       --min-mapq=0  \
@@ -502,15 +506,17 @@ task SnapPre {
       --min-cov=100  \
       --verbose=True
   }
-  output {
-    File output_snap = output_snap_basename
-    File output_snap_qc = output_snap_basename + ".qc"
-  }
+
   runtime {
     docker: docker_image
     cpu: 1
-    memory: "16 GB"
+    memory: "16 GiB"
     disks: "local-disk 150 HDD"
+  }
+
+  output {
+    File snap_file_output = snap_file_output_name
+    File snap_qc_output = snap_qc_output_name
   }
 }
 
@@ -518,7 +524,7 @@ task SnapCellByBin {
   input {
     File snap_input
     String bin_size_list
-    String docker_image = "hisplan/snaptools:latest"
+    String docker_image = "quay.io/humancellatlas/snaptools:0.0.1"
   }
 
   command {
@@ -530,13 +536,44 @@ task SnapCellByBin {
       --bin-size-list ~{bin_size_list}  \
       --verbose=True
   }
-  output {
-    File output_snap = snap_input
-  }
+
   runtime {
     docker: docker_image
     cpu: 1
-    memory: "16 GB"
+    memory: "16 GiB"
     disks: "local-disk 150 HDD"
+  }
+
+  output {
+    File snap_output = snap_input
+  }
+}
+
+task MakeCompliantBAM {
+  input {
+    File bam_input
+    String output_base_name
+    String docker_image = "quay.io/humancellatlas/snaptools:0.0.1"
+  }
+
+  Int disk_size = ceil(2.5 * (if size(bam_input, "GiB") < 1 then 1 else size(bam_input, "GiB")))
+
+  String compliant_bam_output_name = output_base_name + ".compliant.bam"
+
+  command {
+    makeCompliantBam.py \
+      --input-bam ~{bam_input} \
+      --output-bam ~{compliant_bam_output_name}
+  }
+
+  runtime {
+    docker: docker_image
+    cpu: 1
+    memory: "4 GiB"
+    disks: "local-disk " + disk_size + " HDD"
+  }
+
+  output {
+    File compliant_bam_output = compliant_bam_output_name
   }
 }
