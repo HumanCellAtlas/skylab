@@ -34,7 +34,11 @@ printf "done\n"
 
 ## Check the output md5 checksum
 printf "Verifying checksum..."
-md5out=`md5sum ${filterCellsOutput} | cut -f 1 -d ' '`
+if [ "$(uname)" == "Darwin" ]; then
+    md5out=`md5 -r ${filterCellsOutput} | cut -f 1 -d ' '`
+else
+    md5out=`md5sum ${filterCellsOutput} | cut -f 1 -d ' '`
+fi
 
 exitCode=0
 if [ "$md5out" = "$md5checksum" ];
