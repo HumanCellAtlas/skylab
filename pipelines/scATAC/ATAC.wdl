@@ -213,7 +213,7 @@ task BWAPairedEndALignment {
     bwa \
       mem \
       -t ~{cpu} \
-      $REF_DIR/genomes.fa \
+      $REF_DIR/genome.fa \
       <(zcat ~{fastq_input_read1}) <(zcat ~{fastq_input_read2}) \
       > ~{sam_aligned_output_name}
   >>>
@@ -221,7 +221,7 @@ task BWAPairedEndALignment {
   runtime {
     docker: docker_image
     disks: "local-disk " + disk_size + " HDD"
-    cpu: 1
+    cpu: cpu
     memory: "3.75 GiB"
   }
 
@@ -243,7 +243,7 @@ task SamToBam {
   String bam_output_name = output_base_name + ".bam"
 
   # runtime requirements based upon input file size
-  Float disk_size = ceil(2 * (if size(sam_input, "GiB") < 1 then 1 else size(sam_input, "GiB")))
+  Int disk_size = ceil(2 * (if size(sam_input, "GiB") < 1 then 1 else size(sam_input, "GiB")))
 
   command <<<
     set -euo pipefail
@@ -357,7 +357,7 @@ task FilterMinMapQuality {
   String bam_filter_mapq_output_name = output_base_name + ".filtered.min_map_quality.bam"
 
   # runtime requirements based upon input file size
-  Float disk_size = ceil(2 * (if size(bam_input, "GiB") < 1 then 1 else size(bam_input, "GiB")))
+  Int disk_size = ceil(2 * (if size(bam_input, "GiB") < 1 then 1 else size(bam_input, "GiB")))
 
   command <<<
     set -euo pipefail
