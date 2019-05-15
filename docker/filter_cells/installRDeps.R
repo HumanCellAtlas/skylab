@@ -7,5 +7,5 @@ local({r <- getOption("repos")
 })
 
 ## Install OptParse
-install.packages('optparse','numDeriv')
+install.packages('optparse','numDeriv','data.table')
 
