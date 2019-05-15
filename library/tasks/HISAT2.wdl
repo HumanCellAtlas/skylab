@@ -60,7 +60,8 @@ task HISAT2PairedEnd {
 
     # run HISAT2 to genome reference with dedault parameters
     # --seed to fix pseudo-random number and in order to produce deterministics results
-    # -k --secondary to output multiple mapping reads. --keep 10 will output up to 10 multiple mapping reads, which is default in HISAT2
+    # --secondary reports secondary alignments for multimapping reads. -k 10
+    # searches for up to 10 primary alignments for each read
     hisat2 -t \
       -x ${ref_name}/${ref_name} \
       -1 $FQ1 \
@@ -152,11 +153,11 @@ task HISAT2RSEM {
     tar --no-same-owner -xvf "${hisat2_ref}"
 
     # increase gap alignment penalty to avoid gap alignment
-    # --mp 1,1 --np 1 --score-min L,0,-0.1 is default paramesters when rsem runs alignment by using bowtie2/Bowtie
+    # --mp 1,1 --np 1 --score-min L,0,-0.1 are default parameters when rsem runs alignment by using bowtie2/Bowtie
     # --mp 1,1 and --np 1 will reduce mismatching penalty to 1 for all.
     # with no-splice-alignment no-softclip no-mixed options on, HISAT2 will only output concordant alignment without soft-cliping
-    # --rdg 99999999,99999999 and --rfg 99999999,99999999 will give an infinity penalty to alignment with indel.As results
-    # no indel/gaps in alignments
+    # --rdg 99999999,99999999 and --rfg 99999999,99999999 will set an infinite penalty to alignments with indels.
+    # As a result, alignments with gaps or deletions are excluded.
     hisat2 -t \
       -x ${ref_name}/${ref_name} \
       -1 $FQ1 \
@@ -233,6 +234,8 @@ task HISAT2SingleEnd {
   command {
     set -e
     tar --no-same-owner -xvf "${hisat2_ref}"
+
+    # The parameters for this task are copied from the HISAT2PairedEnd task.
     hisat2 -t \
       -x ${ref_name}/${ref_name} \
       -U ${fastq} \
@@ -362,8 +365,8 @@ task HISAT2RSEMSingleEnd {
     # --mp 1,1 --np 1 --score-min L,0,-0.1 is default paramesters when rsem runs alignment by using bowtie2/Bowtie
     # --mp 1,1 and --np 1 will reduce mismatching penalty to 1 for all.
     # with no-splice-alignment no-softclip no-mixed options on, HISAT2 will only output concordant alignment without soft-cliping
-    # --rdg 99999999,99999999 and --rfg 99999999,99999999 will give an infinity penalty to alignment with indel.As results
-    # no indel/gaps in alignments
+    # --rdg 99999999,99999999 and --rfg 99999999,99999999 will set an infinite penalty to alignments with indels.
+    # As a result, alignments with gaps or deletions are excluded.
     hisat2 -t \
       -x ${ref_name}/${ref_name} \
       -U $FQ \
