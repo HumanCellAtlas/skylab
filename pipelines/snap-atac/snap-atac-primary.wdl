@@ -28,7 +28,8 @@ workflow scATAC {
         input:
             input_bam = AlignPairedEnd.aligned_bam,
             output_snap_basename = 'output.snap',
-            genome_name = genome_name
+            genome_name = genome_name,
+            input_reference = input_reference,
     }
     call SnapCellByBin {
         input:
@@ -104,12 +105,15 @@ task SnapPre {
         String genome_name
         String genome_size_file = "genome/chrom.sizes"
         String docker_image = "quay.io/humancellatlas/snaptools:0.0.1"
+        File input_reference
     }
 
     Int num_threads = 1
 
     command {
         set -euo pipefail
+
+        tar xf ~{input_reference}
 
         # Does the main counting
         snaptools snap-pre \
