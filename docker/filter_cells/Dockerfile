@@ -4,7 +4,7 @@ FROM ubuntu:16.04
 # Image label
 LABEL maintainer="Nick Barkas <nbarkas@broadinstititute.org>" \
   software="Filter Cells R Image" \
-  version="1.2.1-0.1.0" \
+  version="0.0.1" \
   description="R image for running filter cells"
 
 # Enable source repositories to install deps for R and update the apt-get list
