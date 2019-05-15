@@ -34,12 +34,12 @@ task ValidateSnapATAC {
       fail=true
     fi
 
-    if ["$snap_hash" !' "${expected_snap_hash}" ]; then
+    if [ "$snap_hash" != "${expected_snap_hash}" ]; then
       >&2 echo "snap_hash ($snap_hash) did not match expected hash (${expected_snap_hash})"
       fail=true
     fi
 
-    if ["$snapqc_hash" !' "${expected_snapqc_hash}" ]; then
+    if [ "$snapqc_hash" != "${expected_snapqc_hash}" ]; then
       >&2 echo "snapqc_hash ($snapqc_hash) did not match expected hash (${expected_snapqc_hash})"
       fail=true
     fi
