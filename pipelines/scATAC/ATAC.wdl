@@ -12,8 +12,11 @@ workflow ATAC {
    String adapter_seq_read1
    String adapter_seq_read2
 
-   # STAR reference, pre-build
+   # BWA: pre built reference, default read group name and # of cores
    File tar_bwa_reference
+   String read_group_id = "foo"
+   String read_group_sample_name = "bar"
+   Int bwa_cpu = 16
 
    # genome name and genome size file
    String genome_name
@@ -43,6 +46,9 @@ workflow ATAC {
       fastq_input_read1 = TrimAdapters.fastq_trimmed_adapter_output_read1,
       fastq_input_read2 = TrimAdapters.fastq_trimmed_adapter_output_read2,
       tar_bwa_reference = tar_bwa_reference,
+      read_group_id = read_group_id,
+      read_group_sample_name = read_group_sample_name,
+      cpu = bwa_cpu,
       output_base_name = output_base_name
   }
 
@@ -154,7 +160,7 @@ task TrimAdapters {
   String fastq_trimmed_adapter_output_name_read2 = output_base_name + ".R2.trimmed_adapters.fastq.gz"
 
   # using cutadapt to trim off sequence adapters
-  command <<<
+  command {
     set -euo pipefail
 
     # fastq's, "-f", -A for paired adapters read 2"
@@ -167,7 +173,7 @@ task TrimAdapters {
       --output ~{fastq_trimmed_adapter_output_name_read1} \
       --paired-output ~{fastq_trimmed_adapter_output_name_read2} \
       ~{fastq_input_read1} ~{fastq_input_read2}
-  >>>
+  }
 
   # use docker image for given tool cutadapat
   runtime {
@@ -184,12 +190,16 @@ task TrimAdapters {
   }
 }
 
+# TODO:
+# update docker image to be tool specific
 task BWAPairedEndALignment {
   input {
     File fastq_input_read1
     File fastq_input_read2
     File tar_bwa_reference
-    Int cpu = 16
+    String read_group_id
+    String read_group_sample_name
+    Int cpu
     String output_base_name
     String docker_image = "quay.io/humancellatlas/snaptools:0.0.1"
   }
@@ -201,7 +211,7 @@ task BWAPairedEndALignment {
   String sam_aligned_output_name = output_base_name + ".aligned.sam"
 
   # sort with samtools
-  command <<<
+  command {
     set -euo pipefail
 
     # prepare reference
@@ -212,11 +222,12 @@ task BWAPairedEndALignment {
     # align w/ BWA: -t for number of cores
     bwa \
       mem \
+      -R "@RG\tID:~{read_group_id}\tSM:~{read_group_sample_name}" \
       -t ~{cpu} \
       $REF_DIR/genome.fa \
       <(zcat ~{fastq_input_read1}) <(zcat ~{fastq_input_read2}) \
       > ~{sam_aligned_output_name}
-  >>>
+  }
 
   runtime {
     docker: docker_image
@@ -245,7 +256,7 @@ task SamToBam {
   # runtime requirements based upon input file size
   Int disk_size = ceil(2 * (if size(sam_input, "GiB") < 1 then 1 else size(sam_input, "GiB")))
 
-  command <<<
+  command {
     set -euo pipefail
 
     # converst sam to bam
@@ -253,7 +264,7 @@ task SamToBam {
       -bhS \
       ~{sam_input} \
       -o ~{bam_output_name}
-  >>>
+  }
 
   runtime {
     docker: docker_image
@@ -283,7 +294,7 @@ task Sort {
   Int disk_size = ceil(3.25 * (if size(bam_input, "GiB") < 1 then 1 else size(bam_input, "GiB")))
 
   # sort with samtools
-  command <<<
+  command {
     set -euo pipefail
 
     java -jar /picard-tools/picard.jar SortSam \
@@ -291,7 +302,7 @@ task Sort {
       SORT_ORDER=~{sort_order} \
       MAX_RECORDS_IN_RAM=300000 \
       OUTPUT=~{bam_sort_output_name}
-  >>>
+  }
 
   runtime {
     docker: docker_image
@@ -321,14 +332,14 @@ task FilterMarkDuplicates {
   # runtime requirements based upon input file size
   Int disk_size = ceil(2 * (if size(bam_input, "GiB") < 1 then 1 else size(bam_input, "GiB")))
 
-  command <<<
+  command {
     set -euo pipefail
 
     java -jar /picard-tools/picard.jar MarkDuplicates \
       INPUT=~{bam_input} \
       OUTPUT=~{bam_remove_dup_output_name} \
       METRICS_FILE=~{metric_remove_dup_output_name}
-  >>>
+  }
 
   runtime {
      docker: docker_image
@@ -359,7 +370,7 @@ task FilterMinMapQuality {
   # runtime requirements based upon input file size
   Int disk_size = ceil(2 * (if size(bam_input, "GiB") < 1 then 1 else size(bam_input, "GiB")))
 
-  command <<<
+  command {
     set -euo pipefail
 
     # filter for a map quality
@@ -369,7 +380,7 @@ task FilterMinMapQuality {
       -q~{min_map_quality} \
       ~{bam_input} \
       > ~{bam_filter_mapq_output_name}
-  >>>
+  }
 
   runtime {
     docker: docker_image
@@ -399,14 +410,14 @@ task FilterMaxFragmentLength {
   # runtime requirements based upon input file size
   Int disk_size = ceil(2 * (if size(bam_input, "GiB") < 1 then 1 else size(bam_input, "GiB")))
 
-  command <<<
+  command {
     set -euo pipefail
 
     gatk PrintReads \
       --input=~{bam_input} \
       --read-filter FragmentLengthReadFilter --max-fragment-length ~{max_fragment_length} \
       --output=~{bam_filter_fragment_length_output_name}
-  >>>
+  }
 
   runtime {
     docker: docker_image
@@ -437,24 +448,33 @@ task FilterMitochondrialReads {
   Int disk_size = ceil(2 * (if size(bam_input, "GiB") < 1 then 1 else size(bam_input, "GiB")))
 
   # ChrM: mitochondrial chromosome
-  command <<<
+  command {
     set -euo pipefail
 
+    # create bam index to filter by chromosome
+    samtools index -b ~{bam_input}
+
     # get bam w/o chrM
-    list_chrs=`samtools view -H ${input_bam} | grep chr | cut -f2 | sed 's/SN://g' | grep -v 'chrM\|_'`
+    list_chrs=`samtools view -H ~{bam_input} \
+      | grep chr \
+      | cut -f2 \
+      | sed 's/SN://g' \
+      | grep -v 'chrM\|_'`
+
     samtools view \
       -bh \
       -f 0x2 \
       ~{bam_input} \
-      -o ~{bam_no_chrM_reads_output_name} `echo $list_chrs`
+      `echo $list_chrs` \
+      -o ~{bam_no_chrM_reads_output_name}
 
     #get bam with only chrM
     samtools view  \
       -bh \
       ~{bam_input} \
-      ChrM \
+      chrM \
       -o ~{bam_chrM_reads_output_name}
-  >>>
+  }
 
   runtime {
     docker: docker_image
@@ -497,7 +517,7 @@ task SnapPre {
       --genome-size=~{genome_size_file} \
       --min-mapq=0  \
       --min-flen=0  \
-      --max-flen=100000  \
+      --max-flen=30000  \
       --keep-chrm=TRUE  \
       --keep-single=TRUE  \
       --keep-secondary=False  \
@@ -549,6 +569,8 @@ task SnapCellByBin {
   }
 }
 
+# TODO:
+# update docker image to be tool specific
 task MakeCompliantBAM {
   input {
     File bam_input
@@ -561,7 +583,7 @@ task MakeCompliantBAM {
   String compliant_bam_output_name = output_base_name + ".compliant.bam"
 
   command {
-    python tools/makeCompliantBam.py \
+    makeCompliantBAM.py \
       --input-bam ~{bam_input} \
       --output-bam ~{compliant_bam_output_name}
   }
