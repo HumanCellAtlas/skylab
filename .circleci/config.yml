@@ -52,6 +52,17 @@ jobs:
                 command: |
                     cd docker/emptydrops/npz2rds/test/
                     ./test.sh
+
+    test_bulk_rna:
+        machine: true
+
+    steps:
+        - checkout
+        - run:
+            command: |
+                ./test/trigger_test.sh bulk_rna_pipeline
+            no_output_timeout: 1.5h
+
 workflows:
     version: 2
     test_all:
@@ -61,4 +72,5 @@ workflows:
           - test_smartseq2
           - test_emptyDropsWrapper
           - test_npz2rds
+          - test_bulk_rna
 
