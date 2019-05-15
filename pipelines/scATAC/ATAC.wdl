@@ -121,6 +121,7 @@ workflow ATAC {
       bam_input= SortQueryName.bam_sort_output,
       output_base_name = output_base_name,
       genome_name = genome_name,
+      max_fragment_length = max_fragment_length,
       genome_size_file = genome_size_file
   }
 
@@ -495,6 +496,7 @@ task SnapPre {
     File bam_input
     String output_base_name
     String genome_name
+    Int max_fragment_length
     File genome_size_file
     String docker_image = "quay.io/humancellatlas/snaptools:0.0.1"
   }
@@ -517,7 +519,7 @@ task SnapPre {
       --genome-size=~{genome_size_file} \
       --min-mapq=0  \
       --min-flen=0  \
-      --max-flen=30000  \
+      --max-flen=~{max_fragment_length}  \
       --keep-chrm=TRUE  \
       --keep-single=TRUE  \
       --keep-secondary=False  \
