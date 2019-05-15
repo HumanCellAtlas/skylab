@@ -184,7 +184,7 @@ task MakeCompliantBAM {
     command {
         set -euo pipefail
 
-        makeCompliantBam.py --input-bam ~{input_bam} --output-bam ~{output_bam_filename}
+        /tools/makeCompliantBAM.py --input-bam ~{input_bam} --output-bam ~{output_bam_filename}
     }
     output {
         File output_bam = output_bam_filename
