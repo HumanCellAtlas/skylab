@@ -10,7 +10,7 @@ task FastqToUBam {
   Int command_mem_mb = machine_mem_mb - 500
   Int cpu = 1
   # estimate that bam is approximately equal in size to fastq, add 20% buffer
-  Int disk = ceil(size(fastq_file, "Gi") * 2.2)
+  Int disk = ceil(size(fastq_file, "GiB") * 2.2)
   Int preemptible = 3
 
   meta {
