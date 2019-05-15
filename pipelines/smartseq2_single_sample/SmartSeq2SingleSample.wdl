@@ -160,5 +160,9 @@ workflow SmartSeq2SingleCell {
 
     # zarr
     Array[File]? zarr_output_files = SmartSeq2ZarrConversion.zarr_output_files
+
+    #fastqc
+    Array[File] fastqc_htmls = FastQC.fastqc_htmls
+    Array[File] fastqc_zips = FastQC.fastqc_zips
   }
 }

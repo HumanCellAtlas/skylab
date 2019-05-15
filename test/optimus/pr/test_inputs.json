@@ -3,6 +3,12 @@
   "TestOptimusPR.expected_matrix_hash": "aec7a79dc7b85a5d621509a3f4fa2192",
   "TestOptimusPR.expected_cell_metric_hash": "45cc8be253445201b02d102d2d096a0c",
   "TestOptimusPR.expected_gene_metric_hash": "d636671dfcff6ec8068987d0f5780334",
+  "TestOptimusPR.expected_fastqc_html_hashes": ["cb0bbb7d52198c38f2cfa87621c92e31",
+    "6697992484d279d15683b5124ab75554",
+    "26e07b94eaff3a7ea3dcc9a191bd1194"],
+  "TestOptimusPR.expected_fastqc_zip_hashes": ["5fde235436cf1f3b207bc8dba2f1d268",
+    "0f670305b6e5433feb449978ef23e7e4",
+    "75cec13e04808d13a874bea44f439dd5"],
   "TestOptimusPR.r1_fastq": [
     "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_R1_001.fastq.gz",
     "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_R1_001.fastq.gz"
