@@ -50,9 +50,8 @@ workflow TestSmartSeq2SingleCellPR {
      expected_counts_hash = expected_counts_hash,
      target_metrics = target_workflow.insert_size_metrics,
      expected_metrics_hash = expected_metrics_hash,
-     fastqc_htmls = flatten(target_workflow.fastqc_htmls),
-     fastqc_zips = flatten(target_workflow.fastqc_zips),
-
+     fastqc_htmls = target_workflow.fastqc_htmls,
+     fastqc_zips = target_workflow.fastqc_zips
   }
 
 }
