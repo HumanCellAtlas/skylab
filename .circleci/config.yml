@@ -29,6 +29,17 @@ jobs:
                 command: |
                     cd docker/emptydrops/npz2rds/test/
                     ./test.sh
+    test_npz2rds:
+        docker:
+            - image: quay.io/humancellatlas/secondary-analysis-filtercells:0.0.1
+        steps:
+            - checkout
+            - run:
+                  command: |
+                      cd docker/filter_cells/test
+                      ./test_filter_cells.sh
+
+
 workflows:
     version: 2
     test_all:
