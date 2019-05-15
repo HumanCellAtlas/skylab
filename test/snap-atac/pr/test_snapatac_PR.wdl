@@ -33,6 +33,7 @@ workflow TestSnapAtacPR {
         snap = target.output_snap,
         snapqc = target.output_snapqc,
         bam = target.output_aligned_bam,
+
         expected_snap_hash = expected_snap_hash,
         expected_snapqc_hash = expected_snapqc_hash,
         expected_bam_hash = expected_bam_hash
