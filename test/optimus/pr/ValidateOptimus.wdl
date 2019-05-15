@@ -58,6 +58,7 @@ task ValidateOptimus {
     for hmtl in ${sep=' ' fastqc_htmls}; do
       hash=$(md5sum $html | awk '{print $1}')
       if [[ " ${sep=' ' expected_fastqc_html_hashes} " != *" $hash "* ]]; then
+        >&2 echo "fastq_html_hash ($hash) did not match expected hash (${expected_fastqc_html_hashes})"
         fail=true
       fi
     done
@@ -65,6 +66,7 @@ task ValidateOptimus {
     for zipfile in ${sep=' ' fastqc_zips}; do
       hash=$(md5sum $zipfile | awk '{print $1}')
       if [[ " ${sep=' ' expected_fastqc_zip_hashes} " != *" $hash "* ]]; then
+        >&2 echo "fastq_zip_hash ($hash) did not match expected hash (${expected_fastqc_zip_hashes})"
         fail=true
       fi
     done
