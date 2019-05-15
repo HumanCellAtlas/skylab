@@ -109,6 +109,8 @@ workflow Optimus {
     }
 
     File barcoded_bam = select_first([AttachBarcodes.bam_output, AttachBarcodesNoIndex.bam_output])
+    Array[File] fastqc_output_htmls = select_first([FastQC.fastqc_htmls,FastQCNoIndex.fastqc_htmls])
+    Array[File] fastqc_output_zips = select_first([FastQC.fastqc_zips,FastQCNoIndex.fastqc_zips])
   }
 
   call Merge.MergeSortBamFiles as MergeUnsorted {
@@ -243,7 +245,7 @@ workflow Optimus {
       Array[File]? zarr_output_files = OptimusZarrConversion.zarr_output_files
 
       # fastqc
-      Array[Array[File]] fastqc_htmls = select_first([FastQC.fastqc_htmls,FastQCNoIndex.fastqc_htmls])
-      Array[Array[File]] fastqc_zips = select_first([FastQC.fastqc_zips,FastQCNoIndex.fastqc_zips])
+      Array[Array[File]] fastqc_htmls = fastqc_output_htmls
+      Array[Array[File]] fastqc_zips = fastqc_output_zips
   }
 }
