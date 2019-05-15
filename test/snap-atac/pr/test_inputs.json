@@ -1,23 +1,10 @@
 {
-  "TestOptimusPR.expected_bam_hash": "a54495ad22db2dd9b08b84b999fdb137",
-  "TestOptimusPR.expected_matrix_hash": "aec7a79dc7b85a5d621509a3f4fa2192",
-  "TestOptimusPR.expected_cell_metric_hash": "45cc8be253445201b02d102d2d096a0c",
-  "TestOptimusPR.expected_gene_metric_hash": "d636671dfcff6ec8068987d0f5780334",
-  "TestOptimusPR.r1_fastq": [
-    "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_R1_001.fastq.gz",
-    "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_R1_001.fastq.gz"
-  ],
-  "TestOptimusPR.r2_fastq": [
-    "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_R2_001.fastq.gz",
-    "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_R2_001.fastq.gz"
-  ],
-  "TestOptimusPR.i1_fastq": [
-    "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_I1_001.fastq.gz",
-    "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_I1_001.fastq.gz"
-  ],
-  "TestOptimusPR.whitelist": "gs://hca-dcp-mint-test-data/10x/whitelist/737K-august-2016.txt",
-  "TestOptimusPR.tar_star_reference": "gs://hca-dcp-mint-test-data/reference/demo/star.tar",
-  "TestOptimusPR.sample_id": "pbmc8k_test",
-  "TestOptimusPR.annotations_gtf": "gs://hca-dcp-mint-test-data/reference/demo/hg19_ds/GSM1629193_hg19_ERCC.gtf.gz",
-  "TestOptimusPR.ref_genome_fasta": "gs://hca-dcp-mint-test-data/reference/demo/chr21.fa"
+  "TestSnapAtacPR.expected_snap_hash": "",
+  "TestSnapAtacPR.expected_snapqc_hash": "",
+  "TestSnapAtacPR.expected_bam_hash": "",
+  "TestSnapAtacPR.input_fastq1": "gs://hca-dcp-sc-pipelines-test-data/smallDatasets/snap-atac/readnames_preattached/test_500k.R1.fastq.gz",
+  "TestSnapAtacPR.input_fastq2": "gs://hca-dcp-sc-pipelines-test-data/smallDatasets/snap-atac/readnames_preattached/test_500k.R2.fastq.gz",
+  "TestSnapAtacPR.input_reference": "gs://hca-dcp-sc-pipelines-test-data/alignmentReferences/snapATAC_BWA/hg38.fa.tar",
+  "TestSnapAtacPR.output_bam": "output.bam",
+  "TestSnapAtacPR.genome_name": "hg38"
 }
