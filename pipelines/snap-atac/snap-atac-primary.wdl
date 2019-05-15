@@ -193,6 +193,6 @@ task MakeCompliantBAM {
         docker: docker_image
         cpu: num_threads
         memory: "4 GB"
-        disks: "local-disk " + input_size * 2.5 + " HDD"
+        disks: "local-disk " + ceil(2.5 * (if input_size < 1 then 1 else input_size )) + " HDD"
     }
 }
