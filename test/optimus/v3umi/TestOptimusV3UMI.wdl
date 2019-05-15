@@ -51,7 +51,7 @@ workflow TestOptimusV3UMI {
   }
   call CheckUMITagLength as check12 {
     input:
-      optimus_bam = target10.bam,
+      optimus_bam = target12.bam,
       expected_UR_tag_length = 12
   }
 }
