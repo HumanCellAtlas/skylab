@@ -4,10 +4,11 @@ workflow scATAC {
     input {
         File input_fastq1
         File input_fastq2
-        File input_reference
-        String output_bam
+
         String genome_name
-        File genome_size_file
+        File input_reference
+
+        String output_bam = "aligned.bam"
     }
     parameter_meta {
         input_fastq1: "read 1 input fastq"
@@ -15,7 +16,6 @@ workflow scATAC {
         input_reference: "tar file with BWA reference"
         output_bam: "output BAM file"
         genome_name: "name of the genome for snap atac"
-        genome_size_file: "two column tsv file with contig names and lengths"
     }
     call AlignPairedEnd {
         input:
@@ -29,16 +29,16 @@ workflow scATAC {
             input_bam = AlignPairedEnd.aligned_bam,
             output_snap_basename = 'output.snap',
             genome_name = genome_name,
-            genome_size_file = genome_size_file
+            input_reference = input_reference,
     }
     call SnapCellByBin {
         input:
-            snap_input=SnapPre.output_snap,
+            snap_input = SnapPre.output_snap,
             bin_size_list = "5000 10000"
     }
     call MakeCompliantBAM {
         input:
-            input_bam = AlignPairedEnd.output_bam
+            input_bam = AlignPairedEnd.aligned_bam
     }
     output {
         File output_snap_qc = SnapPre.output_snap_qc
@@ -103,14 +103,17 @@ task SnapPre {
         File input_bam
         String output_snap_basename
         String genome_name
-        File genome_size_file
+        String genome_size_file = "genome/chrom.sizes"
         String docker_image = "quay.io/humancellatlas/snaptools:0.0.1"
+        File input_reference
     }
 
     Int num_threads = 1
 
     command {
         set -euo pipefail
+
+        tar xf ~{input_reference}
 
         # Does the main counting
         snaptools snap-pre \
@@ -176,10 +179,12 @@ task MakeCompliantBAM {
         String output_bam_filename = "output.bam"
         String docker_image = "quay.io/humancellatlas/snaptools:0.0.1"
     }
-    Input num_threads = 1
+    Int num_threads = 1
     Float input_size = size(input_bam, "GiB")
     command {
-        makeCompliantBam.py --input-bam ~input_bam --output-bam ~output_bam_filename
+        set -euo pipefail
+
+        /tools/makeCompliantBAM.py --input-bam ~{input_bam} --output-bam ~{output_bam_filename}
     }
     output {
         File output_bam = output_bam_filename
