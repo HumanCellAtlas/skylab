@@ -65,7 +65,7 @@ workflows:
         jobs:
           - build
           - test_optimus
+          - test_optimus_mouse
           - test_smartseq2
           - test_emptyDropsWrapper
           - test_npz2rds
-
