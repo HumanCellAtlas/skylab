@@ -1,8 +1,8 @@
 {
-  "TestOptimusPR.expected_bam_hash": "033034f3caa6ee15a8aef3707d51318f",
-  "TestOptimusPR.expected_matrix_hash": "327a04b4d055b183826a90dbfa813ad6",
-  "TestOptimusPR.expected_cell_metric_hash": "e65a1dfa11167b768e6555b444b17e64",
-  "TestOptimusPR.expected_gene_metric_hash": "dc8d9de6c4494bb93892ca67541d72a7",
+  "TestOptimusPR.expected_bam_hash": "06d3234ec3622c356cbf8bc2260e1cf9",
+  "TestOptimusPR.expected_matrix_hash": "e6bcc39ce50b43a7238bcddc430e76fb",
+  "TestOptimusPR.expected_cell_metric_hash": "75f7f10ef31c4b1218adaf5b9f34ac93",
+  "TestOptimusPR.expected_gene_metric_hash": "352a6728bead36dfd9486cee7a95616b",
   "TestOptimusPR.r1_fastq": [
     "gs://broad-dsde-mint-dev-teststorage/ajc-test/heart_1k_v2_test_fastqs/heart_1k_test_v2_S1_L001_R1_001.fastq.gz"
   ],
