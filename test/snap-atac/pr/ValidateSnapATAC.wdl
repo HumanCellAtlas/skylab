@@ -29,18 +29,18 @@ task ValidateSnapATAC {
 
     # test each output for equality, echoing any failure states to stdout
     fail=false
-    if [ "$bam_hash" != "${expected_bam_hash}" ]; then
-      >&2 echo "bam_hash ($bam_hash) did not match expected hash (${expected_bam_hash})"
+    if [ "$bam_hash" != "~{expected_bam_hash}" ]; then
+      >&2 echo "bam_hash ($bam_hash) did not match expected hash (~{expected_bam_hash})"
       fail=true
     fi
 
-    if [ "$snap_hash" != "${expected_snap_hash}" ]; then
-      >&2 echo "snap_hash ($snap_hash) did not match expected hash (${expected_snap_hash})"
+    if [ "$snap_hash" != "~{expected_snap_hash}" ]; then
+      >&2 echo "snap_hash ($snap_hash) did not match expected hash (~{expected_snap_hash})"
       fail=true
     fi
 
-    if [ "$snapqc_hash" != "${expected_snapqc_hash}" ]; then
-      >&2 echo "snapqc_hash ($snapqc_hash) did not match expected hash (${expected_snapqc_hash})"
+    if [ "$snapqc_hash" != "~{expected_snapqc_hash}" ]; then
+      >&2 echo "snapqc_hash ($snapqc_hash) did not match expected hash (~{expected_snapqc_hash})"
       fail=true
     fi
 
