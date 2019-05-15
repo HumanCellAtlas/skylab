@@ -18,7 +18,7 @@ def checkArgs(args):
     if args.outputbam is None:
         sys.exit("Output BAM is not defined")
     if not os.path.isfile(args.inputbam):
-        sys.exit("Input BAM is not a file")
+        sys.exit("Input BAM is not a fildse")
 
 checkArgs(args);
 
