@@ -169,6 +169,29 @@ workflow rna {
             preemptible = preemptible
         }
     }
+
+    output {
+      Array[File] anno_flagstat = align.anno_flagstat
+      Array[File] annobam = align.annobam
+      Array[File] genome_flagstat = align.genome_flagstat
+      Array[File] genomebam = align.genomebam
+      Array[File] align_log = align.log
+      Array[File] align_python_log = align.python_log
+      Array[Array[File]] bam_to_signals_all = bam_to_signals.all
+      Array[File] bam_to_signals_python_log = bam_to_signals.python_log
+      Array[Array[File]] bam_to_signals_unique = bam_to_signals.unique
+      Array[File] kallisto_python_log = kallisto.python_log
+      Array[File] kallisto_quants = kallisto.quants
+      File? madQCmetrics = mad_qc.madQCmetrics
+      File? madQCplot = mad_qc.madQCplot
+      File? mad_qc_python_log = mad_qc.python_log
+      Array[File] rna_qc_python_log = rna_qc.python_log
+      Array[File] rnaQC = rna_qc.rnaQC
+      Array[File] genes_results = rsem_quant.genes_results
+      Array[File] isoforms_results = rsem_quant.isoforms_results
+      Array[File] number_of_genes = rsem_quant.number_of_genes
+      Array[File] rsem_quant_python_log = rsem_quant.python_log
+    }
 }
 
 
@@ -219,7 +242,7 @@ workflow rna {
         }
     }
 
-    task  bam_to_signals {
+    task bam_to_signals {
         File input_bam
         File chrom_sizes
         String strandedness

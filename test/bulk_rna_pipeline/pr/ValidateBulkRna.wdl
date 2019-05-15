@@ -77,7 +77,7 @@ task ValidateBulkRna {
   >>>
 
   runtime {
-    docker: "ubuntu:16.04"
+    docker: "quay.io/humancellatlas/secondary-analysis-samtools:v0.2.2-1.6"
     cpu: 1
     memory: "3.75 GB"
     disks: "local-disk 10 HDD"

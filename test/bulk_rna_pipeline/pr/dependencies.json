@@ -1,4 +1,4 @@
 {
   "bulk_rna_pipeline.wdl": "pipelines/bulk_rna_encode/bulk_rna_pipeline.wdl",
-  "ValidateBulkRna.wdl": "test/bulk_rna_pipeline/pr/ValidateOptimus.wdl"
+  "ValidateBulkRna.wdl": "test/bulk_rna_pipeline/pr/ValidateBulkRna.wdl"
 }
