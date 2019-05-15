@@ -16,27 +16,8 @@ workflow TestOptimusV3UMI {
   File ref_genome_fasta
   String sample_id
 
-  # First call Optimus **without** setting v3 = true. This should produce
-  # a garbage output with incomplete, 10bp UMI barcodes.
-  # In the future, sctools ought to detect & error out in this case
-  call target.Optimus as target10 {
-    input:
-      r1_fastq = r1_fastq,
-      r2_fastq = r2_fastq,
-      i1_fastq = i1_fastq,
-      whitelist = whitelist,
-      tar_star_reference = tar_star_reference,
-      annotations_gtf = annotations_gtf,
-      ref_genome_fasta = ref_genome_fasta,
-      sample_id = sample_id
-  }
-  call CheckUMITagLength as check10 {
-    input:
-      optimus_bam = target10.bam,
-      expected_UR_tag_length = 10
-  }
-
-  # Now try again with v3 = true, and check for complete 12bp UMI barcodes.
+  # Run Optimus with v3 = true, and check for complete 12bp UMI barcodes in the
+  # output BAM file.
   call target.Optimus as target12 {
     input:
       r1_fastq = r1_fastq,
@@ -53,6 +34,28 @@ workflow TestOptimusV3UMI {
     input:
       optimus_bam = target12.bam,
       expected_UR_tag_length = 12
+  }
+
+  # Run Optimus once more on our v3 data but **without** setting v3 = true.
+  # Currently, this will "succeed" but produce a garbage output BAM with
+  # truncated, 10bp UMI barcodes.
+  # In the future, sctools ought to detect & error out in this case, and this
+  # test should be adapted accordingly.
+  call target.Optimus as target10 {
+    input:
+      r1_fastq = r1_fastq,
+      r2_fastq = r2_fastq,
+      i1_fastq = i1_fastq,
+      whitelist = whitelist,
+      tar_star_reference = tar_star_reference,
+      annotations_gtf = annotations_gtf,
+      ref_genome_fasta = ref_genome_fasta,
+      sample_id = sample_id
+  }
+  call CheckUMITagLength as check10 {
+    input:
+      optimus_bam = target10.bam,
+      expected_UR_tag_length = 10
   }
 }
 
