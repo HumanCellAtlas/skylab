@@ -1,5 +1,6 @@
 #!/usr/bin/env Rscript
 
+# Load libraries
 library(Matrix)
 library(data.table)
 library(numDeriv)
@@ -49,33 +50,43 @@ if(is.null(opt$output_csv)) errorExit("Output CSV is not specified\n");
 if(!file.exists(opt$input_rds)) errorExit("Input RDS doesn't exist!\n");
 if(file.exists(opt$output_csv)) errorExit("Output CSV file exists!\n");
 if(!opt$filter_mod %in% c("cellranger","inflection","both","either")) errorExit("Filter mode not a valid option\n");
-  
+
+## Read the input matrix
 feature_barcode_mat <- readRDS(opt$input_rds)
 
+## Sum over genes and sort
 sorted_umis_per_barcode <- sort(colSums(feature_barcode_mat),decreasing = TRUE)
 sorted_umis_per_barcode <- as.data.table(sorted_umis_per_barcode,keep.rownames = TRUE)
 sorted_umis_per_barcode[,idx:=1:.N]
 
+## Replicate cellranger 2.0 functionality
+## Get 1/10th 99th percentile of cells within the expected cutoff
 cutoff_count_cr <- sorted_umis_per_barcode[1:opt$n_cells_expected,quantile(sorted_umis_per_barcode,.99)]/10
 sorted_umis_per_barcode[,is_cell_cr:=sorted_umis_per_barcode>=cutoff_count_cr]
 
-#get inflection point by minimizing derivative (largest negative value)
+## Alternative way use above as starting point
+## get inflection point by minimizing derivative (largest negative value)
 smooth_spline <- smooth.spline(sorted_umis_per_barcode[sorted_umis_per_barcode>1,idx],
                                sorted_umis_per_barcode[sorted_umis_per_barcode>1,sorted_umis_per_barcode],
                                spar=0.005)
 
-func <- function(x) {
+## Helper functions
+smoother <- function(x) {
   return(predict(smooth_spline,x)$y)
 }
 
 deriv <- function(x) {
-  return(grad(func,x))
+  return(grad(smoother,x))
 }
 
+## Get the inflection point
 cut_off_point_inflection <- optimize(interval=c(cutoff_count_cr/5,cutoff_count_cr*5),f=deriv)
-cut_off_count_inflection <- sorted_umis_per_barcode[idx<=cut_off_point_inflection$minimum,min(sorted_umis_per_barcode)]
+cut_off_count_inflection <- sorted_umis_per_barcode[idx <= cut_off_point_inflection$minimum,min(sorted_umis_per_barcode)]
+
+## In place assignment in data.table
 sorted_umis_per_barcode[,is_cell_inflection:=sorted_umis_per_barcode>=cut_off_count_inflection]
 
+## This is the one used for populating the is_cell column
 if (opt$filter_mode=='cellranger') {
   sorted_umis_per_barcode[,is_cell:=is_cell_cr]
 } else if (opt$filter_mode=='inflection') {
@@ -86,6 +97,7 @@ if (opt$filter_mode=='cellranger') {
   sorted_umis_per_barcode[,is_cell:=is_cell_cr | is_cell_inflection]
 }
 
+## Output the table
 output_table <- sorted_umis_per_barcode[,.("barcode"="rn","is_cell_cr","is_cell_inflection","is_cell")]
 fwrite(sorted_umis_per_barcode,opt$output_csv)
 
