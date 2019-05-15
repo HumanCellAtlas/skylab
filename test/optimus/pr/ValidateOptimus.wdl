@@ -4,8 +4,6 @@ task ValidateOptimus {
       File gene_metrics
       File cell_metrics
       Array[File] fastqc_htmls
-      Array[File] fastqc_zips
-
       Int required_disk = ceil((size(bam, "G") + size(matrix, "G")) * 1.1)
 
       String expected_bam_hash
@@ -13,7 +11,6 @@ task ValidateOptimus {
       String expected_gene_metric_hash
       String expected_cell_metric_hash
       Array[String] expected_fastqc_html_hashes
-      Array[String] expected_fastqc_zip_hashes
 
   command <<<
 
@@ -59,14 +56,6 @@ task ValidateOptimus {
       hash=$(md5sum $htmlfile | awk '{print $1}')
       if [[ " ${sep=' ' expected_fastqc_html_hashes} " != *" $hash "* ]]; then
         >&2 echo "fastq_html_hash ($hash) did not match expected hash (${sep=' ' expected_fastqc_html_hashes})"
-        fail=true
-      fi
-    done
-
-    for zipfile in ${sep=' ' fastqc_zips}; do
-      hash=$(md5sum $zipfile | awk '{print $1}')
-      if [[ " ${sep=' ' expected_fastqc_zip_hashes} " != *" $hash "* ]]; then
-        >&2 echo "fastq_zip_hash ($hash) did not match expected hash (${sep=' ' expected_fastqc_zip_hashes})"
         fail=true
       fi
     done

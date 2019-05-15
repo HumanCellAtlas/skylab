@@ -11,7 +11,6 @@ workflow TestOptimusPR {
   String expected_gene_metric_hash
   String expected_cell_metric_hash
   Array[String] expected_fastqc_html_hashes
-  Array[String] expected_fastqc_zip_hashes
 
   # Optimus inputs
   Array[File] r1_fastq
@@ -43,13 +42,11 @@ workflow TestOptimusPR {
       gene_metrics = target.gene_metrics,
       cell_metrics = target.cell_metrics,
       fastqc_htmls = flatten(target.fastqc_htmls),
-      fastqc_zips = flatten(target.fastqc_zips),
       expected_bam_hash = expected_bam_hash,
       expected_matrix_hash = expected_matrix_hash,
       expected_cell_metric_hash = expected_cell_metric_hash,
       expected_gene_metric_hash = expected_gene_metric_hash,
-      expected_fastqc_html_hashes = expected_fastqc_html_hashes,
-      expected_fastqc_zip_hashes = expected_fastqc_zip_hashes
+      expected_fastqc_html_hashes = expected_fastqc_html_hashes
   }
 
 }

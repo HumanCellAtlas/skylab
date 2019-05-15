@@ -6,9 +6,6 @@
   "TestOptimusPR.expected_fastqc_html_hashes": ["cb0bbb7d52198c38f2cfa87621c92e31",
     "6697992484d279d15683b5124ab75554",
     "26e07b94eaff3a7ea3dcc9a191bd1194"],
-  "TestOptimusPR.expected_fastqc_zip_hashes": ["5e26169ee4d626328146065e192a966f",
-    "df5188daf7bb40e2915caca6213e3585",
-    "b11a50d4b0945fe6c49a84dbe3181aea"],
   "TestOptimusPR.r1_fastq": [
     "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_R1_001.fastq.gz",
     "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_R1_001.fastq.gz"
