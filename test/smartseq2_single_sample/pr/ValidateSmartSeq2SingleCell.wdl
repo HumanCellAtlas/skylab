@@ -33,8 +33,8 @@ task ValidateSmartSeq2SingleCell {
       fail=true
     fi
 
-    for hmtl in ${sep=' ' fastqc_htmls}; do
-          hash=$(md5sum $html | awk '{print $1}')
+    for htmlfile in ${sep=' ' fastqc_htmls}; do
+          hash=$(md5sum $htmlfile | awk '{print $1}')
           if [[ " ${sep=' ' expected_fastqc_html_hashes} " != *" $hash "* ]]; then
             fail=true
           fi
