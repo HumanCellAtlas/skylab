@@ -1,3 +1,5 @@
+#!/usr/bin/env Rscript
+
 library(Matrix)
 library(data.table)
 library(numDeriv)
