@@ -15,7 +15,7 @@ task ValidateSmartSeq2SingleCell {
     for gene_id in "${dollar}{gene_ids[@]}"; do
         tpm=$(grep "$gene_id" "${gene_counts}" | cut -f6)
         echo $tpm
-        if (( $(echo "$tpm == 0.0" | bc -l) )); then
+        if echo $tpm 0.0 | awk '{exit !( $1 <= $2 )}'; then
             >&2 echo "Count not find gene id $gene_id"
             fail=true
         fi
