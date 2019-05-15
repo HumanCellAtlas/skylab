@@ -31,7 +31,7 @@ workflow TestSnapAtacPR {
   call checker.ValidateSnapATAC as checker {
     input:
         snap = target.output_snap,
-        snapqc = target.output_snapqc,
+        snapqc = target.output_snap_qc,
         bam = target.output_aligned_bam,
 
         expected_snap_hash = expected_snap_hash,
