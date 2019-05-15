@@ -561,7 +561,7 @@ task MakeCompliantBAM {
   String compliant_bam_output_name = output_base_name + ".compliant.bam"
 
   command {
-    makeCompliantBam.py \
+    python tools/makeCompliantBam.py \
       --input-bam ~{bam_input} \
       --output-bam ~{compliant_bam_output_name}
   }
