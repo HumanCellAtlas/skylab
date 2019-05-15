@@ -9,6 +9,7 @@ testDataInputMatrixPath="raw_gene_bc_matrices/GRCh38"
 filterCellsOutput="pbmc4k_filterCells.csv"
 rdsFileName="pbmc4k.rds"
 md5checksum="ab572acfd7c012496becfd041dc60b33"
+
 # Extra things extracted from the "testDataURL" you want to clean up
 extraCleanup="raw_gene_bc_matrices"
 
