@@ -46,7 +46,7 @@ task AttachBarcode {
     command {
         set -euo pipefail
 
-        python bc_attacher.py \
+        python /tools/bc_attacher.py \
             --index1 ~{index1} \
             --index2 ~{index2} \
             --read1 ~{read1} \

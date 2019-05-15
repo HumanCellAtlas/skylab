@@ -32,12 +32,12 @@ workflow scATAC {
     }
     call SnapCellByBin {
         input:
-            snap_input=SnapPre.output_snap,
+            snap_input = SnapPre.output_snap,
             bin_size_list = "5000 10000"
     }
     call MakeCompliantBAM {
         input:
-            input_bam = AlignPairedEnd.output_bam
+            input_bam = AlignPairedEnd.aligned_bam
     }
     output {
         File output_snap_qc = SnapPre.output_snap_qc
@@ -175,10 +175,12 @@ task MakeCompliantBAM {
         String output_bam_filename = "output.bam"
         String docker_image = "quay.io/humancellatlas/snaptools:0.0.1"
     }
-    Input num_threads = 1
+    Int num_threads = 1
     Float input_size = size(input_bam, "GiB")
     command {
-        makeCompliantBam.py --input-bam ~input_bam --output-bam ~output_bam_filename
+        set -euo pipefail
+
+        makeCompliantBam.py --input-bam ~{input_bam} --output-bam ~{output_bam_filename}
     }
     output {
         File output_bam = output_bam_filename
