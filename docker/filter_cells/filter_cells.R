@@ -16,11 +16,11 @@ errorExit <- function(msg) {
 
 ## Parse the input arguments
 option_list <- list(
-  make_option(c('-i','--input-matrix_dir'),
+  make_option(c('-i','--input-rds'),
               type='character',
               default=NULL, ## required
-              dest='input_matrix_dir',
-              help='input matrix dir '),
+              dest='input_rds',
+              help='input RDS file containing the data matrix in dgCMatrix format gene x droplet orientation'),
   make_option(c('-n','--n_cells_expected'),
               type='integer',
               default=3000,
@@ -44,25 +44,13 @@ opt_parser <- OptionParser(option_list=option_list);
 opt <- parse_args(opt_parser);
 
 ## Check the parsed arguments
-if(is.null(opt$input_matrix_dir))  errorExit("Input matrix directory is not specified\n");
+if(is.null(opt$input_rds))  errorExit("Input RDS is not specified\n");
 if(is.null(opt$output_csv)) errorExit("Output CSV is not specified\n");
-if(!file.exists(opt$input_matrix_dir)) errorExit("Input RDS doesn't exist!\n");
+if(!file.exists(opt$input_rds)) errorExit("Input RDS doesn't exist!\n");
 if(file.exists(opt$output_csv)) errorExit("Output CSV file exists!\n");
 if(!opt$filter_mod %in% c("cellranger","inflection","both","either")) errorExit("Filter mode not a valid option\n");
   
-matrix_dir = "/dsde/working/ckachulis/sc_pipelines_surge/umi_cutoff/raw_gene_bc_matrices/GRCh38/"
-barcode.path <- paste0(opt$input_matrix_dir, "/barcodes.tsv")
-features.path <- paste0(opt$input_matrix_dir, "/genes.tsv")
-matrix.path <- paste0(opt$input_matrix_dir, "/matrix.mtx")
-feature_barcode_mat <- readMM(file = matrix.path)
-feature.names = read.delim(features.path, 
-                           header = FALSE,
-                           stringsAsFactors = FALSE)
-barcode.names = read.delim(barcode.path, 
-                           header = FALSE,
-                           stringsAsFactors = FALSE)
-colnames(feature_barcode_mat) = barcode.names$V1
-rownames(feature_barcode_mat) = feature.names$V1
+feature_barcode_mat <- readRDS(opt$input_rds)
 
 sorted_umis_per_barcode <- sort(colSums(feature_barcode_mat),decreasing = TRUE)
 sorted_umis_per_barcode <- as.data.table(sorted_umis_per_barcode,keep.rownames = TRUE)
