@@ -43,7 +43,7 @@ workflow TestOptimusPR {
       gene_metrics = target.gene_metrics,
       cell_metrics = target.cell_metrics,
       fastqc_htmls = target.fastqc_htmls,
-      n_fastq_zips = length(target.fastqc_zips),
+      n_fastqc_zips = length(target.fastqc_zips),
       expected_bam_hash = expected_bam_hash,
       expected_matrix_hash = expected_matrix_hash,
       expected_cell_metric_hash = expected_cell_metric_hash,
