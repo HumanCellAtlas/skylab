@@ -4,34 +4,52 @@ version 1.0
 # 1. add meta section
 
 workflow ATAC {
- input {
-   #fastq inputs
-   File fastq_gzipped_input_read1
-   File fastq_gzipped_input_read2
+  input {
+    #fastq inputs
+    File fastq_gzipped_input_read1
+    File fastq_gzipped_input_read2
 
-   # trimming options
-   Int min_length
-   Int quality_cutoff
-   String adapter_seq_read1
-   String adapter_seq_read2
+    # trimming options
+    Int min_length
+    Int quality_cutoff
+    String adapter_seq_read1
+    String adapter_seq_read2
 
-   # BWA: pre built reference, default read group name and # of cores
-   File tar_bwa_reference
-   String read_group_id = "foo"
-   String read_group_sample_name = "bar"
-   Int bwa_cpu = 16
+    # BWA: pre built reference, default read group name and # of cores
+    File tar_bwa_reference
+    String read_group_id = "Kobe"
+    String read_group_sample_name = "Bryant"
+    Int bwa_cpu = 16
 
-   # genome name and genome size file
-   String genome_name
-   File genome_size_file
+    # genome name and genome size file
+    String genome_name
+    File genome_size_file
 
-   # filtering options
-   Int min_map_quailty
-   Int max_fragment_length
+    # filtering options
+    Int min_map_quailty
+    Int max_fragment_length
 
-   # output prefix/base name for all intermediate files and pipeline outputs
-   String output_base_name
- }
+    # output prefix/base name for all intermediate files and pipeline outputs
+    String output_base_name
+  }
+
+  parameter_meta {
+    fastq_gzipped_input_read1: "read 1 fastq file as input for the pipeline"
+    fastq_gzipped_input_read2: "read 2 fastq file as input for the pipeline"
+    min_length: "the minimum legnth for trimming. Reads that are too short even before adapter removal are also discarded"
+    quality_cutoff: "cutadapt option to trim low-quality ends from reads before adapter removal"
+    adapter_seq_read1: "cutadapt option for the sequence adapter for read 1 fastq"
+    adapter_seq_read2: "cutadapt option for the sequence adapter for read 2 fastq"
+    tar_bwa_reference: "the pre built tar file containing the reference fasta and cooresponding reference files for the BWA aligner"
+    read_group_id: "the read group id to be added upon alignment (defualt: Kobe)"
+    read_group_id: "the read group sample to be added upon alignment (defualt: Bryant)"
+    bwa_cpu: "the number of threads/cores to use during alignment"
+    genome_name: ""
+    genome_size_file: ""
+    min_map_quailty: "the minimum mapping quality to be filtered by samtools view and snap-pre (snaptools task)"
+    max_fragment_length: "the maximum fragment length for filtering out reads by gatk and snap-pre (snaptools task)"
+    output_base_name: "base name to be used for the pipelines output and intermiediate files"
+  }
 
   call TrimAdapters {
     input:
@@ -70,7 +88,6 @@ workflow ATAC {
   call Sort as SortCoordinateOrder {
     input:
       bam_input = SamToBam.bam_output,
-      sort_order = "coordinate",
       output_base_name = output_base_name
   }
 
@@ -146,16 +163,28 @@ workflow ATAC {
 # TODO:
 # 1. add parameter metadata section to each task
 
+# trim read 1 and read 2 adapter sequeunce with cutadapt
 task TrimAdapters {
   input {
-    Int min_length
-    Int quality_cutoff
     File fastq_input_read1
     File fastq_input_read2
+    Int min_length
+    Int quality_cutoff
     String adapter_seq_read1
     String adapter_seq_read2
     String output_base_name
     String docker_image = "quay.io/broadinstitute/cutadapt:1.18"
+  }
+
+  parameter_meta {
+    fastq_gzipped_input_read1: "read 1 fastq file as input for the pipeline"
+    fastq_gzipped_input_read2: "read 2 fastq file as input for the pipeline"
+    min_length: "the minimum legnth for trimming. Reads that are too short even before adapter removal are also discarded"
+    quality_cutoff: "cutadapt option to trim low-quality ends from reads before adapter removal"
+    adapter_seq_read1: "cutadapt option for the sequence adapter for read 1 fastq"
+    adapter_seq_read2: "cutadapt option for the sequence adapter for read 2 fastq"
+    output_base_name: "base name to be used for the output of the task"
+    docker_image: "the docker image using cutadapt to be used (default: quay.io/broadinstitute/cutadapt:1.18)"
   }
 
   # runtime requirements based upon input file size
@@ -198,8 +227,9 @@ task TrimAdapters {
 }
 
 # TODO:
-# 1. update docker image to be tool specific
+# 1. update docker image to be tool specific (update parameter meta to match new docker image)
 
+# align the two trimmed fastq as piared end data using BWA
 task BWAPairedEndALignment {
   input {
     File fastq_input_read1
@@ -210,6 +240,17 @@ task BWAPairedEndALignment {
     Int cpu
     String output_base_name
     String docker_image = "quay.io/humancellatlas/snaptools:0.0.1"
+  }
+
+  parameter_meta {
+    fastq_gzipped_input_read1: "the trimmed read 1 fastq file as input for the aligner"
+    fastq_gzipped_input_read1: "the trimmed read 1 fastq file as input for the aligner"
+    tar_bwa_reference: "the pre built tar file containing the reference fasta and cooresponding reference files for the BWA aligner"
+    read_group_id: "the read group id to be added upon alignment (defualt: Kobe)"
+    read_group_id: "the read group sample to be added upon alignment (defualt: Bryant)"
+    bwa_cpu: "the number of threads/cores to use during alignment"
+    output_base_name: "base name to be used for the output of the task"
+    docker_image: "the docker image using BWA to be used (default: quay.io/humancellatlas/snaptools:0.0.1)"
   }
 
   # runtime requirements based upon input file size
@@ -250,12 +291,18 @@ task BWAPairedEndALignment {
   }
 }
 
-# filter bam with a minimum mapping quality
+# convert the sam to bam using samtools
 task SamToBam {
   input {
     File sam_input
     String output_base_name
     String docker_image = "quay.io/broadinstitute/samtools:1.9"
+  }
+
+  parameter_meta {
+    sam_input: "the aligned sam produced by the aligner"
+    output_base_name: "base name to be used for the output of the task"
+    docker_image: "the docker image using samtools to be used (default: quay.io/broadinstitute/samtools:1.9)"
   }
 
   # output name for filtered read
@@ -287,12 +334,20 @@ task SamToBam {
   }
 }
 
+# sort the bam file in user input order using picard
 task Sort {
   input {
     File bam_input
-    String sort_order
+    String sort_order = "coordinate"
     String output_base_name
     String docker_image = "quay.io/broadinstitute/picard:2.18.23"
+  }
+
+  parameter_meta {
+    bam_input: "the bam to be sorted by picard tools"
+    sort_order: "the desired way for the bam to be sorted (default: coordinate)"
+    output_base_name: "base name to be used for the output of the task"
+    docker_image: "the docker image using picard to be used (default: quay.io/broadinstitute/picard:2.18.23)"
   }
 
   # output name for sorted bam
@@ -333,6 +388,12 @@ task FilterMarkDuplicates {
     String docker_image = "quay.io/broadinstitute/picard:2.18.23"
   }
 
+  parameter_meta {
+    bam_input: "the bam to passed into picard tools"
+    output_base_name: "base name to be used for the output of the task"
+    docker_image: "the docker image using picard to be used (default: quay.io/broadinstitute/picard:2.18.23)"
+  }
+
   # output namefor mark duplicates
   String bam_remove_dup_output_name = output_base_name + ".filtered.duplicates.bam"
   String metric_remove_dup_output_name = output_base_name + ".filtered.duplicate_metrics"
@@ -363,13 +424,20 @@ task FilterMarkDuplicates {
   }
 }
 
-# filter bam with a minimum mapping quality
+# filter bam with a minimum mapping quality using samtools
 task FilterMinMapQuality {
   input {
     File bam_input
     Int min_map_quality
     String output_base_name
     String docker_image = "quay.io/broadinstitute/samtools:1.9"
+  }
+
+  parameter_meta {
+    bam_input: "the bam to passed into samtools tools"
+    min_map_quailty: "the minimum mapping quality to be filtered by samtools view and snap-pre (snaptools task)"
+    output_base_name: "base name to be used for the output of the task"
+    docker_image: "the docker image using samtools to be used (default: quay.io/broadinstitute/samtools:1.9)"
   }
 
   # output name for filtered read
@@ -412,6 +480,13 @@ task FilterMaxFragmentLength {
     String docker_image = "broadinstitute/gatk:4.1.2.0"
   }
 
+  parameter_meta {
+    bam_input: "the bam to passed into gatk tools"
+    max_fragment_length: "the maximum fragment length for filtering out reads by gatk (snaptools task)"
+    output_base_name: "base name to be used for the output of the task"
+    docker_image: "the docker image using gatk to be used (default: broadinstitute/gatk:4.1.2.0)"
+  }
+
   # output name for filtered read
   String bam_filter_fragment_length_output_name = output_base_name + ".filtered.max_fragment_length.bam"
 
@@ -446,6 +521,12 @@ task FilterMitochondrialReads {
     File bam_input
     String output_base_name
     String docker_image = "quay.io/broadinstitute/samtools:1.9"
+  }
+
+  parameter_meta {
+    bam_input: "the bam to passed into samtools tools"
+    output_base_name: "base name to be used for the output of the task"
+    docker_image: "the docker image using samtools to be used (default: quay.io/broadinstitute/samtools:1.9)"
   }
 
   # output name for sorted bam
