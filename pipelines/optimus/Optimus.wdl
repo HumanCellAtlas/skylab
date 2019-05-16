@@ -32,7 +32,7 @@ workflow Optimus {
 
   # 10x parameters
   File whitelist
-  Boolean v3 = false
+  Boolean tenX_v3_chemistry = false
 
   # environment-specific parameters
   String fastq_suffix = ""
@@ -56,7 +56,7 @@ workflow Optimus {
     annotations_gtf: "gtf containing annotations for gene tagging (must match star reference)"
     ref_genome_fasta: "genome fasta file (must match star reference)"
     whitelist: "10x genomics cell barcode whitelist"
-    v3: "assume 10X Genomics v3 chemistry with 12bp UMI (in contrast to default v2 with 10bp UMI)"
+    tenX_v3_chemistry: "assume 10X Genomics v3 chemistry with 12bp UMI (in contrast to default v2 with 10bp UMI)"
     fastq_suffix: "when running in green box, need to add '.gz' for picard to detect the compression"
     output_zarr: "whether to run the taks that converts the outputs to Zarr format, by default it's true"
   }
@@ -78,7 +78,7 @@ workflow Optimus {
           i1_fastq = non_optional_i1_fastq[index],
           r2_unmapped_bam = FastqToUBam.bam_output,
           whitelist = whitelist,
-          v3 = v3
+          tenX_v3_chemistry = tenX_v3_chemistry
       }
     }
 
@@ -89,7 +89,7 @@ workflow Optimus {
           r1_fastq = r1_fastq[index],
           r2_unmapped_bam = FastqToUBam.bam_output,
           whitelist = whitelist,
-          v3 = v3
+          tenX_v3_chemistry = tenX_v3_chemistry
       }
     }
 

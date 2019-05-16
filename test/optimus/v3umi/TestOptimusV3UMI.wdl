@@ -16,9 +16,9 @@ workflow TestOptimusV3UMI {
   File ref_genome_fasta
   String sample_id
 
-  # Run Optimus with v3 = true, and check for complete 12bp UMI barcodes in the
-  # output BAM file.
-  call target.Optimus as target12 {
+  # Run Optimus with tenX_v3_chemistry = true, and check for complete 12bp
+  # UMI barcodes in the output BAM file.
+  call target.Optimus as targetOptimus12BasePairUMI {
     input:
       r1_fastq = r1_fastq,
       r2_fastq = r2_fastq,
@@ -28,20 +28,20 @@ workflow TestOptimusV3UMI {
       annotations_gtf = annotations_gtf,
       ref_genome_fasta = ref_genome_fasta,
       sample_id = sample_id,
-      v3 = true
+      tenX_v3_chemistry = true
   }
-  call CheckUMITagLength as check12 {
+  call CheckUMITagLength as check12BasePairUMI {
     input:
-      optimus_bam = target12.bam,
+      optimus_bam = targetOptimus12BasePairUMI.bam,
       expected_UR_tag_length = 12
   }
 
-  # Run Optimus once more on our v3 data but **without** setting v3 = true.
-  # Currently, this will "succeed" but produce a garbage output BAM with
-  # truncated, 10bp UMI barcodes.
+  # Run Optimus once more on our v3 data but **without** setting
+  # tenX_v3_chemistry = true. Currently, this will "succeed" but produce a
+  # garbage output BAM with truncated, 10bp UMI barcodes.
   # In the future, sctools ought to detect & error out in this case, and this
   # test should be adapted accordingly.
-  call target.Optimus as target10 {
+  call target.Optimus as targetOptimus10BasePairUMI {
     input:
       r1_fastq = r1_fastq,
       r2_fastq = r2_fastq,
@@ -52,9 +52,9 @@ workflow TestOptimusV3UMI {
       ref_genome_fasta = ref_genome_fasta,
       sample_id = sample_id
   }
-  call CheckUMITagLength as check10 {
+  call CheckUMITagLength as check10BasePairUMI {
     input:
-      optimus_bam = target10.bam,
+      optimus_bam = targetOptimus10BasePairUMI.bam,
       expected_UR_tag_length = 10
   }
 }
@@ -63,18 +63,24 @@ task CheckUMITagLength {
     # verify that all UR tags in bam have the expected value length
     File optimus_bam
     Int expected_UR_tag_length
-    Int that_plus5 = expected_UR_tag_length + 5 # len("UR:Z:") == 5
+
+    # len("UR:Z:") == 5
+    Int expected_UR_tag_length_plus_5_base_pairs = expected_UR_tag_length + 5
 
     command <<<
         set -eux -o pipefail
-        apt-get update && apt-get install -y samtools
-        L="$(samtools view '${optimus_bam}' | grep -E -o 'UR:Z:[ACGTN]+' | awk '{print length}' | sort -u)"
-        if [ "$L" -ne "${that_plus5}" ]; then
+        L="$(samtools view '${optimus_bam}' \
+                | grep -E -o 'UR:Z:[ACGTN]+' \
+                | awk '{print length}' \
+                | sort -u)"
+        declare -r L
+        if [ "$L" -ne "${expected_UR_tag_length_plus_5_base_pairs}" ]; then
+            >&2 echo "One or more UMI barcode tags had unexpected length other than ~{expected_UR_tag_length} base pairs"
             exit 1
         fi
     >>>
 
     runtime {
-        docker: "ubuntu:18.04"
+        docker: "quay.io/humancellatlas/secondary-analysis-samtools"
     }
 }

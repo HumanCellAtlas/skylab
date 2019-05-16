@@ -3,7 +3,7 @@ task Attach10xBarcodes {
   File? i1_fastq
   File r2_unmapped_bam
   File whitelist
-  Boolean v3 = false
+  Boolean tenX_v3_chemistry = false
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.4"
@@ -23,7 +23,7 @@ task Attach10xBarcodes {
     i1_fastq: "optional, index fastq file; contains sample barcode"
     r2_unmapped_bam: "reverse unmapped bam file; contains alignable genomic information"
     whitelist: "10x genomics cell barcode whitelist"
-    v3: "assume 10X Genomics v3 chemistry with 12bp UMI (in contrast to default v2 with 10bp UMI)"
+    tenX_v3_chemistry: "assume 10X Genomics v3 chemistry with 12bp UMI (in contrast to default v2 with 10bp UMI)"
     docker: "(optional) the docker image containing the runtime environment for this task"
     machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
@@ -38,18 +38,18 @@ task Attach10xBarcodes {
     # layout built-in.
     # For v3 we use the generic AttachBarcodes entry point, to which we give
     # the expected positions of each barcode.
-    ${if v3 then "AttachBarcodes" else "Attach10xBarcodes"} \
+    ${if tenX_v3_chemistry then "AttachBarcodes" else "Attach10xBarcodes"} \
       --r1 "${r1_fastq}" \
       ${"--i1 " + i1_fastq} \
       --u2 "${r2_unmapped_bam}" \
       --output-bamfile barcoded.bam \
       --whitelist "${whitelist}" \
-      ${if v3 then "--sample-barcode-start-position 0" else ""} \
-      ${if v3 then "--sample-barcode-length 8" else ""} \
-      ${if v3 then "--cell-barcode-start-position 0" else ""} \
-      ${if v3 then "--cell-barcode-length 16" else ""} \
-      ${if v3 then "--molecule-barcode-start-position 16" else ""} \
-      ${if v3 then "--molecule-barcode-length 12" else ""}
+      ${if tenX_v3_chemistry then "--sample-barcode-start-position 0" else ""} \
+      ${if tenX_v3_chemistry then "--sample-barcode-length 8" else ""} \
+      ${if tenX_v3_chemistry then "--cell-barcode-start-position 0" else ""} \
+      ${if tenX_v3_chemistry then "--cell-barcode-length 16" else ""} \
+      ${if tenX_v3_chemistry then "--molecule-barcode-start-position 16" else ""} \
+      ${if tenX_v3_chemistry then "--molecule-barcode-length 12" else ""}
   }
   
   runtime {
