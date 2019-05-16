@@ -11,6 +11,7 @@ import "RunEmptyDrops.wdl" as RunEmptyDrops
 import "ZarrUtils.wdl" as ZarrUtils
 import "Picard.wdl" as Picard
 import "UmiCorrection.wdl" as UmiCorrection
+import "FilterCellsUMI.wdl" as FilterCellsUMI
 
 workflow Optimus {
   meta {
@@ -195,6 +196,14 @@ workflow Optimus {
       col_index = MergeCountFiles.col_index
   }
 
+  call FilterCellsUMI.FilterCellsUMI {
+      input:
+        sparse_count_matrix = MergeCountFiles.sparse_count_matrix,
+        row_index = MergeCountFiles.row_index,
+        col_index = MergeCountFiles.col_index,
+        n_cells_expected = 5000
+  }
+
   if (output_zarr) {
     call ZarrUtils.OptimusZarrConversion{
       input:
@@ -219,6 +228,7 @@ workflow Optimus {
       File cell_metrics = MergeCellMetrics.cell_metrics
       File gene_metrics = MergeGeneMetrics.gene_metrics
       File cell_calls = RunEmptyDrops.empty_drops_result
+      File cell_calls_umi = FilterCellsUMI.umi_result
 
       # zarr
       Array[File]? zarr_output_files = OptimusZarrConversion.zarr_output_files

@@ -1,4 +1,4 @@
-task RunEmptyDrops {
+task FilterCellsUMI {
     # Input data
     File sparse_count_matrix
     File col_index
@@ -43,6 +43,6 @@ task RunEmptyDrops {
     }
 
     output {
-        File empty_drops_result = $output_file_name
+        File umi_result = output_file_name
     }
 }

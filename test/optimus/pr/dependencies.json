@@ -14,5 +14,6 @@
   "RunEmptyDrops.wdl": "library/tasks/RunEmptyDrops.wdl",
   "ZarrUtils.wdl": "library/tasks/ZarrUtils.wdl",
   "Picard.wdl": "library/tasks/Picard.wdl",
-  "UmiCorrection.wdl": "library/tasks/UmiCorrection.wdl"
+  "UmiCorrection.wdl": "library/tasks/UmiCorrection.wdl",
+  "FilterCellsUMI.wdl": "library/tasks/FilterCellsUMI.wdl
 }
