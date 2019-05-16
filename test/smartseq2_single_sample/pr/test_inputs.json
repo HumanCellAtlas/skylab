@@ -16,5 +16,5 @@
   "TestSmartSeq2SingleCellPR.expected_counts_hash": "135a3fbb959583db17713dc8b9d7fe33",
   "TestSmartSeq2SingleCellPR.expected_metrics_hash": "99bd9903ac8dc77eb1c047ffa8eb42ed",
   "TestSmartSeq2SingleCellPR.expected_fastqc_html_hashes": ["21aac025893e0488d6dac0cd206ac2a9","d0d16bee2e05441acd8189d8e29849e7"],
-  "TestSmartSeq2SingleCellPR.n_fastqc_zips": 2
+  "TestSmartSeq2SingleCellPR.expected_n_fastqc_zips": 2
 }
