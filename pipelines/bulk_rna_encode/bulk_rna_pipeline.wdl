@@ -1,7 +1,7 @@
 # ENCODE DCC RNA-seq pipeline
 # https://github.com/ENCODE-DCC/rna-seq-pipeline/tree/v1.0
 
-workflow rna {
+workflow BulkRnaPipeline {
     meta {
         description: "Analyze bulk RNA-seq data using the ENCODE DCC RNA-seq pipeline."
     }
@@ -92,81 +92,87 @@ workflow rna {
         preemptible: "optional number of preemptible tries all tasks will take"
     }
 
-    Array[Array[File]] fastqs_ = if length(fastqs_R2)>0 then transpose([fastqs_R1, fastqs_R2]) else transpose([fastqs_R1])
+    Array[Array[File]] fastqs = if length(fastqs_R2)>0 then transpose([fastqs_R1, fastqs_R2]) else transpose([fastqs_R1])
 
-    scatter (i in range(length(fastqs_))) {
-        call align { input:
-            endedness = endedness,
-            fastqs = fastqs_[i],
-            index = align_index,
-            aligner = aligner,
-            indexdir = indexdir,
-            libraryid = libraryid,
-            bamroot = "rep"+(i+1)+bamroot,
-            ncpus = align_ncpus,
-            ramGB = align_ramGB,
-            disks = align_disk,
-            preemptible = preemptible
+    scatter (i in range(length(fastqs))) {
+        call align {
+            input:
+                endedness = endedness,
+                fastqs = fastqs[i],
+                index = align_index,
+                aligner = aligner,
+                indexdir = indexdir,
+                libraryid = libraryid,
+                bamroot = "rep"+(i+1)+bamroot,
+                ncpus = align_ncpus,
+                ramGB = align_ramGB,
+                disks = align_disk,
+                preemptible = preemptible
         }
 
-        call bam_to_signals { input:
-            input_bam = align.genomebam,
-            chrom_sizes = chrom_sizes,
-            strandedness = strandedness,
-            bamroot = "rep"+(i+1)+bamroot+"_genome",
-            ncpus = bam_to_signals_ncpus,
-            ramGB = bam_to_signals_ramGB,
-            disks = bam_to_signals_disk,
-            preemptible = preemptible
+        call bam_to_signals {
+            input:
+                input_bam = align.genomebam,
+                chrom_sizes = chrom_sizes,
+                strandedness = strandedness,
+                bamroot = "rep"+(i+1)+bamroot+"_genome",
+                ncpus = bam_to_signals_ncpus,
+                ramGB = bam_to_signals_ramGB,
+                disks = bam_to_signals_disk,
+                preemptible = preemptible
         }
 
-        call rsem_quant { input:
-            rsem_index = rsem_index,
-            rnd_seed = rnd_seed,
-            anno_bam = align.annobam,
-            endedness = endedness,
-            read_strand = strandedness_direction,
-            ncpus = rsem_ncpus,
-            ramGB = rsem_ramGB,
-            disks = rsem_disk,
-            preemptible = preemptible
+        call rsem_quant {
+            input:
+                rsem_index = rsem_index,
+                rnd_seed = rnd_seed,
+                anno_bam = align.annobam,
+                endedness = endedness,
+                read_strand = strandedness_direction,
+                ncpus = rsem_ncpus,
+                ramGB = rsem_ramGB,
+                disks = rsem_disk,
+                preemptible = preemptible
         }
     }
 
-    scatter (i in range(length(fastqs_))) {
-        call kallisto { input:
-            fastqs = fastqs_[i],
-            endedness = endedness,
-            strandedness_direction = strandedness_direction,
-            kallisto_index = kallisto_index,
-            number_of_threads = kallisto_number_of_threads,
-            ramGB = kallisto_ramGB,
-            fragment_length = kallisto_fragment_length,
-            sd_of_fragment_length = kallisto_sd_of_fragment_length,
-            disks = kallisto_disk,
-            out_prefix = "rep"+(i+1)+bamroot,
-            preemptible = preemptible
+    scatter (i in range(length(fastqs))) {
+        call kallisto {
+            input:
+                fastqs = fastqs[i],
+                endedness = endedness,
+                strandedness_direction = strandedness_direction,
+                kallisto_index = kallisto_index,
+                number_of_threads = kallisto_number_of_threads,
+                ramGB = kallisto_ramGB,
+                fragment_length = kallisto_fragment_length,
+                sd_of_fragment_length = kallisto_sd_of_fragment_length,
+                disks = kallisto_disk,
+                out_prefix = "rep" + (i + 1) + bamroot,
+                preemptible = preemptible
         }
     }
 
     # if there are exactly two replicates, calculate the madQC metrics and draw a plot
 
     if (length(fastqs_R1) == 2) {
-        call mad_qc { input:
-            quants1 = rsem_quant.genes_results[0],
-            quants2 = rsem_quant.genes_results[1],
-            disks = mad_qc_disk,
-            preemptible = preemptible
+        call mad_qc {
+            input:
+                quants1 = rsem_quant.genes_results[0],
+                quants2 = rsem_quant.genes_results[1],
+                disks = mad_qc_disk,
+                preemptible = preemptible
         }
     }
 
     scatter (i in range(length(align.annobam))) {
-        call rna_qc { input:
-            input_bam = align.annobam[i],
-            tr_id_to_gene_type_tsv = rna_qc_tr_id_to_gene_type_tsv,
-            output_filename = "rep"+(i+1)+bamroot+"_qc.json",
-            disks = rna_qc_disk,
-            preemptible = preemptible
+        call rna_qc {
+            input:
+                input_bam = align.annobam[i],
+                tr_id_to_gene_type_tsv = rna_qc_tr_id_to_gene_type_tsv,
+                output_filename = "rep" + (i + 1) + bamroot + "_qc.json",
+                disks = rna_qc_disk,
+                preemptible = preemptible
         }
     }
 
