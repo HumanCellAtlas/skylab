@@ -1,5 +1,8 @@
 version 1.0
 
+# TODO:
+# 1. add meta section
+
 workflow ATAC {
  input {
    #fastq inputs
@@ -140,6 +143,9 @@ workflow ATAC {
   }
 }
 
+# TODO:
+# 1. add parameter metadata section to each task
+
 task TrimAdapters {
   input {
     Int min_length
@@ -192,7 +198,8 @@ task TrimAdapters {
 }
 
 # TODO:
-# update docker image to be tool specific
+# 1. update docker image to be tool specific
+
 task BWAPairedEndALignment {
   input {
     File fastq_input_read1
@@ -506,7 +513,8 @@ task SnapPre {
 
 
   # TODO:
-  # update disk size to be dynamilcally updated based off of input file size
+  # 1. update disk size to be dynamilcally updated based off of input file size
+  # 2. fix the bug where a max fragmnet length greater than 2000 will cause snap-pre to throw an error "--max-flen can not be smaller than 2000"
 
   command {
     set -euo pipefail
@@ -517,15 +525,15 @@ task SnapPre {
       --output-snap=~{snap_file_output_name} \
       --genome-name=~{genome_name} \
       --genome-size=~{genome_size_file} \
-      --min-mapq=0  \
-      --min-flen=0  \
-      --max-flen=~{max_fragment_length}  \
-      --keep-chrm=TRUE  \
-      --keep-single=TRUE  \
-      --keep-secondary=False  \
-      --overwrite=True  \
-      --max-num=1000000  \
-      --min-cov=100  \
+      --min-mapq=0 \
+      --min-flen=0 \
+      --max-flen=~{max_fragment_length} \
+      --keep-chrm=TRUE \
+      --keep-single=TRUE \
+      --keep-secondary=False \
+      --overwrite=True \
+      --max-num=1000000 \
+      --min-cov=100 \
       --verbose=True
   }
 
@@ -572,7 +580,8 @@ task SnapCellByBin {
 }
 
 # TODO:
-# update docker image to be tool specific
+# 1. update docker image to be tool specific
+
 task MakeCompliantBAM {
   input {
     File bam_input

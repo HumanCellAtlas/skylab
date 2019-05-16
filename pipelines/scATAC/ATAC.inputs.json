@@ -10,5 +10,5 @@
   "ATAC.tar_bwa_reference": "gs://hca-dcp-sc-pipelines-test-data/alignmentReferences/snapATAC_BWA/mm10.fa.tar",
   "ATAC.genome_name": "mm10",
   "ATAC.genome_size_file": "gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/scATAC-seq/bwa_mm10/mm10.chrom.sizes",
-  "ATAC.max_fragment_length": 3000
+  "ATAC.max_fragment_length": 1000
 }
