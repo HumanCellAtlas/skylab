@@ -5,6 +5,7 @@ library(Matrix)
 library(data.table)
 library(numDeriv)
 library(optparse)
+library(ggplot2)
 
 ## Define helper functions
 
@@ -100,4 +101,24 @@ if (opt$filter_mode=='cellranger') {
 ## Output the table
 output_table <- sorted_umis_per_barcode[,.("barcode"="rn","is_cell_cr","is_cell_inflection","is_cell")]
 fwrite(sorted_umis_per_barcode,opt$output_csv)
+
+## Plots
+p1 <- ggplot(sorted_umis_per_barcode[sorted_umis_per_barcode>1],aes(x=idx, y=sorted_umis_per_barcode)) +
+    geom_line(aes(color=is_cell_inflection)) + scale_y_log10() + scale_x_log10() + xlab("barcode rank") + ylab("UMIs per Barcode") +
+    geom_point(data=last(sorted_umis_per_barcode[is_cell_cr==TRUE,]),aes(x=idx, y=sorted_umis_per_barcode)) +
+    geom_text(data=last(sorted_umis_per_barcode[is_cell_cr==TRUE,]),label="Last Real Cell (cellranger)",hjust=0, vjust=0)
+
+xmin_zoomed <- min(last(sorted_umis_per_barcode[is_cell_cr==TRUE,idx])-100,last(sorted_umis_per_barcode[is_cell_inflection==TRUE,idx])-100)
+xmax_zoomed <- max(last(sorted_umis_per_barcode[is_cell_cr==TRUE,idx])+100,last(sorted_umis_per_barcode[is_cell_inflection==TRUE,idx])+100)
+
+ymin_zoomed <- min(last(sorted_umis_per_barcode[is_cell_cr==TRUE,sorted_umis_per_barcode])-100,last(sorted_umis_per_barcode[is_cell_inflection==TRUE,sorted_umis_per_barcode])-100)
+ymax_zoomed <- max(last(sorted_umis_per_barcode[is_cell_cr==TRUE,sorted_umis_per_barcode])+100,last(sorted_umis_per_barcode[is_cell_inflection==TRUE,sorted_umis_per_barcode])+100)
+
+p2 <- ggplot(sorted_umis_per_barcode[sorted_umis_per_barcode>1],aes(x=idx, y=sorted_umis_per_barcode)) +
+    geom_line(aes(color=is_cell_inflection)) + xlim(xmin_zoomed,xmax_zoomed) + ylim(ymin_zoomed,ymax_zoomed) + xlab("barcode rank") + ylab("UMIs per Barcode") +
+    geom_point(data=last(sorted_umis_per_barcode[is_cell_cr==TRUE,]),aes(x=idx, y=sorted_umis_per_barcode)) +
+    geom_text(data=last(sorted_umis_per_barcode[is_cell_cr==TRUE,]),label="Last Real Cell (cellranger)",hjust=0, vjust=0)
+
+ggsave("umis_per_barcode.png",p1)
+ggsave("umis_per_barcode_zoomed.png",p2)
 

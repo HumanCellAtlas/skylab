@@ -44,5 +44,7 @@ task FilterCellsUMI {
 
     output {
         File umi_result = output_file_name
+        File umi_per_barcode_plot = "umis_per_barcode.png"
+        File umi_per_barcode_zoomed_plot = "umis_per_barcode_zoomed.png"
     }
 }
