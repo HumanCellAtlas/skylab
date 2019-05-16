@@ -11,6 +11,26 @@ jobs:
                     . venv/bin/activate
                     pip install requests
                     python test/run_portability_test.py --test-directories test/smartseq2_single_sample/pr/ test/optimus/pr
+    test_optimus:
+        machine: true
+
+        steps:
+            - checkout
+            - run:
+                command: |
+                    ./test/trigger_test.sh optimus
+                no_output_timeout: 1.5h
+
+    test_smartseq2:
+        machine: true
+
+        steps:
+            - checkout
+            - run:
+                  command: |
+                      ./test/trigger_test.sh smartseq2_single_sample
+                  no_output_timeout: 1.5h
+
     test_emptyDropsWrapper:
         docker:
             - image: quay.io/humancellatlas/secondary-analysis-dropletutils:0.1.0
@@ -44,6 +64,8 @@ workflows:
     test_all:
         jobs:
           - build
+          - test_optimus
+          - test_smartseq2
           - test_emptyDropsWrapper
           - test_npz2rds
           - test_filtercells

@@ -4,34 +4,35 @@ set -e
 
 # NOTE: this script will execute from the repository root when called on jenkins
 
-VAULT_TOKEN=$1
-INPUTS_JSON=$2
-WDL_FILE=$3
-DEPENDENCIES_JSON=$4
+PIPELINE_FOLDER_NAME=$1
 WD=$(pwd)
 
-echo "Rendering templates"
-bash ${WD}/test/config/render-ctmpls.sh "dev" "${VAULT_TOKEN}"
+
+INPUTS_JSON="/working/test/${PIPELINE_FOLDER_NAME}/pr/test_inputs.json"
+WDL_FILE="/working/test/${PIPELINE_FOLDER_NAME}/pr/test_${PIPELINE_FOLDER_NAME}_PR.wdl"
+DEPENDENCIES_JSON="/working/test/${PIPELINE_FOLDER_NAME}/pr/dependencies.json"
 
 echo "Setting Cromwell environmental variables"
-CROMWELL_SECRETS="${WD}/test/cromwell-secrets.json"
-CROMWELL_USER=$(cat "${CROMWELL_SECRETS}" | jq -r .cromwell_user)
-CROMWELL_PASSWORD=$(cat "${CROMWELL_SECRETS}" | jq -r .cromwell_password)
+
+echo ${BROAD_CROMWELL_KEY} > caas-prod.json
+CROMWELL_KEY_FILE="caas-prod.json"
 
 OPTIONS_FILE="https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/test/options.json"
-CROMWELL_URL="https://cromwell.mint-dev.broadinstitute.org"
+CROMWELL_URL="https://cromwell.caas-prod.broadinstitute.org"
+COLLECTION="pipeline-surge"
 
 echo "Running test"
 docker run --rm \
-  -v ${WD}:/working \
+  -v "${WD}":/working \
   -w /working \
   --privileged \
-  quay.io/broadinstitute/cromwell-tools:v1.1.1 \
+  quay.io/broadinstitute/cromwell-tools:v2.1.0 \
   /working/test/test_cromwell_workflow.sh \
-    "${CROMWELL_USER}" \
-    "${CROMWELL_PASSWORD}" \
+    "${CROMWELL_KEY_FILE}" \
     "${CROMWELL_URL}" \
     "${INPUTS_JSON}" \
     "${WDL_FILE}" \
     "${OPTIONS_FILE}" \
-    "${DEPENDENCIES_JSON}"
+    "${DEPENDENCIES_JSON}" \
+    "${COLLECTION}"
+
