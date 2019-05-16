@@ -1,6 +1,0 @@
-{
-    "BCAttacher.index1": "gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/scATAC-seq/BICCN-V1/Undetermined_S0_L002_I1_001.fastq.gz",
-    "BCAttacher.index2": "gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/scATAC-seq/BICCN-V1/Undetermined_S0_L002_I2_001.fastq.gz",
-    "BCAttacher.read1": "gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/scATAC-seq/BICCN-V1/Undetermined_S0_L002_R1_001.fastq.gz",
-    "BCAttacher.read2": "gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/scATAC-seq/BICCN-V1/Undetermined_S0_L002_R2_001.fastq.gz"
-}
