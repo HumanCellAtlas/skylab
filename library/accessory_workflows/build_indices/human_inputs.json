@@ -1,7 +1,7 @@
 {
-  "BuildIndices.gtf_version": "M21",
-  "BuildIndices.organism": "mouse",
-  "BuildIndices.organism_prefix": "m",
-  "BuildIndices.genome_short_string": "mm10",
+  "BuildIndices.gtf_version": "27",
+  "BuildIndices.organism": "human",
+  "BuildIndices.organism_prefix": "h",
+  "BuildIndices.genome_short_string": "hg38",
   "BuildIndices.dbsnp_version": "150"
 }

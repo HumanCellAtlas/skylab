@@ -1,6 +1,11 @@
 version 1.0
 
-task BuildStar {
+struct References {
+  File genome_fa
+  File annotation_gtf
+}
+
+task GetReferences {
   input {
     String gtf_version
     String organism
@@ -10,7 +15,6 @@ task BuildStar {
   String ftp_path = "ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_~{organism}/release_~{gtf_version}"
   String genome_fa = "GRC~{organism_prefix}38.primary_assembly.genome.fa"
   String annotation_gtf = "gencode.v~{gtf_version}.primary_assembly.annotation.gtf"
-  String ref_name = "star_primary_gencode_~{organism}_v~{gtf_version}"
 
   command <<<
     set -eo pipefail
@@ -22,23 +26,52 @@ task BuildStar {
     ## download gtf file
     wget ~{ftp_path}/~{annotation_gtf}.gz
     gunzip ~{annotation_gtf}.gz
+  >>>
+
+  output {
+    References references = object {
+      genome_fa: genome_fa,
+      annotation_gtf: annotation_gtf
+    }
+  }
+
+  runtime {
+    docker: "quay.io/humancellatlas/secondary-analysis-star:v0.2.2-2.5.3a-1.0.0"
+    disks: "local-disk 10 HDD"
+  }
+}
+
+task BuildStar {
+  input {
+    String gtf_version
+    String organism
+    References references
+  }
+
+  String ref_name = "star_primary_gencode_~{organism}_v~{gtf_version}"
+  String star_index_name = "~{ref_name}.tar"
+
+
+  command <<<
+    set -eo pipefail
 
     mkdir star
     STAR --runMode genomeGenerate \
       --genomeDir star \
-      --genomeFastaFiles ~{genome_fa} \
-      --sjdbGTFfile ~{annotation_gtf} \
+      --genomeFastaFiles ~{references.genome_fa} \
+      --sjdbGTFfile ~{references.annotation_gtf} \
       --sjdbOverhang 100 \
       --runThreadN 16
-    tar -cvf "~{ref_name}.tar" star
+
+    tar -cvf ~{star_index_name} star
   >>>
 
   output {
-    File star_index = "~{ref_name}.tar"
+    File star_index = star_index_name
   }
 
   runtime {
-    docker:"quay.io/humancellatlas/secondary-analysis-star:v0.2.2-2.5.3a-1.0.0"
+    docker: "quay.io/humancellatlas/secondary-analysis-star:v0.2.2-2.5.3a-1.0.0"
     memory: "50 GB"
     disks :"local-disk 100 HDD"
     cpu:"16"
@@ -48,31 +81,18 @@ task BuildStar {
 task BuildRsem {
   input {
     String gtf_version
-    # Either 'human' or 'mouse'
     String organism
-    # Either 'h' or 'm'
-    String organism_prefix
+    References references
   }
 
-  String ftp_path = "ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_~{organism}/release_~{gtf_version}"
-  String genome_fa = "GRC~{organism_prefix}38.primary_assembly.genome.fa"
-  String annotation_gtf = "gencode.v~{gtf_version}.primary_assembly.annotation.gtf"
   String ref_name = "star_primary_gencode_~{organism}_v~{gtf_version}"
+  String rsem_index_name = "~{ref_name}.tar"
 
   command {
     set -eo pipefail
-
-    ## download fasta
-    wget ~{ftp_path}/~{genome_fa}.gz
-    gunzip ~{genome_fa}.gz
-
-    ## download gtf file
-    wget ~{ftp_path}/~{annotation_gtf}.gz
-    gunzip ~{annotation_gtf}.gz
-
     mkdir rsem
-    rsem-prepare-reference --gtf ~{annotation_gtf} --bowtie ~{genome_fa} rsem/rsem_trans_index
-    tar -cvf ~{ref_name}.tar rsem/
+    rsem-prepare-reference --gtf ~{references.annotation_gtf} --bowtie ~{references.genome_fa} rsem/rsem_trans_index
+    tar -cvf ~{rsem_index_name} rsem/
   }
   runtime {
     docker: "quay.io/humancellatlas/secondary-analysis-rsem:v0.2.2-1.3.0"
@@ -80,7 +100,7 @@ task BuildRsem {
     disks: "local-disk 100 HDD"
   }
   output {
-    File rsem_index = "${ref_name}.tar"
+    File rsem_index = rsem_index_name
   }
 }
 
@@ -91,6 +111,7 @@ task BuildHisat2FromRsem {
 
   String rsem_reference_name = basename(rsem_index, ".tar")
   String ref_name = "hisat2_from_rsem_~{rsem_reference_name}"
+  String hisat2_index_name = "~{ref_name}.tar.gz"
 
   command {
 
@@ -98,19 +119,21 @@ task BuildHisat2FromRsem {
     tar -xf ~{rsem_index}
 
     # build index
-    hisat2-build -p 8 rsem/rsem_trans_index.idx.fa "~{ref_name}"
-    mkdir "~{ref_name}"
-    mv ./*.ht2 "~{ref_name}"
-    tar -zcvf "~{ref_name}.tar.gz" "~{ref_name}"
+    hisat2-build -p 8 rsem/rsem_trans_index.idx.fa ~{ref_name}
+    mkdir ~{ref_name}
+    mv ./*.ht2 ~{ref_name}
+    tar -zcvf ~{hisat2_index_name} ~{ref_name}
   }
+
   runtime {
-    docker:"quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
+    docker: "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
     memory: "8 GB"
     disks: "local-disk 100 HDD"
     cpu: "8"
   }
+
   output {
-    File hisat2_index = "~{ref_name}.tar.gz"
+    File hisat2_index = hisat2_index_name
   }
 }
 
@@ -120,80 +143,65 @@ task BuildHisat2 {
 
   input {
     String gtf_version
-    # Either 'human' or 'mouse'
     String organism
-    # Either 'h' or 'm'
-    String organism_prefix
+    File genome_fa
   }
 
-  String ftp_path = "ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_~{organism}/release_~{gtf_version}"
-  String genome_fa = "GRC~{organism_prefix}38.primary_assembly.genome.fa"
-  String annotation_gtf = "gencode.v~{gtf_version}.primary_assembly.annotation.gtf"
   String ref_name = "star_primary_gencode_~{organism}_v~{gtf_version}"
+  String hisat2_index_name = "~{ref_name}.tar.gz"
 
   command {
     set -eo pipefail
-
-    # download fasta
-    wget ~{ftp_path}/~{genome_fa}.gz
-
-    # download gtf file
-    wget ~{ftp_path}/~{annotation_gtf}.gz
-    gunzip ~{annotation_gtf}.gz
 
     # build index
     hisat2-build -p 8 ~{genome_fa} ~{ref_name}
     mkdir ~{ref_name}
     mv ./*.ht2 ~{ref_name}
-    tar -zcvf "~{ref_name}.tar.gz" "~{ref_name}"
+    tar -zcvf ~{hisat2_index_name} ~{ref_name}
   }
+
   runtime {
-    docker:"quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
+    docker: "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
     memory: "8 GB"
     disks: "local-disk 100 HDD"
     cpu: "8"
   }
+
   output {
-    File hisat2_index = "${ref_name}.tar.gz"
+    File hisat2_index = hisat2_index_name
   }
 }
 
 task BuildHisat2SnpHaplotypeSplicing {
   # This version includes SNP, haplotype, and
   input {
-    String organism  # Either 'human' or 'mouse'
-    String organism_prefix  # Either 'h' or 'm'
-    String genome_short_string  # e.g. hg38, mm10
+    String organism
+    String genome_short_string
+    References references
 
-    String gtf_version  # the actually number of gencode, ex.  27
-    String dbsnp_version  # dbsnp version, integer num, ex 150
+    String gtf_version
+    String dbsnp_version
   }
 
-  String ftp_path = "ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_~{organism}/release_~{gtf_version}"
-  String genome_fa = "GRC~{organism_prefix}38.primary_assembly.genome.fa"
-  String annotation_gtf = "gencode.v~{gtf_version}.primary_assembly.annotation.gtf"
   String ref_name = "star_primary_gencode_~{organism}_v~{gtf_version}"
   String snp_file = "snp~{dbsnp_version}Common.txt"
+  String hisat2_index_name = "~{ref_name}.tar.gz"
 
   command <<<
 
     HISAT2_DIR=/opt/tools/hisat2-2.1.0
 
-    # download fasta
-    wget ~{ftp_path}/~{genome_fa}.gz
-
-    # download gtf file
-    wget ~{ftp_path}/~{annotation_gtf}.gz
-    gunzip ~{annotation_gtf}.gz
+    # Compressed fasta required here
+    gzip ~{references.genome_fa}
 
     # download snp file
-    wget http://hgdownload.cse.ucsc.edu/goldenPath/~{genome_short_string}/database/"$SNP_FILE".gz
+    wget http://hgdownload.cse.ucsc.edu/goldenPath/~{genome_short_string}/database/~{snp_file}.gz
     gunzip ~{snp_file}.gz
 
     # extract snps, splice sites, and exon information
-    $HISAT2_DIR/hisat2_extract_snps_UCSC.py ~{genome_fa} "$SNP_FILE genome"
-    $HISAT2_DIR/hisat2_extract_splice_sites.py ~{annotation_gtf} > genome.ss
-    $HISAT2_DIR/hisat2_extract_exons.py ~{annotation_gtf} > genome.exon
+    $HISAT2_DIR/hisat2_extract_snps_UCSC.py ~{references.genome_fa}.gz ~{snp_file} genome
+    $HISAT2_DIR/hisat2_extract_splice_sites.py ~{references.annotation_gtf} > genome.ss
+    $HISAT2_DIR/hisat2_extract_exons.py ~{references.annotation_gtf} > genome.exon
 
     # build the hisat2 reference
     $HISAT2_DIR/hisat2-build \
@@ -207,7 +215,7 @@ task BuildHisat2SnpHaplotypeSplicing {
 
     mkdir ~{ref_name}
     cp ./*.ht2 ~{ref_name}
-    tar -zcvf "~{ref_name}.tar.gz" "~{ref_name}"
+    tar -zcvf ~{hisat2_index_name} ~{ref_name}
 
   >>>
 
@@ -218,7 +226,7 @@ task BuildHisat2SnpHaplotypeSplicing {
     cpu: "16"
   }
   output {
-    File hisat2_index = "~{ref_name}.tar.gz"
+    File hisat2_index = hisat2_index_name
   }
 }
 
@@ -244,18 +252,33 @@ workflow BuildIndices {
     String dbsnp_version
   }
 
-  call BuildStar {
+  parameter_meta {
+    gtf_version: "the actual number of gencode, ex.  27"
+    organism: "Either 'human' or 'mouse'"
+    organism_prefix: "Either 'h' or 'm'"
+    genome_short_string: "e.g. hg38, mm10"
+    dbsnp_version: "integer num, ex 150"
+  }
+
+  call GetReferences {
     input:
       gtf_version = gtf_version,
       organism = organism,
       organism_prefix = organism_prefix
   }
 
+  call BuildStar {
+    input:
+      gtf_version = gtf_version,
+      organism = organism,
+      references = GetReferences.references
+  }
+
   call BuildRsem {
     input:
       gtf_version = gtf_version,
       organism = organism,
-      organism_prefix = organism_prefix
+      references = GetReferences.references
   }
 
   call BuildHisat2FromRsem {
@@ -267,17 +290,18 @@ workflow BuildIndices {
     input:
       gtf_version = gtf_version,
       organism = organism,
-      organism_prefix = organism_prefix
+      genome_fa = GetReferences.references.genome_fa
   }
 
   call BuildHisat2SnpHaplotypeSplicing {
     input:
       gtf_version = gtf_version,
       organism = organism,
-      organism_prefix = organism_prefix,
       genome_short_string = genome_short_string,
-      dbsnp_version = dbsnp_version
+      dbsnp_version = dbsnp_version,
+      references = GetReferences.references
   }
+
   output {
     File star_index = BuildStar.star_index
     File rsem_index = BuildRsem.rsem_index
