@@ -4,12 +4,14 @@ task ValidateOptimus {
       File gene_metrics
       File cell_metrics
       Array[File] fastqc_htmls
+      Int n_fastqc_zips
       Int required_disk = ceil((size(bam, "G") + size(matrix, "G")) * 1.1)
 
       String expected_bam_hash
       String expected_matrix_hash
       String expected_gene_metric_hash
       String expected_cell_metric_hash
+      Int expected_n_fastqc_zips
       Array[String] expected_fastqc_html_hashes
 
   command <<<
@@ -59,6 +61,11 @@ task ValidateOptimus {
         fail=true
       fi
     done
+
+    if [ ${expected_n_fastqc_zips} != ${n_fastqc_zips} ]; then
+      >&2 echo "number of fastqc zip (${n_fastqc_zips}) did not match expected number (${expected_n_fastqc_zips})"
+      fail=true
+    fi
 
     if [ $fail == "true" ]; then exit 1; fi
 

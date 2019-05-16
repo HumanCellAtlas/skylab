@@ -6,6 +6,7 @@
   "TestOptimusPR.expected_fastqc_html_hashes": ["cb0bbb7d52198c38f2cfa87621c92e31",
     "6697992484d279d15683b5124ab75554",
     "26e07b94eaff3a7ea3dcc9a191bd1194"],
+  "TestOptimusPR.expected_n_fastqc_zips": 6,
   "TestOptimusPR.r1_fastq": [
     "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_R1_001.fastq.gz",
     "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_R1_001.fastq.gz"

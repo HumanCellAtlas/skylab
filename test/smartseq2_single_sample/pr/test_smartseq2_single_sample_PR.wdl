@@ -24,6 +24,7 @@ workflow TestSmartSeq2SingleCellPR {
   File fastq1
   File fastq2
   Array[String] expected_fastqc_html_hashes
+  Int expected_n_fastqc_zips
 
   call target_wdl.SmartSeq2SingleCell as target_workflow {
     input:
@@ -50,7 +51,9 @@ workflow TestSmartSeq2SingleCellPR {
      target_metrics = target_workflow.insert_size_metrics,
      expected_metrics_hash = expected_metrics_hash,
      fastqc_htmls = target_workflow.fastqc_htmls,
-     expected_fastqc_html_hashes = expected_fastqc_html_hashes
+     expected_fastqc_html_hashes = expected_fastqc_html_hashes,
+     n_fastqc_zips = length(target_workflow.fastqc_zips),
+     expected_n_fastqc_zips = expected_n_fastqc_zips
   }
 
 }

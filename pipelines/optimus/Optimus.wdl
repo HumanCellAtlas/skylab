@@ -245,7 +245,7 @@ workflow Optimus {
       Array[File]? zarr_output_files = OptimusZarrConversion.zarr_output_files
 
       # fastqc
-      Array[Array[File]] fastqc_htmls = fastqc_output_htmls
-      Array[Array[File]] fastqc_zips = fastqc_output_zips
+      Array[File] fastqc_htmls = flatten(fastqc_output_htmls)
+      Array[File] fastqc_zips = flatten(fastqc_output_zips)
   }
 }

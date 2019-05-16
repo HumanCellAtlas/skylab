@@ -8,6 +8,9 @@ task ValidateSmartSeq2SingleCell {
       Array[File] fastqc_htmls
       Array[String] expected_fastqc_html_hashes
 
+      Int expected_n_fastqc_zips
+      Int n_fastqc_zips
+
   command <<<
 
     # catch intermittent failures
@@ -32,12 +35,17 @@ task ValidateSmartSeq2SingleCell {
     fi
 
     for htmlfile in ${sep=' ' fastqc_htmls}; do
-          hash=$(md5sum $htmlfile | awk '{print $1}')
-          if [[ " ${sep=' ' expected_fastqc_html_hashes} " != *" $hash "* ]]; then
-            >&2 echo "fastq_html_hash ($hash) did not match expected hash (${sep=' ' expected_fastqc_html_hashes})"
-            fail=true
-          fi
-        done
+      hash=$(md5sum $htmlfile | awk '{print $1}')
+      if [[ " ${sep=' ' expected_fastqc_html_hashes} " != *" $hash "* ]]; then
+        >&2 echo "fastq_html_hash ($hash) did not match expected hash (${sep=' ' expected_fastqc_html_hashes})"
+        fail=true
+      fi
+    done
+
+    if [ ${expected_n_fastqc_zips} != ${n_fastqc_zips} ]; then
+      >&2 echo "number of fastqc zip (${n_fastqc_zips}) did not match expected number (${expected_n_fastqc_zips})"
+      fail=true
+    fi
 
     if [ $fail == "true" ]; then exit 1; fi
 
