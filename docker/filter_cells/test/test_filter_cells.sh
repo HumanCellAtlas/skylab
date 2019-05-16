@@ -53,7 +53,7 @@ fi
 printf "done\n"
 
 ## Cleanup
-rm ${filterCellsOutput} ${testDataFileName} ${rdsFileName}
+rm ${filterCellsOutput} ${testDataFileName} ${rdsFileName} umis_per_barcode.png umis_per_barcode_zoomed.png
 rm -r ${extraCleanup}
 
 exit $exitCode
