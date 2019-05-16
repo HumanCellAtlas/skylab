@@ -79,6 +79,7 @@ workflows:
           - build
           - test_optimus
           - test_smartseq2
+          - test_smartseq2_unpaired
           - test_emptyDropsWrapper
           - test_npz2rds
           - test_bulk_rna
