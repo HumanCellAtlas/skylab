@@ -25,7 +25,7 @@ workflow TestBulkRnaPR {
   File chrom_sizes
   File rna_qc_tr_id_to_gene_type_tsv
 
-  call target.rna as target {
+  call target.BulkRnaPipeline as target {
     input:
       endedness = "paired",
       fastqs_R1 = fastqs_R1,
