@@ -10,7 +10,7 @@ workflow TestOptimusPR {
   String expected_matrix_hash
   String expected_gene_metric_hash
   String expected_cell_metric_hash
-  Array[String] expected_fastqc_html_hashes
+  Array[String] expected_fastqc_html_strings # a set of strings to search for in the fastqc html outputs
   Int expected_n_fastqc_zips
 
   # Optimus inputs
@@ -48,7 +48,7 @@ workflow TestOptimusPR {
       expected_matrix_hash = expected_matrix_hash,
       expected_cell_metric_hash = expected_cell_metric_hash,
       expected_gene_metric_hash = expected_gene_metric_hash,
-      expected_fastqc_html_hashes = expected_fastqc_html_hashes,
+      expected_fastqc_html_strings = expected_fastqc_html_strings,
       expected_n_fastqc_zips = expected_n_fastqc_zips
   }
 
