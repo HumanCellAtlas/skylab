@@ -2,7 +2,6 @@
 
 # pre-download the necessary dataset for secondary analysis
 # then build them into the docker image
-cd ./data
 ./get-data.sh
 
 # build and push
