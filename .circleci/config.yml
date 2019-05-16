@@ -39,7 +39,6 @@ jobs:
                       cd docker/filter_cells/test
                       ./test_filter_cells.sh
 
-
 workflows:
     version: 2
     test_all:
