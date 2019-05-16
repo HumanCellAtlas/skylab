@@ -3,6 +3,5 @@
     "scATAC.input_fastq1": "gs://broad-dsde-mint-dev-cromwell-execution/caas-cromwell-executions/BCAttacher/e1dff8bc-0038-4983-b617-e99285f68daa/call-AttachBarcode/R1.fastq.gz",
     "scATAC.input_fastq2": "gs://broad-dsde-mint-dev-cromwell-execution/caas-cromwell-executions/BCAttacher/e1dff8bc-0038-4983-b617-e99285f68daa/call-AttachBarcode/R2.fastq.gz",
     "scATAC.genome_name": "hg38",
-    "scATAC.genome_size_file": "gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/scATAC-seq/bwa_hg38/hg38.chrom.sizes",
     "scATAC.output_bam": "demo.bam"
 }
