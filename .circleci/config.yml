@@ -34,6 +34,15 @@ jobs:
                       ./test/trigger_test.sh smartseq2_single_sample
                   no_output_timeout: 1.5h
 
+      test_smartseq2_unpaired:
+        machine: true
+        steps:
+            - checkout
+            - run:
+                  command: |
+                      ./test/trigger_test.sh smartseq2_single_sample_unpaired
+                  no_output_timeout: 1.5h
+
     test_emptyDropsWrapper:
         docker:
             - image: quay.io/humancellatlas/secondary-analysis-dropletutils:0.1.0
