@@ -1,4 +1,4 @@
-#!/usr/bin/env Rscript
+#!/usr/bin/Rscript
 
 ## Default repo
 local({r <- getOption("repos")
@@ -6,11 +6,11 @@ local({r <- getOption("repos")
     options(repos=r)
 })
 
-## Install DropletUtils
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 BiocManager::install("rhdf5")
 BiocManager::install("GenomicRanges")
 BiocManager::install("edgeR")
 
-install.packages(c('RANN','scales','RColorBrewer','foreach','doParallel','igraph','plyr','bigmemory','raster','irlba','Rtsne','doSNOW','devtools'))
+pkgs = c('RANN', 'scales', 'RColorBrewer', 'foreach', 'doParallel', 'igraph', 'plyr', 'bigmemory', 'raster', 'irlba', 'Rtsne', 'doSNOW', 'devtools', 'leiden', 'umap', 'optparse')
+install.packages(pkgs, repos='http://cran.us.r-project.org')
