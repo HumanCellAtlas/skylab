@@ -2,8 +2,18 @@ version 1.0
 
 # TODO:
 # 1. add meta section
+# 2. make the aligner and compliant bam tasks' docker images tool specific
+# 3. optimize calcultations of disk, mem and cpu in reuntime requirements of each task
+# 4. fix snaptools snap-pre bug where a max fragmnet length greater than 2000 will cause snap-pre to throw an error "--max-flen can not be smaller than 2000"
+# 5. have metadata for where barcodes are attached and optimize the script that attaches barcode
+# 6. make the chromosome(s) to remove and to keep a configurable user input
+# 7. determine if bin size list should be a user defined input with a possible default value
 
 workflow ATAC {
+  meta {
+    description: "ATAC-seq (Assay for Transposase-Accessible Chromatin using sequencing) is a technique used in molecular biology to assess genome-wide chromatin accessibility."
+  }
+
   input {
     #fastq inputs
     File fastq_gzipped_input_read1
@@ -44,8 +54,8 @@ workflow ATAC {
     read_group_id: "the read group id to be added upon alignment (defualt: Kobe)"
     read_group_id: "the read group sample to be added upon alignment (defualt: Bryant)"
     bwa_cpu: "the number of threads/cores to use during alignment"
-    genome_name: ""
-    genome_size_file: ""
+    genome_name: "the name of the genome being analyzed"
+    genome_size_file: "size for the chromoomes for the genome; ex: mm10.chrom.size"
     min_map_quailty: "the minimum mapping quality to be filtered by samtools view and snap-pre (snaptools task)"
     max_fragment_length: "the maximum fragment length for filtering out reads by gatk and snap-pre (snaptools task)"
     output_base_name: "base name to be used for the pipelines output and intermiediate files"
@@ -148,7 +158,6 @@ workflow ATAC {
   call SnapCellByBin {
     input:
       snap_input=SnapPre.snap_file_output,
-      bin_size_list = "5000 10000"
   }
 
   output {
@@ -536,6 +545,10 @@ task FilterMitochondrialReads {
   # runtime requirements based upon input file size
   Int disk_size = ceil(2 * (if size(bam_input, "GiB") < 1 then 1 else size(bam_input, "GiB")))
 
+
+  # TODO:
+  # 1. make the chromosome(s) to remove and to keep a configurable user input
+
   # ChrM: mitochondrial chromosome
   command {
     set -euo pipefail
@@ -543,18 +556,19 @@ task FilterMitochondrialReads {
     # create bam index to filter by chromosome
     samtools index -b ~{bam_input}
 
-    # get bam w/o chrM
-    list_chrs=`samtools view -H ~{bam_input} \
+    #get list of chromosomes from bam header (ignoring chrM chromosome)
+    declare -r LIST_CHRS=`samtools view -H ~{bam_input} \
       | grep chr \
       | cut -f2 \
       | sed 's/SN://g' \
       | grep -v 'chrM\|_'`
 
+    # get bam w/o chrM using the list
     samtools view \
       -bh \
       -f 0x2 \
       ~{bam_input} \
-      `echo $list_chrs` \
+      `echo $LIST_CHRS` \
       -o ~{bam_no_chrM_reads_output_name}
 
     #get bam with only chrM
@@ -579,6 +593,7 @@ task FilterMitochondrialReads {
   }
 }
 
+# generate the snap file from the filterer, aligned and sorted bam
 task SnapPre {
   input {
     File bam_input
@@ -587,6 +602,15 @@ task SnapPre {
     Int max_fragment_length
     File genome_size_file
     String docker_image = "quay.io/humancellatlas/snaptools:0.0.1"
+  }
+
+  parameter_meta {
+    bam_input: "the bam to passed into snaptools tools"
+    max_fragment_length: "the maximum fragment length for filtering out reads by snap-pre (snaptools task)"
+    output_base_name: "base name to be used for the output of the task"
+    genome_name: "the name of the genome being analyzed"
+    genome_size_file: "size for the chromoomes for the genome; ex: mm10.chrom.size"
+    docker_image: "the docker image using snaptools to be used (default: quay.io/humancellatlas/snaptools:0.0.1)"
   }
 
   String snap_file_output_name = output_base_name + ".snap"
@@ -631,13 +655,26 @@ task SnapPre {
   }
 }
 
+# create a cell by bin matrix from the generated snap file
 task SnapCellByBin {
   input {
     File snap_input
-    String bin_size_list
     String docker_image = "quay.io/humancellatlas/snaptools:0.0.1"
   }
 
+  # TODO:
+  # 1. scale disk size based upon input file size
+
+  parameter_meta {
+    snap_input: "the bam to passed into snaptools tools"
+    output_base_name: "base name to be used for the output of the task"
+    docker_image: "the docker image using gatk to be used (default: quay.io/humancellatlas/snaptools:0.0.1)"
+  }
+
+  # TODO:
+  # 1. determine if bin size list should be a user defined input with a possible default value
+
+  String bin_size_list = "5000 10000"
   command {
     set -euo pipefail
 
@@ -647,6 +684,7 @@ task SnapCellByBin {
       --bin-size-list ~{bin_size_list}  \
       --verbose=True
   }
+
 
   runtime {
     docker: docker_image
@@ -668,6 +706,12 @@ task MakeCompliantBAM {
     File bam_input
     String output_base_name
     String docker_image = "quay.io/humancellatlas/snaptools:0.0.1"
+  }
+
+  parameter_meta {
+    bam_input: "the bam with barcodes in the read ids that need to be converted to barcodes in bam tags"
+    output_base_name: "base name to be used for the output of the task"
+    docker_image: "the docker image using the python script to convert the bam barcodes/read ids (default: quay.io/humancellatlas/snaptools:0.0.1)"
   }
 
   Int disk_size = ceil(2.5 * (if size(bam_input, "GiB") < 1 then 1 else size(bam_input, "GiB")))
