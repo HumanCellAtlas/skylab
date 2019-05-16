@@ -34,13 +34,22 @@ task Attach10xBarcodes {
   command {
     set -e
 
+    # For v2 we use the Attach10xBarcodes entry point, which has the v2 barcode
+    # layout built-in.
+    # For v3 we use the generic AttachBarcodes entry point, to which we give
+    # the expected positions of each barcode.
     ${if v3 then "AttachBarcodes" else "Attach10xBarcodes"} \
       --r1 "${r1_fastq}" \
       ${"--i1 " + i1_fastq} \
       --u2 "${r2_unmapped_bam}" \
       --output-bamfile barcoded.bam \
       --whitelist "${whitelist}" \
-      ${if v3 then "--sample-barcode-start-position 0 --sample-barcode-length 8 --cell-barcode-start-position 0 --cell-barcode-length 16 --molecule-barcode-start-position 16 --molecule-barcode-length 12" else ""}
+      ${if v3 then "--sample-barcode-start-position 0" else ""} \
+      ${if v3 then "--sample-barcode-length 8" else ""} \
+      ${if v3 then "--cell-barcode-start-position 0" else ""} \
+      ${if v3 then "--cell-barcode-length 16" else ""} \
+      ${if v3 then "--molecule-barcode-start-position 16" else ""} \
+      ${if v3 then "--molecule-barcode-length 12" else ""}
   }
   
   runtime {
