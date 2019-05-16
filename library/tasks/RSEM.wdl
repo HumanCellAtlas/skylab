@@ -8,7 +8,7 @@ task RSEMExpression {
   String docker = "quay.io/humancellatlas/secondary-analysis-rsem:v0.2.2-1.3.0"
   Int machine_mem_mb = 3850
   Int cpu = 4
-  # use provided disk number or dynamically size on our own, with 20GB of additional disk
+  # use provided disk number or dynamically size on our own, with 20GiB of additional disk
   Int disk = ceil(size(trans_aligned_bam, "GiB") + size(rsem_genome, "GiB") + 20)
   Int preemptible = 5
   Int max_retries = 0

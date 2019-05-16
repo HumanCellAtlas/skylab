@@ -37,7 +37,7 @@ task ValidateSmartSeq2SingleCell {
   runtime {
     docker: "ubuntu:18.04"
     cpu: 1
-    memory: "3.75 GB"
+    memory: "3.75 GiB"
     disks: "local-disk 10 HDD"
   }
 }
