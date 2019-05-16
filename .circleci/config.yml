@@ -13,6 +13,7 @@ jobs:
                     python test/run_portability_test.py --test-directories \
                         test/smartseq2_single_sample/pr/ \
                         test/optimus/pr \
+                        test/optimus/v3umi \
                         test/bulk_rna_pipeline/pr
 
     test_optimus:

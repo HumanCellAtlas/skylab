@@ -81,6 +81,6 @@ task CheckUMITagLength {
     >>>
 
     runtime {
-        docker: "quay.io/humancellatlas/secondary-analysis-samtools"
+        docker: "quay.io/humancellatlas/secondary-analysis-samtools:1.3.1"
     }
 }
