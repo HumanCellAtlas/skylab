@@ -1,5 +1,0 @@
-{
-    "SnapAtacFromCellRanger.possorted_bam": "gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/snaptools_test/atac_v1_adult_brain_fresh_5k_possorted_bam.bam",
-    "SnapAtacFromCellRanger.genome_name": "hg38",
-    "SnapAtacFromCellRanger.genome_size_file": "gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/scATAC-seq/bwa_hg38/hg38.chrom.sizes"
-}
