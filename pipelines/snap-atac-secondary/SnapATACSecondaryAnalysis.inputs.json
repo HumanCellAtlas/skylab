@@ -1,4 +1,0 @@
-{
-    "SnapATACSecondaryAnalysis.snap_file": "gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/scATAC-seq/atac_v1_adult_brain_fresh_5k.snap",
-    "SnapATACSecondaryAnalysis.sample_name": "atac_v1_adult_brain_fresh_5k"
-}
