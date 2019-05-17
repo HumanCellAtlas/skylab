@@ -1,4 +1,0 @@
-{
-  "BuildBWARef.reference_fasta": "gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/scATAC-seq/genome.fa",
-  "BuildBWARef.ref_name": "genome"
-}
