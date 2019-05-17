@@ -1,5 +1,4 @@
 {
-  "SmartSeq2SingleCell.gtf_file": "gs://hca-dcp-mint-test-data/reference/GRCh38_Gencode/gencode.v27.primary_assembly.annotation.gtf",
   "SmartSeq2SingleCell.hisat2_ref_trans_name": "gencode_v27_trans_rsem",
   "SmartSeq2SingleCell.rrna_intervals": "gs://hca-dcp-mint-test-data/reference/GRCh38_Gencode/gencode.v27.rRNA.interval_list",
   "SmartSeq2SingleCell.star_ref_index": "gs://hca-dcp-mint-test-data/reference/GRCh38_Gencode/GRCh38_GencodeV27_Primary.tar",
