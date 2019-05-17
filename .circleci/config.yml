@@ -29,8 +29,6 @@ jobs:
                 command: |
                     cd docker/emptydrops/npz2rds/test/
                     ./test.sh
-
-
 workflows:
     version: 2
     test_all:
@@ -38,5 +36,4 @@ workflows:
           - build
           - test_emptyDropsWrapper
           - test_npz2rds
-
 
