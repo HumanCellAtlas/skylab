@@ -186,8 +186,8 @@ task TrimAdapters {
   }
 
   parameter_meta {
-    fastq_gzipped_input_read1: "read 1 fastq file as input for the pipeline"
-    fastq_gzipped_input_read2: "read 2 fastq file as input for the pipeline"
+    fastq_input_read1: "read 1 fastq file as input for the pipeline"
+    fastq_input_read2: "read 2 fastq file as input for the pipeline"
     min_length: "the minimum legnth for trimming. Reads that are too short even before adapter removal are also discarded"
     quality_cutoff: "cutadapt option to trim low-quality ends from reads before adapter removal"
     adapter_seq_read1: "cutadapt option for the sequence adapter for read 1 fastq"
@@ -252,12 +252,12 @@ task BWAPairedEndALignment {
   }
 
   parameter_meta {
-    fastq_gzipped_input_read1: "the trimmed read 1 fastq file as input for the aligner"
-    fastq_gzipped_input_read1: "the trimmed read 1 fastq file as input for the aligner"
+    fastq_input_read1: "the trimmed read 1 fastq file as input for the aligner"
+    fastq_input_read2: "the trimmed read 1 fastq file as input for the aligner"
     tar_bwa_reference: "the pre built tar file containing the reference fasta and cooresponding reference files for the BWA aligner"
     read_group_id: "the read group id to be added upon alignment (defualt: Kobe)"
-    read_group_id: "the read group sample to be added upon alignment (defualt: Bryant)"
-    bwa_cpu: "the number of threads/cores to use during alignment"
+    read_group_sample_name: "the read group sample to be added upon alignment (defualt: Bryant)"
+    cpu: "the number of threads/cores to use during alignment"
     output_base_name: "base name to be used for the output of the task"
     docker_image: "the docker image using BWA to be used (default: quay.io/humancellatlas/snaptools:0.0.1)"
   }
@@ -444,7 +444,7 @@ task FilterMinMapQuality {
 
   parameter_meta {
     bam_input: "the bam to passed into samtools tools"
-    min_map_quailty: "the minimum mapping quality to be filtered by samtools view and snap-pre (snaptools task)"
+    min_map_quality: "the minimum mapping quality to be filtered by samtools view and snap-pre (snaptools task)"
     output_base_name: "base name to be used for the output of the task"
     docker_image: "the docker image using samtools to be used (default: quay.io/broadinstitute/samtools:1.9)"
   }
@@ -667,7 +667,6 @@ task SnapCellByBin {
 
   parameter_meta {
     snap_input: "the bam to passed into snaptools tools"
-    output_base_name: "base name to be used for the output of the task"
     docker_image: "the docker image using gatk to be used (default: quay.io/humancellatlas/snaptools:0.0.1)"
   }
 
