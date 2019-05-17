@@ -7,7 +7,7 @@ task GroupQCOutputs {
   String output_name
   # Runtime
   String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.0"
-  String mem = 2
+  String mem = 3
   String cpu = 1
   String disk_space = 20 
   Int preemptible = 5
@@ -24,9 +24,9 @@ task GroupQCOutputs {
     rsem_stats: "statistics output of rsem "
     output_name: "name output files"
     docker: "(optional) the docker image containing the runtime environment for this task"
-    mem: "(optional) the amount of memory (MB) to provision for this task"
+    mem: "(optional) the amount of memory (MiB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
-    disk_space: "(optional) the amount of disk space (GB) to provision for this task"
+    disk_space: "(optional) the amount of disk space (GiB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
     max_retries: "(optional) retry this number of times if task fails -- use with caution, see skylab README for details"
   }
@@ -45,7 +45,7 @@ task GroupQCOutputs {
   }
   runtime {
     docker: docker
-    memory: "${mem} GB"
+    memory: "${mem} GiB"
     disks: "local-disk ${disk_space} HDD"
     cpu: cpu
     preemptible: preemptible

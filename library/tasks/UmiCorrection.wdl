@@ -9,9 +9,9 @@ task CorrectUMItools {
     String groupout_filename = "groupout.tsv"
 
     ## TODO: Optimize these values
-    Int machine_mem_mb = 10000
+    Int machine_mem_mb = 11000
     Int cpu = 1
-    Int disk = ceil(size(bam_input, "G") * 6) + 50
+    Int disk = ceil(size(bam_input, "Gi") * 6) + 50
     Int preemptible = 3
 
     meta {
@@ -21,9 +21,9 @@ task CorrectUMItools {
     parameter_meta {
         bam_input: "Aligned and sorted bam"
         docker: "(optional) the docker image containing the runtime environment for this task"
-        machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+        machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
         cpu: "(optional) the number of cpus to provision for this task"
-        disk: "(optional) the amount of disk space (GB) to provision for this task"
+        disk: "(optional) the amount of disk space (GiB) to provision for this task"
         preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
     }
 
@@ -62,7 +62,7 @@ task CorrectUMItools {
 
     runtime {
         docker: docker
-        memory: "${machine_mem_mb} MB"
+        memory: "${machine_mem_mb} MiB"
         disks: "local-disk ${disk} HDD"
         cpu: cpu
         preemptible: preemptible

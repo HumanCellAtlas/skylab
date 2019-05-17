@@ -8,11 +8,11 @@ task HISAT2PairedEnd {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
-  Int machine_mem_mb = 15000
+  Int machine_mem_mb = 16500
   Int cpu = 4
   # Using (fastq1 + fastq2) x 100 gives factor of a few buffer. BAM can be up to ~5 x (fastq1 + fastq2).
-  # Need room for unsorted + sorted bam + temp sorting space + zipped and unzipped ref. Add 10 GB buffer.
-  Int disk = ceil((size(fastq1, "GB") + size(fastq2, "GB")) * 100 + size(hisat2_ref, "GB") * 2 + 10)
+  # Need room for unsorted + sorted bam + temp sorting space + zipped and unzipped ref. Add 10 GiB buffer.
+  Int disk = ceil((size(fastq1, "GiB") + size(fastq2, "GiB")) * 100 + size(hisat2_ref, "GiB") * 2 + 10)
   Int preemptible = 5
   Int max_retries = 0
 
@@ -28,9 +28,9 @@ task HISAT2PairedEnd {
     output_basename: "basename used for output files"
     sample_name: "sample name of input"
     docker: "(optional) the docker image containing the runtime environment for this task"
-    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
-    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    disk: "(optional) the amount of disk space (GiB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
     max_retries: "(optional) retry this number of times if task fails -- use with caution, see skylab README for details"
   }
@@ -79,7 +79,7 @@ task HISAT2PairedEnd {
 
   runtime {
     docker: docker
-    memory: "${machine_mem_mb} MB"
+    memory: "${machine_mem_mb} MiB"
     disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible
@@ -104,11 +104,11 @@ task HISAT2RSEM {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
-  Int machine_mem_mb = 15000
+  Int machine_mem_mb = 16500
   Int cpu = 4
   # Using (fastq1 + fastq2) x 100 gives factor of a few buffer. BAM can be up to ~5 x (fastq1 + fastq2).
-  # Need room for unsorted + sorted bam + temp sorting space + zipped and unzipped ref. Add 10 GB buffer.
-  Int disk = ceil((size(fastq1, "GB") + size(fastq2, "GB")) * 100 + size(hisat2_ref, "GB") * 2 + 10)
+  # Need room for unsorted + sorted bam + temp sorting space + zipped and unzipped ref. Add 10 GiB buffer.
+  Int disk = ceil((size(fastq1, "GiB") + size(fastq2, "GiB")) * 100 + size(hisat2_ref, "GiB") * 2 + 10)
   Int preemptible = 5
   Int max_retries = 0
 
@@ -124,9 +124,9 @@ task HISAT2RSEM {
     output_basename: "basename used for output files"
     sample_name: "sample name of input"
     docker: "(optional) the docker image containing the runtime environment for this task"
-    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
-    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    disk: "(optional) the amount of disk space (GiB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
     max_retries: "(optional) retry this number of times if task fails -- use with caution, see skylab README for details"
   }
@@ -182,7 +182,7 @@ task HISAT2RSEM {
 
   runtime {
     docker: docker
-    memory: "${machine_mem_mb} MB"
+    memory: "${machine_mem_mb} MiB"
     disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible
@@ -205,11 +205,11 @@ task HISAT2SingleEnd {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
-  Int machine_mem_mb = 15000
+  Int machine_mem_mb = 16500
   Int cpu = 4
   # Using fastq x 100 gives factor of a few buffer. BAM can be up to ~5 x fastq.
-  # Need room for unsorted + sorted bam + temp sorting space + zipped and unzipped ref. Add 10 GB buffer.
-  Int disk = ceil((size(fastq, "GB") * 100) + size(hisat2_ref, "GB") * 2 + 10)
+  # Need room for unsorted + sorted bam + temp sorting space + zipped and unzipped ref. Add 10 GiB buffer.
+  Int disk = ceil((size(fastq, "GiB") * 100) + size(hisat2_ref, "GiB") * 2 + 10)
   Int preemptible = 5
 
   meta {
@@ -223,9 +223,9 @@ task HISAT2SingleEnd {
     output_basename: "basename used for output files"
     sample_name: "sample name of input"
     docker: "(optional) the docker image containing the runtime environment for this task"
-    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
-    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    disk: "(optional) the amount of disk space (GiB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
   }
 
@@ -246,7 +246,7 @@ task HISAT2SingleEnd {
 
   runtime {
     docker: docker
-    memory: "${machine_mem_mb} MB"
+    memory: "${machine_mem_mb} MiB"
     disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible
@@ -265,10 +265,10 @@ task HISAT2InspectIndex {
 
   # runtime values
   String docker =  "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
-  Int machine_mem_mb = 3500
+  Int machine_mem_mb = 3850
   Int cpu = 1
-  # use provided disk number or dynamically size on our own, with 10GB of additional disk
-  Int disk = ceil(size(hisat2_ref, "GB") + 10)
+  # use provided disk number or dynamically size on our own, with 10GiB of additional disk
+  Int disk = ceil(size(hisat2_ref, "GiB") + 10)
   Int preemptible = 5
 
   meta {
@@ -279,9 +279,9 @@ task HISAT2InspectIndex {
     hisat2_ref: "HISAT2 reference"
     ref_name: "the basename of the index for the reference genome"
     docker: "(optional) the docker image containing the runtime environment for this task"
-    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
-    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    disk: "(optional) the amount of disk space (GiB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
   }
 
@@ -294,7 +294,7 @@ task HISAT2InspectIndex {
 
   runtime {
     docker: docker
-    memory: "${machine_mem_mb} MB"
+    memory: "${machine_mem_mb} MiB"
     disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible

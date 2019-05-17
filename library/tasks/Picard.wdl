@@ -4,11 +4,11 @@ task SortBam {
 
     # runtime values
     String docker = "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
-    Int machine_mem_mb = 7500
+    Int machine_mem_mb = 8250
     Int machine_overhead_mb = 500
     Int command_mem_mb = machine_mem_mb - machine_overhead_mb
     Int cpu = 1
-    Int disk = ceil(size(bam_input, "G") * 6) + 50
+    Int disk = ceil(size(bam_input, "Gi") * 6) + 50
     Int preemptible = 3
 
     meta {
@@ -26,7 +26,7 @@ task SortBam {
 
     runtime {
         docker: docker
-        memory: "${machine_mem_mb} MB"
+        memory: "${machine_mem_mb} MiB"
         disks: "local-disk ${disk} HDD"
         cpu: cpu
         preemptible: preemptible
@@ -43,11 +43,11 @@ task SortBamAndIndex {
 
     # runtime values
     String docker = "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
-    Int machine_mem_mb = 7500
+    Int machine_mem_mb = 8250
     Int machine_overhead_mb = 500
     Int command_mem_mb = machine_mem_mb - machine_overhead_mb
     Int cpu = 1
-    Int disk = ceil(size(bam_input, "G") * 6) + 50
+    Int disk = ceil(size(bam_input, "Gi") * 6) + 50
     Int preemptible = 3
 
     meta {
@@ -67,7 +67,7 @@ task SortBamAndIndex {
 
     runtime {
         docker: docker
-        memory: "${machine_mem_mb} MB"
+        memory: "${machine_mem_mb} MiB"
         disks: "local-disk ${disk} HDD"
         cpu: cpu
         preemptible: preemptible
@@ -86,12 +86,12 @@ task CollectMultipleMetrics {
 
   # runtime values
   String docker ="quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
-  Int machine_mem_mb = 7500
-  # give the command 1 GB of overhead
+  Int machine_mem_mb = 8250
+  # give the command 1 GiB of overhead
   Int command_mem_mb = machine_mem_mb - 1000
   Int cpu = 1
-  # use provided disk number or dynamically size on our own, with 10GB of additional disk
-  Int disk = ceil(size(aligned_bam, "GB") + size(genome_ref_fasta, "GB") + 10)
+  # use provided disk number or dynamically size on our own, with 10GiB of additional disk
+  Int disk = ceil(size(aligned_bam, "GiB") + size(genome_ref_fasta, "GiB") + 10)
   Int preemptible = 5
   Int max_retries = 0
 
@@ -104,9 +104,9 @@ task CollectMultipleMetrics {
     genome_ref_fasta: "genome reference fasta"
     output_basename: "basename used for output files"
     docker: "(optional) the docker image containing the runtime environment for this task"
-    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
-    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    disk: "(optional) the amount of disk space (GiB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
     max_retries: "(optional) retry this number of times if task fails -- use with caution, see skylab README for details"
   }
@@ -133,7 +133,7 @@ task CollectMultipleMetrics {
   
   runtime {
     docker: docker
-    memory: "${machine_mem_mb} MB"
+    memory: "${machine_mem_mb} MiB"
     disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible
@@ -170,12 +170,12 @@ task CollectRnaMetrics {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
-  Int machine_mem_mb = 3500
-  # give the command 500 MB of overhead
+  Int machine_mem_mb = 3850
+  # give the command 500 MiB of overhead
   Int command_mem_mb = machine_mem_mb - 500
   Int cpu = 1
-  # use provided disk number or dynamically size on our own, with 10GB of additional disk
-  Int disk = ceil(size(aligned_bam, "GB") + size(ref_flat, "GB") + size(rrna_intervals, "GB") + 10)
+  # use provided disk number or dynamically size on our own, with 10GiB of additional disk
+  Int disk = ceil(size(aligned_bam, "GiB") + size(ref_flat, "GiB") + size(rrna_intervals, "GiB") + 10)
   Int preemptible = 5
   Int max_retries = 0
 
@@ -190,9 +190,9 @@ task CollectRnaMetrics {
     output_basename: "basename used for output files"
     stranded: "whether or not to use strand specificity"
     docker: "(optional) the docker image containing the runtime environment for this task"
-    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
-    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    disk: "(optional) the amount of disk space (GiB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
     max_retries: "(optional) retry this number of times if task fails -- use with caution, see skylab README for details"
   }
@@ -213,7 +213,7 @@ task CollectRnaMetrics {
   
   runtime {
     docker: docker
-    memory: "${machine_mem_mb} MB"
+    memory: "${machine_mem_mb} MiB"
     disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible
@@ -233,12 +233,12 @@ task CollectDuplicationMetrics {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
-  Int machine_mem_mb = 7500
-  # give the command 1 GB of overhead
+  Int machine_mem_mb = 8250
+  # give the command 1 GiB of overhead
   Int command_mem_mb = machine_mem_mb - 1000
   Int cpu = 2
-  # use provided disk number or dynamically size on our own, with 10GB of additional disk
-  Int disk = ceil(size(aligned_bam, "GB") + 10)
+  # use provided disk number or dynamically size on our own, with 10GiB of additional disk
+  Int disk = ceil(size(aligned_bam, "GiB") + 10)
   Int preemptible = 5
   Int max_retries = 0
 
@@ -250,9 +250,9 @@ task CollectDuplicationMetrics {
     aligned_bam: "input aligned bam"
     output_basename: "basename used for output files"
     docker: "(optional) the docker image containing the runtime environment for this task"
-    machine_mem_mb: "(optional) the amount of memory (MB) to provision for this task"
+    machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
-    disk: "(optional) the amount of disk space (GB) to provision for this task"
+    disk: "(optional) the amount of disk space (GiB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
     max_retries: "(optional) retry this number of times if task fails -- use with caution, see skylab README for details"
   }
@@ -269,7 +269,7 @@ task CollectDuplicationMetrics {
   
   runtime {
     docker: docker
-    memory: "${machine_mem_mb} MB"
+    memory: "${machine_mem_mb} MiB"
     disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible

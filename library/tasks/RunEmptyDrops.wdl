@@ -5,7 +5,7 @@ task RunEmptyDrops {
     File row_index
 
     # emptyDrops Params
-    Float niters = 10000
+    Float niters = 10000.0
     Float fdr_cutoff = 0.01
 
     # other params
@@ -13,7 +13,7 @@ task RunEmptyDrops {
 
     # runtime values
     String docker = "quay.io/humancellatlas/secondary-analysis-dropletutils:0.1.1"
-    Int machine_mem_mb = 4000
+    Int machine_mem_mb = 4400
     Int cpu = 1
     Int disk = 20
     Int preemptible = 3
@@ -27,7 +27,7 @@ task RunEmptyDrops {
         col_index: "sparse count matrix column names in npy format"
         row_index: "sparse count matrix row names in npy format"
         cpu: "(optional) the number of cpus to provision for this task"
-        disk: "(optional) the amount of disk space (GB) to provision for this task"
+        disk: "(optional) the amount of disk space (GiB) to provision for this task"
         preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
     }
 
@@ -38,7 +38,7 @@ task RunEmptyDrops {
 
     runtime {
         docker: docker
-        memory: "${machine_mem_mb} MB"
+        memory: "${machine_mem_mb} MiB"
         disks: "local-disk ${disk} HDD"
         cpu: cpu
         preemptible: preemptible
