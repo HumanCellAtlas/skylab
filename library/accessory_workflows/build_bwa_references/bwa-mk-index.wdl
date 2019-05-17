@@ -7,8 +7,6 @@ task BuildBWAreference {
         File chrom_sizes_file
      }
 
-
-
      command <<<
         mkdir genome
         mv ~{chrom_sizes_file} genome/chrom.sizes
