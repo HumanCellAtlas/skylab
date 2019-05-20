@@ -13,7 +13,8 @@ jobs:
                     python test/run_portability_test.py --test-directories \
                         test/smartseq2_single_sample/pr/ \
                         test/optimus/pr \
-                        test/bulk_rna_pipeline/pr
+                        test/bulk_rna_pipeline/pr \
+                        test/smartseq2_single_sample_unpaired/pr
 
     test_optimus:
         machine: true
@@ -32,6 +33,15 @@ jobs:
                   command: |
                       ./test/trigger_test.sh smartseq2_single_sample
                   no_output_timeout: 1.5h
+
+    test_smartseq2_unpaired:
+      machine: true
+      steps:
+          - checkout
+          - run:
+                command: |
+                    ./test/trigger_test.sh smartseq2_single_sample_unpaired
+                no_output_timeout: 1.5h
 
     test_emptyDropsWrapper:
         docker:
@@ -69,6 +79,7 @@ workflows:
           - build
           - test_optimus
           - test_smartseq2
+          - test_smartseq2_unpaired
           - test_emptyDropsWrapper
           - test_npz2rds
           - test_bulk_rna

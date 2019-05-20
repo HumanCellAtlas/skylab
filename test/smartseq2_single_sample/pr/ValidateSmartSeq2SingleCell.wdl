@@ -2,7 +2,7 @@ task ValidateSmartSeq2SingleCell {
       File counts
       String expected_counts_hash
 
-      File target_metrics
+      File? target_metrics
       String expected_metrics_hash
 
   command <<<
