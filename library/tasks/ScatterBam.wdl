@@ -11,7 +11,7 @@ task ScatterBam {
             SplitSamByNumberOfReads \
             INPUT=${bam_to_scatter} \
             SPLIT_TO_N_FILES=${scatter_width} \
-            OUTPUT_PREFIX=$(basename ${bam_to_scatter} .bam).split \
+            OUT_PREFIX=$(basename ${bam_to_scatter} .bam).split \
             OUTPUT=splitted_bams
     >>>
 
