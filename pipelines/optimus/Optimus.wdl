@@ -101,7 +101,7 @@ workflow Optimus {
         scatter_width = 32
     }
 
-    File scattered_bams = ScatterBam.splitted_bams
+    Array[File] scattered_bams = ScatterBam.splitted_bams
   }
 
   Array[File] gathered_scattered_bams = flatten(scattered_bams)
