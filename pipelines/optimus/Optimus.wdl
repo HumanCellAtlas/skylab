@@ -97,7 +97,8 @@ workflow Optimus {
   scatter (bam in barcoded_bam) {
     call Scatter.ScatterBam {
       input:
-        bam_to_scatter = bam
+        bam_to_scatter = bam,
+        scatter_width = 32
     }
 
     File scattered_bams = ScatterBam.output_bams
