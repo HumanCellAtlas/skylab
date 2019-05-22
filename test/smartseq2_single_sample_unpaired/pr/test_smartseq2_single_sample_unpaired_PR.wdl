@@ -1,12 +1,11 @@
-import "SmartSeq2SingleSample.wdl" as target_wdl
+import "SmartSeq2SingleSampleUnpaired.wdl" as target_wdl
 import "ValidateSmartSeq2SingleCell.wdl" as checker_wdl
 
 # this task will be run by the jenkins script that gets executed on our PRs.
-workflow TestSmartSeq2SingleCellPR {
+workflow TestSmartSeq2SingleCellUnpairedPR {
 
   # expected hashes of target_workflow outputs
-  String expected_counts_hash
-  String expected_metrics_hash
+  String expected_gene_counts_hash
 
   # SS2 inputs
   File genome_ref_fasta
@@ -20,10 +19,9 @@ workflow TestSmartSeq2SingleCellPR {
   String stranded
   String sample_name
   String output_name
-  File fastq1
-  File fastq2
+  File fastq
 
-  call target_wdl.SmartSeq2SingleCell as target_workflow {
+  call target_wdl.SmartSeq2SingleCellUnpaired as target_workflow {
     input:
       genome_ref_fasta = genome_ref_fasta,
       rrna_intervals = rrna_intervals,
@@ -36,16 +34,13 @@ workflow TestSmartSeq2SingleCellPR {
       stranded = stranded,
       sample_name = sample_name,
       output_name = output_name,
-      fastq1 = fastq1,
-      fastq2 = fastq2
+      fastq = fastq,
   }
 
   call checker_wdl.ValidateSmartSeq2SingleCell as checker_workflow {
     input:
-     counts = target_workflow.rsem_gene_results,
-     expected_counts_hash = expected_counts_hash,
-     target_metrics = target_workflow.insert_size_metrics,
-     expected_metrics_hash = expected_metrics_hash
+     gene_counts = target_workflow.rsem_gene_results,
+     expected_gene_counts_hash = expected_gene_counts_hash
   }
 
 }
