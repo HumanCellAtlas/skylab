@@ -10,15 +10,37 @@ jobs:
                     python3 -m venv venv
                     . venv/bin/activate
                     pip install requests
-                    python test/run_portability_test.py --test-directories test/smartseq2_single_sample/pr/ test/optimus/pr
+                    python test/run_portability_test.py --test-directories \
+                        test/smartseq2_single_sample/pr/ \
+                        test/optimus/pr \
+                        test/bulk_rna_pipeline/pr \
+                        test/smartseq2_single_sample_unpaired/pr
+
     test_optimus:
         machine: true
-
         steps:
             - checkout
             - run:
                 command: |
                     ./test/trigger_test.sh optimus
+                no_output_timeout: 1.5h
+
+    test_smartseq2:
+        machine: true
+        steps:
+            - checkout
+            - run:
+                  command: |
+                      ./test/trigger_test.sh smartseq2_single_sample
+                  no_output_timeout: 1.5h
+
+    test_smartseq2_unpaired:
+      machine: true
+      steps:
+          - checkout
+          - run:
+                command: |
+                    ./test/trigger_test.sh smartseq2_single_sample_unpaired
                 no_output_timeout: 1.5h
 
     test_emptyDropsWrapper:
@@ -30,6 +52,7 @@ jobs:
                 command: |
                     cd docker/emptydrops/emptyDropsWrapper/test/
                     ./test_emptyDropsWrapper.sh
+
     test_npz2rds:
         docker:
             - image: quay.io/humancellatlas/secondary-analysis-dropletutils:0.1.0
@@ -39,12 +62,25 @@ jobs:
                 command: |
                     cd docker/emptydrops/npz2rds/test/
                     ./test.sh
+
+    test_bulk_rna:
+        machine: true
+        steps:
+            - checkout
+            - run:
+                  command: |
+                      ./test/trigger_test.sh bulk_rna_pipeline
+                  no_output_timeout: 1.5h
+
 workflows:
     version: 2
     test_all:
         jobs:
           - build
           - test_optimus
+          - test_smartseq2
+          - test_smartseq2_unpaired
           - test_emptyDropsWrapper
           - test_npz2rds
+          - test_bulk_rna
 
