@@ -1,13 +1,14 @@
 task SplitBamByCellBarcode {
-  File bam_input
+  Array[File] bams_to_split
   Float size_in_mb = 1024.0
 
   # runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.2"
+  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:tl_make_split_faster"
+
   Int machine_mem_mb = 3850
-  Int cpu = 1
-  # estimate that bam is approximately equal in size to the input bam, add 20% buffer
-  Int disk = ceil(size(bam_input, "Gi") * 2.2)
+  Int cpu = 16
+  # estimate that bam is approximately equal in size to the input bam, but also allow room for temporary files
+  Int disk = ceil(size(bams_to_split, "Gi") * 3)
   # by default request non preemptible machine to make sure the slow cell barcode split step completes
   Int preemptible = 0
 
@@ -16,7 +17,7 @@ task SplitBamByCellBarcode {
   }
 
   parameter_meta {
-    bam_input: "input bam file"
+    bams_to_split: "input bam files to split by barcode"
     size_in_mb: "target size for each output chunk"
     docker: "(optional) the docker image containing the runtime environment for this task"
     machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
@@ -29,10 +30,11 @@ task SplitBamByCellBarcode {
     set -e
 
     SplitBam \
-      --bamfile ${bam_input} \
+      --bamfile ${sep=' ' bams_to_split} \
       --output-prefix subfile \
       --subfile-size ${size_in_mb} \
       --tags CB CR
+      --num-threads ${cpu}
   }
   
   runtime {
