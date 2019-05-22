@@ -34,7 +34,7 @@ task SplitBamByCellBarcode {
       --bamfile ${sep=' ' bams_to_split} \
       --output-prefix subfile \
       --subfile-size ${size_in_mb} \
-      --tags CB CR
+      --tags CB CR \
       --num-threads ${cpu}
   }
   
