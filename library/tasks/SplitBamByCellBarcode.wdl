@@ -7,8 +7,9 @@ task SplitBamByCellBarcode {
 
   Int machine_mem_mb = 3850
   Int cpu = 16
-  # estimate that bam is approximately equal in size to the input bam, but also allow room for temporary files
-  Int disk = ceil(size(bams_to_split, "Gi") * 3)
+
+  # we can calculate disk size for arrays of input files in WDL 1.0
+  Int disk = 500
   # by default request non preemptible machine to make sure the slow cell barcode split step completes
   Int preemptible = 0
 

@@ -6,17 +6,17 @@ task ScatterBam {
     Int disk_size = ceil(size(bam_to_scatter, "GB") * 3)
 
     command <<<
-        mkdir splitted_bams
+        mkdir scattered_bams
         java -Xms7g -jar /usr/gitc/picard.jar \
             SplitSamByNumberOfReads \
             INPUT=${bam_to_scatter} \
             SPLIT_TO_N_FILES=${scatter_width} \
             OUT_PREFIX=$(basename ${bam_to_scatter} .bam)_split \
-            OUTPUT=splitted_bams
+            OUTPUT=scattered_bams
     >>>
 
     output {
-        Array[File] splitted_bams = glob("splitted_bams/*")
+        Array[File] scattered_bams = glob("scattered_bams/*")
     }
 
     runtime {

@@ -101,14 +101,14 @@ workflow Optimus {
         scatter_width = 32
     }
 
-    Array[File] scattered_bams = ScatterBam.splitted_bams
+    Array[File] scattered_bams = ScatterBam.scattered_bams
   }
 
-  Array[File] gathered_scattered_bams = flatten(scattered_bams)
+  Array[File] flattened_scattered_bams = flatten(scattered_bams)
 
   call Split.SplitBamByCellBarcode {
     input:
-      bams_to_split = gathered_scattered_bams
+      bams_to_split = flattened_scattered_bams
   }
 
   scatter (bam in SplitBamByCellBarcode.bam_output_array) {
