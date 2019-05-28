@@ -35,7 +35,7 @@ task SplitBamByCellBarcode {
       --output-prefix subfile \
       --subfile-size ${size_in_mb} \
       --tags CB CR \
-      --num-threads ${cpu}
+      --num-processes ${cpu}
   }
   
   runtime {
