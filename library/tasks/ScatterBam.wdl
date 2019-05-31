@@ -21,7 +21,7 @@ task ScatterBam {
   runtime {
     disk: "local-disk ${disk_size} HDD"
     cpu: 2
-    memory: "7.5 GB"
+    memory: "7.5 GiB"
     docker: "us.gcr.io/broad-gotc-prod/genomes-in-the-cloud:2.3.3-1513176735"
   }
 }
