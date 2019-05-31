@@ -3,13 +3,16 @@ task ValidateOptimus {
       File matrix
       File gene_metrics
       File cell_metrics
-
+      Array[File] fastqc_htmls
+      Int n_fastqc_zips
       Int required_disk = ceil((size(bam, "G") + size(matrix, "G")) * 1.1)
 
       String expected_bam_hash
       String expected_matrix_hash
       String expected_gene_metric_hash
       String expected_cell_metric_hash
+      Int expected_n_fastqc_zips
+      Array[String] expected_fastqc_html_strings
 
   command <<<
 
@@ -48,6 +51,25 @@ task ValidateOptimus {
 
     if [ "$cell_metric_hash" != "${expected_cell_metric_hash}" ]; then
       >&2 echo "cell_metric_hash ($cell_metric_hash) did not match expected hash (${expected_cell_metric_hash})"
+      fail=true
+    fi
+
+    #search for expected strings in fastqc html
+    for string in "${sep='" "' expected_fastqc_html_strings}"; do
+        fail_html=true
+        for htmlfile in ${sep=' ' fastqc_htmls}; do
+          if grep "$string" $htmlfile; then
+            fail_html=false
+          fi
+        done
+        if [ $fail_html == "true" ]; then
+          >&2 echo "expected string ($string) not found in fastqc html files"
+          fail=true
+        fi
+    done
+
+    if [ ${expected_n_fastqc_zips} != ${n_fastqc_zips} ]; then
+      >&2 echo "number of fastqc zip (${n_fastqc_zips}) did not match expected number (${expected_n_fastqc_zips})"
       fail=true
     fi
 

@@ -13,5 +13,8 @@
   "TestSmartSeq2SingleCellPR.sample_name":"SRR1294925",
   "TestSmartSeq2SingleCellPR.output_name":"SRR1294925",
   "TestSmartSeq2SingleCellPR.expected_counts_hash": "135a3fbb959583db17713dc8b9d7fe33",
-  "TestSmartSeq2SingleCellPR.expected_metrics_hash": "99bd9903ac8dc77eb1c047ffa8eb42ed"
+  "TestSmartSeq2SingleCellPR.expected_metrics_hash": "99bd9903ac8dc77eb1c047ffa8eb42ed",
+  "TestSmartSeq2SingleCellPR.expected_fastqc_html_strings": ["SRR1294925_1_skip250000_read250000.fastq FastQC Report","Sequence length</td><td>25",
+    "SRR1294925_2_skip250000_read250000.fastq FastQC Report"],
+  "TestSmartSeq2SingleCellPR.expected_n_fastqc_zips": 2
 }

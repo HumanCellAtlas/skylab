@@ -3,6 +3,10 @@
   "TestOptimusPR.expected_matrix_hash": "aec7a79dc7b85a5d621509a3f4fa2192",
   "TestOptimusPR.expected_cell_metric_hash": "45cc8be253445201b02d102d2d096a0c",
   "TestOptimusPR.expected_gene_metric_hash": "d636671dfcff6ec8068987d0f5780334",
+  "TestOptimusPR.expected_fastqc_html_strings": ["pbmc8k_S1_L007_I1_001_skip250000_read250000.fastq FastQC Report","Sequence length</td><td>8",
+    "pbmc8k_S1_L007_R1_001_skip250000_read250000.fastq FastQC Report","Sequence length</td><td>26",
+    "pbmc8k_S1_L007_R2_001_skip250000_read250000.fastq FastQC Report","Sequence length</td><td>98"],
+  "TestOptimusPR.expected_n_fastqc_zips": 6,
   "TestOptimusPR.r1_fastq": [
     "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_R1_001.fastq.gz",
     "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_R1_001.fastq.gz"

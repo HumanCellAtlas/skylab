@@ -3,6 +3,7 @@ import "Picard.wdl" as Picard
 import "RSEM.wdl" as RSEM
 import "GroupMetricsOutputs.wdl" as GroupQCs
 import "ZarrUtils.wdl" as ZarrUtils
+import "FastQC.wdl" as FastQC
 
 workflow SmartSeq2SingleCell {
   meta {
@@ -27,6 +28,8 @@ workflow SmartSeq2SingleCell {
   String output_name
   File fastq1
   File fastq2
+  # fastqc
+  File? fastqc_limits
   Int max_retries = 0
 
   # whether to convert the outputs to Zarr format, by default it's set to true
@@ -46,11 +49,19 @@ workflow SmartSeq2SingleCell {
     output_name: "Output name, can include path"
     fastq1: "R1 in paired end reads"
     fastq2: "R2 in paired end reads"
+    fastqc_limits: "(optional) limits file for fastqc"
     max_retries: "(optional) retry this number of times if task fails -- use with caution, see skylab README for details"
     output_zarr: "whether to run the taks that converts the outputs to Zarr format, by default it's true"
   }
 
   String quality_control_output_basename = output_name + "_qc"
+
+  call FastQC.FastQC {
+    input:
+      fastq_files = [fastq1, fastq2],
+      limits_file = fastqc_limits,
+      disk = ceil((size(fastq1, "GiB") + size(fastq2, "GiB")) * 1.2 + 10)
+  }
 
   call HISAT2.HISAT2PairedEnd {
     input:
@@ -148,5 +159,9 @@ workflow SmartSeq2SingleCell {
 
     # zarr
     Array[File]? zarr_output_files = SmartSeq2ZarrConversion.zarr_output_files
+
+    #fastqc
+    Array[File] fastqc_htmls = FastQC.fastqc_htmls
+    Array[File] fastqc_zips = FastQC.fastqc_zips
   }
 }

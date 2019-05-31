@@ -11,6 +11,7 @@ import "RunEmptyDrops.wdl" as RunEmptyDrops
 import "ZarrUtils.wdl" as ZarrUtils
 import "Picard.wdl" as Picard
 import "UmiCorrection.wdl" as UmiCorrection
+import "FastQC.wdl" as FastQC
 
 workflow Optimus {
   meta {
@@ -24,6 +25,9 @@ workflow Optimus {
   Array[File] r2_fastq
   Array[File]? i1_fastq
   String sample_id
+
+  # fastqc input
+  File? fastqc_limits
 
   # organism reference parameters
   File tar_star_reference
@@ -51,6 +55,7 @@ workflow Optimus {
     r2_fastq: "reverse read, contains cDNA fragment generated from captured mRNA"
     i1_fastq: "(optional) index read, for demultiplexing of multiple samples on one flow cell."
     sample_id: "name of sample matching this file, inserted into read group header"
+    fastqc_limits: "(optional) limits file for fastqc"
     tar_star_reference: "star genome reference"
     annotations_gtf: "gtf containing annotations for gene tagging (must match star reference)"
     ref_genome_fasta: "genome fasta file (must match star reference)"
@@ -77,6 +82,13 @@ workflow Optimus {
           r2_unmapped_bam = FastqToUBam.bam_output,
           whitelist = whitelist
       }
+
+      call FastQC.FastQC as FastQC {
+        input:
+          fastq_files = [r1_fastq[index], r2_fastq[index], non_optional_i1_fastq[index]],
+          limits_file = fastqc_limits,
+          disk = ceil((size(r1_fastq[index], "GiB") + size(r2_fastq[index], "GiB") + size(non_optional_i1_fastq[index], "GiB")) * 1.2 + 10)
+      }
     }
 
     # if the index is not passed, proceed without it.
@@ -87,9 +99,18 @@ workflow Optimus {
           r2_unmapped_bam = FastqToUBam.bam_output,
           whitelist = whitelist
       }
+
+      call FastQC.FastQC as FastQCNoIndex {
+        input:
+          fastq_files = [r1_fastq[index], r2_fastq[index]],
+          limits_file = fastqc_limits,
+          disk = ceil((size(r1_fastq[index], "GiB") + size(r2_fastq[index], "GiB")) * 1.2 + 10)
+      }
     }
 
     File barcoded_bam = select_first([AttachBarcodes.bam_output, AttachBarcodesNoIndex.bam_output])
+    Array[File] fastqc_output_htmls = select_first([FastQC.fastqc_htmls,FastQCNoIndex.fastqc_htmls])
+    Array[File] fastqc_output_zips = select_first([FastQC.fastqc_zips,FastQCNoIndex.fastqc_zips])
   }
 
   call Merge.MergeSortBamFiles as MergeUnsorted {
@@ -222,5 +243,9 @@ workflow Optimus {
 
       # zarr
       Array[File]? zarr_output_files = OptimusZarrConversion.zarr_output_files
+
+      # fastqc
+      Array[File] fastqc_htmls = flatten(fastqc_output_htmls)
+      Array[File] fastqc_zips = flatten(fastqc_output_zips)
   }
 }
