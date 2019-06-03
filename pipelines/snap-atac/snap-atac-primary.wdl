@@ -148,6 +148,7 @@ task SnapCellByBin {
     input {
         File snap_input
         String bin_size_list
+        String snap_output_name = "output.snap"
         String docker_image = "quay.io/humancellatlas/snaptools:0.0.1"
     }
 
@@ -156,14 +157,16 @@ task SnapCellByBin {
     command {
         set -euo pipefail
 
+        mv ~{snap_input} ~{snap_output_name}
+
         # This is mutating the file in-place
         snaptools snap-add-bmat  \
-            --snap-file=~{snap_input}  \
+            --snap-file ~{snap_output_name}  \
             --bin-size-list ~{bin_size_list}  \
             --verbose=True
     }
     output {
-        File output_snap = snap_input
+        File output_snap = snap_output_name
     }
     runtime {
         docker: docker_image
