@@ -94,7 +94,7 @@ task AlignPairedEnd {
         docker: docker_image
         cpu: num_threads
         memory: "16 GB"
-        disks: "local-disk " + ceil(5 * (if input_size < 1 then 1 else input_size )) + " HDD"
+        disks: "local-disk " + ceil(10 * (if input_size < 1 then 1 else input_size )) + " HDD"
     }
 }
 
