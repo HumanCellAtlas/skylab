@@ -19,7 +19,7 @@ CROMWELL_KEY_FILE="caas-prod.json"
 
 OPTIONS_FILE="https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/test/options.json"
 CROMWELL_URL="https://cromwell.caas-prod.broadinstitute.org"
-COLLECTION="lira-dev"
+COLLECTION="pipeline-surge"
 
 echo "Running test"
 docker run --rm \

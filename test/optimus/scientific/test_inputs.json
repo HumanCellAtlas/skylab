@@ -9,5 +9,5 @@
   "TestOptimusScientific.tar_star_reference": "gs://hca-dcp-mint-test-data/reference/GRCh38_Gencode/star.tar",
   "TestOptimusScientific.sample_id": "pbmc8k_synthetic_scientific_test",
   "TestOptimusScientific.annotations_gtf": "gs://hca-dcp-mint-test-data/reference/GRCh38_Gencode/cellranger.gtf",
-  "TestOptimusScientific.ref_genome_fasta": "gs://hca-dcp-mint-test-data/reference/GRCh38_Gencode/cellranger.fa",
+  "TestOptimusScientific.ref_genome_fasta": "gs://hca-dcp-mint-test-data/reference/GRCh38_Gencode/cellranger.fa"
 }

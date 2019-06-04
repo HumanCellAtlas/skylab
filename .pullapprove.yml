@@ -17,18 +17,6 @@ pullapprove_conditions:
   unmet_status: failure
   explanation: "Snyk tests must pass before review starts"
 
-#- condition: "'Jenkins Optimus Tests' in statuses.successful"
-#  unmet_status: failure
-#  explanation: "Jenkins Optimus tests must pass before review starts"
-#
-#- condition: "'Jenkins SS2 Tests' in statuses.successful"
-#  unmet_status: failure
-#  explanation: "Jenkins SS2 tests must pass before review starts"
-
-- condition: "'Jenkins Integration Tests' in statuses.successful"
-  unmet_status: failure
-  explanation: "Jenkins Integration tests must pass before review starts"
-
 groups:
   pullapprove-admins:
     conditions:
