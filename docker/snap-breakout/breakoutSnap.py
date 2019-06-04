@@ -16,9 +16,6 @@ args = parser.parse_args()
 hd5file = h5py.File(args.inputfile)
 
 HD = hd5file['HD']
-HD.keys()
-HD['MG'][()]
-if (HD['VN'][()]
 
 if not HD['MG'][()] == 'SNAP':
     raise('The input is not a SNAP file')
