@@ -48,12 +48,11 @@ workflow scATAC {
         File output_snap_qc = SnapPre.output_snap_qc
         File output_snap = SnapCellByBin.output_snap
         File output_aligned_bam = MakeCompliantBAM.output_bam
-	## Breakout snap files
-	File breakout_barcodes = BreakoutSnap.barcodes
+        File breakout_barcodes = BreakoutSnap.barcodes
         File breakout_fragments = BreakoutSnap.fragments
         File breakout_binCoordinates = BreakoutSnap.binCoordinates
         File breakout_binCounts = BreakoutSnap.binCounts
-	File breakout_barcodesSection = BreakoutSnap.barcodesSection
+        File breakout_barcodesSection = BreakoutSnap.barcodesSection
     }
 }
 
@@ -213,15 +212,14 @@ task MakeCompliantBAM {
 task BreakoutSnap {
     input {
         File snap_input
-        String docker_image = "quay.io/humancellatlas/snap-breakout:0.0.1"
+        String docker_image = "quay.io/humancellatlas/snap-breakout:0.0.2"
     }
-
     Int num_threads = 1
-    
+    Float input_size = size(snap_input, "GiB")
     command {
         set -euo pipefail
-	mkdir output
-	breakoutSnap.py --input ~{snap_input} \
+        mkdir output
+        breakoutSnap.py --input ~{snap_input} \
             --output-prefix output/ 
     }
     output {
@@ -230,5 +228,11 @@ task BreakoutSnap {
         File binCoordinates = 'output/binCoordinates_10000.csv'
         File binCounts = 'output/binCounts_10000.csv'
         File barcodesSection = 'output/barcodesSection.csv'
+    }
+    runtime {
+        docker: docker_image
+        cpu: num_threads
+        memory: "16 GB"
+        disks: "local-disk " + ceil(10 * (if input_size < 1 then 1 else input_size )) + " HDD"
     }
 }
