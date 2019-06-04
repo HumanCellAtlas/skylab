@@ -213,7 +213,7 @@ task MakeCompliantBAM {
 task BreakoutSnap {
     input {
         File snap_input
-        String docker_image = "quay.io/humancellatlas/snaptools:0.0.1"
+        String docker_image = "quay.io/humancellatlas/snap-breakout:0.0.1"
     }
 
     Int num_threads = 1
