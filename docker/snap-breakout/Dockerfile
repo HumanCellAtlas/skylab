@@ -8,3 +8,6 @@ RUN pip3 install \
     pandas==0.20.3 \
     h5py==2.9.0
 
+RUN mkdir /tools/
+COPY breakoutSnap.py /tools/
+ENV PATH=/tools/:$PATH
