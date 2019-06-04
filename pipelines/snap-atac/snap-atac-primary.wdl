@@ -34,16 +34,26 @@ workflow scATAC {
     call SnapCellByBin {
         input:
             snap_input = SnapPre.output_snap,
-            bin_size_list = "5000 10000"
+            bin_size_list = "10000"
     }
     call MakeCompliantBAM {
         input:
             input_bam = AlignPairedEnd.aligned_bam
     }
+    call BreakoutSnap {
+        input:
+            snap_input = SnapCellByBin.output_snap
+    }
     output {
         File output_snap_qc = SnapPre.output_snap_qc
         File output_snap = SnapCellByBin.output_snap
         File output_aligned_bam = MakeCompliantBAM.output_bam
+	## Breakout snap files
+	File breakout_barcodes = BreakoutSnap.barcodes
+        File breakout_fragments = BreakoutSnap.fragments
+        File breakout_binCoordinates = BreakoutSnap.binCoordinates
+        File breakout_binCounts = BreakoutSnap.binCounts
+	File breakout_barcodesSection = BreakoutSnap.barcodesSection
     }
 }
 
@@ -197,5 +207,28 @@ task MakeCompliantBAM {
         cpu: num_threads
         memory: "4 GB"
         disks: "local-disk " + ceil(2.5 * (if input_size < 1 then 1 else input_size )) + " HDD"
+    }
+}
+
+task BreakoutSnap {
+    input {
+        File snap_input
+        String docker_image = "quay.io/humancellatlas/snaptools:0.0.1"
+    }
+
+    Int num_threads = 1
+    
+    command {
+        set -euo pipefail
+	mkdir output
+	breakoutSnap.py --input ~{snap_input} \
+            --output-prefix output/ 
+    }
+    output {
+        File barcodes = 'output/barcodes.csv'
+        File fragments = 'output/fragments.csv'
+        File binCoordinates = 'output/binCoordinates_10000.csv'
+        File binCounts = 'output/binCounts_10000.csv'
+        File barcodesSection = 'output/barcodesSection.csv'
     }
 }
