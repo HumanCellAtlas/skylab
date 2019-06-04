@@ -95,13 +95,13 @@ workflow Optimus {
   }
 
   scatter (bam in barcoded_bam) {
-    call ScatterBam.ScatterBam {
+    call ScatterBam.ScatterBam as ScatterBamFiles {
       input:
         bam_to_scatter = bam,
         scatter_width = 32
     }
 
-    Array[File] scattered_bams = ScatterBam.scattered_bams
+    Array[File] scattered_bams = ScatterBamFiles.scattered_bams
   }
 
   Array[File] flattened_scattered_bams = flatten(scattered_bams)
