@@ -1,10 +1,10 @@
 FROM python:3.6.2
 
 LABEL maintainer="Lantern Team <lantern@broadinstitute.org>" \
-      software="python 3.6.2 for breakout snap step" \
-      description="python 3.6.2 for exporting snap files into csv"
+      software="python for breakout snap step" \
+      description="python for exporting snap files into csv"
 
-RUN pip3 install \
+RUN pip install \
     pandas==0.20.3 \
     h5py==2.9.0
 

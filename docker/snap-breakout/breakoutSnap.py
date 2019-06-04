@@ -15,10 +15,9 @@ args = parser.parse_args()
 
 hd5file = h5py.File(args.inputfile)
 
-HD = hd5file['HD']
-
-if not HD['MG'][()] == 'SNAP':
-    raise('The input is not a SNAP file')
+# HD = hd5file['HD']
+# if not HD['MG'][()] == 'SNAP':
+#    raise('The input is not a SNAP file')
 
 # ###########################
 # Export the fragment matrix (FM)
