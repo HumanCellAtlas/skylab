@@ -1,5 +1,24 @@
 version 1.0
 
+workflow BuildBWARef {
+  input {
+      String ref_name
+      File reference_fasta
+      File chrom_sizes_file
+  }
+
+  call BuildBWAreference {
+     input:
+	    ref_name = ref_name,
+            reference_fasta = reference_fasta,
+            chrom_sizes_file = chrom_sizes_file
+	}
+
+	output {
+	    File referenceBundle = BuildBWAreference.referenceBundle
+	}
+}
+
 task BuildBWAreference {
      input {
         String ref_name ## name of the tar.bz2 files without the suffix
@@ -25,23 +44,4 @@ task BuildBWAreference {
      output {
      	    File referenceBundle = "~{reference_fasta}.tar"
      }
-}
-
-workflow BuildBWARef {
-  input {
-      String ref_name
-      File reference_fasta
-      File chrom_sizes_file
-  }
-
-  call BuildBWAreference {
-     input:
-	    ref_name = ref_name,
-		reference_fasta = reference_fasta,
-		chrom_sizes_file = chrom_sizes_file
-	}
-
-	output {
-	       File referenceBundle = BuildBWAreference.referenceBundle
-	}
 }
