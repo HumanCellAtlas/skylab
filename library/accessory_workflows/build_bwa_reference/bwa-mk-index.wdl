@@ -29,16 +29,21 @@ task BuildBWAreference {
      command <<<
         mkdir genome
         mv ~{chrom_sizes_file} genome/chrom.sizes
-        mv ~{reference_fasta} genome/genome.fa
+        if [ ${file: -3} == ".gz" ]
+        then
+            gunzip -c ~{reference_fasta} > genome/genome.fa
+        else
+            mv ~{reference_fasta} genome/genome.fa
+        fi
         bwa index genome/genome.fa
         tar cvf - genome/ > ~{reference_fasta}.tar
      >>>
 
      runtime {
-     	 docker: "hisplan/snaptools"
-	     memory: "96GB"
-	     disks: "local-disk 100 HDD"
-	     cpu: "4"
+         docker: "quay.io/humancellatlas/snaptools:0.0.1"
+	 memory: "96GB"
+	 disks: "local-disk 100 HDD"
+	 cpu: "4"
      }
 
      output {
