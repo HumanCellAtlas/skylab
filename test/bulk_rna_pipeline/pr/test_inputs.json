@@ -1,0 +1,17 @@
+{
+  "TestBulkRnaPR.expected_anno_flagstat_hash" : "7bec753d8860d6f9004c38fc0ed665fc",
+  "TestBulkRnaPR.expected_annobam_hash" : "9fbc93aaa6a1db9ad34a6e90d478c1c4",
+  "TestBulkRnaPR.expected_genome_flagstat_hash" : "f8c6b80c319369dd75eec4d7f6d25e84",
+  "TestBulkRnaPR.expected_genomebam_hash" : "b2338afbac11cd844efe460b3c19b24f",
+  "TestBulkRnaPR.expected_quants_hash" : "66620fd42cf8c91984565d478e0ced6a",
+  "TestBulkRnaPR.expected_mad_qc_metrics_hash" : "acc5dfbba14837082a9cc283d18a4b0c",
+  "TestBulkRnaPR.expected_rna_qc_metrics_hash" : "52b4c5266918672b8d1b68d5076c3c02",
+  "TestBulkRnaPR.expected_rsem_genes_detected_hash" : "0fe77b2bd349f7e3fe6cc84d1117f694",
+  "TestBulkRnaPR.fastqs_R1": ["gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/bulk-RNA/inputs/ENCSR653DFZ_rep1_chr19_10000reads_R1.fastq.gz", "gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/bulk-RNA/inputs/ENCSR653DFZ_rep2_chr19_10000reads_R1.fastq.gz"],
+  "TestBulkRnaPR.fastqs_R2": ["gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/bulk-RNA/inputs/ENCSR653DFZ_rep1_chr19_10000reads_R2.fastq.gz", "gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/bulk-RNA/inputs/ENCSR653DFZ_rep2_chr19_10000reads_R2.fastq.gz"],
+  "TestBulkRnaPR.align_index": "gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/bulk-RNA/reference/GRCh38_v24_ERCC_phiX_starIndex_chr19only.tgz",
+  "TestBulkRnaPR.rsem_index": "gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/bulk-RNA/reference/GRCh38_v24_ERCC_phiX_rsemIndex_chr19only.tgz",
+  "TestBulkRnaPR.kallisto_index": "gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/bulk-RNA/reference/Homo_sapiens.GRCh38.cdna.all.chr19_ERCC_phix_k31_kallisto.idx",
+  "TestBulkRnaPR.chrom_sizes" : "gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/bulk-RNA/reference/GRCh38_EBV.chrom.sizes",
+  "TestBulkRnaPR.rna_qc_tr_id_to_gene_type_tsv" : "gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/bulk-RNA/reference/gencodeV24pri-tRNAs-ERCC-phiX.transcript_id_to_genes.tsv"
+}
