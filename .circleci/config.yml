@@ -69,7 +69,7 @@ jobs:
             - checkout
             - run:
                 command: |
-                    ./test/trigger_tesh.sh bulk_rna_pipeline
+                    ./test/trigger_test.sh bulk_rna_pipeline
                 no_output_timeout: 1.5h
 
 
