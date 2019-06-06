@@ -16,7 +16,7 @@ jobs:
                         test/bulk_rna_pipeline/pr \
                         test/smartseq2_single_sample_unpaired/pr \
                         test/snap-atac/pr/
-			
+
     test_optimus:
         machine: true
         steps:
@@ -74,12 +74,12 @@ jobs:
                 no_output_timeout: 1.5h
 
     test_snap_atac:
-	machine: true
-	steps:
+        machine: true
+        steps:
             - checkout
             - run:
                 command: |
-	           ./test/trigger_test.sh snap-atac
+                    ./test/trigger_test.sh snap-atac
                 no_output_timeout: 1.5h
                
 workflows:
