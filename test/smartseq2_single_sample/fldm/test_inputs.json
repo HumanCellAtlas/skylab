@@ -12,6 +12,6 @@
   "TestSmartSeq2SingleCellFluidigmPR.fastq2":"gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/SmartSeq2SingleCellUnpaired/LIB008983_TRA00020165_GTAGAGGA-ACTGCATA_L001_R2.fastq.gz",
   "TestSmartSeq2SingleCellFluidigmPR.sample_name":"140221_HSQ700642",
   "TestSmartSeq2SingleCellFluidigmPR.output_name":"140221_HSQ700642",
-  "TestSmartSeq2SingleCellFluidigmPR.expected_counts_hash": "135a3fbb959583db17713dc8b9d7fe33",
-  "TestSmartSeq2SingleCellFluidigmPR.expected_metrics_hash": "99bd9903ac8dc77eb1c047ffa8eb42ed"
+  "TestSmartSeq2SingleCellFluidigmPR.expected_counts_hash": "dae9b7020b1c57beb7de81dbb734236e",
+  "TestSmartSeq2SingleCellFluidigmPR.expected_metrics_hash": "d49c875526892114d5fbf83624d82bb3"
 }
