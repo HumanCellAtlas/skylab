@@ -80,7 +80,13 @@ task CreateSparseCountMatrix {
   command {
     set -e
 
-    mv "${gtf_file}"  input.gtf
+    if [[ "${gtf_file}" =~ \.gz$ ]]; then
+       gunzip -c  "${gtf_file}" > input.gtf
+    else
+        mv "${gtf_file}"  input.gtf
+    fi
+
+
 
     python -u <<CODE
     import re

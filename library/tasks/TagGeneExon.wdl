@@ -6,7 +6,7 @@ task TagGeneExon {
   String docker = "quay.io/humancellatlas/secondary-analysis-dropseqtools:v0.2.2-1.13"
   Int machine_mem_mb = 8250
   Int cpu = 1
-  Int disk = ceil((size(bam_input, "Gi") + size(annotations_gtf, "Gi")) * 3)
+  Int disk = ceil((size(bam_input, "Gi") + size(annotations_gtf, "Gi")) * 3) + 20
   Int preemptible = 3
 
   meta {
@@ -26,7 +26,12 @@ task TagGeneExon {
  command {
     set -e
 
-    mv "${annotations_gtf}"  input.gtf
+    if [[ "${annotations_gtf}" =~ \.gz$ ]]; then
+       gunzip -c  "${annotations_gtf}" > input.gtf
+    else
+        mv "${annotations_gtf}"  input.gtf
+    fi
+
 
     python -u <<CODE
     import re
