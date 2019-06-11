@@ -1,6 +1,6 @@
 # Snap-ATAC pipeline Overview
 
-The snap-atac pipeline is a pipeline for processing scATAC-seq datasets, based on the pipeline that is available (in the snap-atac repository)[https://github.com/r3fang/SnapATAC] and (the snap-utils repository)[https://github.com/r3fang/SnapATAC].
+The snap-atac pipeline is a pipeline for processing scATAC-seq datasets, based on the pipeline that is available [in the snap-atac repository](https://github.com/r3fang/SnapATAC] and (the snap-utils repository)[https://github.com/r3fang/SnapATAC).
 
 ## Pipeline Inputs
 
@@ -25,12 +25,6 @@ DDDDDIIIIIIIIIIIIIIHHIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 ## Pipeline executation Steps
 The pipeline is composed of five steps:
 
-* AlignPairEnd
-* SnapPre
-* SnapCellByBin
-* MakeCompliantBAM
-* BreakoutSnap
-
 | step name        | step description                                                                         |
 |------------------|------------------------------------------------------------------------------------------|
 | AlignPairEnd     | Align the fastq files to the genome                                                      |
@@ -53,3 +47,5 @@ The pipeline outputs the following files
 | breakout_binCoordinates       | Text file with the AM section ('Cell x bin accesibility' matrix), binChrom and binStart fields |
 | breakout_binCounts            | Text file with the AM section ('Cell x bin accesibility' matrix), idx, idy and count fields |
 | breakout_barcodesSection      | Text file with the data from the BD section ('Barcode session' table) |
+
+The format of the snap file is described in more detail [here](https://github.com/r3fang/SnapTools) and [here](https://github.com/r3fang/SnapTools/blob/master/docs/snap_format.docx).
