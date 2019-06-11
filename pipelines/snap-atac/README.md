@@ -31,7 +31,25 @@ The pipeline is composed of five steps:
 * MakeCompliantBAM
 * BreakoutSnap
 
+| step name        | step description                                                                         |
+|------------------|------------------------------------------------------------------------------------------|
+| AlignPairEnd     | Align the fastq files to the genome                                                      |
+| SnapPre          | Initial generation of snap file                                                          |
+| SnapCellByBin    | Binning of data by genomic bins                                                          |
+| MakeCompliantBAM | Generation of a GA4GH compliant BAM                                                      |
+| BreakoutSnap     | Extraction of tables from snap file into text format (for testing and user availability) |
 
 ## Pipeline outputs
 
-The 
+The pipeline outputs the following files
+
+| output file name              | description            |
+|-------------------------------|------------------------|
+| output_snap_qc                | Quality control file corresponding to the snap |
+| output_snap                   | Output snap file (in hdf5 container format)
+| output_aligned_bam            | Output BAM file, compliant with GA4GH. 
+| breakout_barcodes             | Text file containing the 'Fragments session' barcodeLen, barcodePos fields           |
+| breakout_fragments            | Text file containing the 'Fragments session' fragChrom, fragLen and fragStart fields |
+| breakout_binCoordinates       | Text file with the AM section ('Cell x bin accesibility' matrix), binChrom and binStart fields |
+| breakout_binCounts            | Text file with the AM section ('Cell x bin accesibility' matrix), idx, idy and count fields |
+| breakout_barcodesSection      | Text file with the data from the BD section ('Barcode session' table) |
