@@ -22,7 +22,7 @@ ACCCTCCGTGTGCCAGGAGATACCATGAATATGCCATAGAACCTGTCTCT
 DDDDDIIIIIIIIIIIIIIHHIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 ```
 
-## Pipeline executation Steps
+## Pipeline execution steps
 The pipeline is composed of five steps:
 
 | step name        | step description                                                                         |
@@ -48,4 +48,4 @@ The pipeline outputs the following files
 | breakout_binCounts            | Text file with the AM section ('Cell x bin accesibility' matrix), idx, idy and count fields |
 | breakout_barcodesSection      | Text file with the data from the BD section ('Barcode session' table) |
 
-The format of the snap file is described in more detail [here](https://github.com/r3fang/SnapTools) and [here](https://github.com/r3fang/SnapTools/blob/master/docs/snap_format.docx).
+The format of the snap file, as well as what the different section contain, is described in more detail [here](https://github.com/r3fang/SnapTools) and [here](https://github.com/r3fang/SnapTools/blob/master/docs/snap_format.docx).
