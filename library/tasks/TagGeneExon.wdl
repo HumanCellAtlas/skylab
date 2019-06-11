@@ -32,25 +32,23 @@ task TagGeneExon {
         mv "${annotations_gtf}"  input.gtf
     fi
 
-
     python -u <<CODE
     import re
 
-    in_gtf="input.gtf"
-    out_gtf="gene_id_as_gene_name.gtf"
+    in_gtf = "input.gtf"
+    out_gtf = "gene_id_as_gene_name.gtf"
     with open(in_gtf, 'r') as fpin, open(out_gtf, 'w') as fout:
         for _line in fpin:
              line = _line.strip()
              gene_id = re.search(r'gene_id ([^;]*);', line)
-             gene_name= re.search(r'gene_name ([^;]*);', line)
+             gene_name = re.search(r'gene_name ([^;]*);', line)
              if gene_id and gene_name:
-               modified_line =re.sub(r'gene_name ([^;]*);', 'gene_name '+ gene_id.group(1)+";", line)
+               modified_line = re.sub(r'gene_name ([^;]*);', 'gene_name ' + gene_id.group(1) + ";", line)
                fout.write(modified_line + '\n')
              else:
                  fout.write(line + '\n')
 
     CODE
-
 
     TagReadWithGeneExon \
       INPUT=${bam_input} \
