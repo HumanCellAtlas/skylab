@@ -80,7 +80,7 @@ task CreateSparseCountMatrix {
   command {
     set -e
 
-    if file --mime-type barcodes.tsv | grep  gzip; then
+    if file --mime-type "${gtf_file}" | grep  gzip; then
        gunzip -c  "${gtf_file}" > input.gtf
     else
         mv "${gtf_file}"  input.gtf

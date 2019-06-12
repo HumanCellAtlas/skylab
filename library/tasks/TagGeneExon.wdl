@@ -26,8 +26,8 @@ task TagGeneExon {
  command {
     set -e
 
-    if file --mime-type barcodes.tsv | grep  gzip; then
-       gunzip -c  "${annotations_gtf}" > input.gtf
+    if file --mime-type "${annotations_gtf}" | grep  gzip; then
+        gunzip -c  "${annotations_gtf}" > input.gtf
     else
         mv "${annotations_gtf}"  input.gtf
     fi
