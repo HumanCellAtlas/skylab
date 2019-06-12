@@ -26,7 +26,7 @@ task TagGeneExon {
  command {
     set -e
 
-    if [[ "${annotations_gtf}" =~ \.gz$ ]]; then
+    if file --mime-type barcodes.tsv | grep  gzip; then
        gunzip -c  "${annotations_gtf}" > input.gtf
     else
         mv "${annotations_gtf}"  input.gtf
@@ -43,8 +43,8 @@ task TagGeneExon {
              gene_id = re.search(r'gene_id ([^;]*);', line)
              gene_name = re.search(r'gene_name ([^;]*);', line)
              if gene_id and gene_name:
-               modified_line = re.sub(r'gene_name ([^;]*);', 'gene_name ' + gene_id.group(1) + ";", line)
-               fout.write(modified_line + '\n')
+                 modified_line = re.sub(r'gene_name ([^;]*);', 'gene_name ' + gene_id.group(1) + ";", line)
+                 fout.write(modified_line + '\n')
              else:
                  fout.write(line + '\n')
 

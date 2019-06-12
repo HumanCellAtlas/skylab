@@ -80,7 +80,7 @@ task CreateSparseCountMatrix {
   command {
     set -e
 
-    if [[ "${gtf_file}" =~ \.gz$ ]]; then
+    if file --mime-type barcodes.tsv | grep  gzip; then
        gunzip -c  "${gtf_file}" > input.gtf
     else
         mv "${gtf_file}"  input.gtf
@@ -98,8 +98,8 @@ task CreateSparseCountMatrix {
              gene_id = re.search(r'gene_id ([^;]*);', line)
              gene_name = re.search(r'gene_name ([^;]*);', line)
              if gene_id and gene_name:
-               modified_line = re.sub(r'gene_name ([^;]*);', 'gene_name ' + gene_id.group(1) + ";", line)
-               fout.write(modified_line + '\n')
+                 modified_line = re.sub(r'gene_name ([^;]*);', 'gene_name ' + gene_id.group(1) + ";", line)
+                 fout.write(modified_line + '\n')
              else:
                  fout.write(line + '\n')
 
