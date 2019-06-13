@@ -11,7 +11,7 @@ version 1.0
 
 workflow ATAC {
   meta {
-    description: "ATAC-seq (Assay for Transposase-Accessible Chromatin using sequencing) is a technique used in molecular biology to assess genome-wide chromatin accessibility."
+    description: "Processing for scATAC-seq data from the level of raw fastq reads to the generation of a snap file with snaptools. ATAC-seq (Assay for Transposase-Accessible Chromatin using sequencing) is a technique used in molecular biology to assess genome-wide chromatin accessibility."
   }
 
   input {
@@ -44,21 +44,21 @@ workflow ATAC {
   }
 
   parameter_meta {
-    fastq_gzipped_input_read1: "read 1 fastq file as input for the pipeline"
-    fastq_gzipped_input_read2: "read 2 fastq file as input for the pipeline"
-    min_length: "the minimum legnth for trimming. Reads that are too short even before adapter removal are also discarded"
+    fastq_gzipped_input_read1: "read 1 fastq file as input for the pipeline, the cellular barcodes must be the first part of the read name"
+    fastq_gzipped_input_read2: "read 2 fastq file as input for the pipeline, the cellular barcodes must be the first part of the read name"
+    min_length: "minimum legnth for trimming. Reads that are too short even before adapter removal are also discarded"
     quality_cutoff: "cutadapt option to trim low-quality ends from reads before adapter removal"
     adapter_seq_read1: "cutadapt option for the sequence adapter for read 1 fastq"
     adapter_seq_read2: "cutadapt option for the sequence adapter for read 2 fastq"
-    tar_bwa_reference: "the pre built tar file containing the reference fasta and cooresponding reference files for the BWA aligner"
-    read_group_id: "the read group id to be added upon alignment (defualt: Kobe)"
-    read_group_id: "the read group sample to be added upon alignment (defualt: Bryant)"
-    bwa_cpu: "the number of threads/cores to use during alignment"
-    genome_name: "the name of the genome being analyzed"
-    genome_size_file: "size for the chromoomes for the genome; ex: mm10.chrom.size"
+    tar_bwa_reference: "the pre built tar file containing the reference fasta and corresponding reference files for the BWA aligner"
+    read_group_id: "the read group id to be added upon alignment"
+    read_group_id: "the read group sample to be added upon alignment"
+    bwa_cpu: "the number of cpu cores to use during alignment"
+    genome_name: "the name of the genome being analyzed, input to snap tools"
+    genome_size_file: "name of the file with chromosome sizes for the genome in the input tar file"
     min_map_quality: "the minimum mapping quality to be filtered by samtools view and snap-pre (snaptools task)"
     max_fragment_length: "the maximum fragment length for filtering out reads by gatk and snap-pre (snaptools task)"
-    output_base_name: "base name to be used for the pipelines output and intermiediate files"
+    output_base_name: "base name to be used for the pipelines output and intermediate files"
   }
 
   call TrimAdapters {
@@ -169,9 +169,6 @@ workflow ATAC {
   }
 }
 
-# TODO:
-# 1. add parameter metadata section to each task
-
 # trim read 1 and read 2 adapter sequeunce with cutadapt
 task TrimAdapters {
   input {
@@ -255,10 +252,10 @@ task BWAPairedEndAlignment {
     fastq_input_read1: "the trimmed read 1 fastq file as input for the aligner"
     fastq_input_read2: "the trimmed read 1 fastq file as input for the aligner"
     tar_bwa_reference: "the pre built tar file containing the reference fasta and cooresponding reference files for the BWA aligner"
-    read_group_id: "the read group id to be added upon alignment (defualt: Kobe)"
-    read_group_sample_name: "the read group sample to be added upon alignment (defualt: Bryant)"
-    cpu: "the number of threads/cores to use during alignment"
-    output_base_name: "base name to be used for the output of the task"
+    read_group_id: "the read group id to be added upon alignment"
+    read_group_sample_name: "the read group sample to be added upon alignment"
+    cpu: "the number of cpu cores to use during alignment"
+    output_base_name: "basename to be used for the output of the task"
     docker_image: "the docker image using BWA to be used (default: quay.io/humancellatlas/snaptools:0.0.1)"
   }
 
@@ -606,16 +603,15 @@ task SnapPre {
 
   parameter_meta {
     bam_input: "the bam to passed into snaptools tools"
-    max_fragment_length: "the maximum fragment length for filtering out reads by snap-pre (snaptools task)"
     output_base_name: "base name to be used for the output of the task"
     genome_name: "the name of the genome being analyzed"
+    max_fragment_length: "the maximum fragment length for filtering out reads by snap-pre (snaptools task)"
     genome_size_file: "size for the chromoomes for the genome; ex: mm10.chrom.size"
     docker_image: "the docker image using snaptools to be used (default: quay.io/humancellatlas/snaptools:0.0.1)"
   }
 
   String snap_file_output_name = output_base_name + ".snap"
   String snap_qc_output_name = snap_file_output_name + ".qc"
-
 
   # TODO:
   # 1. update disk size to be dynamilcally updated based off of input file size
@@ -667,7 +663,7 @@ task SnapCellByBin {
 
   parameter_meta {
     snap_input: "the bam to passed into snaptools tools"
-    docker_image: "the docker image using gatk to be used (default: quay.io/humancellatlas/snaptools:0.0.1)"
+    docker_image: "the docker image to be used (default: quay.io/humancellatlas/snaptools:0.0.1)"
   }
 
   # TODO:
@@ -683,7 +679,6 @@ task SnapCellByBin {
       --bin-size-list ~{bin_size_list}  \
       --verbose=True
   }
-
 
   runtime {
     docker: docker_image
