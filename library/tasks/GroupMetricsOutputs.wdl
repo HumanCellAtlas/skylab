@@ -1,15 +1,15 @@
 task GroupQCOutputs {
-  Array[File] picard_row_outputs
+  Array[File?] picard_row_outputs
   Array[File] picard_table_outputs
   File hisat2_stats
   File hisat2_trans_stats
   File rsem_stats
   String output_name
   # Runtime
-  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.0"
-  String mem = 3
-  String cpu = 1
-  String disk_space = 20 
+  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.4"
+  Int mem = 3
+  Int cpu = 1
+  Int disk_space = 20 
   Int preemptible = 5
   Int max_retries = 0
   

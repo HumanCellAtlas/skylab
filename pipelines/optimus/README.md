@@ -6,7 +6,7 @@ The Optimus pipeline is a pipeline for processing 3' single-cell expression data
 
 Optimus is a alignment and transcriptome quantification pipeline. Optimus corrects Cell Barcodes (CBs) and Unique Molecular Identifiers (UMIs), aligns reads to the genome, generates an expression count matrix in a UMI-aware manner, detects empty droplets, calculates summary statistics for genes and cells, and returns read outputs in BAM format and expression counts in numpy matrix and Zarr file formats. Special care is taken to keep all reads that may be useful to the downstream user, such as unaligned reads or reads with uncorrectable barcodes. This design provides flexibility to the downstream user and allows for alternative filtering or leveraging the data for novel methodological development.
 
-More details can be found in the [Optimus Acceptance Report](https://docs.google.com/document/d/158ba_xQM9AYyu8VcLWsIvSoEYps6PQhgddTr9H0BFmY/edit)
+More details can be found in the [Optimus Acceptance Report in the repository](../../benchmarking/optimus/optimus_report.rst), or [in the original file](https://docs.google.com/document/d/158ba_xQM9AYyu8VcLWsIvSoEYps6PQhgddTr9H0BFmY/edit).
 
 
 ### Installation  
@@ -26,17 +26,17 @@ The outputs from the Optimus pipeline can be identified from the outputs of the 
 
 Following are the the types of files produced from the pipeline.
 
-| file type | Description |
-| --- | --- |
-| pipeline_version | Version of the pipeline |
-| bam | Merged and Sorted BAM file |
-| matrix |  Sparse count matrix in numpy format |
-| matrix_row_index | Sparse count matrix row names in numpy format |
-| matrix_col_index | Sparse count matrix col names in numpy format |
-| cell_metrics | Cell metrics table in text format |
-| gene_metrics | Gene metrics table in text format |
-| cell_calls | Cell metadata from emptyDrops |
-| zarr_outputs_file | Count matrix and cell and gene metrics in zarr format|
+| Output Name | Filename, if applicable | Output Type |Output Format | Notes/Description | Store in Data Store? | Tool |
+| ------ | ------ | ------ | ------ | ------ | ------ | ------ |
+| pipeline_version | | Version of the processing pipeline run on this data | String | This is passed from the processing WDL to the adapter pipelines to be put into the metadata in the HCA | Yes, in metadata |Lira |
+| bam | merged.bam | aligned bam | bam | coordinate sorted | Yes | A few tools; need to address this provenance |
+| matrix | sparse_counts.npz | GenexCell expression matrix | Numpy array | | Yes |sctools |
+| matrix_row_index | sparse_counts_row_index.npy | Index of cells in expression matrix | Numpy array index | | Yes | sctools |
+| matrix_col_index | sparse_counts_col_index.npy | Index of genes in expression matrix | Numpy array index | | Yes | sctools | 
+| cell_metrics | merged-cell-metrics.csv.gz | cell metrics | compressed csv | Matrix of metrics by cells | Yes | sctools |
+| gene_metrics | merged-gene-metrics.csv.gz | gene metrics | compressed csv | Matrix of metrics by genes | Yes| sctools |
+| cell_calls | empty_drops_result.csv | cell calls | csv | | Yes | emptyDrops |
+| zarr_output_files | {unique_id}.zarr!.zattrs | | zarr store? sparse matrix? | | Yes | | 
 
 ### Components of Optimus
 The source code is available from [Github](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Optimus.wdl), an overview of the pipeline can be found on the [HCA Data Portal](https://prod.data.humancellatlas.org/) and the benchmarking that was performed on the pipeline can be found [here](https://docs.google.com/document/d/158ba_xQM9AYyu8VcLWsIvSoEYps6PQhgddTr9H0BFmY/edit#heading=h.calfpviouwbg). Some of the tasks in Optimus use the [sctools](https://github.com/HumanCellAtlas/sctools) library of utilities for large scale distributed single cell data processing, and [Picard](https://broadinstitute.github.io/picard/) tools, a set of command line tools for manipulating high-throughput sequencing data in formats such as SAM/BAM/CRAM and VCF.
