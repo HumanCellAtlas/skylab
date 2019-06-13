@@ -15,31 +15,31 @@ workflow ATAC {
   }
 
   input {
-    #fastq inputs
+    # Fastq inputs
     File fastq_gzipped_input_read1
     File fastq_gzipped_input_read2
 
-    # trimming options
+    # Trimming options
     Int min_length
     Int quality_cutoff
     String adapter_seq_read1
     String adapter_seq_read2
 
-    # BWA: pre built reference, default read group name and # of cores
+    # BWA parameters
     File tar_bwa_reference
-    String read_group_id = "Kobe"
-    String read_group_sample_name = "Bryant"
+    String read_group_id = "RG1"
+    String read_group_sample_name = "RGSN1"
     Int bwa_cpu = 16
 
-    # genome name and genome size file
+    # Genome name and genome size file
     String genome_name
     File genome_size_file
 
-    # filtering options
-    Int min_map_quailty
+    # Filtering options
+    Int min_map_quality
     Int max_fragment_length
 
-    # output prefix/base name for all intermediate files and pipeline outputs
+    # Output prefix/base name for all intermediate files and pipeline outputs
     String output_base_name
   }
 
@@ -56,7 +56,7 @@ workflow ATAC {
     bwa_cpu: "the number of threads/cores to use during alignment"
     genome_name: "the name of the genome being analyzed"
     genome_size_file: "size for the chromoomes for the genome; ex: mm10.chrom.size"
-    min_map_quailty: "the minimum mapping quality to be filtered by samtools view and snap-pre (snaptools task)"
+    min_map_quality: "the minimum mapping quality to be filtered by samtools view and snap-pre (snaptools task)"
     max_fragment_length: "the maximum fragment length for filtering out reads by gatk and snap-pre (snaptools task)"
     output_base_name: "base name to be used for the pipelines output and intermiediate files"
   }
@@ -72,7 +72,7 @@ workflow ATAC {
       output_base_name = output_base_name
   }
 
-  call BWAPairedEndALignment {
+  call BWAPairedEndAlignment {
     input:
       fastq_input_read1 = TrimAdapters.fastq_trimmed_adapter_output_read1,
       fastq_input_read2 = TrimAdapters.fastq_trimmed_adapter_output_read2,
@@ -85,7 +85,7 @@ workflow ATAC {
 
   call SamToBam {
     input:
-      sam_input = BWAPairedEndALignment.sam_aligned_output,
+      sam_input = BWAPairedEndAlignment.sam_aligned_output,
       output_base_name = output_base_name
   }
 
@@ -110,7 +110,7 @@ workflow ATAC {
   call FilterMinMapQuality{
     input:
       bam_input = FilterMarkDuplicates.bam_remove_dup_output,
-      min_map_quality = min_map_quailty,
+      min_map_quality = min_map_quality,
       output_base_name = output_base_name
   }
 
@@ -239,7 +239,7 @@ task TrimAdapters {
 # 1. update docker image to be tool specific (update parameter meta to match new docker image)
 
 # align the two trimmed fastq as piared end data using BWA
-task BWAPairedEndALignment {
+task BWAPairedEndAlignment {
   input {
     File fastq_input_read1
     File fastq_input_read2
