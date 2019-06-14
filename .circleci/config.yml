@@ -14,7 +14,8 @@ jobs:
                         test/smartseq2_single_sample/pr/ \
                         test/optimus/pr \
                         test/bulk_rna_pipeline/pr \
-                        test/smartseq2_single_sample_unpaired/pr
+                        test/smartseq2_single_sample_unpaired/pr \
+                        test/snap_atac/pr/
 
     test_optimus:
         machine: true
@@ -68,10 +69,19 @@ jobs:
         steps:
             - checkout
             - run:
-                  command: |
-                      ./test/trigger_test.sh bulk_rna_pipeline
-                  no_output_timeout: 1.5h
+                command: |
+                    ./test/trigger_test.sh bulk_rna_pipeline
+                no_output_timeout: 1.5h
 
+    test_snap_atac:
+        machine: true
+        steps:
+            - checkout
+            - run:
+                command: |
+                    ./test/trigger_test.sh snap_atac
+                no_output_timeout: 1.5h
+               
 workflows:
     version: 2
     test_all:
@@ -82,5 +92,7 @@ workflows:
           - test_smartseq2_unpaired
           - test_emptyDropsWrapper
           - test_npz2rds
+          - test_snap_atac
           - test_bulk_rna
+
 
