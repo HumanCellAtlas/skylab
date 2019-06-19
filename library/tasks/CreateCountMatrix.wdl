@@ -80,10 +80,35 @@ task CreateSparseCountMatrix {
   command {
     set -e
 
+    if file --mime-type "${gtf_file}" | grep  gzip; then
+       gunzip -c  "${gtf_file}" > input.gtf
+    else
+        mv "${gtf_file}"  input.gtf
+    fi
+
+    python -u <<CODE
+    import re
+
+    in_gtf = "input.gtf"
+    out_gtf = "gene_id_as_gene_name.gtf"
+
+    with open(in_gtf, 'r') as fpin, open(out_gtf, 'w') as fout:
+         for _line in fpin:
+             line = _line.strip()
+             gene_id = re.search(r'gene_id ([^;]*);', line)
+             gene_name = re.search(r'gene_name ([^;]*);', line)
+             if gene_id and gene_name:
+                 modified_line = re.sub(r'gene_name ([^;]*);', 'gene_name ' + gene_id.group(1) + ";", line)
+                 fout.write(modified_line + '\n')
+             else:
+                 fout.write(line + '\n')
+
+    CODE
+
     CreateCountMatrix \
       --bam-file ${bam_input} \
       --output-prefix sparse_counts \
-      --gtf-annotation-file ${gtf_file} \
+      --gtf-annotation-file gene_id_as_gene_name.gtf \
       --cell-barcode-tag CB \
       --molecule-barcode-tag UB \
       --gene-id-tag GE
