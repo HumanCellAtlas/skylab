@@ -89,12 +89,6 @@ workflow ATAC {
       output_base_name = output_base_name
   }
 
-  call MakeCompliantBAM as MakeCompliantAlignedBAM {
-    input:
-      bam_input = SamToBam.bam_output,
-      output_base_name = output_base_name + ".aligned"
-  }
-
   call Sort as SortCoordinateOrder {
     input:
       bam_input = SamToBam.bam_output,
@@ -161,7 +155,6 @@ workflow ATAC {
   }
 
   output {
-    File bam_aligned_compliant_output = MakeCompliantAlignedBAM.compliant_bam_output
     File bam_chrM_reads_compliant_output = MakeCompliantChrMBAM.compliant_bam_output
     File bam_filtered_and_sorted_compliant_output = MakeCompliantFilteredAndSortedBAM.compliant_bam_output
     File snap_qc_output = SnapPre.snap_qc_output
