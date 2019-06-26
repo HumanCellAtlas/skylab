@@ -11,7 +11,7 @@ version 1.0
 
 workflow ATAC {
   meta {
-    description: "Processing for scATAC-seq data from the level of raw fastq reads to the generation of a snap file with snaptools. ATAC-seq (Assay for Transposase-Accessible Chromatin using sequencing) is a technique used in molecular biology to assess genome-wide chromatin accessibility."
+    description: "Processing for single-cell ATAC-seq data from the level of raw fastq reads to the generation of a snap file with snaptools. ATAC-seq (Assay for Transposase-Accessible Chromatin using sequencing) is a technique used in molecular biology to assess genome-wide chromatin accessibility. This pipeline accepts fastq files where the cell barcode has been added to the fastq read names as the first field."
   }
 
   input {
@@ -44,9 +44,9 @@ workflow ATAC {
   }
 
   parameter_meta {
-    fastq_gzipped_input_read1: "read 1 fastq file as input for the pipeline, the cellular barcodes must be the first part of the read name"
-    fastq_gzipped_input_read2: "read 2 fastq file as input for the pipeline, the cellular barcodes must be the first part of the read name"
-    min_length: "minimum legnth for trimming. Reads that are too short even before adapter removal are also discarded"
+    fastq_gzipped_input_read1: "read 1 fastq file as input for the pipeline, the cellular barcodes must be the first part of the read name seperated by colon"
+    fastq_gzipped_input_read2: "read 2 fastq file as input for the pipeline, the cellular barcodes must be the first part of the read name separated by colon"
+    min_length: "minimum length for trimming. Reads that are too short even before adapter removal are also discarded"
     quality_cutoff: "cutadapt option to trim low-quality ends from reads before adapter removal"
     adapter_seq_read1: "cutadapt option for the sequence adapter for read 1 fastq"
     adapter_seq_read2: "cutadapt option for the sequence adapter for read 2 fastq"
@@ -54,7 +54,7 @@ workflow ATAC {
     read_group_id: "the read group id to be added upon alignment"
     read_group_id: "the read group sample to be added upon alignment"
     bwa_cpu: "the number of cpu cores to use during alignment"
-    genome_name: "the name of the genome being analyzed, input to snap tools"
+    genome_name: "the name of the genome being analyzed, input to snap tools, curently mm10 and hg19 supported"
     genome_size_file: "name of the file with chromosome sizes for the genome in the input tar file"
     min_map_quality: "the minimum mapping quality to be filtered by samtools view and snap-pre (snaptools task)"
     max_fragment_length: "the maximum fragment length for filtering out reads by gatk and snap-pre (snaptools task)"
@@ -534,7 +534,6 @@ task FilterMitochondrialReads {
 
   # runtime requirements based upon input file size
   Int disk_size = ceil(2 * (if size(bam_input, "GiB") < 1 then 1 else size(bam_input, "GiB")))
-
 
   # TODO:
   # 1. make the chromosome(s) to remove and to keep a configurable user input
