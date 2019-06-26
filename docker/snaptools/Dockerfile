@@ -19,7 +19,8 @@ RUN cd /install && \
     mkdir /tools/ && \
     cp bwa /tools/
 
-# this is a temporary hack
+# This fixes an error in the code of snaptools that
+# references an absolute path for the python binary
 RUN mkdir -p /home/r3fang/anaconda2/bin/ && \
     ln -s `which python` /home/r3fang/anaconda2/bin/python
 
