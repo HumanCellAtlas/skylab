@@ -29,7 +29,7 @@ task GetReferences {
   >>>
 
   output {
-    References references = object {
+      References references = object {
       genome_fa: genome_fa,
       annotation_gtf: annotation_gtf
     }
@@ -147,7 +147,7 @@ task BuildHisat2 {
     File genome_fa
   }
 
-  String ref_name = "star_primary_gencode_~{organism}_v~{gtf_version}"
+  String ref_name = "hisat2_primary_gencode_~{organism}_v~{gtf_version}"
   String hisat2_index_name = "~{ref_name}.tar.gz"
 
   command {
@@ -232,16 +232,73 @@ task BuildHisat2SnpHaplotypeSplicing {
 
 task BuildPicardRefFlat {
   input {
-    String gtf_version
+    References references
   }
+
+  String refflat = basename(references.annotation_gtf, ".gtf") + ".refflat.txt"
 
   command {
     set -eo pipefail
 
-    wget ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_~{gtf_version}/gencode.v~{gtf_version}.primary_assembly.annotation.gtf.gz
+    gtfToGenePred -genePredExt -geneNameAsName2  ~{references.annotation_gtf} refflat.tmp.txt
+
+    paste <(cut -f 12 refflat.tmp.txt) <(cut -f 1-10 refflat.tmp.txt) > ~{refflat}
+
   }
 
+  runtime {
+    docker: "quay.io/humancellatlas/gtf_to_genepred:v0.0.0"
+    memory: "8 GB"
+    disks: "local-disk 100 HDD"
+    cpu: "8"
+  }
+
+  output {
+      File refflat = "${refflat}"
+  }
 }
+
+task BuildIntervalList {
+  input {
+    References references
+  }
+
+  String interval_list = basename(references.annotation_gtf, ".gtf") + ".interval_list"
+
+  command <<<
+    set -eo pipefail
+
+
+    # index the fasta file
+
+    samtools faidx ~{references.genome_fa}
+    cut -f1,2 ~{references.genome_fa}.fai > sizes.genome
+
+    cat sizes.genome | awk -F '\t'  '{  printf "@SQ\tSN:%s\tLN:%s\n", $1, $2 }'  >> ~{interval_list}
+
+    grep 'gene_type "rRNA"' ~{references.annotation_gtf} | \
+    awk '$3 == "transcript"' | \
+    cut -f1,4,5,7,9 | \
+    perl -lane '
+        /transcript_id "([^"]+)"/ or die "no transcript_id on $.";
+        print join "\t", (@F[0,1,2,3], $1)
+    ' | \
+    sort -k1V -k2n -k3n  >> ~{interval_list}
+
+  >>>
+
+  runtime {
+    docker: "quay.io/humancellatlas/secondary-analysis-umitools:0.0.1"
+    memory: "8 GB"
+    disks: "local-disk 100 HDD"
+    cpu: "8"
+  }
+
+  output {
+      File interval_list = "${interval_list}"
+  }
+}
+
 
 workflow BuildIndices {
   input {
@@ -265,6 +322,16 @@ workflow BuildIndices {
       gtf_version = gtf_version,
       organism = organism,
       organism_prefix = organism_prefix
+  }
+
+  call BuildPicardRefFlat   {
+     input:
+        references = GetReferences.references
+  }
+
+  call BuildIntervalList  {
+      input:
+        references = GetReferences.references
   }
 
   call BuildStar {
