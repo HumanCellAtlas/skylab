@@ -12,6 +12,7 @@ import "ZarrUtils.wdl" as ZarrUtils
 import "Picard.wdl" as Picard
 import "UmiCorrection.wdl" as UmiCorrection
 import "ScatterBam.wdl" as ScatterBam
+import "ModifyGtf.wdl" as ModifyGtf
 
 workflow Optimus {
   meta {
@@ -118,10 +119,15 @@ workflow Optimus {
         tar_star_reference = tar_star_reference
     }
 
+    call ModifyGtf.ReplaceGeneNameWithGeneID as ModifyGtf {
+      input:
+        original_gtf = annotations_gtf
+    }
+
     call TagGeneExon.TagGeneExon as TagGenes {
       input:
         bam_input = StarAlign.bam_output,
-        annotations_gtf = annotations_gtf
+        annotations_gtf = ModifyGtf.modified_gtf
     }
 
     call Picard.SortBamAndIndex as PreUMISort {
@@ -169,7 +175,7 @@ workflow Optimus {
     call Count.CreateSparseCountMatrix {
       input:
         bam_input = PreCountSort.bam_output,
-        gtf_file = annotations_gtf
+        gtf_file = ModifyGtf.modified_gtf
     }
   }
 
