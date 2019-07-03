@@ -95,15 +95,9 @@ workflow ATAC {
       output_base_name = output_base_name
   }
 
-  call FilterMarkDuplicates {
-    input:
-      bam_input = SortCoordinateOrder.bam_sort_output,
-      output_base_name = output_base_name
-  }
-
   call FilterMinMapQuality{
     input:
-      bam_input = FilterMarkDuplicates.bam_remove_dup_output,
+      bam_input = SortCoordinateOrder.bam_sort_output,
       min_map_quality = min_map_quality,
       output_base_name = output_base_name
   }
