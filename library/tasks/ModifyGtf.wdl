@@ -3,7 +3,8 @@ task ReplaceGeneNameWithGeneID {
   String modified_gtf_location = "gene_id_as_gene_name.gtf"
 
   #runtime values
-  String docker = "quay.io/humancellatlas/modify-gtf:0.1.0"
+  #String docker = "quay.io/humancellatlas/modify-gtf:0.1.0"
+  String docker = "us.gcr.io/broad-gotc-dev/shpilker_modify-gtf"
   Int machine_mem_mb = 8250
   Int cpu = 1
   Int disk = ceil(size(original_gtf, "Gi") * 2) + 1
