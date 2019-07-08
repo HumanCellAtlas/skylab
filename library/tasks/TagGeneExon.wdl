@@ -31,7 +31,7 @@ task TagGeneExon {
       OUTPUT=bam_with_gene_exon.bam \
       SUMMARY=gene_exon_tag_summary.log \
       TAG=GE \
-      ANNOTATIONS_FILE=gene_id_as_gene_name.gtf
+      ANNOTATIONS_FILE=${annotations_gtf}
   }
 
   # Larger genomes (mouse-human) require a 7.5gb instance; single-organism genomes work with 3.75gb

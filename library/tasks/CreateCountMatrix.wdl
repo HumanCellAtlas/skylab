@@ -83,7 +83,7 @@ task CreateSparseCountMatrix {
     CreateCountMatrix \
       --bam-file ${bam_input} \
       --output-prefix sparse_counts \
-      --gtf-annotation-file gene_id_as_gene_name.gtf \
+      --gtf-annotation-file ${gtf_file} \
       --cell-barcode-tag CB \
       --molecule-barcode-tag UB \
       --gene-id-tag GE

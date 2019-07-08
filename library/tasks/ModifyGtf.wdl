@@ -1,14 +1,13 @@
 task ReplaceGeneNameWithGeneID {
   File original_gtf
-  String modified_gtf_location = "gene_id_as_gene_name.gtf"
 
   #runtime values
-  #String docker = "quay.io/humancellatlas/modify-gtf:0.1.0"
-  String docker = "us.gcr.io/broad-gotc-dev/shpilker_modify-gtf"
+  String docker = "quay.io/humancellatlas/modify-gtf:0.1.0"
   Int machine_mem_mb = 8250
   Int cpu = 1
   Int disk = ceil(size(original_gtf, "Gi") * 2) + 1
   Int preemptible = 3
+  String modified_gtf_location = "gene_id_as_gene_name.gtf"
 
   meta {
     description: "Modifies the gene_name field in a gtf to contain the values of gene_id instead."
@@ -17,6 +16,7 @@ task ReplaceGeneNameWithGeneID {
   parameter_meta {
     original_gtf: "The gtf to modify."
     docker: "(optional) the docker image containing the runtime environment for this task"
+    modified_gtf_location: "asdf"
     machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
     disk: "(optional) the amount of disk space (GiB) to provision for this task"
@@ -32,9 +32,9 @@ task ReplaceGeneNameWithGeneID {
       mv "${original_gtf}"  input.gtf
     fi
 
-    SetGeneManeToId.py \
+    SetGeneNameToId.py \
       --in-gtf-file input.gtf \
-      --out-gtf-file ~{modified_gtf_location}
+      --out-gtf-file "${modified_gtf_location}"
   }
 
   runtime {
