@@ -146,6 +146,7 @@ workflow ATAC {
   call SnapCellByBin {
     input:
       snap_input=SnapPre.snap_file_output,
+      bin_size_list = "10000"
   }
 
   call BreakoutSnap {
@@ -646,40 +647,39 @@ task SnapPre {
 task SnapCellByBin {
   input {
     File snap_input
+    String bin_size_list
+    String snap_output_name = "output.snap"
     String docker_image = "quay.io/humancellatlas/snaptools:0.0.1"
   }
 
-  # TODO:
-  # 1. scale disk size based upon input file size
-
   parameter_meta {
     snap_input: "the bam to passed into snaptools tools"
+    bin_size_list: "space separated list of bins to generate"
+    snap_output_name: "output.snap"
     docker_image: "the docker image to be used (default: quay.io/humancellatlas/snaptools:0.0.1)"
   }
+ 
+  Int num_threads = 1
 
-  # TODO:
-  # 1. determine if bin size list should be a user defined input with a possible default value
-
-  String bin_size_list = "5000 10000"
   command {
     set -euo pipefail
 
+    mv ~{snap_input} ~{snap_output_name}
+
     # This is mutating the file in-place
     snaptools snap-add-bmat  \
-      --snap-file=~{snap_input}  \
+      --snap-file=~{snap_output_name}  \
       --bin-size-list ~{bin_size_list}  \
       --verbose=True
   }
-
+  output {
+    File snap_output = snap_output_name
+  }
   runtime {
     docker: docker_image
-    cpu: 1
+    cpu: num_threads
     memory: "16 GiB"
     disks: "local-disk 150 HDD"
-  }
-
-  output {
-    File snap_output = snap_input
   }
 }
 
