@@ -148,6 +148,11 @@ workflow ATAC {
       snap_input=SnapPre.snap_file_output,
   }
 
+  call BreakoutSnap {
+    input:
+      snap_input = SnapCellByBin.snap_output
+  }
+
   output {
     File bam_chrM_reads_compliant_output = MakeCompliantChrMBAM.compliant_bam_output
     File bam_filtered_and_sorted_compliant_output = MakeCompliantFilteredAndSortedBAM.compliant_bam_output
@@ -715,3 +720,33 @@ task MakeCompliantBAM {
     File compliant_bam_output = compliant_bam_output_name
   }
 }
+
+task BreakoutSnap {
+    input {
+        File snap_input
+        String docker_image = "quay.io/humancellatlas/snap-breakout:0.0.1"
+    }
+    Int num_threads = 1
+    Float input_size = size(snap_input, "GiB")
+    command {
+        set -euo pipefail
+        mkdir output
+        breakoutSnap.py --input ~{snap_input} \
+            --output-prefix output/
+    }
+    output {
+        File barcodes = 'output/barcodes.csv'
+        File fragments = 'output/fragments.csv'
+        File binCoordinates = 'output/binCoordinates_10000.csv'
+        File binCounts = 'output/binCounts_10000.csv'
+	File barcodesSection = 'output/barcodesSection.csv'
+    }
+    runtime {
+        docker: docker_image
+        cpu: num_threads
+        memory: "16 GB"
+        disks: "local-disk " + ceil(10 * (if input_size < 1 then 1 else input_size )) + " HDD"
+    }
+}
+
+
