@@ -22,4 +22,4 @@ def setGeneNameToId(in_gtf, out_gtf, verbose=True):
             else:
                 fpout.write(stripped_line + '\n')
 
-setGeneNameToId(args.ingtf,args.outgtf)
+setGeneNameToId(args.ingtf, args.outgtf)
