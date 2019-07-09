@@ -1,4 +1,4 @@
 {
-  "scATAC.wdl": "pipelines/scATAC/ATAC.wdl",
+  "ATAC.wdl": "pipelines/scATAC/ATAC.wdl",
   "ValidateSCATAC.wdl": "test/sc_atac/pr/ValidateSCATAC.wdl"
 }

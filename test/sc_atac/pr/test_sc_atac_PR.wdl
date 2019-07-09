@@ -1,6 +1,6 @@
 version 1.0
 
-import "scATAC.wdl" as target
+import "ATAC.wdl" as target
 import "ValidateSCATAC.wdl" as checker
 
 # this workflow will be run by the jenkins script that gets executed by PRs.
