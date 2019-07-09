@@ -11,15 +11,15 @@ args = parser.parse_args()
 
 
 def setGeneNameToId(in_gtf, out_gtf, verbose=True):
-    with open(in_gtf, 'r') as fpin, open(out_gtf, 'w') as fout:
-        for _line in fpin:
-            line = _line.strip()
-            gene_id = re.search(r'gene_id ([^;]*);', line)
-            gene_name = re.search(r'gene_name ([^;]*);', line)
+    with open(in_gtf, 'r') as fpin, open(out_gtf, 'w') as fpout:
+        for line in fpin:
+            stripped_line = line.strip()
+            gene_id = re.search(r'gene_id ([^;]*);', stripped_line)
+            gene_name = re.search(r'gene_name ([^;]*);', stripped_line)
             if gene_id and gene_name:
-                modified_line = re.sub(r'gene_name ([^;]*);', 'gene_name ' + gene_id.group(1) + ";", line)
-                fout.write(modified_line + '\n')
+                modified_line = re.sub(r'gene_name ([^;]*);', 'gene_name ' + gene_id.group(1) + ";", stripped_line)
+                fpout.write(modified_line + '\n')
             else:
-                fout.write(line + '\n')
+                fpout.write(stripped_line + '\n')
 
 setGeneNameToId(args.ingtf,args.outgtf)
