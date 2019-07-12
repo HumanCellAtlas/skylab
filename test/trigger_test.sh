@@ -17,7 +17,7 @@ echo "Setting Cromwell environmental variables"
 echo ${BROAD_CROMWELL_KEY} > caas-prod.json
 CROMWELL_KEY_FILE="caas-prod.json"
 
-OPTIONS_FILE="https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/test/options.json"
+OPTIONS_FILE="/working/test/options.json"
 CROMWELL_URL="https://cromwell.caas-prod.broadinstitute.org"
 COLLECTION="pipeline-surge"
 
