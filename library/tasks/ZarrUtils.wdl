@@ -1,7 +1,7 @@
 task SmartSeq2ZarrConversion {
 
   #runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.1.9"
+  String docker = "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.1.10"
   # the gene count file "<sample_id>_rsem.genes.results" in the task results folder call-RSEMExpression
   File rsem_gene_results
   # file named "<sample_id>_QCs.csv" in the folder  "call-GroupQCOutputs/glob-*" of the the SS2  output
@@ -59,9 +59,12 @@ task SmartSeq2ZarrConversion {
 
 task OptimusZarrConversion {
   #runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.1.9"
+  String docker = "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.1.10"
+
   # name of the sample
   String sample_id
+  # gene annotation file in GTF format
+  File annotation_file
   # the file "merged-cell-metrics.csv.gz" that contains the cellwise metrics
   File cell_metrics
   # the file "merged-gene-metrics.csv.gz" that contains the  genwise metrics
@@ -93,6 +96,7 @@ task OptimusZarrConversion {
     set -euo pipefail
 
     python3 /tools/create_zarr_optimus.py \
+       --annotation_file  ${annotation_file}\
        --cell_metrics ${cell_metrics}\
        --gene_metrics ${gene_metrics}\
        --cell_id ${cell_id}\

@@ -213,6 +213,7 @@ workflow Optimus {
     call ZarrUtils.OptimusZarrConversion{
       input:
         sample_id=sample_id,
+        annotation_file=annotations_gtf,
         cell_metrics = MergeCellMetrics.cell_metrics,
         gene_metrics = MergeGeneMetrics.gene_metrics,
         sparse_count_matrix = MergeCountFiles.sparse_count_matrix,
