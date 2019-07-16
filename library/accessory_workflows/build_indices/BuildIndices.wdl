@@ -254,7 +254,7 @@ task BuildPicardRefFlat {
   }
 
   output {
-      File refflat = "${refflat}"
+      File refflat = refflat
   }
 }
 
