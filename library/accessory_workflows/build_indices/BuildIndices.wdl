@@ -254,7 +254,7 @@ task BuildPicardRefFlat {
   }
 
   output {
-      File refflat = "${refflat}"
+      File refflat = refflat
   }
 }
 
@@ -276,8 +276,8 @@ task BuildIntervalList {
 
     awk -F '\t'  '{  printf "@SQ\tSN:%s\tLN:%s\n", $1, $2 }' sizes.genome  >> ~{interval_list}
 
-    grep 'gene_type "rRNA"' ~{references.annotation_gtf} | \
-    awk '$3 == "transcript"' | \
+    grep 'gene_type "rRNA"' ~{references.annotation_gtf} |
+        awk '$3 == "transcript"' |
     cut -f1,4,5,7,9 | \
     perl -lane '
         /transcript_id "([^"]+)"/ or die "no transcript_id on $.";
