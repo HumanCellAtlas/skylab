@@ -274,7 +274,7 @@ task BuildIntervalList {
     samtools faidx ~{references.genome_fa}
     cut -f1,2 ~{references.genome_fa}.fai > sizes.genome
 
-    cat sizes.genome | awk -F '\t'  '{  printf "@SQ\tSN:%s\tLN:%s\n", $1, $2 }'  >> ~{interval_list}
+    awk -F '\t'  '{  printf "@SQ\tSN:%s\tLN:%s\n", $1, $2 }' sizes.genome  >> ~{interval_list}
 
     grep 'gene_type "rRNA"' ~{references.annotation_gtf} | \
     awk '$3 == "transcript"' | \
