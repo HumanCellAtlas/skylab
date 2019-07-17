@@ -229,7 +229,7 @@ def create_gene_id_name_map(gtf_file):
     """ Creates a map from gene_id to gene_name by reading in the GTF file
 
     Args:
-        annotation_file (string): annotation file 
+        annotation_file (str): annotation file 
 
     Return:
         gene_id_name_map (Dict[str, str]): dictonary gene ids to gene names
