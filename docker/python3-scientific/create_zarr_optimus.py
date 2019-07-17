@@ -229,10 +229,10 @@ def create_gene_id_name_map(gtf_file):
     """ Creates a map from gene_id to gene_name by reading in the GTF file
 
     Args:
-        annotation_file (string): annotation file 
+        annotation_file (str): annotation file 
 
     Return:
-        gene_id_name_map (dict[string]->string): dictonary gene ids to gene names
+        gene_id_name_map (Dict[str, str]): dictonary gene ids to gene names
     """
     gene_id_name_map = {}
 
@@ -296,8 +296,7 @@ def add_expression_counts(data_group, args):
     # add the gene names for the gene ids 
     if args.annotation_file:
         gene_id_name_map = create_gene_id_name_map(args.annotation_file)
-
-        gene_names = [gene_id_name_map[gene_id] if gene_id in gene_id_name_map else "" for gene_id in gene_ids]
+        gene_names = [gene_id_name_map.get(gene_id, "") for gene_id in gene_ids]
 
         # insert the name of the "gene id to gene name map"  gene string metadata
         data_group.create_dataset(
