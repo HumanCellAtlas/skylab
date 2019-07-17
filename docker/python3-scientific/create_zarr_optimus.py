@@ -294,7 +294,7 @@ def add_expression_counts(data_group, args):
         logging.info("Not adding \"gene_id\" to zarr output: # gene ids is 0")
 
     # add the gene names for the gene ids 
-    if args.annotation_file:
+    if args.annotation_file and len(gene_ids):
         gene_id_name_map = create_gene_id_name_map(args.annotation_file)
         gene_names = [gene_id_name_map.get(gene_id, "") for gene_id in gene_ids]
 
