@@ -96,7 +96,7 @@ task OptimusZarrConversion {
     set -euo pipefail
 
     python3 /tools/create_zarr_optimus.py \
-       --annotation_file  ${annotation_file}\
+       --annotation_file ${annotation_file}\
        --cell_metrics ${cell_metrics}\
        --gene_metrics ${gene_metrics}\
        --cell_id ${cell_id}\
