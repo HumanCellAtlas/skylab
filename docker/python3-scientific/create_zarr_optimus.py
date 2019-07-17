@@ -304,7 +304,7 @@ def add_expression_counts(data_group, args):
     # add the gene names for the gene ids 
     if args.annotation_file:
         gene_id_name_map = create_gene_id_name_map(args.annotation_file)
-        gene_names = [gene_id_name_map[gene_id] if gene_id in gene_id_name_map else "" for gene_id in gene_ids]
+        gene_names = [gene_id_name_map.get(gene_id, "") for gene_id in gene_ids]
 
         data_group.create_dataset(
             "gene_name",
