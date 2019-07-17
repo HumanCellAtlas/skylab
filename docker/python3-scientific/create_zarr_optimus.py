@@ -232,7 +232,7 @@ def create_gene_id_name_map(gtf_file):
         annotation_file (string): annotation file 
 
     Return:
-        gene_id_name_map (dict[string]->string): dictonary gene ids to gene names
+        gene_id_name_map (Dict[str, str]): dictonary gene ids to gene names
     """
     gene_id_name_map = {}
 
