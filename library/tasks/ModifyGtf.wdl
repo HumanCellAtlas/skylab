@@ -5,7 +5,7 @@ task ReplaceGeneNameWithGeneID {
   String docker = "quay.io/humancellatlas/modify-gtf:0.1.0"
   Int machine_mem_mb = 8250
   Int cpu = 1
-  Int disk = ceil(size(original_gtf, "Gi") * 2) + 1
+  Int disk = ceil(size(original_gtf, "Gi") * 2) + 5
   Int preemptible = 3
   String modified_gtf_location = "gene_id_as_gene_name.gtf"
 
