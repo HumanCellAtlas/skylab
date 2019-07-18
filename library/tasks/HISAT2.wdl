@@ -14,7 +14,6 @@ task HISAT2PairedEnd {
   # Need room for unsorted + sorted bam + temp sorting space + zipped and unzipped ref. Add 10 GiB buffer.
   Int disk = ceil((size(fastq1, "GiB") + size(fastq2, "GiB")) * 100 + size(hisat2_ref, "GiB") * 2 + 10)
   Int preemptible = 5
-  Int max_retries = 0
 
   meta {
     description: "HISAT2 alignment task will align paired-end fastq reads to reference genome."
@@ -32,7 +31,6 @@ task HISAT2PairedEnd {
     cpu: "(optional) the number of cpus to provision for this task"
     disk: "(optional) the amount of disk space (GiB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
-    max_retries: "(optional) retry this number of times if task fails -- use with caution, see skylab README for details"
   }
 
   command {
@@ -84,7 +82,6 @@ task HISAT2PairedEnd {
     disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible
-    maxRetries: max_retries
   }
 
   output {
@@ -111,7 +108,6 @@ task HISAT2RSEM {
   # Need room for unsorted + sorted bam + temp sorting space + zipped and unzipped ref. Add 10 GiB buffer.
   Int disk = ceil((size(fastq1, "GiB") + size(fastq2, "GiB")) * 100 + size(hisat2_ref, "GiB") * 2 + 10)
   Int preemptible = 5
-  Int max_retries = 0
 
   meta {
     description: "This HISAT2 alignment task will align paired-end fastq reads to transcriptome only. "
@@ -129,7 +125,6 @@ task HISAT2RSEM {
     cpu: "(optional) the number of cpus to provision for this task"
     disk: "(optional) the amount of disk space (GiB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
-    max_retries: "(optional) retry this number of times if task fails -- use with caution, see skylab README for details"
   }
 
   command {
@@ -187,7 +182,6 @@ task HISAT2RSEM {
     disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible
-    maxRetries: max_retries
   }
 
   output {
@@ -212,7 +206,6 @@ task HISAT2SingleEnd {
   # Need room for unsorted + sorted bam + temp sorting space + zipped and unzipped ref. Add 10 GiB buffer.
   Int disk = ceil((size(fastq, "GiB") * 100) + size(hisat2_ref, "GiB") * 2 + 10)
   Int preemptible = 5
-  Int max_retries = 0
 
   meta {
     description: "This HISAT2 alignment task will align single-end fastq reads to reference genome."
@@ -257,7 +250,6 @@ task HISAT2SingleEnd {
     disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible
-    maxRetries: max_retries
   }
 
   output {
@@ -327,7 +319,6 @@ task HISAT2RSEMSingleEnd {
   Int cpu = 4
   Int disk = ceil((size(fastq, "GiB")) * 100 + size(hisat2_ref, "GiB") * 2 + 10)
   Int preemptible = 5
-  Int max_retries = 0
 
   meta {
     description: "This HISAT2 alignment task will align paired-end fastq reads to transcriptome only. "
@@ -344,7 +335,6 @@ task HISAT2RSEMSingleEnd {
     cpu: "(optional) the number of cpus to provision for this task"
     disk: "(optional) the amount of disk space (GiB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
-    max_retries: "(optional) retry this number of times if task fails -- use with caution, see skylab README for details"
   }
 
   command {
@@ -395,7 +385,6 @@ task HISAT2RSEMSingleEnd {
     disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible
-    maxRetries: max_retries
   }
 
   output {
