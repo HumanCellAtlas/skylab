@@ -376,7 +376,7 @@ task HISAT2RSEMSingleEnd {
     # with no-splice-alignment no-softclip no-mixed options on, HISAT2 will only output concordant alignment without soft-cliping
     # --rdg 99999999,99999999 and --rfg 99999999,99999999 will set an infinite penalty to alignments with indels.
     # As a result, alignments with gaps or deletions are excluded.
-    mkfifo samtoolspipe
+    mkfifo samtools_pipe
     samtools view -1 -h -o "${output_basename}.bam" samtools_pipe & pid=$!
     hisat2 -t \
       -x ${ref_name}/${ref_name} \
