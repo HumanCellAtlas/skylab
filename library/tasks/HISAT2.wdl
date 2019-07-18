@@ -43,13 +43,13 @@ task HISAT2PairedEnd {
     set -e
 
     # fix names if necessary.
-    if [ "${fastq1}" != *.fastq.gz ]; then
+    if [[ "${fastq1}" != *.fastq.gz ]]; then
         FQ1=${fastq1}.fastq.gz
         mv ${fastq1} ${fastq1}.fastq.gz
     else
         FQ1=${fastq1}
     fi
-    if [ "${fastq2}" != *.fastq.gz ]; then
+    if [[ "${fastq2}" != *.fastq.gz ]]; then
         FQ2=${fastq2}.fastq.gz
         mv ${fastq2} ${fastq2}.fastq.gz
     else
@@ -136,14 +136,14 @@ task HISAT2RSEM {
     set -e
 
     # fix names if necessary.
-    if [ "${fastq1}" != *.fastq.gz ]; then
+    if [[ "${fastq1}" != *.fastq.gz ]]; then
         FQ1=${fastq1}.fastq.gz
         mv ${fastq1} ${fastq1}.fastq.gz
     else
         FQ1=${fastq1}
     fi
 
-    if [ "${fastq2}" != *.fastq.gz ]; then
+    if [[ "${fastq2}" != *.fastq.gz ]]; then
         FQ2=${fastq2}.fastq.gz
         mv ${fastq2} ${fastq2}.fastq.gz
     else
@@ -351,7 +351,7 @@ task HISAT2RSEMSingleEnd {
     set -e
 
     # fix names if necessary.
-    if [ "${fastq}" != *.fastq.gz ]; then
+    if [[ "${fastq}" != *.fastq.gz ]]; then
         FQ=${fastq}.fastq.gz
         mv ${fastq} ${fastq}.fastq.gz
     else
