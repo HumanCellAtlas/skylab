@@ -62,6 +62,8 @@ task HISAT2PairedEnd {
     # --seed to fix pseudo-random number and in order to produce deterministics results
     # --secondary reports secondary alignments for multimapping reads. -k 10
     # searches for up to 10 primary alignments for each read
+    mkfifo samtools_pipe
+    samtools view -1 -h -o "${output_basename}_unsorted.bam" samtools_pipe & pid=$!
     hisat2 -t \
       -x ${ref_name}/${ref_name} \
       -1 $FQ1 \
@@ -73,7 +75,8 @@ task HISAT2PairedEnd {
       --seed 12345 \
       -k 10 \
       --secondary \
-      -p ${cpu} -S >(samtools view -1 -h -o ${output_basename}_unsorted.bam)
+      -p ${cpu} -S samtools_pipe
+    wait $pid
     samtools sort -@ ${cpu} -O bam -o "${output_basename}.bam" "${output_basename}_unsorted.bam"
     samtools index "${output_basename}.bam"
   }
@@ -158,6 +161,8 @@ task HISAT2RSEM {
     # with no-splice-alignment no-softclip no-mixed options on, HISAT2 will only output concordant alignment without soft-cliping
     # --rdg 99999999,99999999 and --rfg 99999999,99999999 will set an infinite penalty to alignments with indels.
     # As a result, alignments with gaps or deletions are excluded.
+    mkfifo samtools_pipe
+    samtools view -1 -h -o "${output_basename}.bam" samtools_pipe & pid=$!
     hisat2 -t \
       -x ${ref_name}/${ref_name} \
       -1 $FQ1 \
@@ -178,7 +183,8 @@ task HISAT2RSEM {
       --rfg 99999999,99999999 \
       --no-spliced-alignment \
       --seed 12345 \
-      -p ${cpu} -S >(samtools view -1 -h -o ${output_basename}.bam)
+      -p ${cpu} -S samtools_pipe
+    wait $pid
   }
 
   runtime {
@@ -236,6 +242,8 @@ task HISAT2SingleEnd {
     tar --no-same-owner -xvf "${hisat2_ref}"
 
     # The parameters for this task are copied from the HISAT2PairedEnd task.
+    mkfifo samtools_pipe
+    samtools view -1 -h -o "${output_basename}_unsorted.bam" samtools_pipe & pid=$!
     hisat2 -t \
       -x ${ref_name}/${ref_name} \
       -U ${fastq} \
@@ -246,7 +254,8 @@ task HISAT2SingleEnd {
       --seed 12345 \
       -k 10 \
       --secondary \
-      -p ${cpu} -S >(samtools view -1 -h -o ${output_basename}_unsorted.bam)
+      -p ${cpu} -S samtools_pipe
+    wait $pid
     samtools sort -@ ${cpu} -O bam -o "${output_basename}.bam" "${output_basename}_unsorted.bam"
     samtools index "${output_basename}.bam"
   }
@@ -367,6 +376,8 @@ task HISAT2RSEMSingleEnd {
     # with no-splice-alignment no-softclip no-mixed options on, HISAT2 will only output concordant alignment without soft-cliping
     # --rdg 99999999,99999999 and --rfg 99999999,99999999 will set an infinite penalty to alignments with indels.
     # As a result, alignments with gaps or deletions are excluded.
+    mkfifo samtoolspipe
+    samtools view -1 -h -o "${output_basename}.bam" samtools_pipe & pid=$!
     hisat2 -t \
       -x ${ref_name}/${ref_name} \
       -U $FQ \
@@ -386,7 +397,8 @@ task HISAT2RSEMSingleEnd {
       --rfg 99999999,99999999 \
       --no-spliced-alignment \
       --seed 12345 \
-      -p ${cpu} -S >(samtools view -1 -h -o ${output_basename}.bam)
+      -p ${cpu} -S samtools_pipe
+    wait $pid
   }
 
   runtime {
