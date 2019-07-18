@@ -3,13 +3,13 @@
   "TestOptimusPR.expected_matrix_hash": "aec7a79dc7b85a5d621509a3f4fa2192",
   "TestOptimusPR.expected_cell_metric_hash": "45cc8be253445201b02d102d2d096a0c",
   "TestOptimusPR.expected_gene_metric_hash": "d636671dfcff6ec8068987d0f5780334",
-  "Optimus.r1_fastq": [
+  "TestOptimusPR.r1_fastq": [
     "gs://hca-dcp-sc-pipelines-test-data/smallDatasets/chemistry_X10_V2/pbmc4k_chr21/pbmc4k_S1_L001_R1_001.filtered.fastq.gz"
   ],
-  "Optimus.r2_fastq": [
+  "TestOptimusPR.r2_fastq": [
     "gs://hca-dcp-sc-pipelines-test-data/smallDatasets/chemistry_X10_V2/pbmc4k_chr21/pbmc4k_S1_L001_R2_001.filtered.fastq.gz"
   ],
-  "Optimus.i1_fastq": [
+  "TestOptimusPR.i1_fastq": [
     "gs://hca-dcp-sc-pipelines-test-data/smallDatasets/chemistry_X10_V2/pbmc4k_chr21/pbmc4k_S1_L001_I1_001.filtered.fastq.gz"
   ],
   "TestOptimusPR.whitelist": "gs://hca-dcp-mint-test-data/10x/whitelist/737K-august-2016.txt",
