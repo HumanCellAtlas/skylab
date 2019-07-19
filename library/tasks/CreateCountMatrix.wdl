@@ -6,7 +6,7 @@ task DropSeqToolsDigitalExpression {
   String docker = "quay.io/humancellatlas/secondary-analysis-dropseqtools:v0.2.2-1.12"
   Int machine_mem_mb = 8250
   Int cpu = 1
-  Int disk = ceil((size(bam_input, "Gi") + size(whitelist, "Gi")) * 4.0) + 20
+  Int disk = ceil((size(bam_input, "Gi") + size(whitelist, "Gi")) * 4.0) + 1
   Int preemptible = 3
 
   meta {
@@ -60,7 +60,7 @@ task CreateSparseCountMatrix {
   String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.2"
   Int machine_mem_mb = 8250
   Int cpu = 1
-  Int disk = ceil((size(bam_input, "Gi") + size(gtf_file, "Gi")) * 4.0) + 20
+  Int disk = ceil((size(bam_input, "Gi") + size(gtf_file, "Gi")) * 4.0) + 1
   Int preemptible = 3
 
   meta {
