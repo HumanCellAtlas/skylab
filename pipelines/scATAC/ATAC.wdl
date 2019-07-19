@@ -80,7 +80,7 @@ workflow ATAC {
       output_base_name = output_base_name
   }
 
-  call Sort as SortCoordinateOrder {
+  call SortSam as SortCoordinateOrder {
     input:
       bam_input = SamToBam.bam_output,
       output_base_name = output_base_name
@@ -112,7 +112,7 @@ workflow ATAC {
       output_base_name = output_base_name + ".chrM_reads"
   }
 
-  call Sort as SortQueryName {
+  call SortSam as SortQueryName {
     input:
       bam_input = FilterMitochondrialReads.bam_no_chrM_reads_output,
       sort_order = "queryname",
@@ -322,7 +322,7 @@ task SamToBam {
 }
 
 # sort the bam file in user input order using picard
-task Sort {
+task SortSam {
   input {
     File bam_input
     String sort_order = "coordinate"
