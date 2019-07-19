@@ -81,6 +81,15 @@ jobs:
                 command: |
                     ./test/trigger_test.sh snap_atac
                 no_output_timeout: 1.5h
+
+    test_sc_atac:
+       machine: true
+       steps:
+           - checkout
+           - run:
+               command: |
+                   ./test/trigger_test.sh sc_atac
+               no_output_timeout: 1.5h
                
 workflows:
     version: 2
@@ -93,6 +102,8 @@ workflows:
           - test_emptyDropsWrapper
           - test_npz2rds
           - test_snap_atac
+          - test_sc_atac
           - test_bulk_rna
+
 
 
