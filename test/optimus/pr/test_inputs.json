@@ -1,20 +1,23 @@
 {
-  "TestOptimusPR.expected_bam_hash": "a294d4b79aca17b0310bc153bf982ef1",
-  "TestOptimusPR.expected_matrix_hash": "d20f962b9319f95b80889f68ae359c36",
-  "TestOptimusPR.expected_cell_metric_hash": "ebf8c12699d9f4caa206795e4b4b27fb",
-  "TestOptimusPR.expected_gene_metric_hash": "9e7b88f0bd14c9a7506666657a0e93e1",
+  "TestOptimusPR.expected_bam_hash": "afd10dcbdb0055c90b41c4279d11eeae",
+  "TestOptimusPR.expected_matrix_hash": "aec7a79dc7b85a5d621509a3f4fa2192",
+  "TestOptimusPR.expected_cell_metric_hash": "45cc8be253445201b02d102d2d096a0c",
+  "TestOptimusPR.expected_gene_metric_hash": "d636671dfcff6ec8068987d0f5780334",
   "TestOptimusPR.r1_fastq": [
-    "gs://broad-dsde-mint-dev/kmk-temp/pbmc4k_200k_S1_L001_R1_001.fastq.gz"
+    "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_R1_001.fastq.gz",
+    "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_R1_001.fastq.gz"
   ],
   "TestOptimusPR.r2_fastq": [
-    "gs://broad-dsde-mint-dev/kmk-temp/pbmc4k_200k_S1_L001_R2_001.fastq.gz"
+    "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_R2_001.fastq.gz",
+    "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_R2_001.fastq.gz"
   ],
   "TestOptimusPR.i1_fastq": [
-    "gs://broad-dsde-mint-dev/kmk-temp/pbmc4k_200k_S1_L001_I1_001.fastq.gz"
+    "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_I1_001.fastq.gz",
+    "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_I1_001.fastq.gz"
   ],
-  "TestOptimusPR.whitelist": "gs://hca-dcp-sc-pipelines-test-data/whitelists/737K-august-2016.txt",
-  "TestOptimusPR.tar_star_reference": "gs://hca-dcp-sc-pipelines-test-data/alignmentReferences/optimusGencodeV27/buildReference/output_bucket/star_primary_gencode_v27.tar",
-  "TestOptimusPR.sample_id": "200k_4k_pbmc",
-  "TestOptimusPR.annotations_gtf": "gs://hca-dcp-sc-pipelines-test-data/alignmentReferences/optimusGencodeV27/gencode.v27.primary_assembly.annotation.gtf.gz",
-  "TestOptimusPR.ref_genome_fasta": "gs://hca-dcp-sc-pipelines-test-data/alignmentReferences/optimusGencodeV27/GRCh38.primary_assembly.genome.fa"
+  "TestOptimusPR.whitelist": "gs://hca-dcp-mint-test-data/10x/whitelist/737K-august-2016.txt",
+  "TestOptimusPR.tar_star_reference": "gs://hca-dcp-mint-test-data/reference/demo/star.tar",
+  "TestOptimusPR.sample_id": "pbmc8k_test",
+  "TestOptimusPR.annotations_gtf": "gs://hca-dcp-mint-test-data/reference/demo/hg19_ds/GSM1629193_hg19_ERCC.gtf.gz",
+  "TestOptimusPR.ref_genome_fasta": "gs://hca-dcp-mint-test-data/reference/demo/chr21.fa"
 }
