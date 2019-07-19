@@ -1,6 +1,7 @@
 import argparse
 import csv
 import gzip
+import re
 import numpy as np
 import zarr
 from scipy import sparse
@@ -224,6 +225,32 @@ def add_cell_metrics(data_group, input_path, cell_ids, verbose=False):
         logging.info("Not adding \"cell_metadata_numeric\" to zarr output: either the #genes or # cell ids is 0")
 
 
+def create_gene_id_name_map(gtf_file):
+    """ Creates a map from gene_id to gene_name by reading in the GTF file
+
+    Args:
+        gtf_file (str): annotation file
+
+    Return:
+        gene_id_name_map (Dict[str, str]): dictonary gene ids to gene names
+    """
+    gene_id_name_map = {}
+
+    # loop through the lines and find the gene_id and gene_name pairs
+    with gzip.open(gtf_file, 'rt') if gtf_file.endswith(".gz") else open(gtf_file, 'r') as fpin:
+        for _line in fpin:
+            line = _line.strip()
+            gene_id_res = re.search(r'gene_id ([^;]*);', line)
+            gene_name_res = re.search(r'gene_name ([^;]*);', line)
+    
+            if gene_id_res and gene_name_res:
+                gene_id = gene_id_res.group(1).replace('"', '')
+                gene_name = gene_name_res.group(1).replace('"', '')
+                gene_id_name_map[gene_id] = gene_name
+
+    return gene_id_name_map
+
+
 def add_expression_counts(data_group, args):
     """Converts  the count matrix from the Optimus pipeline to zarr file
 
@@ -265,6 +292,26 @@ def add_expression_counts(data_group, args):
             data=list(gene_ids))
     else:
         logging.info("Not adding \"gene_id\" to zarr output: # gene ids is 0")
+
+    # add the gene names for the gene ids 
+    if args.annotation_file and len(gene_ids):
+        gene_id_name_map = create_gene_id_name_map(args.annotation_file)
+        gene_names = [gene_id_name_map.get(gene_id, "") for gene_id in gene_ids]
+
+        # insert the name of the "gene id to gene name map"  gene string metadata
+        data_group.create_dataset('gene_metadata_string_name',
+                                  compression=COMPRESSOR,
+                                  dtype='<U40',
+                                  chunks=(1, ),
+                                  data=["gene_name"])
+
+        # insert the array of  gene name as an implicit "gene id to gene name map"  to the gene metadata
+        data_group.create_dataset('gene_metadata_string',
+                                  shape=(1, len(gene_ids),),
+                                  compression=COMPRESSOR,
+                                  dtype='<U40',
+                                  chunks=(1, len(gene_ids)),
+                                  data=[gene_names])
 
     # read .npz file expression counts and add it to the expression_counts dataset
     exp_counts = np.load(args.count_matrix)
@@ -353,6 +400,12 @@ def main():
                         dest="count_matrix",
                         required=True,
                         help='a .npz file path for the count matrix, an output of the MergeCountFiles task')
+
+    parser.add_argument('--annotation_file',
+                        dest="annotation_file",
+                        default=None,
+                        required=False,
+                        help='annotation file in GTF format')
 
     parser.add_argument('--output_path_for_zarr',
                         dest="output_zarr_path",
