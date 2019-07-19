@@ -1,14 +1,5 @@
 version 1.0
 
-# TODO:
-# 1. add meta section
-# 2. make the aligner and compliant bam tasks' docker images tool specific
-# 3. optimize calcultations of disk, mem and cpu in reuntime requirements of each task
-# 4. fix snaptools snap-pre bug where a max fragmnet length greater than 2000 will cause snap-pre to throw an error "--max-flen can not be smaller than 2000"
-# 5. have metadata for where barcodes are attached and optimize the script that attaches barcode
-# 6. make the chromosome(s) to remove and to keep a configurable user input
-# 7. determine if bin size list should be a user defined input with a possible default value
-
 workflow ATAC {
   meta {
     description: "Processing for single-cell ATAC-seq data from the level of raw fastq reads to the generation of a snap file with snaptools. ATAC-seq (Assay for Transposase-Accessible Chromatin using sequencing) is a technique used in molecular biology to assess genome-wide chromatin accessibility. This pipeline accepts fastq files where the cell barcode has been added to the fastq read names as the first field."
@@ -224,9 +215,6 @@ task TrimAdapters {
     File monitoring_log = "monitoring.log"
   }
 }
-
-# TODO:
-# 1. update docker image to be tool specific (update parameter meta to match new docker image)
 
 # align the two trimmed fastq as piared end data using BWA
 task BWAPairedEndAlignment {
@@ -535,9 +523,6 @@ task FilterMitochondrialReads {
   # runtime requirements based upon input file size
   Int disk_size = ceil(2 * (if size(bam_input, "GiB") < 1 then 1 else size(bam_input, "GiB")))
 
-  # TODO:
-  # 1. make the chromosome(s) to remove and to keep a configurable user input
-
   # ChrM: mitochondrial chromosome
   command {
     set -euo pipefail
@@ -604,10 +589,6 @@ task SnapPre {
 
   String snap_file_output_name = output_base_name + ".snap"
   String snap_qc_output_name = snap_file_output_name + ".qc"
-
-  # TODO:
-  # 1. update disk size to be dynamilcally updated based off of input file size
-  # 2. fix the bug where a max fragmnet length greater than 2000 will cause snap-pre to throw an error "--max-flen can not be smaller than 2000"
 
   command {
     set -euo pipefail
@@ -682,9 +663,6 @@ task SnapCellByBin {
     disks: "local-disk 150 HDD"
   }
 }
-
-# TODO:
-# 1. update docker image to be tool specific
 
 task MakeCompliantBAM {
   input {
