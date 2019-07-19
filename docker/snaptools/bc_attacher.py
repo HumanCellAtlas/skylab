@@ -107,9 +107,6 @@ while not readComplete:
         print('done reading files')
         readComplete = True
 
-        # TODO: Check if all the other iterators do not 'have_next()' if they do we need to issue a user warning
-
-
 end_time = time.time()
 print('Processed %i entries in %d seconds' % (nEntries, end_time - start_time))
 
