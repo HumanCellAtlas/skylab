@@ -31,7 +31,7 @@ task StarAlignBamSingleEnd {
     # prepare reference
     mkdir genome_reference
     tar -xf "${tar_star_reference}" -C genome_reference --strip-components 1
-    rm "${tar_star_reference}"
+    #rm "${tar_star_reference}"
 
     STAR \
       --runMode alignReads \

@@ -166,7 +166,7 @@ task SnapCellByBin {
     command {
         set -euo pipefail
 
-        mv ~{snap_input} ~{snap_output_name}
+        cp ~{snap_input} ~{snap_output_name}
 
         # This is mutating the file in-place
         snaptools snap-add-bmat  \

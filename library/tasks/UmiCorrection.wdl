@@ -30,8 +30,8 @@ task CorrectUMItools {
     command {
         set -e
 
-        mv ${bam_input} input.bam
-        mv ${bam_index} input.bam.bai
+        cp ${bam_input} input.bam
+        cp ${bam_index} input.bam.bai
 
         touch input.bam
         touch input.bam.bai
