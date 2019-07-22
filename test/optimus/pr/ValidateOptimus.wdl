@@ -64,7 +64,7 @@ task ValidateOptimus {
       >&2 echo "bam_hash ($bam_hash) did not match expected hash (${expected_bam_hash})"
       fail=true
     fi
-    p
+
     if [ "$gene_metric_hash" != "${expected_gene_metric_hash}" ]; then
       >&2 echo "gene_metric_hash ($gene_metric_hash) did not match expected hash (${expected_gene_metric_hash})"
       fail=true
