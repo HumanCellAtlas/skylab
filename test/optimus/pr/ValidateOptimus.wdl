@@ -55,7 +55,7 @@ task ValidateOptimus {
       fail=true
     fi
 
-    if [ "$matrix_col_index_hash" != "${expected_matrix_col_index_hash}" ]; then
+    if [ "$matrix_col_index_hash" != "${expected_matrix_col_hash}" ]; then
       >&2 echo "matrix_col_index_hash ($matrix_col_index_hash) did not match expected hash (${expected_matrix_col_index_hash})"
       fail=true
     fi
