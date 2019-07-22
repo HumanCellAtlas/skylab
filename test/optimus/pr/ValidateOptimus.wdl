@@ -51,12 +51,12 @@ task ValidateOptimus {
     fi
 
     if [ "$matrix_row_index_hash" != "${expected_matrix_row_hash}" ]; then
-      >&2 echo "matrix_row_index_hash ($matrix_row_index_hash) did not match expected hash (${expected_matrix_row_index_hash})"
+      >&2 echo "matrix_row_index_hash ($matrix_row_index_hash) did not match expected hash (${expected_matrix_row_hash})"
       fail=true
     fi
 
     if [ "$matrix_col_index_hash" != "${expected_matrix_col_hash}" ]; then
-      >&2 echo "matrix_col_index_hash ($matrix_col_index_hash) did not match expected hash (${expected_matrix_col_index_hash})"
+      >&2 echo "matrix_col_index_hash ($matrix_col_index_hash) did not match expected hash (${expected_matrix_col_hash})"
       fail=true
     fi
 
@@ -64,7 +64,7 @@ task ValidateOptimus {
       >&2 echo "bam_hash ($bam_hash) did not match expected hash (${expected_bam_hash})"
       fail=true
     fi
-    
+    p
     if [ "$gene_metric_hash" != "${expected_gene_metric_hash}" ]; then
       >&2 echo "gene_metric_hash ($gene_metric_hash) did not match expected hash (${expected_gene_metric_hash})"
       fail=true
