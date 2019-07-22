@@ -32,8 +32,8 @@ task ValidateOptimus {
     cd ..
 
     # check matrix row and column indexes files hash
-    matrix_row_index_hash=$(zcat "${matrix_row_index}" | md5sum | awk '{print $1}')
-    matrix_col_index_hash=$(zcat "${matrix_col_index}" | md5sum | awk '{print $1}')
+    matrix_row_index_hash=$(cat "${matrix_row_index}" | md5sum | awk '{print $1}')
+    matrix_col_index_hash=$(cat "${matrix_col_index}" | md5sum | awk '{print $1}')
     
     # check gene and cell metrics
     gene_metric_hash=$(zcat "${gene_metrics}" | md5sum | awk '{print $1}')
