@@ -1,25 +1,27 @@
 task ValidateOptimus {
       File bam
       File matrix
-      File gene_metrics
+      File matrix_row_index
+      File matrix_col_index
       File cell_metrics
+      File gene_metrics
 
       Int required_disk = ceil((size(bam, "G") + size(matrix, "G")) * 1.1)
 
       String expected_bam_hash
       String expected_matrix_hash
-      String expected_gene_metric_hash
+      String expected_matrix_row_hash
+      String expected_matrix_col_hash
       String expected_cell_metric_hash
+      String expected_gene_metric_hash
 
   command <<<
 
-    # catch intermittent failures
     set -eo pipefail
 
     # calculate hashes; awk is used to extract the hash from the md5sum output that contains both
     # a hash and the filename that was passed. gzipped files are unzipped to avoid hashing malleable
     # metadata
-
 
     unzip "${matrix}"
     matrix_hash=$(find . -name "*.npy" -type f -exec md5sum {} \; | sort -k 2 | md5sum | awk '{print $1}')
