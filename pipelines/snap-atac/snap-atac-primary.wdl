@@ -1,22 +1,26 @@
 version 1.0
 
 workflow scATAC {
+    meta {
+      description: "Processing of single-cell ATAC-seq data with the snap-atac pipeline."
+    }
+
     input {
         File input_fastq1
         File input_fastq2
-
         String genome_name
         File input_reference
-
         String output_bam = "aligned.bam"
     }
+
     parameter_meta {
-        input_fastq1: "read 1 input fastq"
-        input_fastq2: "read 2 input fastq"
-        input_reference: "tar file with BWA reference"
-        output_bam: "output BAM file"
+        input_fastq1: "read 1 input fastq, the read names must be tagged with the cellular barcodes"
+        input_fastq2: "read 2 input fastq, the read names must be tagged with the cellular barcodes"
+        input_reference: "tar file with BWA reference, generated with the build_bwa_reference pipeline"
+        output_bam: "output BAM file name"
         genome_name: "name of the genome for snap atac"
     }
+
     call AlignPairedEnd {
         input:
             input_fastq1 = input_fastq1,
@@ -24,6 +28,7 @@ workflow scATAC {
             input_reference = input_reference,
             output_bam = output_bam
     }
+
     call SnapPre {
         input:
             input_bam = AlignPairedEnd.aligned_bam,
@@ -31,19 +36,23 @@ workflow scATAC {
             genome_name = genome_name,
             input_reference = input_reference,
     }
+
     call SnapCellByBin {
         input:
             snap_input = SnapPre.output_snap,
             bin_size_list = "10000"
     }
+
     call MakeCompliantBAM {
         input:
             input_bam = AlignPairedEnd.aligned_bam
     }
+
     call BreakoutSnap {
         input:
             snap_input = SnapCellByBin.output_snap
     }
+
     output {
         File output_snap_qc = SnapPre.output_snap_qc
         File output_snap = SnapCellByBin.output_snap
@@ -54,6 +63,7 @@ workflow scATAC {
         File breakout_binCounts = BreakoutSnap.binCounts
         File breakout_barcodesSection = BreakoutSnap.barcodesSection
     }
+
 }
 
 task AlignPairedEnd {
@@ -65,6 +75,15 @@ task AlignPairedEnd {
         String output_bam
         Int min_cov = 0
         String docker_image = "quay.io/humancellatlas/snaptools:0.0.1"
+    }
+
+    parameter_meta {
+      input_fastq1: "read 1 fastq file"
+      input_fastq2: "read 2 fastq file"
+      input_reference: "input reference bundle"
+      reference_unpack_name: "name of the reference input file after decompression, used only if default is changed"
+      output_bam: "name of output bam file"
+      min_cov: "--min-cov parameter for snaptools align-paired-end (default: 0)"
     }
 
     Int num_threads = 16
@@ -117,6 +136,15 @@ task SnapPre {
         File input_reference
     }
 
+    parameter_meta {
+       input_bam: "input bam file"
+       output_snap_basename: "prefix name of the output bam file"
+       genome_name: "name of the genome, currently not parsed but saved in output"
+       genome_size_file: "name of the chrom.sizes file after unpacking of the genome reference"
+       docker_image: "docker image used"
+       input_reference: "input reference tar file"
+    }
+
     Int num_threads = 1
 
     command {
@@ -141,10 +169,12 @@ task SnapPre {
             --min-cov=100  \
             --verbose=True
     }
+
     output {
         File output_snap = output_snap_basename
         File output_snap_qc = output_snap_basename + ".qc"
     }
+
     runtime {
         docker: docker_image
         cpu: num_threads
@@ -161,6 +191,13 @@ task SnapCellByBin {
         String docker_image = "quay.io/humancellatlas/snaptools:0.0.1"
     }
 
+    parameter_meta {
+       snap_input: "input snap file to generate bins for"
+       bin_size_list: "list of bin sizes to generate"
+       snap_output_name: "name of the output snap file"
+       docker_image: "docker image to use"
+    }
+
     Int num_threads = 1
 
     command {
@@ -174,9 +211,11 @@ task SnapCellByBin {
             --bin-size-list ~{bin_size_list}  \
             --verbose=True
     }
+
     output {
         File output_snap = snap_output_name
     }
+
     runtime {
         docker: docker_image
         cpu: num_threads
@@ -191,16 +230,26 @@ task MakeCompliantBAM {
         String output_bam_filename = "output.bam"
         String docker_image = "quay.io/humancellatlas/snaptools:0.0.1"
     }
+
+    parameter_meta {
+        input_bam: "input bam file"
+        output_bam_filename: "name of output bam file"
+        docker_image: "docker image to use"
+    }
+
     Int num_threads = 1
     Float input_size = size(input_bam, "GiB")
+
     command {
         set -euo pipefail
 
         /tools/makeCompliantBAM.py --input-bam ~{input_bam} --output-bam ~{output_bam_filename}
     }
+
     output {
         File output_bam = output_bam_filename
     }
+
     runtime {
         docker: docker_image
         cpu: num_threads
@@ -214,14 +263,22 @@ task BreakoutSnap {
         File snap_input
         String docker_image = "quay.io/humancellatlas/snap-breakout:0.0.1"
     }
+
+    parameter_meta {
+      snap_input: "input snap file to use"
+      docker_image: "docker image to use"
+    }
+
     Int num_threads = 1
     Float input_size = size(snap_input, "GiB")
+
     command {
         set -euo pipefail
         mkdir output
         breakoutSnap.py --input ~{snap_input} \
             --output-prefix output/ 
     }
+
     output {
         File barcodes = 'output/barcodes.csv'
         File fragments = 'output/fragments.csv'
@@ -229,6 +286,7 @@ task BreakoutSnap {
         File binCounts = 'output/binCounts_10000.csv'
         File barcodesSection = 'output/barcodesSection.csv'
     }
+
     runtime {
         docker: docker_image
         cpu: num_threads
