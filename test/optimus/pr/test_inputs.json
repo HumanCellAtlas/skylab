@@ -18,8 +18,8 @@
     "gs://hca-dcp-mint-test-data/10x/demo/fastqs/pbmc8k_S1_L007_I1_001.fastq.gz"
   ],
   "TestOptimusPR.whitelist": "gs://hca-dcp-mint-test-data/10x/whitelist/737K-august-2016.txt",
-  "TestOptimusPR.tar_star_reference": "gs://hca-dcp-mint-test-data/reference/demo/star.tar",
-  "TestOptimusPR.sample_id": "pbmc8k_test",
-  "TestOptimusPR.annotations_gtf": "gs://hca-dcp-mint-test-data/reference/demo/hg19_ds/GSM1629193_hg19_ERCC.gtf.gz",
-  "TestOptimusPR.ref_genome_fasta": "gs://hca-dcp-mint-test-data/reference/demo/chr21.fa"
+  "TestOptimusPR.tar_star_reference": "gs://hca-dcp-sc-pipelines-test-data/alignmentReferences/optimusGencodeV27/buildReference/output_bucket/star_primary_gencode_v27.tar",
+  "TestOptimusPR.sample_id": "pr_test_dataset",
+  "TestOptimusPR.annotations_gtf": "gs://hca-dcp-sc-pipelines-test-data/alignmentReferences/optimusGencodeV27/gencode.v27.primary_assembly.annotation.gtf.gz",
+  "TestOptimusPR.ref_genome_fasta": "gs://hca-dcp-sc-pipelines-test-data/alignmentReferences/optimusGencodeV27/GRCh38.primary_assembly.genome.fa"
 }
