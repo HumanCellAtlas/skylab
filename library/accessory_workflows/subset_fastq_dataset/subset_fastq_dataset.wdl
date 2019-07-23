@@ -5,7 +5,7 @@ workflow SubsetFastqDataset {
   input {
     Array[File] bams
     Array[File] fastqs
-    String keepregion
+    File keepregions
   }
 
   call MergeBams {
@@ -22,7 +22,7 @@ workflow SubsetFastqDataset {
     input:
       sorted_bam = IndexSortConcatenated.output_sorted_bam,
       sorted_bai = IndexSortConcatenated.output_sorted_bai,
-      subset_region = keepregion
+      subset_region = keepregions
   }
 
   scatter (fastq in fastqs) {
@@ -99,15 +99,13 @@ task ExtractReadNames {
   input {
     File sorted_bam
     File sorted_bai
-    String subset_region
+    File subset_region
   }
 
   Int disk_size = ceil(size(sorted_bam, "GiB")) + 20
 
   command {
-    samtools view \
-      ~{sorted_bam} \
-      ~{subset_region} | cut -f 1  > kept_reads
+    samtools view -L ~{subset_region} ~{sorted_bam} | cut -f 1  > kept_reads
   }
 
   runtime {
