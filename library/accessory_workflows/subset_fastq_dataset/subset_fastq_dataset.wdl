@@ -76,7 +76,7 @@ task IndexSortConcatenated {
   command {
     samtools sort \
       -@ ~{n_cores} \
-      -m ~{samtools_mem_gb_per_core}G \
+      -m ~{memory_size_per_core}G \
       ~{concat_bam} > concat.sorted.bam
 
     samtools index concat.sorted.bam
