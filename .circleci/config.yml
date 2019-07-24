@@ -161,5 +161,3 @@ workflows:
           - test_portability_bulk_rna_pipeline
           - test_portability_optimus
           - test_portability_smartseq2_single_sample
-
-
