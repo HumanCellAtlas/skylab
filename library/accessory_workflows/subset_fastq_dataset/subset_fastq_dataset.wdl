@@ -5,7 +5,7 @@ workflow SubsetFastqDataset {
   input {
     Array[File] bams
     Array[File] fastqs
-    String keepregion
+    File keepregions
   }
 
   call MergeBams {
@@ -22,7 +22,7 @@ workflow SubsetFastqDataset {
     input:
       sorted_bam = IndexSortConcatenated.output_sorted_bam,
       sorted_bai = IndexSortConcatenated.output_sorted_bai,
-      subset_region = keepregion
+      subset_region = keepregions
   }
 
   scatter (fastq in fastqs) {
@@ -66,16 +66,17 @@ task IndexSortConcatenated {
 
   input {
     File concat_bam
-    Int samtools_sort_cores = 4
-    Int samtools_mem_gb_per_core = 5
+    Int n_cores = 16
   }
 
-  Int disk_size = ceil(size(concat_bam, "GiB") * 2) + 20
+  Int memory_size_per_core = ceil(size(concat_bam, "GiB") * 1.1)
+  Int memory_size_overhead = 50
+  Int disk_size = ceil(size(concat_bam, "GiB") * 2) + 50
 
   command {
     samtools sort \
-      -@ ~{samtools_sort_cores} \
-      -m ~{samtools_mem_gb_per_core}G \
+      -@ ~{n_cores} \
+      -m ~{memory_size_per_core}G \
       ~{concat_bam} > concat.sorted.bam
 
     samtools index concat.sorted.bam
@@ -83,9 +84,9 @@ task IndexSortConcatenated {
 
   runtime {
     docker: "quay.io/humancellatlas/secondary-analysis-subset-fastq:0.0.1"
-    memory: "~{samtools_mem_gb_per_core * samtools_sort_cores} GiB"
+    memory: "~{memory_size_per_core * n_cores} GiB"
     disks: "local-disk ~{disk_size} HDD"
-    cpu: ceil((samtools_sort_cores / 2)) + 1
+    cpu: n_cores
   }
 
   output {
@@ -99,15 +100,13 @@ task ExtractReadNames {
   input {
     File sorted_bam
     File sorted_bai
-    String subset_region
+    File subset_region
   }
 
   Int disk_size = ceil(size(sorted_bam, "GiB")) + 20
 
   command {
-    samtools view \
-      ~{sorted_bam} \
-      ~{subset_region} | cut -f 1  > kept_reads
+    samtools view -L ~{subset_region} ~{sorted_bam} | cut -f 1  > kept_reads
   }
 
   runtime {
