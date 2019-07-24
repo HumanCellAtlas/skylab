@@ -70,7 +70,8 @@ jobs:
                     python test/run_portability_test.py --test-directories test/smartseq2_single_sample/pr/
 
     test_optimus:
-        machine: true
+        docker:
+            - image: buildpack-deps:xenial
         steps:
             - checkout
             - run:
