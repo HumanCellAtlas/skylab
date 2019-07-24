@@ -115,6 +115,6 @@ workflows:
           - test_snap_atac
           - test_sc_atac
           - test_bulk_rna
-
+          - test_portability_smartseq2_single_sample
 
 
