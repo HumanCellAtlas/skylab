@@ -1,3 +1,4 @@
+
 task ScatterBam {
 
   File bam_to_scatter
@@ -6,7 +7,7 @@ task ScatterBam {
 
   command <<<
     mkdir scattered_bams
-    java -Xms7g -jar /usr/gitc/picard.jar \
+    java -Xms7g -jar /usr/picard/picard.jar \
       SplitSamByNumberOfReads \
       INPUT=${bam_to_scatter} \
       SPLIT_TO_N_FILES=${scatter_width} \
@@ -22,6 +23,6 @@ task ScatterBam {
     disks: "local-disk ${disk_size} HDD"
     cpu: 2
     memory: "7.5 GiB"
-    docker: "us.gcr.io/broad-gotc-prod/genomes-in-the-cloud:2.3.3-1513176735"
+    docker: "quay.io/humancellatlas/secondary-analysis-picard:2.20.4"
   }
 }
