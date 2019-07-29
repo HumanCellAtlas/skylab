@@ -15,6 +15,8 @@ task ValidateOptimus {
       String expected_cell_metric_hash
       String expected_gene_metric_hash
 
+      String expected_reduced_bam_hash
+
   command <<<
 
     set -eo pipefail
@@ -41,9 +43,17 @@ task ValidateOptimus {
 
     # calculate hash as above, but ignore run-specific bam headers
     bam_hash=$(samtools view "${bam}" | md5sum | awk '{print $1}')
+    
+    # calculate hash for alignment positions only (a reduced bam hash)
+    bam_reduced_hash=$(samtools view -F 256 "${bam}" | cut -f 1-11 | md5sum | awk '{print $1}')
 
     # test each output for equality, echoing any failure states to stdout
     fail=false
+
+    if [ "$bam_reduced_hash" != "${expected_reduced_bam_hash}" ]; then
+      >&2 echo "bam_reduced_hash ($bam_reduced_hash) did not match expected hash (${expected_reduced_bam_hash})"
+      fail=true
+    fi
 
     if [ "$matrix_hash" != "${expected_matrix_hash}" ]; then
       >&2 echo "matrix_hash ($matrix_hash) did not match expected hash (${expected_matrix_hash})"
