@@ -44,8 +44,6 @@ workflow ValidateOptimus {
 
 task ValidateBam {
     File bam
-    String expected_reduced_bam_hash
-    String expected_bam_hash
     Int required_disk = ceil(size(bam, "G") * 1.1)
 
     command <<<
