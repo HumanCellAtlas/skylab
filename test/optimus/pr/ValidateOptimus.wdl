@@ -18,9 +18,15 @@ workflow ValidateOptimus {
      String expected_gene_metric_hash
      String expected_reduced_bam_hash
 
+     call ValidateBam as ValidateBam {
+         input:
+            bam = bam
+     }
+
      call MainOptimusValidation as MainOptimusValidation {
          input:
-             bam = bam,
+             bam_hash = ValidateBam.md5sum,
+             bam_reduced_hash = ValidateBam.md5sum_reduced,
              matrix = matrix,
              matrix_row_index = matrix_row_index,
              matrix_col_index = matrix_col_index,
@@ -36,17 +42,44 @@ workflow ValidateOptimus {
     }
 }
 
+task ValidateBam {
+    File bam
+    String expected_reduced_bam_hash
+    String expected_bam_hash
+    Int required_disk = ceil(size(bam, "G") * 1.1)
 
+    command <<<
+        # calculate hash as above, but ignore run-specific bam headers
+        samtools view "${bam}" | md5sum | awk '{print $1}' > md5_checksum.txt
+    
+        # calculate hash for alignment positions only (a reduced bam hash)
+        samtools view -F 256 "${bam}" | cut -f 1-11 | md5sum | awk '{print $1}' > md5_checksum_reduced.txt
+    >>>
+  
+    runtime {
+        docker: "quay.io/humancellatlas/secondary-analysis-samtools:v0.2.2-1.6"
+        cpu: 1
+        memory: "3.75 GB"
+        disks: "local-disk ${required_disk} HDD"
+    }
+
+    output {
+        String md5sum = read_string("md5_checksum.txt")
+        String md5sum_reduced = read_string("md5_checksum_reduced.txt")
+    }
+}
 
 task MainOptimusValidation {
-      File bam
+      String bam_hash
+      String bam_reduced_hash
+
       File matrix
       File matrix_row_index
       File matrix_col_index
       File cell_metrics
       File gene_metrics
 
-      Int required_disk = ceil((size(bam, "G") + size(matrix, "G")) * 1.1)
+      Int required_disk = ceil( size(matrix, "G") * 1.1 )	
 
       String expected_bam_hash
       String expected_matrix_hash
@@ -79,12 +112,6 @@ task MainOptimusValidation {
     # check gene and cell metrics
     gene_metric_hash=$(zcat "${gene_metrics}" | md5sum | awk '{print $1}')
     cell_metric_hash=$(zcat "${cell_metrics}" | md5sum | awk '{print $1}')
-
-    # calculate hash as above, but ignore run-specific bam headers
-    bam_hash=$(samtools view "${bam}" | md5sum | awk '{print $1}')
-    
-    # calculate hash for alignment positions only (a reduced bam hash)
-    bam_reduced_hash=$(samtools view -F 256 "${bam}" | cut -f 1-11 | md5sum | awk '{print $1}')
 
     # test each output for equality, echoing any failure states to stdout
     fail=false
