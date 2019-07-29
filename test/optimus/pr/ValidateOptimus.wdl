@@ -14,7 +14,6 @@ task ValidateOptimus {
       String expected_matrix_col_hash
       String expected_cell_metric_hash
       String expected_gene_metric_hash
-
       String expected_reduced_bam_hash
 
   command <<<

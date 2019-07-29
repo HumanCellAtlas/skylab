@@ -5,6 +5,7 @@
   "TestOptimusPR.expected_matrix_col_hash": "aac0ad13a21e151d11db327327bce419",
   "TestOptimusPR.expected_cell_metric_hash": "8231e4101ab422fcfb76d92dea788505",
   "TestOptimusPR.expected_gene_metric_hash": "207d7d4f9acdb001ce7a2cb06bbe4b79",
+  "TestOptimusPR.expected_reduced_bam_hash": "awrongbamhash",
   "TestOptimusPR.r1_fastq": [
     "gs://hca-dcp-sc-pipelines-test-data/smallDatasets/chemistry_X10_V2/pbmc4k_chr21_genic/pbmc8k_S1_L007_R1_001.fastq.gz",
     "gs://hca-dcp-sc-pipelines-test-data/smallDatasets/chemistry_X10_V2/pbmc4k_chr21_genic/pbmc8k_S1_L007_R1_001.fastq.gz"

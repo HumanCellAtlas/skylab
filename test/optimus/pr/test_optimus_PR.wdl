@@ -12,6 +12,7 @@ workflow TestOptimusPR {
   String expected_matrix_col_hash
   String expected_gene_metric_hash
   String expected_cell_metric_hash
+  String expected_reduced_bam_hash
 
   # Optimus inputs
   Array[File] r1_fastq
@@ -50,7 +51,8 @@ workflow TestOptimusPR {
       expected_matrix_row_hash = expected_matrix_row_hash,
       expected_matrix_col_hash = expected_matrix_col_hash,
       expected_cell_metric_hash = expected_cell_metric_hash,
-      expected_gene_metric_hash = expected_gene_metric_hash
+      expected_gene_metric_hash = expected_gene_metric_hash,
+      expected_reduced_bam_hash = expected_reduced_bam_hash
   }
 
 }
