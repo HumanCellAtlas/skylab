@@ -28,15 +28,25 @@ workflow ValidateOptimus {
              matrix = matrix
      }
 
+     call ValidateMetricsAndIndexes {
+         input:
+             matrix_row_index = matrix_row_index,
+             matrix_col_index = matrix_col_index,
+             cell_metrics = cell_metrics,
+             gene_metrics = gene_metrics
+     }
+
      call MainOptimusValidation as MainOptimusValidation {
          input:
              bam_hash = ValidateBam.md5sum,
              bam_reduced_hash = ValidateBam.md5sum_reduced,
              matrix_hash = ValidateMatrix.matrix_hash,
-             matrix_row_index = matrix_row_index,
-             matrix_col_index = matrix_col_index,
-             cell_metrics = cell_metrics,
-             gene_metrics = gene_metrics,
+
+	     matrix_row_index_hash = ValidateMetricsAndIndexes.matrix_row_index_hash,
+             matrix_col_index_hash = ValidateMetricsAndIndexes.matrix_col_index_hash,
+             cell_metrics_hash = ValidateMetricsAndIndexes.cell_metrics_hash,
+             gene_metrics_hash = ValidateMetricsAndIndexes.gene_metrics_hash,
+
              expected_bam_hash = expected_bam_hash,
              expected_matrix_hash = expected_matrix_hash,
              expected_matrix_row_hash = expected_matrix_row_hash,
@@ -107,15 +117,42 @@ task ValidateMatrix {
 
 }
 
+task ValidateMetricsAndIndexes {
+    File matrix_row_index
+    File matrix_col_index
+    File cell_metrics
+    File gene_metrics
+
+    command <<<   
+       set -eo pipefail
+
+        # check matrix row and column indexes files hash
+        cat "${matrix_row_index}" | md5sum | awk '{print $1} > matrix_row_index_hash.txt
+        cat "${matrix_col_index}" | md5sum | awk '{print $1} > matrix_col_index_hash.txt
+    
+        # check gene and cell metrics
+        zcat "${gene_metrics}" | md5sum | awk '{print $1} > gene_metric_hash.txt
+        zcat "${cell_metrics}" | md5sum | awk '{print $1} > cell_metric_hash.txt
+    >>>
+
+    output {
+        String matrix_row_index_hash = read_string("matrix_row_index.txt")
+        String matrix_col_index_hash = read_string("matrix_col_index.txt")
+        String gene_metrics_hash = read_string("gene_metric_hash.txt")
+        String cell_metrics_hash = read_string("cell_metric_hash.txt")
+    }
+
+}
+
 task MainOptimusValidation {
       String bam_hash
       String bam_reduced_hash
       String matrix_hash
 
-      File matrix_row_index
-      File matrix_col_index
-      File cell_metrics
-      File gene_metrics
+      String matrix_row_index_hash
+      String matrix_col_index_hash
+      String gene_metrics_hash
+      String cell_metrics_hash
 
       Int required_disk = 2
 
@@ -130,14 +167,6 @@ task MainOptimusValidation {
   command <<<
 
     set -eo pipefail
-
-    # check matrix row and column indexes files hash
-    matrix_row_index_hash=$(cat "${matrix_row_index}" | md5sum | awk '{print $1}')
-    matrix_col_index_hash=$(cat "${matrix_col_index}" | md5sum | awk '{print $1}')
-    
-    # check gene and cell metrics
-    gene_metric_hash=$(zcat "${gene_metrics}" | md5sum | awk '{print $1}')
-    cell_metric_hash=$(zcat "${cell_metrics}" | md5sum | awk '{print $1}')
 
     # test each output for equality, echoing any failure states to stdout
     fail=false
