@@ -1,4 +1,3 @@
-
 task ScatterBam {
 
   File bam_to_scatter
