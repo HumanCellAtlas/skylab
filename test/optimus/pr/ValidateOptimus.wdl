@@ -20,7 +20,7 @@ workflow ValidateOptimus {
      String expected_gene_metric_hash
      String expected_reduced_bam_hash
 
-     call ValidateOptimus as MainValidationStep {
+     call MainOptimusValidation as MainOptimusValidation {
          input:
              bam = bam,
              matrix = matrix,
@@ -40,7 +40,7 @@ workflow ValidateOptimus {
 
 
 
-task ValidateOptimus {
+task MainOptimusValidation {
       File bam
       File matrix
       File matrix_row_index
