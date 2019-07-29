@@ -1,3 +1,45 @@
+workflow ValidateOptimus {
+     meta {
+         description: "Validate Optimus Outputs"
+     }
+
+     File bam
+     File matrix
+     File matrix_row_index
+     File matrix_col_index
+     File cell_metrics
+     File gene_metrics
+
+     Int required_disk = ceil((size(bam, "G") + size(matrix, "G")) * 1.1)
+
+     String expected_bam_hash
+     String expected_matrix_hash
+     String expected_matrix_row_hash
+     String expected_matrix_col_hash
+     String expected_cell_metric_hash
+     String expected_gene_metric_hash
+     String expected_reduced_bam_hash
+
+     call ValidateOptimus as MainValidationStep {
+         input:
+             bam = bam,
+             matrix = matrix,
+             matrix_row_index = matrix_row_index,
+             matrix_col_index = matrix_col_index,
+             cell_metrics = cell_metrics,
+             gene_metrics = gene_metrics,
+             expected_bam_hash = expected_bam_hash,
+             expected_matrix_hash = expected_matrix_hash,
+             expected_matrix_row_hash = expected_matrix_row_hash,
+             expected_matrix_col_hash = expected_matrix_col_hash,
+             expected_cell_metric_hash = expected_cell_metric_hash,
+             expected_gene_metric_hash = expected_gene_metric_hash,
+             expected_reduced_bam_hash = expected_reduced_bam_hash
+    }
+}
+
+
+
 task ValidateOptimus {
       File bam
       File matrix
