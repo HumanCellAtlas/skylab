@@ -23,11 +23,16 @@ workflow ValidateOptimus {
             bam = bam
      }
 
+     call ValidateMatrix as ValidateMatrix {
+         input:
+             matrix = matrix
+     }
+
      call MainOptimusValidation as MainOptimusValidation {
          input:
              bam_hash = ValidateBam.md5sum,
              bam_reduced_hash = ValidateBam.md5sum_reduced,
-             matrix = matrix,
+             matrix_hash = ValidateMatrix.matrix_hash,
              matrix_row_index = matrix_row_index,
              matrix_col_index = matrix_col_index,
              cell_metrics = cell_metrics,
@@ -67,17 +72,52 @@ task ValidateBam {
     }
 }
 
+task ValidateMatrix {
+    File matrix
+    
+    Int required_disk = ceil( size(matrix, "G") * 1.1 )
+
+    command <<<
+       set -eo pipefail
+
+       ## Generate md5sum for the matrix.npz file, the file is first deflated
+       ## to avoid changes in the compression process from affecting output
+       ## the process is performed in new directory to avoid other *.npy files
+       ## that may be inputs from affecting output
+       mkdir matrix_deflate
+       cp "${matrix}" matrix_deflate/matrix.npz
+       cd matrix_deflate
+       unzip matrix.npz
+       rm matrix.npz
+       find . -name "*.npy" -type f -exec md5sum {} \; | sort -k 2 | md5sum | awk '{print $1}' > ../matrix_hash.txt
+       cd ..
+
+    >>>
+  
+    runtime {
+        docker: "quay.io/humancellatlas/secondary-analysis-samtools:v0.2.2-1.6"
+        cpu: 1
+        memory: "3.75 GB"
+        disks: "local-disk ${required_disk} HDD"
+    }
+
+    output {
+        String matrix_hash = read_string("matrix_hash.txt")
+    }  
+
+}
+
 task MainOptimusValidation {
       String bam_hash
       String bam_reduced_hash
+      String matrix_hash
 
-      File matrix
       File matrix_row_index
       File matrix_col_index
       File cell_metrics
       File gene_metrics
 
-      Int required_disk = ceil( size(matrix, "G") * 1.1 )	
+      Int required_disk = 2
 
       String expected_bam_hash
       String expected_matrix_hash
@@ -90,18 +130,6 @@ task MainOptimusValidation {
   command <<<
 
     set -eo pipefail
-
-    ## Generate md5sum for the matrix.npz file, the file is first deflated
-    ## to avoid changes in the compression process from affecting output
-    ## the process is performed in new directory to avoid other *.npy files
-    ## that may be inputs from affecting output
-    mkdir matrix_deflate
-    cp "${matrix}" matrix_deflate/matrix.npz
-    cd matrix_deflate
-    unzip matrix.npz
-    rm matrix.npz
-    matrix_hash=$(find . -name "*.npy" -type f -exec md5sum {} \; | sort -k 2 | md5sum | awk '{print $1}')
-    cd ..
 
     # check matrix row and column indexes files hash
     matrix_row_index_hash=$(cat "${matrix_row_index}" | md5sum | awk '{print $1}')
