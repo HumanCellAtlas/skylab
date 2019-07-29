@@ -10,8 +10,6 @@ workflow ValidateOptimus {
      File cell_metrics
      File gene_metrics
 
-     Int required_disk = ceil((size(bam, "G") + size(matrix, "G")) * 1.1)
-
      String expected_bam_hash
      String expected_matrix_hash
      String expected_matrix_row_hash
