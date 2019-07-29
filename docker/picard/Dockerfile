@@ -1,14 +1,14 @@
 FROM openjdk:8-jre
 
-LABEL maintainer="Jishu Xu <jishuxu@broadinstitute.org>" \
+LABEL maintainer="Green Lantern <lantern@broadinstitute.org>" \
   software="Picard" \
-  version="2.10.2" \
+  version="2.11.1" \
   description="A set of command line tools (in Java) for manipulating high-throughput sequencing (HTS) data and formats such as SAM/BAM/CRAM and VCF." \
   website="http://broadinstitute.github.io/picard"
 
 # Please follow the below instructions to invoke picard when you are using this docker image:
 # java jvm-args -jar /usr/picard/picard.jar PicardToolName OPTION1=value1 OPTION2=value2...
-ENV version 2.18.2
+ENV version 2.20.4
 WORKDIR /usr/picard
 ADD https://github.com/broadinstitute/picard/releases/download/${version}/picard.jar ./picard.jar
 
