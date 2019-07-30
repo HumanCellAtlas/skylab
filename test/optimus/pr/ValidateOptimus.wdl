@@ -190,53 +190,53 @@ task GenerateReport {
     # test each output for equality, echoing any failure states to stdout
     fail=false
 
-    if [ "$bam_hash" != "${expected_bam_hash}" ]; then
+    if [ "${bam_hash}" != "${expected_bam_hash}" ]; then
       >&2 echo "bam_hash ($bam_hash) did not match expected hash (${expected_bam_hash})"
       fail=true
     else 
-      echo "bam_hash ($bam_hash) matches expected value"
+      echo "bam_hash (${bam_hash}) matches expected value"
     fi
 
-    if [ "$bam_reduced_hash" != "${expected_reduced_bam_hash}" ]; then
+    if [ "${bam_reduced_hash}" != "${expected_reduced_bam_hash}" ]; then
       >&2 echo "bam_reduced_hash ($bam_reduced_hash) did not match expected hash (${expected_reduced_bam_hash})"
       fail=true
     else
-      echo "bam_reduced_hash ($bam_reduced_hash) matches expected value"
+      echo "bam_reduced_hash (${bam_reduced_hash}) matches expected value"
     fi
 
-    if [ "$matrix_hash" != "${expected_matrix_hash}" ]; then
+    if [ "${matrix_hash}" != "${expected_matrix_hash}" ]; then
       >&2 echo "matrix_hash ($matrix_hash) did not match expected hash (${expected_matrix_hash})"
       fail=true
     else
-      echo "matrix_hash ($matrix_hash) matches expected value"
+      echo "matrix_hash (${matrix_hash}) matches expected value"
     fi
 
-    if [ "$matrix_row_index_hash" != "${expected_matrix_row_hash}" ]; then
-      >&2 echo "matrix_row_index_hash ($matrix_row_index_hash) did not match expected hash (${expected_matrix_row_hash})"
+    if [ "${matrix_row_index_hash}" != "${expected_matrix_row_hash}" ]; then
+      >&2 echo "matrix_row_index_hash (${matrix_row_index_hash}) did not match expected hash (${expected_matrix_row_hash})"
       fail=true
     else
-      echo "matrix_row_index_hash ($matrix_row_index_hash) matches expected value"
+      echo "matrix_row_index_hash (${matrix_row_index_hash}) matches expected value"
     fi
 
-    if [ "$matrix_col_index_hash" != "${expected_matrix_col_hash}" ]; then
-      >&2 echo "matrix_col_index_hash ($matrix_col_index_hash) did not match expected hash (${expected_matrix_col_hash})"
+    if [ "${matrix_col_index_hash}" != "${expected_matrix_col_hash}" ]; then
+      >&2 echo "matrix_col_index_hash (${matrix_col_index_hash}) did not match expected hash (${expected_matrix_col_hash})"
       fail=true
     else
-      echo "matrix_row_index_hash ($matrix_col_index_hash) matches expected value"
+      echo "matrix_row_index_hash (${matrix_col_index_hash}) matches expected value"
     fi
 
-    if [ "$gene_metric_hash" != "${expected_gene_metric_hash}" ]; then
-      >&2 echo "gene_metric_hash ($gene_metric_hash) did not match expected hash (${expected_gene_metric_hash})"
+    if [ "${gene_metric_hash}" != "${expected_gene_metric_hash}" ]; then
+      >&2 echo "gene_metric_hash (${gene_metric_hash}) did not match expected hash (${expected_gene_metric_hash})"
       fail=true
     else 
-      echo "gene_metric_hash ($gene_metric_hash) matches expected value"
+      echo "gene_metric_hash (${gene_metric_hash}) matches expected value"
     fi
 
-    if [ "$cell_metric_hash" != "${expected_cell_metric_hash}" ]; then
-      >&2 echo "cell_metric_hash ($cell_metric_hash) did not match expected hash (${expected_cell_metric_hash})"
+    if [ "${cell_metric_hash}" != "${expected_cell_metric_hash}" ]; then
+      >&2 echo "cell_metric_hash (${cell_metric_hash}) did not match expected hash (${expected_cell_metric_hash})"
       fail=true
     else 
-      echo "cell_metric_hash ($cell_metric_hash) matches expected value"
+      echo "cell_metric_hash (${cell_metric_hash}) matches expected value"
     fi
 
     if [ $fail == "true" ]; then exit 1; fi
@@ -244,7 +244,7 @@ task GenerateReport {
   >>>
   
   runtime {
-    docker: "quay.io/humancellatlas/secondary-analysis-samtools:v0.2.2-1.6"
+    docker: "ubuntu:18.04"
     cpu: 1
     memory: "3.75 GB"
     disks: "local-disk ${required_disk} HDD"
