@@ -63,10 +63,10 @@ task ValidateBam {
 
         if [ "$calculated_checksum" == ${expected_checksum} ]
         then
-             echo Computed and expected bam hashes match ( $calculated_checksum )
+             echo Computed and expected bam hashes match \( $calculated_checksum \)
              printf PASS > result.txt
         else 
-             echo Computed ( $calculated_checksum ) and expected ( ${expected_checksum} ) hashes do not match
+             echo Computed \( $calculated_checksum \) and expected \( ${expected_checksum} \) hashes do not match
              printf FAIL > result.txt
         fi
     >>>
@@ -107,10 +107,10 @@ task ValidateMatrix {
        cd ..
 
        if [ $computed_hash == ${expected_matrix_hash} ]; then
-           echo Computed and expected matrix hashes match ( $computed_hash )
+           echo Computed and expected matrix hashes match \( $computed_hash \)
            printf PASS > result.txt
        else 
-           echo Computed hash ( $computed_hash ) did not match expected matrix hash ( ${expected_matrix_hash} )
+           echo Computed hash \( $computed_hash \) did not match expected matrix hash \( ${expected_matrix_hash} \)
            printf FAIL > result.txt
        fi
 
@@ -148,17 +148,17 @@ task ValidateMetrics {
         fail=false
 
         if [ $gene_metric_hash != ${expected_gene_metric_hash} ]; then
-            echo Computed ( $gene_metric_hash ) and expected ( ${expected_gene_metric_hash} ) checksums do not match
+            echo Computed \( $gene_metric_hash \) and expected \( ${expected_gene_metric_hash} \) checksums do not match
             fail=true
         else 
-            echo Computed and expected gene metrics match ( $gene_metric_hash )
+            echo Computed and expected gene metrics match \( $gene_metric_hash \)
         fi
 
         if [ $cell_metric_hash != ${expected_cell_metric_hash} ]; then
-            echo Computed ( $cell_metric_hash ) and expected ( $expected_cell_metric_hash ) cell metrics hashes don't match
+            echo Computed \( $cell_metric_hash \) and expected \( $expected_cell_metric_hash \) cell metrics hashes don't match
             fail=true
         else 
-            echo Computed and expected cell metrics match ( $cell_metric_hash )
+            echo Computed and expected cell metrics match \( $cell_metric_hash \)
         fi
 
         if [ $fail ]; then
