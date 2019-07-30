@@ -1,3 +1,15 @@
+**Running Tests Manually**
+1) Set the environment variable BROAD_CROMWELL_KEY to have the contents of the cromwell credentials key JSON file.
+2) cd to the top level directory of the repository
+3) run the following command ```./test/trigger_test.sh [name of workflow without trailing /pr/]```
+
+Example:
+```
+export BROAD_CROMWELL_KEY=`cat ~/identities/credentials.json`
+cd ~/skylab/
+./test/trigger_test.sh optimus
+```
+
 **Scientific and PR testing infrastructure in Skylab.**
 
 Both tests share the same infrastructure, and follow the portability spec; the WDLs in this PR represent a cromwell test case for the [portability test](https://docs.google.com/document/d/1ghLoHMbKOPsndA1WgdSAHm5X82p86ryLBiAt1hz6HuI/edit); they are just missing a docker environment to run the WDLs in. 
