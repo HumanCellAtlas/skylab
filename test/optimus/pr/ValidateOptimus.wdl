@@ -16,67 +16,59 @@ workflow ValidateOptimus {
      String expected_matrix_col_hash
      String expected_cell_metric_hash
      String expected_gene_metric_hash
-     String expected_reduced_bam_hash
 
      call ValidateBam as ValidateBam {
          input:
-            bam = bam
+            bam = bam,
+            expected_checksum = expected_bam_hash
      }
 
      call ValidateMatrix as ValidateMatrix {
          input:
-             matrix = matrix
+             matrix = matrix,
+             matrix_row_index = matrix_row_index,
+	     matrix_col_index = matrix_col_index,
+             expected_matrix_hash = expected_matrix_hash
      }
 
-     call ValidateMetricsAndIndexes {
+     call ValidateMetrics {
          input:
-             matrix_row_index = matrix_row_index,
-             matrix_col_index = matrix_col_index,
              cell_metrics = cell_metrics,
-             gene_metrics = gene_metrics
+             gene_metrics = gene_metrics,
+             
+             expected_cell_metric_hash = expected_cell_metric_hash,
+             expected_gene_metric_hash = expected_gene_metric_hash
      }
 
      call GenerateReport as GenerateReport {
          input:
-             bam_hash = ValidateBam.md5sum,
-             bam_reduced_hash = ValidateBam.md5sum_reduced,
-             matrix_hash = ValidateMatrix.matrix_hash,
-
-	     matrix_row_index_hash = ValidateMetricsAndIndexes.matrix_row_index_hash,
-             matrix_col_index_hash = ValidateMetricsAndIndexes.matrix_col_index_hash,
-             cell_metrics_hash = ValidateMetricsAndIndexes.cell_metrics_hash,
-             gene_metrics_hash = ValidateMetricsAndIndexes.gene_metrics_hash,
-
-             expected_bam_hash = expected_bam_hash,
-             expected_matrix_hash = expected_matrix_hash,
-             expected_matrix_row_hash = expected_matrix_row_hash,
-             expected_matrix_col_hash = expected_matrix_col_hash,
-             expected_cell_metric_hash = expected_cell_metric_hash,
-             expected_gene_metric_hash = expected_gene_metric_hash,
-             expected_reduced_bam_hash = expected_reduced_bam_hash
+             bam_validation_result = ValidateBam.result,
+             matrix_validation_result = ValidateMatrix.result,
+             metric_and_index_validation_result = ValidateMetrics.result
     }
 }
 
 task ValidateBam {
     File bam
+    String expected_checksum
     Int required_disk = ceil(size(bam, "G") * 1.1)
 
     command <<<
-        echo Starting main checksum generation...
-        # calculate hash as above, but ignore run-specific bam headers
-        samtools view "${bam}" | md5sum | awk '{print $1}' > md5_checksum.txt
-        echo main checksum generation Complete
-        echo Main checksum file contents:
-	cat md5_checksum.txt
-
-	echo Starting reduced checksum generation...
+        echo Starting checksum generation...
         # calculate hash for alignment positions only (a reduced bam hash)
         samtools view -F 256 "${bam}" | cut -f 1-11 | md5sum | awk '{print $1}' > md5_checksum_reduced.txt
-        echo reduced checksum generation complete
-        echo Main checksum file contents:
-        cat md5_checksum_reduced.txt
+        echo Reduced checksum generation complete
 
-        echo done	
+        calculated_checksum = $(cat md5_checksum_reduced.txt)
+
+        if [ "$calculated_checksum" == ${expected_checksum} ]
+        then
+             echo Computed and expected bam hashes match ($calculated_checksum)
+             printf PASS > result.txt
+        else 
+             echo Computed ( $calculated_checksum ) and expected ( ${expected_checksum} ) hashes do not match
+             printf FAIL > result.txt
+        fi
     >>>
   
     runtime {
@@ -87,13 +79,15 @@ task ValidateBam {
     }
 
     output {
-        String md5sum = read_string("md5_checksum.txt")
-        String md5sum_reduced = read_string("md5_checksum_reduced.txt")
+        String result = read_string("result.txt")
     }
 }
 
 task ValidateMatrix {
     File matrix
+    File matrix_row_index
+    File matrix_col_index
+    String expected_matrix_hash
     
     Int required_disk = ceil( size(matrix, "G") * 1.1 )
 
@@ -109,8 +103,16 @@ task ValidateMatrix {
        cd matrix_deflate
        unzip matrix.npz
        rm matrix.npz
-       find . -name "*.npy" -type f -exec md5sum {} \; | sort -k 2 | md5sum | awk '{print $1}' > ../matrix_hash.txt
+       computed_hash=$(find . -name "*.npy" -type f -exec md5sum {} \; | sort -k 2 | md5sum | awk '{print $1}')
        cd ..
+
+       if [ $computed_hash == ${expected_matrix_hash} ]; then
+           echo Computed and expected matrix hashes match ($computed_hash)
+           printf PASS > result.txt
+       else 
+           echo Computed hash ($computed_hash) did not match expected matrix hash (${expected_matrix_hash})
+           printf FAIL > result.txt
+       fi
 
     >>>
   
@@ -122,29 +124,49 @@ task ValidateMatrix {
     }
 
     output {
-        String matrix_hash = read_string("matrix_hash.txt")
+        String result = read_string('result.txt')
     }  
 
 }
 
-task ValidateMetricsAndIndexes {
-    File matrix_row_index
-    File matrix_col_index
+task ValidateMetrics {
     File cell_metrics
     File gene_metrics
 
-    Int required_disk = ceil((size(matrix_row_index, "G") + size(matrix_col_index, "G") + size(cell_metrics, "G") + size(gene_metrics, "G") )* 1.1)
+    String expected_cell_metric_hash
+    String expected_gene_metric_hash
+
+    Int required_disk = ceil( (size(cell_metrics, "G") + size(gene_metrics, "G") )* 1.1)
 
     command <<<   
        set -eo pipefail
 
         # check matrix row and column indexes files hash
-        cat "${matrix_row_index}" | md5sum | awk '{print $1}' > matrix_row_index_hash.txt
-        cat "${matrix_col_index}" | md5sum | awk '{print $1}' > matrix_col_index_hash.txt
-    
-        # check gene and cell metrics
-        zcat "${gene_metrics}" | md5sum | awk '{print $1}' > gene_metric_hash.txt
-        zcat "${cell_metrics}" | md5sum | awk '{print $1}' > cell_metric_hash.txt
+        gene_metric_hash=$(zcat "${gene_metrics}" | md5sum | awk '{print $1}' > gene_metric_hash.txt)
+        cell_metric_hash=$(zcat "${cell_metrics}" | md5sum | awk '{print $1}' > cell_metric_hash.txt)
+
+        fail=false
+
+        if [ $gene_metric_hash != ${expected_gene_metric_hash} ]; then
+            echo Computed ( $gene_metric_hash ) and expected ( ${expected_gene_metric_hash} ) checksums do not match
+            fail=true
+        else 
+            echo Computed and expected gene metrics match ( $gene_metric_hash )
+        fi
+
+        if [ $cell_metric_hash != ${expected_cell_metric_hash} ]; then
+            echo Computed ( $cell_metric_hash ) and expected ( $expected_cell_metric_hash ) cell metrics hashes don't match
+            fail=true
+        else 
+            echo Computed and expected cell metrics match ( $cell_metric_hash )
+        fi
+
+        if [ $fail ]; then
+            printf FAIL > result.txt
+        else 
+            printf PASS > result.txt
+        fi
+
     >>>
 
     runtime {
@@ -155,33 +177,17 @@ task ValidateMetricsAndIndexes {
     }
 
     output {
-        String matrix_row_index_hash = read_string("matrix_row_index_hash.txt")
-        String matrix_col_index_hash = read_string("matrix_col_index_hash.txt")
-        String gene_metrics_hash = read_string("gene_metric_hash.txt")
-        String cell_metrics_hash = read_string("cell_metric_hash.txt")
+        String result = read_string("result.txt")
     }
 
 }
 
 task GenerateReport {
-      String bam_hash
-      String bam_reduced_hash
-      String matrix_hash
-
-      String matrix_row_index_hash
-      String matrix_col_index_hash
-      String gene_metrics_hash
-      String cell_metrics_hash
+      String bam_validation_result
+      String metric_and_index_validation_result
+      String matrix_validation_result
 
       Int required_disk = 1
-
-      String expected_bam_hash
-      String expected_matrix_hash
-      String expected_matrix_row_hash
-      String expected_matrix_col_hash
-      String expected_cell_metric_hash
-      String expected_gene_metric_hash
-      String expected_reduced_bam_hash
 
   command <<<
 
@@ -190,53 +196,19 @@ task GenerateReport {
     # test each output for equality, echoing any failure states to stdout
     fail=false
 
-    if [ "${bam_hash}" != "${expected_bam_hash}" ]; then
-      >&2 echo "bam_hash (${bam_hash}) did not match expected hash (${expected_bam_hash})"
-      fail=true
-    else 
-      echo "bam_hash (${bam_hash}) matches expected value"
+    echo Bam Validation: ${bam_validation_result}
+    if [ ${bam_validation_result} == "FAIL" ]; then
+        fail=true
     fi
 
-    if [ "${bam_reduced_hash}" != "${expected_reduced_bam_hash}" ]; then
-      >&2 echo "bam_reduced_hash (${bam_reduced_hash}) did not match expected hash (${expected_reduced_bam_hash})"
-      fail=true
-    else
-      echo "bam_reduced_hash (${bam_reduced_hash}) matches expected value"
+    echo Metrics and indices Validation: ${metric_and_index_validation_result}
+    if [ ${metric_and_index_validation_result} == "FAIL" ]; then
+        fail=true
     fi
-
-    if [ "${matrix_hash}" != "${expected_matrix_hash}" ]; then
-      >&2 echo "matrix_hash (${matrix_hash}) did not match expected hash (${expected_matrix_hash})"
-      fail=true
-    else
-      echo "matrix_hash (${matrix_hash}) matches expected value"
-    fi
-
-    if [ "${matrix_row_index_hash}" != "${expected_matrix_row_hash}" ]; then
-      >&2 echo "matrix_row_index_hash (${matrix_row_index_hash}) did not match expected hash (${expected_matrix_row_hash})"
-      fail=true
-    else
-      echo "matrix_row_index_hash (${matrix_row_index_hash}) matches expected value"
-    fi
-
-    if [ "${matrix_col_index_hash}" != "${expected_matrix_col_hash}" ]; then
-      >&2 echo "matrix_col_index_hash (${matrix_col_index_hash}) did not match expected hash (${expected_matrix_col_hash})"
-      fail=true
-    else
-      echo "matrix_row_index_hash (${matrix_col_index_hash}) matches expected value"
-    fi
-
-    if [ "${gene_metrics_hash}" != "${expected_gene_metric_hash}" ]; then
-      >&2 echo "gene_metrics_hash (${gene_metrics_hash}) did not match expected hash (${expected_gene_metric_hash})"
-      fail=true
-    else 
-      echo "gene_metrics_hash (${gene_metrics_hash}) matches expected value"
-    fi
-
-    if [ "${cell_metrics_hash}" != "${expected_cell_metric_hash}" ]; then
-      >&2 echo "cell_metrics_hash (${cell_metrics_hash}) did not match expected hash (${expected_cell_metric_hash})"
-      fail=true
-    else 
-      echo "cell_metrics_hash (${cell_metrics_hash}) matches expected value"
+    
+    echo Matrix Validation: ${matrix_validation_result}
+    if [ ${matrix_validation_result} == "FAIL" ]; then
+        fail=true
     fi
 
     if [ $fail == "true" ]; then exit 1; fi
