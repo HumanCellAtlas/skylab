@@ -123,6 +123,8 @@ task ValidateMetricsAndIndexes {
     File cell_metrics
     File gene_metrics
 
+    Int required_disk = ceil((size(matrix_row_index, "G") + size(matrix_col_index, "G") + size(cell_metrics, "G") + size(gene_metrics, "G") )* 1.1)
+
     command <<<   
        set -eo pipefail
 
