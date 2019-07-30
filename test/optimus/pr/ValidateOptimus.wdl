@@ -12,8 +12,6 @@ workflow ValidateOptimus {
 
      String expected_bam_hash
      String expected_matrix_hash
-     String expected_matrix_row_hash
-     String expected_matrix_col_hash
      String expected_cell_metric_hash
      String expected_gene_metric_hash
 
@@ -59,7 +57,7 @@ task ValidateBam {
         samtools view -F 256 "${bam}" | cut -f 1-11 | md5sum | awk '{print $1}' > md5_checksum_reduced.txt
         echo Reduced checksum generation complete
 
-        calculated_checksum = $(cat md5_checksum_reduced.txt)
+        calculated_checksum=$(cat md5_checksum_reduced.txt)
 
         if [ "$calculated_checksum" == ${expected_checksum} ]
         then
@@ -142,23 +140,23 @@ task ValidateMetrics {
        set -eo pipefail
 
         # check matrix row and column indexes files hash
-        gene_metric_hash=$(zcat "${gene_metrics}" | md5sum | awk '{print $1}' > gene_metric_hash.txt)
-        cell_metric_hash=$(zcat "${cell_metrics}" | md5sum | awk '{print $1}' > cell_metric_hash.txt)
+        gene_metric_hash=$(zcat "${gene_metrics}" | md5sum | awk '{print $1}')
+        cell_metric_hash=$(zcat "${cell_metrics}" | md5sum | awk '{print $1}')
 
         fail=false
 
-        if [ $gene_metric_hash != ${expected_gene_metric_hash} ]; then
+        if [ $gene_metric_hash == ${expected_gene_metric_hash} ]; then
+            echo Computed and expected gene metrics match \( $gene_metric_hash \)
+        else
             echo Computed \( $gene_metric_hash \) and expected \( ${expected_gene_metric_hash} \) checksums do not match
             fail=true
-        else 
-            echo Computed and expected gene metrics match \( $gene_metric_hash \)
         fi
 
         if [ $cell_metric_hash != ${expected_cell_metric_hash} ]; then
-            echo Computed \( $cell_metric_hash \) and expected \( $expected_cell_metric_hash \) cell metrics hashes do not match
-            fail=true
-        else 
             echo Computed and expected cell metrics match \( $cell_metric_hash \)
+        else
+            echo Computed \( $cell_metric_hash \) and expected \( ${expected_cell_metric_hash} \) cell metrics hashes do not match
+            fail=true
         fi
 
         if [ $fail ]; then
@@ -201,7 +199,7 @@ task GenerateReport {
         fail=true
     fi
 
-    echo Metrics and indices Validation: ${metric_and_index_validation_result}
+    echo Metrics Validation: ${metric_and_index_validation_result}
     if [ ${metric_and_index_validation_result} == "FAIL" ]; then
         fail=true
     fi

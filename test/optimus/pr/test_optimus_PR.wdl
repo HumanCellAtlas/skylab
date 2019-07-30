@@ -8,8 +8,6 @@ workflow TestOptimusPR {
   # output hashes
   String expected_bam_hash
   String expected_matrix_hash
-  String expected_matrix_row_hash
-  String expected_matrix_col_hash
   String expected_gene_metric_hash
   String expected_cell_metric_hash
 
@@ -47,8 +45,6 @@ workflow TestOptimusPR {
 
       expected_bam_hash = expected_bam_hash,
       expected_matrix_hash = expected_matrix_hash,
-      expected_matrix_row_hash = expected_matrix_row_hash,
-      expected_matrix_col_hash = expected_matrix_col_hash,
       expected_cell_metric_hash = expected_cell_metric_hash,
       expected_gene_metric_hash = expected_gene_metric_hash,
   }

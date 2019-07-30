@@ -1,8 +1,6 @@
 {
-  "TestOptimusPR.expected_bam_hash": "e2e68638f0a31ee83ef13ca7bbb7119d",
+  "TestOptimusPR.expected_bam_hash": "263d8a518b9f6a722ec5df3f4151a177",
   "TestOptimusPR.expected_matrix_hash": "fb81a1b3a2e5d809e12ec750b6bbc825",
-  "TestOptimusPR.expected_matrix_row_hash": "e248014b9429a8f4739f16c6f6d49b68",
-  "TestOptimusPR.expected_matrix_col_hash": "aac0ad13a21e151d11db327327bce419",
   "TestOptimusPR.expected_cell_metric_hash": "8bc4a2e96b6404e47f071aa1c06d196f",
   "TestOptimusPR.expected_gene_metric_hash": "263d8a518b9f6a722ec5df3f4151a177",
   "TestOptimusPR.r1_fastq": [
