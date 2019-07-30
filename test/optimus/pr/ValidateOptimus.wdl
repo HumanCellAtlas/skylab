@@ -63,7 +63,7 @@ task ValidateBam {
 
         if [ "$calculated_checksum" == ${expected_checksum} ]
         then
-             echo Computed and expected bam hashes match ($calculated_checksum)
+             echo Computed and expected bam hashes match ( $calculated_checksum )
              printf PASS > result.txt
         else 
              echo Computed ( $calculated_checksum ) and expected ( ${expected_checksum} ) hashes do not match
@@ -107,10 +107,10 @@ task ValidateMatrix {
        cd ..
 
        if [ $computed_hash == ${expected_matrix_hash} ]; then
-           echo Computed and expected matrix hashes match ($computed_hash)
+           echo Computed and expected matrix hashes match ( $computed_hash )
            printf PASS > result.txt
        else 
-           echo Computed hash ($computed_hash) did not match expected matrix hash (${expected_matrix_hash})
+           echo Computed hash ( $computed_hash ) did not match expected matrix hash ( ${expected_matrix_hash} )
            printf FAIL > result.txt
        fi
 
