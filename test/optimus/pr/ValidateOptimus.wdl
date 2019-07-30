@@ -225,18 +225,18 @@ task GenerateReport {
       echo "matrix_row_index_hash (${matrix_col_index_hash}) matches expected value"
     fi
 
-    if [ "${gene_metric_hash}" != "${expected_gene_metric_hash}" ]; then
-      >&2 echo "gene_metric_hash (${gene_metric_hash}) did not match expected hash (${expected_gene_metric_hash})"
+    if [ "${gene_metrics_hash}" != "${expected_gene_metric_hash}" ]; then
+      >&2 echo "gene_metrics_hash (${gene_metrics_hash}) did not match expected hash (${expected_gene_metric_hash})"
       fail=true
     else 
-      echo "gene_metric_hash (${gene_metric_hash}) matches expected value"
+      echo "gene_metrics_hash (${gene_metrics_hash}) matches expected value"
     fi
 
-    if [ "${cell_metric_hash}" != "${expected_cell_metric_hash}" ]; then
-      >&2 echo "cell_metric_hash (${cell_metric_hash}) did not match expected hash (${expected_cell_metric_hash})"
+    if [ "${cell_metrics_hash}" != "${expected_cell_metric_hash}" ]; then
+      >&2 echo "cell_metrics_hash (${cell_metrics_hash}) did not match expected hash (${expected_cell_metric_hash})"
       fail=true
     else 
-      echo "cell_metric_hash (${cell_metric_hash}) matches expected value"
+      echo "cell_metrics_hash (${cell_metrics_hash}) matches expected value"
     fi
 
     if [ $fail == "true" ]; then exit 1; fi
