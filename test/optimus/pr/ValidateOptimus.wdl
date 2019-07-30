@@ -33,7 +33,6 @@ workflow ValidateOptimus {
          input:
              cell_metrics = cell_metrics,
              gene_metrics = gene_metrics,
-             
              expected_cell_metric_hash = expected_cell_metric_hash,
              expected_gene_metric_hash = expected_gene_metric_hash
      }
@@ -64,7 +63,7 @@ task ValidateBam {
              echo Computed and expected bam hashes match \( $calculated_checksum \)
              printf PASS > result.txt
         else 
-             echo Computed \( $calculated_checksum \) and expected \( ${expected_checksum} \) hashes do not match
+             echo Computed \( $calculated_checksum \) and expected \( ${expected_checksum} \) bam file hashes do not match
              printf FAIL > result.txt
         fi
     >>>
@@ -145,21 +144,21 @@ task ValidateMetrics {
 
         fail=false
 
-        if [ $gene_metric_hash == ${expected_gene_metric_hash} ]; then
+        if [ "$gene_metric_hash" == "${expected_gene_metric_hash}" ]; then
             echo Computed and expected gene metrics match \( $gene_metric_hash \)
         else
-            echo Computed \( $gene_metric_hash \) and expected \( ${expected_gene_metric_hash} \) checksums do not match
+            echo Computed \( $gene_metric_hash \) and expected \( ${expected_gene_metric_hash} \) gene checksums do not match
             fail=true
         fi
 
-        if [ $cell_metric_hash != ${expected_cell_metric_hash} ]; then
+        if [ "$cell_metric_hash" == "${expected_cell_metric_hash}" ]; then
             echo Computed and expected cell metrics match \( $cell_metric_hash \)
         else
             echo Computed \( $cell_metric_hash \) and expected \( ${expected_cell_metric_hash} \) cell metrics hashes do not match
             fail=true
         fi
 
-        if [ $fail ]; then
+        if [ $fail == "true" ]; then
             printf FAIL > result.txt
         else 
             printf PASS > result.txt
