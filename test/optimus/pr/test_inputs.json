@@ -1,11 +1,11 @@
 {
-  "TestOptimusPR.expected_bam_hash": "c2bfd9c6b840e50b40acb3f1fe65154a",
-  "TestOptimusPR.expected_matrix_hash": "d4253c9828e4481332b9b122c3b1d484",
-  "TestOptimusPR.expected_matrix_row_hash": "6ae16d8ad1631b3fba6602945f519ad1",
+  "TestOptimusPR.expected_bam_hash": "e2e68638f0a31ee83ef13ca7bbb7119d",
+  "TestOptimusPR.expected_matrix_hash": "fb81a1b3a2e5d809e12ec750b6bbc825",
+  "TestOptimusPR.expected_matrix_row_hash": "e248014b9429a8f4739f16c6f6d49b68",
   "TestOptimusPR.expected_matrix_col_hash": "aac0ad13a21e151d11db327327bce419",
-  "TestOptimusPR.expected_cell_metric_hash": "8231e4101ab422fcfb76d92dea788505",
-  "TestOptimusPR.expected_gene_metric_hash": "207d7d4f9acdb001ce7a2cb06bbe4b79",
-  "TestOptimusPR.expected_reduced_bam_hash": "awrongbamhash",
+  "TestOptimusPR.expected_cell_metric_hash": "8bc4a2e96b6404e47f071aa1c06d196f",
+  "TestOptimusPR.expected_gene_metric_hash": "c8f0cd1714d08d43bfbd38c6b353b7f9",
+  "TestOptimusPR.expected_reduced_bam_hash": "263d8a518b9f6a722ec5df3f4151a177",
   "TestOptimusPR.r1_fastq": [
     "gs://hca-dcp-sc-pipelines-test-data/smallDatasets/chemistry_X10_V2/pbmc4k_chr21_genic/pbmc4k_S1_L001_R1_001.filtered.filtered.fastq.gz",
     "gs://hca-dcp-sc-pipelines-test-data/smallDatasets/chemistry_X10_V2/pbmc4k_chr21_genic/pbmc4k_S1_L002_R1_001.filtered.filtered.fastq.gz",

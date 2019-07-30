@@ -148,9 +148,9 @@ task ValidateMetricsAndIndexes {
     >>>
 
     runtime {
-        docker: "quay.io/humancellatlas/secondary-analysis-samtools:v0.2.2-1.6"
+        docker: "ubuntu:18.04"
         cpu: 1
-        memory: "3.75 GB"
+        memory: "1.00 GB"
         disks: "local-disk ${required_disk} HDD"
     }
 
@@ -246,7 +246,7 @@ task GenerateReport {
   runtime {
     docker: "ubuntu:18.04"
     cpu: 1
-    memory: "3.75 GB"
+    memory: "1.0 GB"
     disks: "local-disk ${required_disk} HDD"
   }
 }
