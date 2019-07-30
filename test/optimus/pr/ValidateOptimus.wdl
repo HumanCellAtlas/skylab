@@ -36,7 +36,7 @@ workflow ValidateOptimus {
              gene_metrics = gene_metrics
      }
 
-     call MainOptimusValidation as MainOptimusValidation {
+     call GenerateReport as GenerateReport {
          input:
              bam_hash = ValidateBam.md5sum,
              bam_reduced_hash = ValidateBam.md5sum_reduced,
@@ -139,12 +139,12 @@ task ValidateMetricsAndIndexes {
        set -eo pipefail
 
         # check matrix row and column indexes files hash
-        cat "${matrix_row_index}" | md5sum | awk '{print $1} > matrix_row_index_hash.txt
-        cat "${matrix_col_index}" | md5sum | awk '{print $1} > matrix_col_index_hash.txt
+        cat "${matrix_row_index}" | md5sum | awk '{print $1}' > matrix_row_index_hash.txt
+        cat "${matrix_col_index}" | md5sum | awk '{print $1}' > matrix_col_index_hash.txt
     
         # check gene and cell metrics
-        zcat "${gene_metrics}" | md5sum | awk '{print $1} > gene_metric_hash.txt
-        zcat "${cell_metrics}" | md5sum | awk '{print $1} > cell_metric_hash.txt
+        zcat "${gene_metrics}" | md5sum | awk '{print $1}' > gene_metric_hash.txt
+        zcat "${cell_metrics}" | md5sum | awk '{print $1}' > cell_metric_hash.txt
     >>>
 
     runtime {
@@ -163,7 +163,7 @@ task ValidateMetricsAndIndexes {
 
 }
 
-task MainOptimusValidation {
+task GenerateReport {
       String bam_hash
       String bam_reduced_hash
       String matrix_hash
@@ -190,6 +190,11 @@ task MainOptimusValidation {
     # test each output for equality, echoing any failure states to stdout
     fail=false
 
+    if [ "$bam_hash" != "${expected_bam_hash}" ]; then
+      >&2 echo "bam_hash ($bam_hash) did not match expected hash (${expected_bam_hash})"
+      fail=true
+    fi
+
     if [ "$bam_reduced_hash" != "${expected_reduced_bam_hash}" ]; then
       >&2 echo "bam_reduced_hash ($bam_reduced_hash) did not match expected hash (${expected_reduced_bam_hash})"
       fail=true
@@ -207,11 +212,6 @@ task MainOptimusValidation {
 
     if [ "$matrix_col_index_hash" != "${expected_matrix_col_hash}" ]; then
       >&2 echo "matrix_col_index_hash ($matrix_col_index_hash) did not match expected hash (${expected_matrix_col_hash})"
-      fail=true
-    fi
-
-    if [ "$bam_hash" != "${expected_bam_hash}" ]; then
-      >&2 echo "bam_hash ($bam_hash) did not match expected hash (${expected_bam_hash})"
       fail=true
     fi
 
