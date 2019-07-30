@@ -62,11 +62,21 @@ task ValidateBam {
     Int required_disk = ceil(size(bam, "G") * 1.1)
 
     command <<<
+        echo Starting main checksum generation...
         # calculate hash as above, but ignore run-specific bam headers
         samtools view "${bam}" | md5sum | awk '{print $1}' > md5_checksum.txt
-    
+        echo main checksum generation Complete
+        echo Main checksum file contents:
+	cat md5_checksum.txt
+
+	echo Starting reduced checksum generation...
         # calculate hash for alignment positions only (a reduced bam hash)
         samtools view -F 256 "${bam}" | cut -f 1-11 | md5sum | awk '{print $1}' > md5_checksum_reduced.txt
+        echo reduced checksum generation complete
+        echo Main checksum file contents:
+        cat md5_checksum_reduced.txt
+
+        echo done	
     >>>
   
     runtime {
