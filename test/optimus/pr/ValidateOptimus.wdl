@@ -155,8 +155,8 @@ task ValidateMetricsAndIndexes {
     }
 
     output {
-        String matrix_row_index_hash = read_string("matrix_row_index.txt")
-        String matrix_col_index_hash = read_string("matrix_col_index.txt")
+        String matrix_row_index_hash = read_string("matrix_row_index_hash.txt")
+        String matrix_col_index_hash = read_string("matrix_col_index_hash.txt")
         String gene_metrics_hash = read_string("gene_metric_hash.txt")
         String cell_metrics_hash = read_string("cell_metric_hash.txt")
     }
@@ -173,7 +173,7 @@ task GenerateReport {
       String gene_metrics_hash
       String cell_metrics_hash
 
-      Int required_disk = 2
+      Int required_disk = 1
 
       String expected_bam_hash
       String expected_matrix_hash
@@ -193,36 +193,50 @@ task GenerateReport {
     if [ "$bam_hash" != "${expected_bam_hash}" ]; then
       >&2 echo "bam_hash ($bam_hash) did not match expected hash (${expected_bam_hash})"
       fail=true
+    else 
+      echo "bam_hash ($bam_hash) matches expected value"
     fi
 
     if [ "$bam_reduced_hash" != "${expected_reduced_bam_hash}" ]; then
       >&2 echo "bam_reduced_hash ($bam_reduced_hash) did not match expected hash (${expected_reduced_bam_hash})"
       fail=true
+    else
+      echo "bam_reduced_hash ($bam_reduced_hash) matches expected value"
     fi
 
     if [ "$matrix_hash" != "${expected_matrix_hash}" ]; then
       >&2 echo "matrix_hash ($matrix_hash) did not match expected hash (${expected_matrix_hash})"
       fail=true
+    else
+      echo "matrix_hash ($matrix_hash) matches expected value"
     fi
 
     if [ "$matrix_row_index_hash" != "${expected_matrix_row_hash}" ]; then
       >&2 echo "matrix_row_index_hash ($matrix_row_index_hash) did not match expected hash (${expected_matrix_row_hash})"
       fail=true
+    else
+      echo "matrix_row_index_hash ($matrix_row_index_hash) matches expected value"
     fi
 
     if [ "$matrix_col_index_hash" != "${expected_matrix_col_hash}" ]; then
       >&2 echo "matrix_col_index_hash ($matrix_col_index_hash) did not match expected hash (${expected_matrix_col_hash})"
       fail=true
+    else
+      echo "matrix_row_index_hash ($matrix_col_index_hash) matches expected value"
     fi
 
     if [ "$gene_metric_hash" != "${expected_gene_metric_hash}" ]; then
       >&2 echo "gene_metric_hash ($gene_metric_hash) did not match expected hash (${expected_gene_metric_hash})"
       fail=true
+    else 
+      echo "gene_metric_hash ($gene_metric_hash) matches expected value"
     fi
 
     if [ "$cell_metric_hash" != "${expected_cell_metric_hash}" ]; then
       >&2 echo "cell_metric_hash ($cell_metric_hash) did not match expected hash (${expected_cell_metric_hash})"
       fail=true
+    else 
+      echo "cell_metric_hash ($cell_metric_hash) matches expected value"
     fi
 
     if [ $fail == "true" ]; then exit 1; fi
