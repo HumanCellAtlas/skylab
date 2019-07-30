@@ -135,6 +135,13 @@ task ValidateMetricsAndIndexes {
         zcat "${cell_metrics}" | md5sum | awk '{print $1} > cell_metric_hash.txt
     >>>
 
+    runtime {
+        docker: "quay.io/humancellatlas/secondary-analysis-samtools:v0.2.2-1.6"
+        cpu: 1
+        memory: "3.75 GB"
+        disks: "local-disk ${required_disk} HDD"
+    }
+
     output {
         String matrix_row_index_hash = read_string("matrix_row_index.txt")
         String matrix_col_index_hash = read_string("matrix_col_index.txt")
