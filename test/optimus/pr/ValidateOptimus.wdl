@@ -191,21 +191,21 @@ task GenerateReport {
     fail=false
 
     if [ "${bam_hash}" != "${expected_bam_hash}" ]; then
-      >&2 echo "bam_hash ($bam_hash) did not match expected hash (${expected_bam_hash})"
+      >&2 echo "bam_hash (${bam_hash}) did not match expected hash (${expected_bam_hash})"
       fail=true
     else 
       echo "bam_hash (${bam_hash}) matches expected value"
     fi
 
     if [ "${bam_reduced_hash}" != "${expected_reduced_bam_hash}" ]; then
-      >&2 echo "bam_reduced_hash ($bam_reduced_hash) did not match expected hash (${expected_reduced_bam_hash})"
+      >&2 echo "bam_reduced_hash (${bam_reduced_hash}) did not match expected hash (${expected_reduced_bam_hash})"
       fail=true
     else
       echo "bam_reduced_hash (${bam_reduced_hash}) matches expected value"
     fi
 
     if [ "${matrix_hash}" != "${expected_matrix_hash}" ]; then
-      >&2 echo "matrix_hash ($matrix_hash) did not match expected hash (${expected_matrix_hash})"
+      >&2 echo "matrix_hash (${matrix_hash}) did not match expected hash (${expected_matrix_hash})"
       fail=true
     else
       echo "matrix_hash (${matrix_hash}) matches expected value"
