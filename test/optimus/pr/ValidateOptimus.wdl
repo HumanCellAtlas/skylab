@@ -155,7 +155,7 @@ task ValidateMetrics {
         fi
 
         if [ $cell_metric_hash != ${expected_cell_metric_hash} ]; then
-            echo Computed \( $cell_metric_hash \) and expected \( $expected_cell_metric_hash \) cell metrics hashes don't match
+            echo Computed \( $cell_metric_hash \) and expected \( $expected_cell_metric_hash \) cell metrics hashes do not match
             fail=true
         else 
             echo Computed and expected cell metrics match \( $cell_metric_hash \)
