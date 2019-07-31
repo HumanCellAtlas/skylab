@@ -10,8 +10,8 @@ workflow ValidateOptimus {
      File cell_metrics
      File gene_metrics
 
+     File reference_matrix
      String expected_bam_hash
-     String expected_matrix_hash
      String expected_cell_metric_hash
      String expected_gene_metric_hash
 
@@ -26,7 +26,7 @@ workflow ValidateOptimus {
              matrix = matrix,
              matrix_row_index = matrix_row_index,
 	     matrix_col_index = matrix_col_index,
-             expected_matrix_hash = expected_matrix_hash
+	     reference_matrix = reference_matrix
      }
 
      call ValidateMetrics {
@@ -84,7 +84,7 @@ task ValidateMatrix {
     File matrix
     File matrix_row_index
     File matrix_col_index
-    String expected_matrix_hash
+    File reference_matrix
     
     Int required_disk = ceil( size(matrix, "G") * 1.1 )
 
@@ -95,10 +95,11 @@ task ValidateMatrix {
        npz2rds.sh -c ${matrix_col_index} -r ${matrix_row_index} \
            -d ${matrix} -o matrix.rds
 
+       cp ${reference_matrix} referenceMatrix.rds
+
        ## Run tests
        Rscript /root/tools/checkMatrix.R
        checkMatrixResult=$?
-
 
        if [ $checkMatrixResult == 0 ]; then
            printf PASS > result.txt
@@ -117,6 +118,7 @@ task ValidateMatrix {
 
     output {
         String result = read_string('result.txt')
+        File new_reference_matrix = "referenceMatrix.rds"
     }  
 
 }

@@ -1,3 +1,4 @@
+
 import "Optimus.wdl" as target
 import "ValidateOptimus.wdl" as checker
 
@@ -7,9 +8,9 @@ workflow TestOptimusPR {
 
   # output hashes
   String expected_bam_hash
-  String expected_matrix_hash
   String expected_gene_metric_hash
   String expected_cell_metric_hash
+  File reference_matrix
 
   # Optimus inputs
   Array[File] r1_fastq
@@ -43,8 +44,9 @@ workflow TestOptimusPR {
       gene_metrics = target.gene_metrics,
       cell_metrics = target.cell_metrics,
 
+
+      reference_matrix = reference_matrix,
       expected_bam_hash = expected_bam_hash,
-      expected_matrix_hash = expected_matrix_hash,
       expected_cell_metric_hash = expected_cell_metric_hash,
       expected_gene_metric_hash = expected_gene_metric_hash,
   }
