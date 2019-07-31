@@ -91,32 +91,27 @@ task ValidateMatrix {
     command <<<
        set -eo pipefail
 
-       ## Generate md5sum for the matrix.npz file, the file is first deflated
-       ## to avoid changes in the compression process from affecting output
-       ## the process is performed in new directory to avoid other *.npy files
-       ## that may be inputs from affecting output
-       mkdir matrix_deflate
-       cp "${matrix}" matrix_deflate/matrix.npz
-       cd matrix_deflate
-       unzip matrix.npz
-       rm matrix.npz
-       computed_hash=$(find . -name "*.npy" -type f -exec md5sum {} \; | sort -k 2 | md5sum | awk '{print $1}')
-       cd ..
+       ## Convert matrix to format that can be read by R
+       npz2rds.sh -c ${matrix_col_index} -r ${matrix_row_index} \
+           -d ${matrix} -o matrix.rds
 
-       if [ $computed_hash == ${expected_matrix_hash} ]; then
-           echo Computed and expected matrix hashes match \( $computed_hash \)
+       ## Run tests
+       Rscript /root/tools/checkMatrix.R
+       checkMatrixResult=$?
+
+
+       if [ $checkMatrixResult == 0 ]; then
            printf PASS > result.txt
        else 
-           echo Computed hash \( $computed_hash \) did not match expected matrix hash \( ${expected_matrix_hash} \)
            printf FAIL > result.txt
        fi
 
     >>>
   
     runtime {
-        docker: "quay.io/humancellatlas/secondary-analysis-samtools:v0.2.2-1.6"
+        docker: "quay.io/humancellatlas/optimus-matrix-test:0.0.1"
         cpu: 1
-        memory: "3.75 GB"
+        memory: "16 GB"
         disks: "local-disk ${required_disk} HDD"
     }
 
