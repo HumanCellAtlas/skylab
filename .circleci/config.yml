@@ -56,7 +56,6 @@ jobs:
                     . venv/bin/activate
                     pip install requests
                     python test/run_portability_test.py --test-directories test/optimus/pr/
-               no_output_timeout: 1.5h
 
     test_portability_smartseq2_single_sample:
         docker:
@@ -69,8 +68,7 @@ jobs:
                     . venv/bin/activate
                     pip install requests
                     python test/run_portability_test.py --test-directories test/smartseq2_single_sample/pr/
-               no_output_timeout: 1.5h
-
+		    
     test_optimus:
         machine: true
         steps:
