@@ -140,7 +140,6 @@ workflows:
     version: 2
     test_all:
         jobs:
-          - build
           - test_optimus
           - test_smartseq2
           - test_smartseq2_unpaired
