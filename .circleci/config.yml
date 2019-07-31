@@ -1,14 +1,5 @@
 version: 2
 jobs:
-    build:
-        docker:
-            - image: circleci/python:3.6.1
-        steps:
-            - checkout
-            - run:
-                command: |
-                    exit 0
-
     test_portability_snap_atac:
         docker:
             - image: circleci/python:3.6.1
