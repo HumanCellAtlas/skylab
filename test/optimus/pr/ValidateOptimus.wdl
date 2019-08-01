@@ -167,7 +167,7 @@ task ValidateMetrics {
     >>>
 
     runtime {
-        docker: "marketplace.gcr.io/google/ubuntu1804"
+        docker: "ubuntu:18.04"
         cpu: 1
         memory: "1.00 GB"
         disks: "local-disk ${required_disk} HDD"
@@ -215,7 +215,7 @@ task GenerateReport {
   >>>
   
   runtime {
-    docker: "marketplace.gcr.io/google/ubuntu1804"
+    docker: "ubuntu:18.04"
     cpu: 1
     memory: "1.0 GB"
     disks: "local-disk ${required_disk} HDD"
