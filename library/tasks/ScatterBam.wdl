@@ -22,6 +22,6 @@ task ScatterBam {
     disks: "local-disk ${disk_size} HDD"
     cpu: 2
     memory: "7.5 GiB"
-    docker: "quay.io/humancellatlas/secondary-analysis-picard:2.20.4"
+    docker: "us.gcr.io/broad-gotc-prod/genomes-in-the-cloud:2.3.3-1513176735"
   }
 }
