@@ -53,10 +53,8 @@ task ValidateBam {
     command <<<
         echo Starting checksum generation...
         # calculate hash for alignment positions only (a reduced bam hash)
-        samtools view -F 256 "${bam}" | cut -f 1-11 | md5sum | awk '{print $1}' > md5_checksum_reduced.txt
+        calculated_checksum=$( samtools view -F 256 "${bam}" | cut -f 1-11 | md5sum | awk '{print $1}' )
         echo Reduced checksum generation complete
-
-        calculated_checksum=$(cat md5_checksum_reduced.txt)
 
         if [ "$calculated_checksum" == ${expected_checksum} ]
         then
