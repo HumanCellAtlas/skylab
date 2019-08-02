@@ -1,9 +1,6 @@
 version: 3
 
 pullapprove_conditions:
-- condition: "'ci/circleci: build' in statuses.successful"
-  unmet_status: failure
-  explanation: "Circle CI tests must pass before review starts"
 
 - condition: "'ci/circleci: test_emptyDropsWrapper' in statuses.successful"
   unmet_status: failure
