@@ -11,7 +11,7 @@ cd ~/skylab/
 ```
 
 **PR testing infrastructure in Skylab.**
-The tests share follow the portability spec; the WDLs in this PR represent a cromwell test case for the [portability test](https://docs.google.com/document/d/1ghLoHMbKOPsndA1WgdSAHm5X82p86ryLBiAt1hz6HuI/edit); they are just missing a docker environment to run the WDLs in. 
+The tests follow the portability spec; the WDLs in this PR represent a cromwell test case for the [portability test](https://docs.google.com/document/d/1ghLoHMbKOPsndA1WgdSAHm5X82p86ryLBiAt1hz6HuI/edit); they are just missing a docker environment to run the WDLs in. 
 
 The PR test is designed to answer the question: "did my changes result in any change to the outputs of my pipeline?"
 
