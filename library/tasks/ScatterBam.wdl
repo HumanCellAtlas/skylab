@@ -6,7 +6,7 @@ task ScatterBam {
 
   command <<<
     mkdir scattered_bams
-    java -Xms7g -jar /usr/picard/picard.jar \
+    java -Xms7g -jar /usr/gitc/picard.jar \
       SplitSamByNumberOfReads \
       INPUT=${bam_to_scatter} \
       SPLIT_TO_N_FILES=${scatter_width} \
