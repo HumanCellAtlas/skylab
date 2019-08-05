@@ -14,6 +14,11 @@ DEPENDENCIES_JSON="/working/test/${PIPELINE_FOLDER_NAME}/pr/dependencies.json"
 
 echo "Setting Cromwell environmental variables"
 
+if [ -z ${BROAD_CROMWELL_KEY+x} ]; then
+    echo "Error: BROAD_CROMWELL_KEY is not set!"
+    exit 1
+fi
+
 echo ${BROAD_CROMWELL_KEY} > caas-prod.json
 CROMWELL_KEY_FILE="caas-prod.json"
 
