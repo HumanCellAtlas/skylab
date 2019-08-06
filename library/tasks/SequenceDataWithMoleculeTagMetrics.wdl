@@ -48,7 +48,7 @@ task CalculateCellMetrics {
   Int machine_mem_mb = 3850
   Int cpu = 1
   Int disk = ceil(size(bam_input, "Gi") * 2)
-  Int preemptible = 3
+  Int preemptible = 0
 
   meta {
     description: "Calculate cell metrics from the reads in bam_input."
