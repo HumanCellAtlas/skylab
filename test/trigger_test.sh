@@ -14,10 +14,15 @@ DEPENDENCIES_JSON="/working/test/${PIPELINE_FOLDER_NAME}/pr/dependencies.json"
 
 echo "Setting Cromwell environmental variables"
 
+if [ -z ${BROAD_CROMWELL_KEY+x} ]; then
+    echo "Error: BROAD_CROMWELL_KEY is not set!"
+    exit 1
+fi
+
 echo ${BROAD_CROMWELL_KEY} > caas-prod.json
 CROMWELL_KEY_FILE="caas-prod.json"
 
-OPTIONS_FILE="https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/test/options.json"
+OPTIONS_FILE="/working/test/options.json"
 CROMWELL_URL="https://cromwell.caas-prod.broadinstitute.org"
 COLLECTION="pipeline-surge"
 

@@ -16,7 +16,6 @@ workflow CellRanger {
     Int boot_disk_size_gb = 12
     String disk_space = "400"
     Int cpu = 64
-    Int max_retries = 0
 
     parameter_meta {
         sample_id: "Name of sample to run CellRanger count on"
@@ -28,7 +27,6 @@ workflow CellRanger {
         boot_disk_size_gb: "Size of disk (GB) where the docker image is booted by the Cromwell VM"
         disk_space: "Amount of disk space (GB) to allocate to the Cromwell VM"
         cpu: "The minimum number of cores to use for the Cromwell VM"
-        max_retries: "(optional) retry this number of times if task fails -- use with caution, see skylab README for details"
     }
 
     call cellranger_count {
@@ -41,8 +39,7 @@ workflow CellRanger {
         memory = memory,
         boot_disk_size_gb = boot_disk_size_gb,
         disk_space = disk_space,
-        cpu = cpu,
-        max_retries = max_retries
+        cpu = cpu
    }
 
    output {
@@ -75,7 +72,6 @@ task cellranger_count {
     Int boot_disk_size_gb
     String disk_space
     Int cpu
-    Int max_retries = 0
 
     command {
         set -e
@@ -117,7 +113,6 @@ task cellranger_count {
         bootDiskSizeGb: boot_disk_size_gb
         disks: "local-disk " + disk_space + " HDD"
         cpu: cpu
-        max_retries: max_retries
     }
 
     output {

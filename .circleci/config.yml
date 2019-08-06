@@ -1,6 +1,6 @@
 version: 2
 jobs:
-    build:
+    test_portability_snap_atac:
         docker:
             - image: circleci/python:3.6.1
         steps:
@@ -10,12 +10,57 @@ jobs:
                     python3 -m venv venv
                     . venv/bin/activate
                     pip install requests
-                    python test/run_portability_test.py --test-directories \
-                        test/smartseq2_single_sample/pr/ \
-                        test/optimus/pr \
-                        test/bulk_rna_pipeline/pr \
-                        test/smartseq2_single_sample_unpaired/pr \
-                        test/snap_atac/pr/
+                    python test/run_portability_test.py --test-directories test/snap_atac/pr/
+
+    test_portability_smartseq2_single_sample_unpaired:
+        docker:
+            - image: circleci/python:3.6.1
+        steps:
+            - checkout
+            - run:
+                command: |
+                    python3 -m venv venv
+                    . venv/bin/activate
+                    pip install requests
+                    python test/run_portability_test.py --test-directories test/smartseq2_single_sample_unpaired/pr/
+
+    test_portability_bulk_rna_pipeline:
+        docker:
+            - image: circleci/python:3.6.1
+        steps:
+            - checkout
+            - run:
+                command: |
+                    python3 -m venv venv
+                    . venv/bin/activate
+                    pip install requests
+                    python test/run_portability_test.py --test-directories test/bulk_rna_pipeline/pr/
+
+    test_portability_optimus:
+        docker:
+            - image: circleci/python:3.6.1
+        steps:
+            - checkout
+            - run:
+                command: |
+                    python3 -m venv venv
+                    . venv/bin/activate
+                    pip install requests
+                    python test/run_portability_test.py --test-directories test/optimus/pr/
+                no_output_timeout: 1.5h
+
+    test_portability_smartseq2_single_sample:
+        docker:
+            - image: circleci/python:3.6.1
+        steps:
+            - checkout
+            - run:
+                command: |
+                    python3 -m venv venv
+                    . venv/bin/activate
+                    pip install requests
+                    python test/run_portability_test.py --test-directories test/smartseq2_single_sample/pr/
+                no_output_timeout: 1.5h
 
     test_optimus:
         machine: true
@@ -81,18 +126,30 @@ jobs:
                 command: |
                     ./test/trigger_test.sh snap_atac
                 no_output_timeout: 1.5h
+
+    test_sc_atac:
+       machine: true
+       steps:
+           - checkout
+           - run:
+               command: |
+                   ./test/trigger_test.sh sc_atac
+               no_output_timeout: 1.5h
                
 workflows:
     version: 2
     test_all:
         jobs:
-          - build
           - test_optimus
           - test_smartseq2
           - test_smartseq2_unpaired
           - test_emptyDropsWrapper
           - test_npz2rds
           - test_snap_atac
+          - test_sc_atac
           - test_bulk_rna
-
-
+          - test_portability_snap_atac
+          - test_portability_smartseq2_single_sample_unpaired
+          - test_portability_bulk_rna_pipeline
+          - test_portability_optimus
+          - test_portability_smartseq2_single_sample
