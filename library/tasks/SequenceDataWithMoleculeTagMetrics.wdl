@@ -45,10 +45,10 @@ task CalculateCellMetrics {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.3"
-  Int machine_mem_mb = 3850
+  Int machine_mem_mb = 16000
   Int cpu = 1
   Int disk = ceil(size(bam_input, "Gi") * 2)
-  Int preemptible = 0
+  Int preemptible = 3
 
   meta {
     description: "Calculate cell metrics from the reads in bam_input."
