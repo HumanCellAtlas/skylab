@@ -1,4 +1,4 @@
-import "FastqToUBam.wdl" as FastqToUBam
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/optimus_v1.3.3/library/tasks/FastqToUBam.wdl" as FastqToUBam
 import "Attach10xBarcodes.wdl" as Attach
 import "SplitBamByCellBarcode.wdl" as Split
 import "MergeSortBam.wdl" as Merge
