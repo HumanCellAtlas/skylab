@@ -140,6 +140,21 @@ def add_gene_metrics(data_group, input_path, gene_ids, verbose=False):
     else:
         logging.info("Not adding \"gene_metadata_numeric\" to zarr output: either the #genes or # cell ids is 0")
 
+def add_emptydrops_data(data_group, input_path, verbose=False):
+    """Converts the empty drops output from Optimus to a ZARR file
+    
+    Args:
+        data_group (zarr.hierarchy.Group): datagroup object for the ZARR output
+        input_path (str): path to CSV file containing the output of emptyDrops
+        verbose (bool): debug verbosity (on/off)
+    """
+    if input_path.endswith(".gz"):
+        with gzip.open(input_path, 'rt') as f:
+            empty_drops = [ row for row in csv.reader(f) ]
+    else:
+        with open(input_path, 'r') as f:
+            empty_drops = [ row for row in csv.reader(f) ]
+                            
 
 def add_cell_metrics(data_group, input_path, cell_ids, verbose=False):
     """Converts cell metrics from the Optimus pipeline to zarr file
@@ -368,6 +383,8 @@ def create_zarr_files(args):
     # add the the cell metrics
     add_cell_metrics(root_group['expression_matrix'], args.cell_metrics, cell_ids, args.verbose)
 
+    # add the emptydrops data
+#    add_emptydrops_data(root_group['expression_matrix'], args.empty_drops_data, args.verbose)
 
 def main():
     description = """This script converts the some of the Optimus outputs in to
@@ -375,6 +392,11 @@ def main():
                    This script can be used as a module or run as a command line script."""
 
     parser = argparse.ArgumentParser(description=description)
+
+    parser.add_argument('--empty_drops_data',
+                        dest="empty_drops_data",
+                        required=True,
+                        help="A csv file with the output of the emptyDrops step in Optimus")
 
     parser.add_argument('--cell_metrics',
                         dest="cell_metrics",
