@@ -7,12 +7,13 @@ import zarr
 from scipy import sparse
 from zarr import Blosc
 import logging
+import pandas as pd
+import logging
 
+# Note: the contents of each group don't seem to be getting used anywhere
 ZARR_GROUP = {
-    'expression_matrix': ["expression", "cell_id", "gene_id",
-                          "gene_metadata_string", "gene_metadata_numeric",
-                          "cell_metadata_string", "cell_metadata_numeric"
-                          ]
+    'expression_matrix': [],
+    'empty_drops': []
 }
 
 COMPRESSOR = Blosc(cname='lz4', clevel=5, shuffle=Blosc.SHUFFLE, blocksize=0)
@@ -140,23 +141,8 @@ def add_gene_metrics(data_group, input_path, gene_ids, verbose=False):
     else:
         logging.info("Not adding \"gene_metadata_numeric\" to zarr output: either the #genes or # cell ids is 0")
 
-def add_emptydrops_data(data_group, input_path, verbose=False):
-    """Converts the empty drops output from Optimus to a ZARR file
-    
-    Args:
-        data_group (zarr.hierarchy.Group): datagroup object for the ZARR output
-        input_path (str): path to CSV file containing the output of emptyDrops
-        verbose (bool): debug verbosity (on/off)
-    """
-    if input_path.endswith(".gz"):
-        with gzip.open(input_path, 'rt') as f:
-            empty_drops = [ row for row in csv.reader(f) ]
-    else:
-        with open(input_path, 'r') as f:
-            empty_drops = [ row for row in csv.reader(f) ]
-                            
 
-def add_cell_metrics(data_group, input_path, cell_ids, verbose=False):
+def add_cell_metrics(data_group, metrics_file, cell_ids, emptydrops_file, verbose=False,):
     """Converts cell metrics from the Optimus pipeline to zarr file
 
     Args:
@@ -164,81 +150,110 @@ def add_cell_metrics(data_group, input_path, cell_ids, verbose=False):
         input_path (str): file containing gene metrics name and values
         cell_ids (list): list of cell ids
         verbose (bool): whether to output verbose messages for debugging purposes
+        emptydrops_path (str): emptydrops csv file
     """
-    # read the gene metrics names and values
-    if input_path.endswith(".gz"):
-        with gzip.open(input_path, 'rt') as f:
-            cell_metrics = [row for row in csv.reader(f)]
-    else:
-        with open(input_path, 'r') as f:
-            cell_metrics = [row for row in csv.reader(f)]
 
-    # metric names for the cells
-    if len(cell_metrics[0][1:]):
-        data_group.create_dataset(
-            "cell_metadata_numeric_name",
-            shape=(len(cell_metrics[0][1:]),),
-            compressor=COMPRESSOR,
-            dtype="<U40",
-            chunks=(len(cell_metrics[0][1:]),),
-            data=list(cell_metrics[0][1:]))
-    else:
-        logging.info("Not adding \"cell_metadata_numeric_name\" to zarr output: must have at least one metric")
+    # Read the csv input files
+    metrics_df = pd.read_csv(metrics_file, dtype=str)
+    emptydrops_df = pd.read_csv(emptydrops_file, dtype=str)
 
+    # Check that input is valid
+    if (metrics_df.shape[0] == 0 | metrics_df.shape[1] == 0):
+        logging.error("Cell metrics table is not valid")
+        raise Exception("Cell metrics table is not valid")
+    if (emptydrops_df.shape[0] == 0 | emptydrops_df.shape[1] == 0):
+        logging.error("EmptyDrops table is not valid")
+        raise Exception("EmptyDrops table is not valid")
+
+    # Rename cell columns for both datasets to cell_id
+    emptydrops_df = emptydrops_df.rename(columns={"CellId": "cell_id"})
+    metrics_df = metrics_df.rename(columns={"Unnamed: 0": "cell_id"})
+
+    # Drop first row that contains non-cell information from metrics file, this contains aggregate information
+    metrics_df = metrics_df.iloc[1:]
+
+    # Prefix emptydrops column names (except the key cell_id)
+    colnames = list(emptydrops_df.columns)
+    newcolnames = ["emptydrops_" + s for s in colnames]
+    namemap = dict(zip(colnames, newcolnames))
+    # Do not map the cell_id as it will be used for the merge
+    del namemap["cell_id"]
+    emptydrops_df = emptydrops_df.rename(columns=namemap)
+
+    # Confirm that the emptydrops table is a subset of the cell metadata table, fail if not
+    if (not emptydrops_df.cell_id.isin(metrics_df.cell_id).all()):
+        logging.error("Not all emptydrops cells can be found in the metrics table.")
+        raise Exception("Not all emptydrops cells can be found in the metrics table.")
+
+    # Merge the two tables
+    merged_df = metrics_df.merge(emptydrops_df, on="cell_id", how="outer")
+
+    # Order the cells by merging with cell_ids
+    cellorder_df = pd.DataFrame(data={'cell_id': cell_ids})
+    final_df = cellorder_df.merge(merged_df, on='cell_id', how="left")
+
+    # Split the pandas DataFrame into different data types for storing in the ZARR
+    UIntColumnNames = [ "n_reads", "noise_reads", "perfect_molecule_barcodes",
+                        "reads_mapped_exonic", "reads_mapped_intronic", "reads_mapped_utr",
+                        "reads_mapped_uniquely", "reads_mapped_multiple", "duplicate_reads",
+                        "spliced_reads", "antisense_reads", "n_molecules", "n_fragments",
+                        "fragments_with_single_read_evidence", "molecules_with_single_read_evidence",
+                        "perfect_cell_barcodes", "reads_mapped_intergenic",
+                        "reads_unmapped", "reads_mapped_too_many_loci",
+                        "n_genes", "genes_detected_multiple_observations",
+                        "emptydrops_Total"]
+    FloatColumnNames = ["molecule_barcode_fraction_bases_above_30_mean",
+                        "molecule_barcode_fraction_bases_above_30_variance",
+                        "genomic_reads_fraction_bases_quality_above_30_mean",
+                        "genomic_reads_fraction_bases_quality_above_30_variance",
+                        "genomic_read_quality_mean",
+                        "genomic_read_quality_variance",
+                        "reads_per_fragment",
+                        "fragments_per_molecule",
+                        "cell_barcode_fraction_bases_above_30_mean",
+                        "cell_barcode_fraction_bases_above_30_variance",
+                        "emptydrops_LogProb",
+                        "emptydrops_PValue",
+                        "emptydrops_FDR"]
+    BoolColumnNames = ["emptydrops_Limited", "emptydrops_IsCell"]
+
+    # Split the dataframe
+    final_df_uint = final_df[UIntColumnNames]
+    final_df_float = final_df[FloatColumnNames]
+    final_df_bool = final_df[BoolColumnNames]
+
+    # Data types for storage
+    header_datatype = "<U40"
+    uint_store_datatype = np.uint32
+    float_store_datatype = np.float32
+    bool_store_datatype = np.bool
+
+    # Create metadata tables and their headers for uint
+    data_group.create_dataset("cell_metadata_uint_name", shape=[final_df_uint.shape[1], 1],
+                              compressor=COMPRESSOR, dtype=header_datatype, data=final_df_uint.columns.astype(str))
+    data_group.create_dataset("cell_metadata_uint", shape=final_df_uint.shape, compressor=COMPRESSOR,
+                              dtype=uint_store_datatype, data=final_df_uint.to_numpy(dtype=uint_store_datatype))
     if verbose:
-        logging.info("# of cell_metadata_numeric_names: {}".format(len(cell_metrics[0][1:])))
+        logging.info("Added cell metadata_uint with {} rows and {} columns".format(
+            final_df_uint.shape[0], final_df_uint.shape[1]))
 
-    cell_ids_location = {cell_id: index for index, cell_id in enumerate(cell_ids)}
-
-    cell_id_to_metric_values = {}
-    # ignore the first line with the cell metric names in text
-
-    ncols = 0
-    for row in cell_metrics[1:]:
-        # only consider cell_id that are also in the count_metrics
-        if not row[0] in cell_ids_location:
-            continue
-        row_values = []
-        for value_string in row[1:]:
-            # some of the standard deviation values do not exist for one reads matches
-            try:
-                value = np.float32(value_string)
-            except ValueError:
-                value = np.nan
-            row_values.append(value)
-        cell_id_to_metric_values[row[0]] = row_values
-
-        # note that all of these lengths are assumed to be equal and this check is already done in the pipeline
-        if ncols == 0:
-            ncols = len(row_values)
-
-    # now insert the metrics of the cells that are in count matrix, i.e.,  the global variable "cell_ids"
-    cell_metric_values = []
-    for cell_id in cell_ids:
-        if cell_id in cell_id_to_metric_values:
-            cell_metric_values.append(cell_id_to_metric_values[cell_id])
-        else:
-            # if no metrics for a cell present in the count matrix then fill them with np.nans
-            cell_metric_values.append([np.nan] * ncols)
-
-    # Gene metric values, the row size (i.e., number of cell_ids)
-    nrows = len(cell_ids)
+    # Create metadata tables and their headers for float
+    data_group.create_dataset("cell_metadata_float_name", shape=[final_df_float.shape[1], 1],
+                              compressor=COMPRESSOR, dtype=header_datatype, data=final_df_float.columns.astype(str))
+    data_group.create_dataset("cell_metadata_float", shape=final_df_float.shape, compressor=COMPRESSOR,
+                              dtype=float_store_datatype, data=final_df_float.to_numpy(dtype=float_store_datatype))
     if verbose:
-        logging.info('# of cell ids: {}'.format(nrows))
-        logging.info('# of numeric metrics: {}'.format(ncols))
+        logging.info("Added cell metadata_float with {} rows and {} columns".format(
+            final_df_float.shape[0], final_df_float.shape[1]))
 
-    # now insert the dataset that has the numeric values for the cell qc metrics
-    if nrows and ncols:
-        data_group.create_dataset(
-            "cell_metadata_numeric",
-            shape=(nrows, ncols),
-            compressor=COMPRESSOR,
-            dtype=np.float32,
-            chunks=(nrows, ncols),
-            data=cell_metric_values)
-    else:
-        logging.info("Not adding \"cell_metadata_numeric\" to zarr output: either the #genes or # cell ids is 0")
-
+    # Create metadata tables and their headers for bool
+    data_group.create_dataset("cell_metadata_bool_name", shape=[final_df_bool.shape[1], 1],
+                              compressor=COMPRESSOR, dtype=header_datatype, data=final_df_bool.columns.astype(str))
+    data_group.create_dataset("cell_metadata_bool", shape=final_df_bool.shape, compressor=COMPRESSOR,
+                              dtype=bool_store_datatype, data=final_df_bool.to_numpy(dtype=bool_store_datatype))
+    if verbose:
+        logging.info("Added cell metadata_bool with {} rows and {} columns".format(
+            final_df_bool.shape[0], final_df_bool.shape[1]))
 
 def create_gene_id_name_map(gtf_file):
     """ Creates a map from gene_id to gene_name by reading in the GTF file
@@ -381,10 +396,8 @@ def create_zarr_files(args):
     add_gene_metrics(root_group['expression_matrix'], args.gene_metrics, gene_ids, args.verbose)
 
     # add the the cell metrics
-    add_cell_metrics(root_group['expression_matrix'], args.cell_metrics, cell_ids, args.verbose)
-
-    # add the emptydrops data
-#    add_emptydrops_data(root_group['expression_matrix'], args.empty_drops_data, args.verbose)
+    add_cell_metrics(root_group['expression_matrix'], args.cell_metrics, cell_ids,
+                     args.empty_drops_file, args.verbose)
 
 def main():
     description = """This script converts the some of the Optimus outputs in to
@@ -393,8 +406,8 @@ def main():
 
     parser = argparse.ArgumentParser(description=description)
 
-    parser.add_argument('--empty_drops_data',
-                        dest="empty_drops_data",
+    parser.add_argument('--empty_drops_file',
+                        dest="empty_drops_file",
                         required=True,
                         help="A csv file with the output of the emptyDrops step in Optimus")
 
