@@ -222,6 +222,10 @@ def add_cell_metrics(data_group, metrics_file, cell_ids, emptydrops_file, verbos
     float_store_datatype = np.float32  # machine independent 32 bit float
     bool_store_datatype = np.bool  # boolean
 
+    # Do format conversions
+    final_df_float = final_df_float.apply(pd.to_numeric)
+    final_df_uint = final_df_uint.apply(pd.to_numeric)
+
     # Create metadata tables and their headers for uint
     data_group.create_dataset("cell_metadata_uint_name", shape=[final_df_uint.shape[1], 1],
                               compressor=COMPRESSOR, dtype=header_datatype, data=final_df_uint.columns.astype(str))
