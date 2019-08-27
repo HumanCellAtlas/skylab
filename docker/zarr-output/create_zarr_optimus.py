@@ -18,13 +18,14 @@ CHUNK_COL_SIZE = 10000
 logging.basicConfig(level=logging.INFO)
 
 
-def init_zarr(sample_id, path, file_format):
+def init_zarr(sample_id, path, file_format, schema_version):
     """Initializes the zarr output.
 
     Args:
         sample_id (str): sample or cell id
         path (str): path to the zarr output
         file_format (str): zarr file format [DirectoryStore, ZipStore]
+        schema_version: version string of this output to allow for parsing of future changes
 
     Returns:
         root (zarr.hierarchy.Group): initialized zarr group
@@ -40,9 +41,9 @@ def init_zarr(sample_id, path, file_format):
     # create the root group
     root = zarr.group(store, overwrite=True)
 
-    # add some readme for the user
     root.attrs['README'] = "The schema adopted in this zarr store may undergo changes in the future"
     root.attrs['sample_id'] = sample_id
+    root.attrs['optimus_output_version'] = schema_version
 
     # Create the expression_matrix group
     root.create_group("expression_matrix", overwrite=True);
@@ -379,8 +380,10 @@ def create_zarr_files(args):
     Args:
         args (argparse.Namespace): input arguments for the run
     """
+    version = "1.0.0"
+
     # initiate the zarr file
-    root_group = init_zarr(args.sample_id, args.output_zarr_path, args.zarr_format)
+    root_group = init_zarr(args.sample_id, args.output_zarr_path, args.zarr_format, schema_version=version)
 
     # add the expression count matrix data
     cell_ids, gene_ids = add_expression_counts(root_group['expression_matrix'], args)
