@@ -41,12 +41,12 @@ def init_zarr(sample_id, path, file_format, schema_version):
     # create the root group
     root = zarr.group(store, overwrite=True)
 
-    root.attrs['README'] = "The schema adopted in this zarr store may undergo changes in the future"
+    #root.attrs['README'] = "The schema adopted in this zarr store may undergo changes in the future"
     root.attrs['sample_id'] = sample_id
-    root.attrs['optimus_output_version'] = schema_version
+    root.attrs['optimus_output_schema_version'] = schema_version
 
     # Create the expression_matrix group
-    root.create_group("expression_matrix", overwrite=True);
+    #root.create_group("expression_matrix", overwrite=True);
 
     return root
 
@@ -390,13 +390,13 @@ def create_zarr_files(args):
     root_group = init_zarr(args.sample_id, args.output_zarr_path, args.zarr_format, schema_version=version)
 
     # add the expression count matrix data
-    cell_ids, gene_ids = add_expression_counts(root_group['expression_matrix'], args)
+    cell_ids, gene_ids = add_expression_counts(root_group, args)
 
     # add the the gene metrics
-    add_gene_metrics(root_group['expression_matrix'], args.gene_metrics, gene_ids, args.verbose)
+    add_gene_metrics(root_group, args.gene_metrics, gene_ids, args.verbose)
 
     # add the the cell metrics
-    add_cell_metrics(root_group['expression_matrix'], args.cell_metrics, cell_ids,
+    add_cell_metrics(root_group, args.cell_metrics, cell_ids,
                      args.empty_drops_file, args.verbose)
 
 def main():
