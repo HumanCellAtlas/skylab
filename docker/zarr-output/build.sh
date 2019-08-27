@@ -10,4 +10,4 @@ fi
 
 docker build -t quay.io/humancellatlas/secondary-analysis-zarr-output:$tag .
 
-echo You can now push with docker push quay.io/humancellatlas/secondary-analysis-zarr-output:$tag
+echo "You can now push with docker push quay.io/humancellatlas/secondary-analysis-zarr-output:$tag"
