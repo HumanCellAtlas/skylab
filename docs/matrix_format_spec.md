@@ -1,9 +1,30 @@
-
 # Version 1.0
 The version of the ZARR output can be identified by examining the `optimus_output_schema_version` attribute of the root node. Sematic versioning of the file schema should be used.
 
+## Format
 
+The secondary analysis pipelines shall write expression matrices and associated tabular metadata using the zarr version 2 DirectoryStore format. The format is specified in more detail [here](https://zarr.readthedocs.io/en/stable/spec/v2.html).
 
+The top level entity contains all the data arrays and has two attributes:
+
+- sample_id: The sample identifier
+- optimus_output_schema_version: A string with the version identifier of the ZARR output schema
+
+Data are stored in the following chunked and compressed arrays:
+
+- gene_metadata_numeric_name ("<U40" # little-endian 40 char unicode)
+- gene_metadata_numeric (np.float32)
+- cell_metadata_uint_name ("<U40"  # little-endian 40 char unicode)
+- cell_metadata_uint (np.uint32)
+- cell_metadata_float_name ("<U40"  # little-endian 40 char unicode)
+- cell_metadata_float (np.float32)
+- cell_metadata_bool_name ("<U40"  # little-endian 40 char unicode)
+- cell_metadata_bool (np.bool)
+- cell_id ("<U40")
+- gene_id ("<U40")
+- gene_metadata_string_name ("<U40")
+- gene_metadata_string ("<U40")
+- expression (dtype=np.float32)
 
 # Pre-version 1.
 The following documentation outlines the format of the ZARR output before versioning started.
