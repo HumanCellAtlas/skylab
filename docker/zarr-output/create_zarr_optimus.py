@@ -25,7 +25,7 @@ def init_zarr(sample_id, path, file_format, schema_version):
         sample_id (str): sample or cell id
         path (str): path to the zarr output
         file_format (str): zarr file format [DirectoryStore, ZipStore]
-        schema_version: version string of this output to allow for parsing of future changes
+        schema_version (str): version string of this output to allow for parsing of future changes
 
     Returns:
         root (zarr.hierarchy.Group): initialized zarr group
