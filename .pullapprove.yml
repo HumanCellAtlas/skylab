@@ -21,6 +21,7 @@ groups:
 
     reviews:
       required: 1
+      request: 0
       author_value: 1 # if author in group reduce number of approvals needed by this number
 
     reviewers:
@@ -30,8 +31,8 @@ groups:
   software-review:
     reviews:
       required: 1
+      request: 0
       author_value: 0 # if author in group reduce number of approvals needed by this number
-      request_order: random  # reviewers will be chosen in a random order
 
     reviewers:
       teams:
@@ -44,8 +45,8 @@ groups:
       - "'ENG-ONLY' not in labels"
     reviews:
       required: 1
+      request: 0
       author_value: 0 # if author in group reduce number of approvals needed by this number
-      request_order: random  # reviewers will be chosen in a random order
 
     reviewers:
       teams:
