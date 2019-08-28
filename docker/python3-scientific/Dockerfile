@@ -25,4 +25,3 @@ RUN mkdir /tools
 WORKDIR /tools
 
 COPY create_zarr_ss2.py .
-COPY create_zarr_optimus.py .

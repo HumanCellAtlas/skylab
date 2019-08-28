@@ -58,7 +58,7 @@ task SmartSeq2ZarrConversion {
 
 task OptimusZarrConversion {
   #runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.1.10"
+  String docker = "quay.io/humancellatlas/secondary-analysis-zarr-output:0.0.1"
 
   # name of the sample
   String sample_id
@@ -94,6 +94,7 @@ task OptimusZarrConversion {
     set -euo pipefail
 
     python3 /tools/create_zarr_optimus.py \
+       --empty_drops_file ${empty_drops_result} \
        --annotation_file ${annotation_file}\
        --cell_metrics ${cell_metrics}\
        --gene_metrics ${gene_metrics}\
