@@ -93,25 +93,18 @@ task OptimusZarrConversion {
   command {
     set -euo pipefail
 
+    mkdir zarrout
+
     python3 /tools/create_zarr_optimus.py \
        --annotation_file ${annotation_file}\
        --cell_metrics ${cell_metrics}\
        --gene_metrics ${gene_metrics}\
        --cell_id ${cell_id}\
        --gene_id  ${gene_id} \
-       --output_path_for_zarr "${sample_id}.zarr" \
+       --output_path_for_zarr "zarrout/${sample_id}.zarr" \
        --format DirectoryStore \
        --sample_id ${sample_id} \
        --count_matrix ${sparse_count_matrix}
-
-    mkdir zarrout
-    # get all the files in the zarr folder in  a list
-    a=`find "${sample_id}.zarr"  -type f`
-    for f in $a; do
-       # replace all / to ! as a work around for now.
-       b=`echo $f | tr "/" "\!"`
-       mv $f zarrout/$b
-    done
   }
 
   runtime {
@@ -123,7 +116,7 @@ task OptimusZarrConversion {
   }
 
   output {
-    Array[File] zarr_output_files = glob("zarrout/*zarr*")
+    Array[File] zarr_output_files = glob("zarrout/*")
   }
 }
 
