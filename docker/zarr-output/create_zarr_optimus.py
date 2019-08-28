@@ -187,7 +187,8 @@ def add_cell_metrics(data_group, metrics_file, cell_ids, emptydrops_file, verbos
     final_df = cellorder_df.merge(merged_df, on='cell_id', how="left")
 
     # Split the pandas DataFrame into different data types for storing in the ZARR
-    UIntColumnNames = [ "n_reads", "noise_reads", "perfect_molecule_barcodes",
+    FloatColumnNames = [# UInt
+                        "n_reads", "noise_reads", "perfect_molecule_barcodes",
                         "reads_mapped_exonic", "reads_mapped_intronic", "reads_mapped_utr",
                         "reads_mapped_uniquely", "reads_mapped_multiple", "duplicate_reads",
                         "spliced_reads", "antisense_reads", "n_molecules", "n_fragments",
@@ -195,8 +196,9 @@ def add_cell_metrics(data_group, metrics_file, cell_ids, emptydrops_file, verbos
                         "perfect_cell_barcodes", "reads_mapped_intergenic",
                         "reads_unmapped", "reads_mapped_too_many_loci",
                         "n_genes", "genes_detected_multiple_observations",
-                        "emptydrops_Total"]
-    FloatColumnNames = ["molecule_barcode_fraction_bases_above_30_mean",
+                        "emptydrops_Total",
+                        # Float32
+                        "molecule_barcode_fraction_bases_above_30_mean",
                         "molecule_barcode_fraction_bases_above_30_variance",
                         "genomic_reads_fraction_bases_quality_above_30_mean",
                         "genomic_reads_fraction_bases_quality_above_30_variance",
@@ -212,28 +214,16 @@ def add_cell_metrics(data_group, metrics_file, cell_ids, emptydrops_file, verbos
     BoolColumnNames = ["emptydrops_Limited", "emptydrops_IsCell"]
 
     # Split the dataframe
-    final_df_uint = final_df[UIntColumnNames]
     final_df_float = final_df[FloatColumnNames]
     final_df_bool = final_df[BoolColumnNames]
 
     # Data types for storage
     header_datatype = "<U40"  # little-endian 40 char unicode
-    uint_store_datatype = np.uint32  # machine independent 32 bit int
     float_store_datatype = np.float32  # machine independent 32 bit float
     bool_store_datatype = np.bool  # boolean
 
     # Do format conversions
     final_df_float = final_df_float.apply(pd.to_numeric)
-    final_df_uint = final_df_uint.apply(pd.to_numeric)
-
-    # Create metadata tables and their headers for uint
-    data_group.create_dataset("cell_metadata_uint_name", shape=[final_df_uint.shape[1], 1],
-                              compressor=COMPRESSOR, dtype=header_datatype, data=final_df_uint.columns.astype(str))
-    data_group.create_dataset("cell_metadata_uint", shape=final_df_uint.shape, compressor=COMPRESSOR,
-                              dtype=uint_store_datatype, data=final_df_uint.to_numpy(dtype=uint_store_datatype))
-    if verbose:
-        logging.info("Added cell metadata_uint with {} rows and {} columns".format(
-            final_df_uint.shape[0], final_df_uint.shape[1]))
 
     # Create metadata tables and their headers for float
     data_group.create_dataset("cell_metadata_float_name", shape=[final_df_float.shape[1], 1],
