@@ -154,10 +154,10 @@ def add_cell_metrics(data_group, metrics_file, cell_ids, emptydrops_file, verbos
     # Check that input is valid
     if (metrics_df.shape[0] == 0 or metrics_df.shape[1] == 0):
         logging.error("Cell metrics table is not valid")
-        raise Exception("Cell metrics table is not valid")
+        raise ValueError()
     if (emptydrops_df.shape[0] == 0 or emptydrops_df.shape[1] == 0):
         logging.error("EmptyDrops table is not valid")
-        raise Exception("EmptyDrops table is not valid")
+        raise ValueError()
 
     # Rename cell columns for both datasets to cell_id
     emptydrops_df = emptydrops_df.rename(columns={"CellId": "cell_id"})
