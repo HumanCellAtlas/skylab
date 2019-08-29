@@ -128,3 +128,38 @@ task OptimusZarrConversion {
   }
 }
 
+task OptimusZarrToLoom {
+     # runtime values
+     String docker = "quay.io/humancellatlas/zarr-to-loom:0.0.1"
+
+     Array[File] zarr_files
+
+     Int preemptible = 3
+     Int cpu = 1
+
+     meta {
+         description: "This task converts the Optimus Zarr output into a loom file"
+     }
+
+     parameter_meta {
+         machine_mem_mb: "(optional) the amount of memory in (MiB) to provision for this task"
+	 cpu: "(optional) the number of cpus to provision for this task"
+	 preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non-preemptible machine"
+    }
+    
+    command {
+       set -euo pipefail
+    }
+
+    runtime {
+        docker: docker
+	cpu: 1
+	memory: "10 GiB"
+	disks: "local-disk 100 HDD"
+	preemptible: preemptible
+    }
+
+    output {
+       File loom_output = "output.loom"
+    }
+}
