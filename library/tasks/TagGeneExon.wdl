@@ -3,10 +3,10 @@ task TagGeneExon {
   File bam_input
 
   # runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-dropseqtools:v0.2.2-1.12"
+  String docker = "quay.io/humancellatlas/secondary-analysis-dropseqtools:v0.2.2-1.13"
   Int machine_mem_mb = 8250
   Int cpu = 1
-  Int disk = ceil((size(bam_input, "Gi") + size(annotations_gtf, "Gi")) * 2)
+  Int disk = ceil((size(bam_input, "Gi") + size(annotations_gtf, "Gi")) * 3) + 20
   Int preemptible = 3
 
   meta {

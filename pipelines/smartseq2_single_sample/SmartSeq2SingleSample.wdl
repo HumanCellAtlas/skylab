@@ -9,9 +9,8 @@ workflow SmartSeq2SingleCell {
     description: "Process SmartSeq2 scRNA-Seq data, include reads alignment, QC metrics collection, and gene expression quantitication"
   }
   # version of this pipeline
-  String version = "smartseq2_v2.3.0"
+  String version = "smartseq2_v2.4.0"
   # load annotation
-  File gtf_file
   File genome_ref_fasta
   File rrna_intervals
   File gene_ref_flat
@@ -28,13 +27,11 @@ workflow SmartSeq2SingleCell {
   String output_name
   File fastq1
   File fastq2
-  Int max_retries = 0
 
   # whether to convert the outputs to Zarr format, by default it's set to true
   Boolean output_zarr = true
 
   parameter_meta {
-    gtf_file: "Gene annotation file in gtf format"
     genome_ref_fasta: "Genome reference in fasta format"
     rrna_intervals: "rRNA interval file required by Picard"
     gene_ref_flat: "Gene refflat file required by Picard"
@@ -48,7 +45,6 @@ workflow SmartSeq2SingleCell {
     output_name: "Output name, can include path"
     fastq1: "R1 in paired end reads"
     fastq2: "R2 in paired end reads"
-    max_retries: "(optional) retry this number of times if task fails -- use with caution, see skylab README for details"
     output_zarr: "whether to run the taks that converts the outputs to Zarr format, by default it's true"
   }
 
@@ -62,7 +58,6 @@ workflow SmartSeq2SingleCell {
       ref_name = hisat2_ref_name,
       sample_name = sample_name,
       output_basename = quality_control_output_basename,
-      max_retries = max_retries,
   }
 
   call Picard.CollectMultipleMetrics {
@@ -70,7 +65,6 @@ workflow SmartSeq2SingleCell {
       aligned_bam = HISAT2PairedEnd.output_bam,
       genome_ref_fasta = genome_ref_fasta,
       output_basename = quality_control_output_basename,
-      max_retries = max_retries,
   }
 
   call Picard.CollectRnaMetrics {
@@ -80,14 +74,12 @@ workflow SmartSeq2SingleCell {
       rrna_intervals = rrna_intervals,
       output_basename = quality_control_output_basename,
       stranded = stranded,
-      max_retries = max_retries,
   }
 
   call Picard.CollectDuplicationMetrics {
     input:
       aligned_bam = HISAT2PairedEnd.output_bam,
       output_basename = quality_control_output_basename,
-      max_retries = max_retries,
   }
 
   String data_output_basename = output_name + "_rsem"
@@ -100,7 +92,6 @@ workflow SmartSeq2SingleCell {
       ref_name = hisat2_ref_trans_name,
       sample_name = sample_name,
       output_basename = data_output_basename,
-      max_retries = max_retries,
   }
 
   call RSEM.RSEMExpression {
@@ -108,12 +99,12 @@ workflow SmartSeq2SingleCell {
       trans_aligned_bam = HISAT2Transcriptome.output_bam,
       rsem_genome = rsem_ref_index,
       output_basename = data_output_basename,
-      max_retries = max_retries,
+      is_paired = true
   }
 
   call GroupQCs.GroupQCOutputs {
    input:
-      picard_row_outputs = [CollectMultipleMetrics.alignment_summary_metrics,CollectMultipleMetrics.insert_size_metrics,CollectDuplicationMetrics.dedup_metrics,CollectRnaMetrics.rna_metrics,CollectMultipleMetrics.gc_bias_summary_metrics],
+      picard_row_outputs = [CollectMultipleMetrics.alignment_summary_metrics,CollectMultipleMetrics.insert_size_metrics[0],CollectDuplicationMetrics.dedup_metrics,CollectRnaMetrics.rna_metrics,CollectMultipleMetrics.gc_bias_summary_metrics],
       picard_table_outputs = [CollectMultipleMetrics.base_call_dist_metrics,CollectMultipleMetrics.gc_bias_detail_metrics,CollectMultipleMetrics.pre_adapter_details_metrics,CollectMultipleMetrics.pre_adapter_summary_metrics,CollectMultipleMetrics.bait_bias_detail_metrics,CollectMultipleMetrics.error_summary_metrics],
       hisat2_stats = HISAT2PairedEnd.log_file,
       hisat2_trans_stats = HISAT2Transcriptome.log_file,
@@ -136,7 +127,7 @@ workflow SmartSeq2SingleCell {
     # quality control outputs
     File aligned_bam = HISAT2PairedEnd.output_bam
     File bam_index = HISAT2PairedEnd.bam_index
-    File insert_size_metrics = CollectMultipleMetrics.insert_size_metrics
+    File insert_size_metrics = CollectMultipleMetrics.insert_size_metrics[0]
     File quality_distribution_metrics = CollectMultipleMetrics.quality_distribution_metrics
     File quality_by_cycle_metrics = CollectMultipleMetrics.quality_by_cycle_metrics
     File bait_bias_summary_metrics = CollectMultipleMetrics.bait_bias_summary_metrics
