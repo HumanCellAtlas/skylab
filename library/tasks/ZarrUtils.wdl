@@ -151,7 +151,7 @@ task OptimusZarrToLoom {
        set -euo pipefail
 
        mkdir packed_zarr
-       mv $zarr_files packed_zarr
+       mv ${sep=' ' $zarr_files} packed_zarr
        mkdir unpacked_zarr
        ./unpackZARR.sh -i packed_zarr -o unpacked_zarr
        ./optimus_zarr_to_loom.py --input-zarr unpacked_zarr --output-loom output.loom
