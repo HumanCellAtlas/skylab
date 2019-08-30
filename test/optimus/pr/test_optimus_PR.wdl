@@ -32,7 +32,8 @@ workflow TestOptimusPR {
       tar_star_reference = tar_star_reference,
       annotations_gtf = annotations_gtf,
       ref_genome_fasta = ref_genome_fasta,
-      sample_id = sample_id
+      sample_id = sample_id,
+      output_zarr = true
   }
 
   call checker.ValidateOptimus as checker {
