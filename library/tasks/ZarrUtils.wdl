@@ -157,7 +157,7 @@ task OptimusZarrToLoom {
        ./optimus_zarr_to_loom.py --input-zarr unpacked_zarr --output-loom output.loom
     }
 
-    runtime {nn
+    runtime {
         docker: docker
 	cpu: 1
 	memory: "10 GiB"

@@ -213,37 +213,37 @@ workflow Optimus {
     input:
       sample_id=sample_id,
       annotation_file=annotations_gtf,
-      cell_metrics = MergeCellMetrics.cell_metrics,  
+      cell_metrics = MergeCellMetrics.cell_metrics,
       gene_metrics = MergeGeneMetrics.gene_metrics,
       sparse_count_matrix = MergeCountFiles.sparse_count_matrix,
       cell_id = MergeCountFiles.row_index,
       gene_id = MergeCountFiles.col_index,
       empty_drops_result = RunEmptyDrops.empty_drops_result
   }
-    
+
   if (output_loom) {
     call ZarrUtils.OptimusZarrToLoom {
       input:
-         zarr_files = OptimusZarrConversion.zarr_output_files
+        zarr_files = OptimusZarrConversion.zarr_output_files
     }
   }
-  
+
   output {
-      # version of this pipeline
-      String pipeline_version = version
+    # version of this pipeline
+    String pipeline_version = version
 
-      File bam = MergeSorted.output_bam
-      File matrix = MergeCountFiles.sparse_count_matrix
-      File matrix_row_index = MergeCountFiles.row_index
-      File matrix_col_index = MergeCountFiles.col_index
-      File cell_metrics = MergeCellMetrics.cell_metrics
-      File gene_metrics = MergeGeneMetrics.gene_metrics
-      File cell_calls = RunEmptyDrops.empty_drops_result
+    File bam = MergeSorted.output_bam
+    File matrix = MergeCountFiles.sparse_count_matrix
+    File matrix_row_index = MergeCountFiles.row_index
+    File matrix_col_index = MergeCountFiles.col_index
+    File cell_metrics = MergeCellMetrics.cell_metrics
+    File gene_metrics = MergeGeneMetrics.gene_metrics
+    File cell_calls = RunEmptyDrops.empty_drops_result
 
-      # zarr
-      Array[File] zarr_output_files = OptimusZarrConversion.zarr_output_files
+    # zarr
+    Array[File] zarr_output_files = OptimusZarrConversion.zarr_output_files
 
-      # loom
-      File? loom_output_file = OptimusZarrConversion.loom_output
+    # loom
+    File? loom_output_file = OptimusZarrConversion.loom_output
   }
 }
