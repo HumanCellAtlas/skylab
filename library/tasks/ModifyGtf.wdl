@@ -7,7 +7,7 @@ task ReplaceGeneNameWithGeneID {
   Int cpu = 1
   Int disk = ceil(size(original_gtf, "Gi") * 2) + 5
   Int preemptible = 3
-  String modified_gtf_location = "gene_id_as_gene_name.gtf.gz"
+  String modified_gtf_location = "gene_id_as_gene_name.gtf"
 
   meta {
     description: "Modifies the gene_name field in a gtf to contain the values of gene_id instead."
@@ -34,9 +34,7 @@ task ReplaceGeneNameWithGeneID {
 
     SetGeneNameToId.py \
       --in-gtf-file input.gtf \
-      --out-gtf-file temp.gtf
-
-    gzip -c temp.gtf > "${modified_gtf_location}" 
+      --out-gtf-file $modified_gtf_location
   }
 
   runtime {
