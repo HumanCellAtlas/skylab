@@ -40,8 +40,8 @@ workflow Optimus {
   # this is used to scatter matched [r1_fastq, r2_fastq, i1_fastq] arrays
   Array[Int] indices = range(length(r1_fastq))
 
-  # whether to convert the outputs to Zarr format, by default it's set to true
-  Boolean output_zarr = true
+  # If true produce the optinal loom output
+  Boolean output_loom = false
 
   # this pipeline does not set any preemptible varibles and only relies on the task-level preemptible settings
   # you could override the tasklevel preemptible settings by passing it as one of the workflows inputs
@@ -209,20 +209,25 @@ workflow Optimus {
       col_index = MergeCountFiles.col_index
   }
 
-  if (output_zarr) {
-    call ZarrUtils.OptimusZarrConversion{
+  call ZarrUtils.OptimusZarrConversion{
+    input:
+      sample_id=sample_id,
+      annotation_file=annotations_gtf,
+      cell_metrics = MergeCellMetrics.cell_metrics,  
+      gene_metrics = MergeGeneMetrics.gene_metrics,
+      sparse_count_matrix = MergeCountFiles.sparse_count_matrix,
+      cell_id = MergeCountFiles.row_index,
+      gene_id = MergeCountFiles.col_index,
+      empty_drops_result = RunEmptyDrops.empty_drops_result
+  }
+    
+  if (output_loom) {
+    call ZarrUtils.OptimusZarrToLoom {
       input:
-        sample_id=sample_id,
-        annotation_file=annotations_gtf,
-        cell_metrics = MergeCellMetrics.cell_metrics,
-        gene_metrics = MergeGeneMetrics.gene_metrics,
-        sparse_count_matrix = MergeCountFiles.sparse_count_matrix,
-        cell_id = MergeCountFiles.row_index,
-        gene_id = MergeCountFiles.col_index,
-        empty_drops_result = RunEmptyDrops.empty_drops_result
+         zarr_files = OptimusZarrConversion.zarr_output_files
     }
-   }
-
+  }
+  
   output {
       # version of this pipeline
       String pipeline_version = version
@@ -236,6 +241,9 @@ workflow Optimus {
       File cell_calls = RunEmptyDrops.empty_drops_result
 
       # zarr
-      Array[File]? zarr_output_files = OptimusZarrConversion.zarr_output_files
+      Array[File] zarr_output_files = OptimusZarrConversion.zarr_output_files
+
+      # loom
+      File? loom_output_file = OptimusZarrConversion.loom_output
   }
 }
