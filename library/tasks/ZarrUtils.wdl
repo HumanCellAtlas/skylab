@@ -159,10 +159,10 @@ task OptimusZarrToLoom {
 
     runtime {
         docker: docker
-	cpu: 1
-	memory: "10 GiB"
-	disks: "local-disk 100 HDD"
-	preemptible: preemptible
+        cpu: 1
+        memory: "10 GiB"
+        disks: "local-disk 100 HDD"
+        preemptible: preemptible
     }
 
     output {
