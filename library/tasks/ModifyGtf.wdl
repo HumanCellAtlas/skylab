@@ -34,7 +34,7 @@ task ReplaceGeneNameWithGeneID {
 
     SetGeneNameToId.py \
       --in-gtf-file input.gtf \
-      --out-gtf-file $modified_gtf_location
+      --out-gtf-file "${modified_gtf_location}"
   }
 
   runtime {
