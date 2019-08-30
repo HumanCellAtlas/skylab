@@ -244,6 +244,6 @@ workflow Optimus {
     Array[File] zarr_output_files = OptimusZarrConversion.zarr_output_files
 
     # loom
-    File? loom_output_file = OptimusZarrConversion.loom_output
+    File? loom_output_file = OptimusZarrToLoom.loom_output
   }
 }
