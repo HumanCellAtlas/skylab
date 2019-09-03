@@ -3,17 +3,21 @@ workflow ValidateOptimus {
          description: "Validate Optimus Outputs"
      }
 
+     # Optimus output files to be checked
      File bam
      File matrix
      File matrix_row_index
      File matrix_col_index
      File cell_metrics
      File gene_metrics
+     File loom_file
 
+     # Reference data and checksums
      File reference_matrix
      String expected_bam_hash
      String expected_cell_metric_hash
      String expected_gene_metric_hash
+     String expected_loom_file_checksum
 
      call ValidateBam as ValidateBam {
          input:
@@ -29,6 +33,12 @@ workflow ValidateOptimus {
 	     reference_matrix = reference_matrix
      }
 
+     call ValidateLoom as ValidateLoom {
+         input:
+	     loom_file = loom_file,
+	     expected_loom_file_checksum = expected_loom_file_checksum
+     }
+
      call ValidateMetrics {
          input:
              cell_metrics = cell_metrics,
@@ -37,11 +47,18 @@ workflow ValidateOptimus {
              expected_gene_metric_hash = expected_gene_metric_hash
      }
 
+     call ValidateLoom {
+         input:
+	     loom_file = loom_file
+	     expected_loom_file_checksum = expected_loom_file_checksum
+     }
+
      call GenerateReport as GenerateReport {
          input:
              bam_validation_result = ValidateBam.result,
              matrix_validation_result = ValidateMatrix.result,
              metric_and_index_validation_result = ValidateMetrics.result
+	     loom_validation_result = ValidateLoom.result
     }
 }
 
@@ -76,6 +93,38 @@ task ValidateBam {
     output {
         String result = read_string("result.txt")
     }
+}
+
+task ValidateLoom {
+    File loom_file
+    String expected_loom_file_checksum
+
+    command <<<
+        echo Starting checksum generation...
+	calculated_checksum=$( < ${loom_file) md5sum | awk '{print $1}' )
+	echo Checksum generation complete
+
+        if [ "$calculated_checksum" == ${expected_loom_file_checksum} ]
+	then
+            echo Computed and expected loom file hashes match \( $calculated_checksum \)
+	    printf PASS > result.txt
+        else
+            echo Computed \( $calculated_checksum \) and expected \( ${expected_checksum} \) loom file hashes match
+	    printf FAIL > result.txt
+        fi
+   >>>
+
+   runtime {
+       docker: "ubuntu:16.04"
+       cpu: 1
+       memory: "3.75 GB"
+       disks: "local-disk ${required_disk} HDD"
+   }
+
+   output {
+       String result = read_string("result.txt")
+   }
+
 }
 
 task ValidateMatrix {
@@ -181,6 +230,7 @@ task GenerateReport {
       String bam_validation_result
       String metric_and_index_validation_result
       String matrix_validation_result
+      String loom_validation_result
 
       Int required_disk = 1
 
@@ -205,6 +255,11 @@ task GenerateReport {
     
     echo Matrix Validation: ${matrix_validation_result}
     if [ ${matrix_validation_result} == "FAIL" ]; then
+        fail=true
+    fi
+
+    echo Loom Validation: ${loom_validation_result}
+    if [ ${loom_validation_result} == "FAIL" ]; then
         fail=true
     fi
 

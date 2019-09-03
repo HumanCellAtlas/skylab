@@ -44,12 +44,13 @@ workflow TestOptimusPR {
       matrix_col_index = target.matrix_col_index,
       gene_metrics = target.gene_metrics,
       cell_metrics = target.cell_metrics,
-
-
+      loom_file = target.loom_output_file,
+      
       reference_matrix = reference_matrix,
       expected_bam_hash = expected_bam_hash,
       expected_cell_metric_hash = expected_cell_metric_hash,
       expected_gene_metric_hash = expected_gene_metric_hash,
+      expected_loom_file_checksum = expected_loom_file_checksum
   }
 
 }
