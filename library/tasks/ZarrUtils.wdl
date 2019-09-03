@@ -133,7 +133,7 @@ task OptimusZarrToLoom {
      String docker = "quay.io/humancellatlas/zarr-to-loom:0.0.1"
 
      Array[File] zarr_files
-     File pathsfile = write_lines(zarr_files)
+#     File pathsfile = write_lines(zarr_files)
 
      Int preemptible = 3
      Int cpu = 1
@@ -152,11 +152,11 @@ task OptimusZarrToLoom {
        set -euo pipefail
 
        mkdir packed_zarr
-       for f in $( cat pathsfile )
-       do
-	 mv $f packed_zarr/
-       done
-#       mv ${sep=' ' $zarr_files} packed_zarr/
+#       for f in $( cat pathsfile )
+#       do
+#	 mv $f packed_zarr/
+#       done
+       mv ${sep=' ' zarr_files } packed_zarr/
        mkdir unpacked_zarr
        ./unpackZARR.sh -i packed_zarr -o unpacked_zarr
        ./optimus_zarr_to_loom.py --input-zarr unpacked_zarr --output-loom output.loom
