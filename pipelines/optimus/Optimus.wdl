@@ -105,6 +105,11 @@ workflow Optimus {
     Array[File] scattered_bams = ScatterBamFiles.scattered_bams
   }
 
+  call ModifyGtf.ReplaceGeneNameWithGeneID as ModifyGtf {
+    input:
+      original_gtf = annotations_gtf
+  }
+
   Array[File] flattened_scattered_bams = flatten(scattered_bams)
 
   call Split.SplitBamByCellBarcode {
@@ -118,12 +123,6 @@ workflow Optimus {
         bam_input = bam,
         tar_star_reference = tar_star_reference
     }
-
-    call ModifyGtf.ReplaceGeneNameWithGeneID as ModifyGtf {
-      input:
-        original_gtf = annotations_gtf
-    }
-
     call TagGeneExon.TagGeneExon as TagGenes {
       input:
         bam_input = StarAlign.bam_output,
