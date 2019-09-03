@@ -101,7 +101,7 @@ task ValidateLoom {
 
     command <<<
         echo Starting checksum generation...
-	calculated_checksum=$( < ${loom_file) md5sum | awk '{print $1}' )
+	calculated_checksum=$( cat ${loom_file) | md5sum | awk '{print $1}' )
 	echo Checksum generation complete
 
         if [ "$calculated_checksum" == ${expected_loom_file_checksum} ]
