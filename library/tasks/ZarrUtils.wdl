@@ -133,6 +133,7 @@ task OptimusZarrToLoom {
      String docker = "quay.io/humancellatlas/zarr-to-loom:0.0.1"
 
      Array[File] zarr_files
+     File pathsfile = write_lines(zarr_files)
 
      Int preemptible = 3
      Int cpu = 1
@@ -151,7 +152,7 @@ task OptimusZarrToLoom {
        set -euo pipefail
 
        mkdir packed_zarr
-       for f in $( cat ${write_lines(zarr_files)} )
+       for f in $( cat pathsfile )
        do
 	 mv $f packed_zarr/
        done
