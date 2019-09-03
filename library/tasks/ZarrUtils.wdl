@@ -154,8 +154,8 @@ task OptimusZarrToLoom {
        echo ${sep=' ' zarr_files} > zarr_filenames.txt
        mv ${sep=' ' zarr_files} packed_zarr/
        mkdir unpacked_zarr
-       ./unpackZARR.sh -i packed_zarr -o unpacked_zarr
-       ./optimus_zarr_to_loom.py --input-zarr unpacked_zarr --output-loom output.loom
+       unpackZARR.sh -i packed_zarr -o unpacked_zarr
+       optimus_zarr_to_loom.py --input-zarr unpacked_zarr --output-loom output.loom
     }
 
     runtime {
