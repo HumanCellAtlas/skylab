@@ -82,7 +82,7 @@ task ValidateBam {
              printf FAIL > result.txt
         fi
     >>>
-  
+
     runtime {
         docker: "quay.io/humancellatlas/secondary-analysis-samtools:v0.2.2-1.6"
         cpu: 1
@@ -101,16 +101,16 @@ task ValidateLoom {
 
     command <<<
         echo Starting checksum generation...
-	calculated_checksum=$( cat ${loom_file) | md5sum | awk '{print $1}' )
-	echo Checksum generation complete
+        calculated_checksum=$( cat ${loom_file) | md5sum | awk '{print $1}' )
+        echo Checksum generation complete
 
         if [ "$calculated_checksum" == ${expected_loom_file_checksum} ]
-	then
+        then
             echo Computed and expected loom file hashes match \( $calculated_checksum \)
-	    printf PASS > result.txt
+        printf PASS > result.txt
         else
             echo Computed \( $calculated_checksum \) and expected \( ${expected_checksum} \) loom file hashes match
-	    printf FAIL > result.txt
+           printf FAIL > result.txt
         fi
    >>>
 
@@ -132,7 +132,7 @@ task ValidateMatrix {
     File matrix_row_index
     File matrix_col_index
     File reference_matrix
-    
+
     Int required_disk = ceil( size(matrix, "G") * 1.1 )
 
     command <<<
@@ -150,12 +150,12 @@ task ValidateMatrix {
 
        if [ $checkMatrixResult == 0 ]; then
            printf PASS > result.txt
-       else 
+       else
            printf FAIL > result.txt
        fi
 
     >>>
-  
+
     runtime {
         docker: "quay.io/humancellatlas/optimus-matrix-test:0.0.2"
         cpu: 1
