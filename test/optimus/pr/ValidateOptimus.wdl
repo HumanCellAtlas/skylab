@@ -47,17 +47,11 @@ workflow ValidateOptimus {
              expected_gene_metric_hash = expected_gene_metric_hash
      }
 
-     call ValidateLoom {
-        input:
-                loom_file = loom_file,
-                expected_loom_file_checksum = expected_loom_file_checksum
-     }
-
      call GenerateReport as GenerateReport {
          input:
              bam_validation_result = ValidateBam.result,
              matrix_validation_result = ValidateMatrix.result,
-             metric_and_index_validation_result = ValidateMetrics.result
+             metric_and_index_validation_result = ValidateMetrics.result,
              loom_validation_result = ValidateLoom.result
     }
 }
@@ -99,6 +93,8 @@ task ValidateLoom {
     File loom_file
     String expected_loom_file_checksum
 
+    Int required_disk = ceil( size(loom_file, "G") * 1.1)
+
     command <<<
         echo Starting checksum generation...
         calculated_checksum=$( cat ${loom_file} | md5sum | awk '{print $1}' )
@@ -106,10 +102,10 @@ task ValidateLoom {
 
         if [ "$calculated_checksum" == ${expected_loom_file_checksum} ]
         then
-            echo Computed and expected loom file hashes match \( $calculated_checksum \)
+            echo Computed and expected loom file hashes match \( $calculated_loom_file_checksum \)
         printf PASS > result.txt
         else
-            echo Computed \( $calculated_checksum \) and expected \( ${expected_checksum} \) loom file hashes match
+            echo Computed \( $calculated_checksum \) and expected \( ${expected_loom_file_checksum} \) loom file hashes match
            printf FAIL > result.txt
         fi
    >>>
