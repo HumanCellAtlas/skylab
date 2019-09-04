@@ -69,10 +69,10 @@ task ValidateBam {
 
         if [ "$calculated_checksum" == ${expected_checksum} ]
         then
-             echo Computed and expected bam hashes match \( $calculated_checksum \)
+             echo Computed and expected bam hashes match \( "$calculated_checksum" \)
              printf PASS > result.txt
         else 
-             echo Computed \( $calculated_checksum \) and expected \( ${expected_checksum} \) bam file hashes do not match
+             echo Computed \( "$calculated_checksum" \) and expected \( ${expected_checksum} \) bam file hashes do not match
              printf FAIL > result.txt
         fi
     >>>
@@ -97,15 +97,15 @@ task ValidateLoom {
 
     command <<<
         echo Starting checksum generation...
-        calculated_checksum=$( cat ${loom_file} | md5sum | awk '{print $1}' )
+        calculated_loom_file_checksum=$( md5sum < ${loom_file} | awk '{print $1}' )
         echo Checksum generation complete
 
-        if [ "$calculated_checksum" == ${expected_loom_file_checksum} ]
+        if [ "$calculated_loom_file_checksum" == ${expected_loom_file_checksum} ]
         then
-            echo Computed and expected loom file hashes match \( $calculated_loom_file_checksum \)
+            echo Computed and expected loom file hashes match \( "$calculated_loom_file_checksum" \)
         printf PASS > result.txt
         else
-            echo Computed \( $calculated_checksum \) and expected \( ${expected_loom_file_checksum} \) loom file hashes match
+            echo Computed \( "$calculated_loom_file_checksum" \) and expected \( ${expected_loom_file_checksum} \) loom file hashes match
            printf FAIL > result.txt
         fi
    >>>
@@ -188,16 +188,16 @@ task ValidateMetrics {
         fail=false
 
         if [ "$gene_metric_hash" == "${expected_gene_metric_hash}" ]; then
-            echo Computed and expected gene metrics match \( $gene_metric_hash \)
+            echo Computed and expected gene metrics match \( "$gene_metric_hash" \)
         else
-            echo Computed \( $gene_metric_hash \) and expected \( ${expected_gene_metric_hash} \) gene checksums do not match
+            echo Computed \( "$gene_metric_hash" \) and expected \( ${expected_gene_metric_hash} \) gene checksums do not match
             fail=true
         fi
 
         if [ "$cell_metric_hash" == "${expected_cell_metric_hash}" ]; then
-            echo Computed and expected cell metrics match \( $cell_metric_hash \)
+            echo Computed and expected cell metrics match \( "$cell_metric_hash" \)
         else
-            echo Computed \( $cell_metric_hash \) and expected \( ${expected_cell_metric_hash} \) cell metrics hashes do not match
+            echo Computed \( "$cell_metric_hash" \) and expected \( ${expected_cell_metric_hash} \) cell metrics hashes do not match
             fail=true
         fi
 

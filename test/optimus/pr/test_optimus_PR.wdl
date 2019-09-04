@@ -10,6 +10,7 @@ workflow TestOptimusPR {
   String expected_bam_hash
   String expected_gene_metric_hash
   String expected_cell_metric_hash
+  String expected_loom_file_checksum
   File reference_matrix
 
   # Optimus inputs
