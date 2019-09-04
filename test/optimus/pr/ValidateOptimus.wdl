@@ -29,14 +29,14 @@ workflow ValidateOptimus {
          input:
              matrix = matrix,
              matrix_row_index = matrix_row_index,
-	     matrix_col_index = matrix_col_index,
-	     reference_matrix = reference_matrix
+             matrix_col_index = matrix_col_index,
+             reference_matrix = reference_matrix
      }
 
      call ValidateLoom as ValidateLoom {
          input:
-	     loom_file = loom_file,
-	     expected_loom_file_checksum = expected_loom_file_checksum
+             loom_file = loom_file,
+             expected_loom_file_checksum = expected_loom_file_checksum
      }
 
      call ValidateMetrics {
@@ -48,9 +48,9 @@ workflow ValidateOptimus {
      }
 
      call ValidateLoom {
-         input:
-	     loom_file = loom_file
-	     expected_loom_file_checksum = expected_loom_file_checksum
+        input:
+                loom_file = loom_file,
+                expected_loom_file_checksum = expected_loom_file_checksum
      }
 
      call GenerateReport as GenerateReport {
@@ -58,7 +58,7 @@ workflow ValidateOptimus {
              bam_validation_result = ValidateBam.result,
              matrix_validation_result = ValidateMatrix.result,
              metric_and_index_validation_result = ValidateMetrics.result
-	     loom_validation_result = ValidateLoom.result
+             loom_validation_result = ValidateLoom.result
     }
 }
 
@@ -168,8 +168,8 @@ task ValidateMatrix {
         File new_reference_matrix = "referenceMatrix.rds"
         File reads_per_cell_histogram = "reads_per_cell_histogram.png"
         File reads_per_gene_histogram = "reads_per_gene_histogram.png"
-	File number_of_genes_per_cell = "number_of_genes_per_cell.png"
-    }  
+        File number_of_genes_per_cell = "number_of_genes_per_cell.png"
+    }
 
 }
 
@@ -182,7 +182,7 @@ task ValidateMetrics {
 
     Int required_disk = ceil( (size(cell_metrics, "G") + size(gene_metrics, "G") )* 1.1)
 
-    command <<<   
+    command <<<
        set -eo pipefail
 
         # check matrix row and column indexes files hash
