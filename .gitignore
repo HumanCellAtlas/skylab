@@ -153,3 +153,9 @@ ENV/
 
 # OS X
 .DS_Store
+
+# Emacs Backups
+*~
+
+# Known credential file names
+caas-prod.json

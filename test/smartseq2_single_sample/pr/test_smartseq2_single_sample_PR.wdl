@@ -9,7 +9,6 @@ workflow TestSmartSeq2SingleCellPR {
   String expected_metrics_hash
 
   # SS2 inputs
-  File gtf_file
   File genome_ref_fasta
   File rrna_intervals
   File gene_ref_flat
@@ -26,7 +25,6 @@ workflow TestSmartSeq2SingleCellPR {
 
   call target_wdl.SmartSeq2SingleCell as target_workflow {
     input:
-      gtf_file = gtf_file,
       genome_ref_fasta = genome_ref_fasta,
       rrna_intervals = rrna_intervals,
       gene_ref_flat = gene_ref_flat,

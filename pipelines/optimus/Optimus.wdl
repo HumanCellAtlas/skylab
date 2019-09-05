@@ -11,13 +11,15 @@ import "RunEmptyDrops.wdl" as RunEmptyDrops
 import "ZarrUtils.wdl" as ZarrUtils
 import "Picard.wdl" as Picard
 import "UmiCorrection.wdl" as UmiCorrection
+import "ScatterBam.wdl" as ScatterBam
+import "ModifyGtf.wdl" as ModifyGtf
 
 workflow Optimus {
   meta {
     description: "The optimus 3' pipeline processes 10x genomics sequencing data based on the v2 chemistry. It corrects cell barcodes and UMIs, aligns reads, marks duplicates, and returns data as alignments in BAM format and as counts in sparse matrix exchange format."
   }
   # version of this pipeline
-  String version = "optimus_v1.1.0"
+  String version = "optimus_v1.3.4"
 
   # Sequencing data inputs
   Array[File] r1_fastq
@@ -93,18 +95,30 @@ workflow Optimus {
       }
     }
 
+    # This gets collected into an array outside of the scatter
     File barcoded_bam = select_first([AttachBarcodes.bam_output, AttachBarcodesNoIndex.bam_output])
   }
 
-  call Merge.MergeSortBamFiles as MergeUnsorted {
-    input:
-      bam_inputs = barcoded_bam,
-      sort_order = "unsorted"
+  scatter (bam in barcoded_bam) {
+    call ScatterBam.ScatterBam as ScatterBamFiles {
+      input:
+        bam_to_scatter = bam,
+        scatter_width = 32
+    }
+
+    Array[File] scattered_bams = ScatterBamFiles.scattered_bams
   }
+
+  call ModifyGtf.ReplaceGeneNameWithGeneID as ModifyGtf {
+    input:
+      original_gtf = annotations_gtf
+  }
+
+  Array[File] flattened_scattered_bams = flatten(scattered_bams)
 
   call Split.SplitBamByCellBarcode {
     input:
-      bam_input = MergeUnsorted.output_bam
+      bams_to_split = flattened_scattered_bams
   }
 
   scatter (bam in SplitBamByCellBarcode.bam_output_array) {
@@ -113,11 +127,10 @@ workflow Optimus {
         bam_input = bam,
         tar_star_reference = tar_star_reference
     }
-
     call TagGeneExon.TagGeneExon as TagGenes {
       input:
         bam_input = StarAlign.bam_output,
-        annotations_gtf = annotations_gtf
+        annotations_gtf = ModifyGtf.modified_gtf
     }
 
     call Picard.SortBamAndIndex as PreUMISort {
@@ -165,7 +178,7 @@ workflow Optimus {
     call Count.CreateSparseCountMatrix {
       input:
         bam_input = PreCountSort.bam_output,
-        gtf_file = annotations_gtf
+        gtf_file = ModifyGtf.modified_gtf
     }
   }
 
@@ -203,6 +216,7 @@ workflow Optimus {
     call ZarrUtils.OptimusZarrConversion{
       input:
         sample_id=sample_id,
+        annotation_file=annotations_gtf,
         cell_metrics = MergeCellMetrics.cell_metrics,
         gene_metrics = MergeGeneMetrics.gene_metrics,
         sparse_count_matrix = MergeCountFiles.sparse_count_matrix,

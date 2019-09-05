@@ -1,18 +1,17 @@
 task GroupQCOutputs {
-  Array[File] picard_row_outputs
+  Array[File?] picard_row_outputs
   Array[File] picard_table_outputs
   File hisat2_stats
   File hisat2_trans_stats
   File rsem_stats
   String output_name
   # Runtime
-  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.0"
-  String mem = 3
-  String cpu = 1
-  String disk_space = 20 
+  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.4"
+  Int mem = 3
+  Int cpu = 1
+  Int disk_space = 20 
   Int preemptible = 5
-  Int max_retries = 0
-  
+
   meta {
     description: "This task will group the Picard metrics"
   }
@@ -28,7 +27,6 @@ task GroupQCOutputs {
     cpu: "(optional) the number of cpus to provision for this task"
     disk_space: "(optional) the amount of disk space (GiB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
-    max_retries: "(optional) retry this number of times if task fails -- use with caution, see skylab README for details"
   }
  command {
     set -e
@@ -49,6 +47,5 @@ task GroupQCOutputs {
     disks: "local-disk ${disk_space} HDD"
     cpu: cpu
     preemptible: preemptible
-    maxRetries: max_retries
   }
 }
