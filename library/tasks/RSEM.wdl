@@ -11,7 +11,6 @@ task RSEMExpression {
   # use provided disk number or dynamically size on our own, with 20GiB of additional disk
   Int disk = ceil(size(trans_aligned_bam, "GiB") + size(rsem_genome, "GiB") + 20)
   Int preemptible = 5
-  Int max_retries = 0
 
   meta {
     description: "This task will quantify gene expression matrix by using RSEM. The output include gene-level and isoform-level results."
@@ -26,7 +25,6 @@ task RSEMExpression {
     cpu: "(optional) the number of cpus to provision for this task"
     disk: "(optional) the amount of disk space (GiB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
-    max_retries: "(optional) retry this number of times if task fails -- use with caution, see skylab README for details"
   }
 
   command {
@@ -51,7 +49,6 @@ task RSEMExpression {
     disks: "local-disk ${disk} HDD"
     cpu: cpu
     preemptible: preemptible
-    max_retries: max_retries
   }
 
   output {

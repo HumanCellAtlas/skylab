@@ -20,7 +20,6 @@ task SmartSeq2ZarrConversion {
     cpu: "(optional) the number of cpus to provision for this task"
     disk: "(optional) the amount of disk space (GiB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
-    max_retries: "(optional) retry this number of times if task fails -- use with caution, see skylab README for details"
   }
 
   command {
@@ -59,7 +58,7 @@ task SmartSeq2ZarrConversion {
 
 task OptimusZarrConversion {
   #runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.1.10"
+  String docker = "quay.io/humancellatlas/secondary-analysis-zarr-output:0.0.1"
 
   # name of the sample
   String sample_id
@@ -89,13 +88,13 @@ task OptimusZarrConversion {
     cpu: "(optional) the number of cpus to provision for this task"
     disk: "(optional) the amount of disk space (GiB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
-    max_retries: "(optional) retry this number of times if task fails -- use with caution, see skylab README for details"
   }
 
   command {
     set -euo pipefail
 
     python3 /tools/create_zarr_optimus.py \
+       --empty_drops_file ${empty_drops_result} \
        --annotation_file ${annotation_file}\
        --cell_metrics ${cell_metrics}\
        --gene_metrics ${gene_metrics}\

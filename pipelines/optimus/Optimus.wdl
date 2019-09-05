@@ -19,7 +19,7 @@ workflow Optimus {
     description: "The optimus 3' pipeline processes 10x genomics sequencing data based on the v2 chemistry. It corrects cell barcodes and UMIs, aligns reads, marks duplicates, and returns data as alignments in BAM format and as counts in sparse matrix exchange format."
   }
   # version of this pipeline
-  String version = "optimus_v1.2.0"
+  String version = "optimus_v1.3.4"
 
   # Sequencing data inputs
   Array[File] r1_fastq
@@ -105,6 +105,11 @@ workflow Optimus {
     Array[File] scattered_bams = ScatterBamFiles.scattered_bams
   }
 
+  call ModifyGtf.ReplaceGeneNameWithGeneID as ModifyGtf {
+    input:
+      original_gtf = annotations_gtf
+  }
+
   Array[File] flattened_scattered_bams = flatten(scattered_bams)
 
   call Split.SplitBamByCellBarcode {
@@ -118,12 +123,6 @@ workflow Optimus {
         bam_input = bam,
         tar_star_reference = tar_star_reference
     }
-
-    call ModifyGtf.ReplaceGeneNameWithGeneID as ModifyGtf {
-      input:
-        original_gtf = annotations_gtf
-    }
-
     call TagGeneExon.TagGeneExon as TagGenes {
       input:
         bam_input = StarAlign.bam_output,
