@@ -152,7 +152,6 @@ task OptimusZarrToLoom {
         set -euo pipefail
 
         mkdir packed_zarr
-        echo ${sep=' ' zarr_files} > zarr_filenames.txt
         mv ${sep=' ' zarr_files} packed_zarr/
         mkdir unpacked_zarr
         unpackZARR.sh -i packed_zarr -o unpacked_zarr
