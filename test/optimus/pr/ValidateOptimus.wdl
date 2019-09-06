@@ -190,14 +190,14 @@ task ValidateMetrics {
         if [ "$gene_metric_hash" == "${expected_gene_metric_hash}" ]; then
             echo Computed and expected gene metrics match \( "$gene_metric_hash" \)
         else
-            echo Computed \( "$gene_metric_hash" \) and expected \( ${expected_gene_metric_hash} \) gene checksums do not match
+            echo Computed \( "$gene_metric_hash" \) and expected \( "${expected_gene_metric_hash}" \) gene checksums do not match
             fail=true
         fi
 
         if [ "$cell_metric_hash" == "${expected_cell_metric_hash}" ]; then
             echo Computed and expected cell metrics match \( "$cell_metric_hash" \)
         else
-            echo Computed \( "$cell_metric_hash" \) and expected \( ${expected_cell_metric_hash} \) cell metrics hashes do not match
+            echo Computed \( "$cell_metric_hash" \) and expected \( "${expected_cell_metric_hash}" \) cell metrics hashes do not match
             fail=true
         fi
 
