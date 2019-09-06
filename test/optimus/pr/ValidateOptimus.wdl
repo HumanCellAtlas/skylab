@@ -67,12 +67,12 @@ task ValidateBam {
         calculated_checksum=$( samtools view -F 256 "${bam}" | cut -f 1-11 | md5sum | awk '{print $1}' )
         echo Reduced checksum generation complete
 
-        if [ "$calculated_checksum" == ${expected_checksum} ]
+        if [ "$calculated_checksum" == "${expected_checksum}" ]
         then
              echo Computed and expected bam hashes match \( "$calculated_checksum" \)
              printf PASS > result.txt
         else 
-             echo Computed \( "$calculated_checksum" \) and expected \( ${expected_checksum} \) bam file hashes do not match
+             echo Computed \( "$calculated_checksum" \) and expected \( "${expected_checksum}" \) bam file hashes do not match
              printf FAIL > result.txt
         fi
     >>>
