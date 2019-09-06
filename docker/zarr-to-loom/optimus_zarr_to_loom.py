@@ -7,6 +7,7 @@ import loompy
 import scipy as sc
 from scipy.sparse import coo_matrix
 import argparse
+import numpy as np
 
 
 # Custom Exception
@@ -40,14 +41,43 @@ def main():
     # Get the expression matrix
     # expression matrix in numpy ndarray format (dense)
     # NOTE: If memory is limiting this could be done by chunk
-    expr = root[f"/{sample_id}.zarr/expression"][:]
+    nrows = root[f"/{sample_id}.zarr/expression"].shape[0]
+    ncols = root[f"/{sample_id}.zarr/expression"].shape[1]
 
-    # Transpose by swapping coordinates of COO-formated matrix
-    expr_sp = sc.sparse.coo_matrix(expr)
-    del expr
-    expr_sp_t = sc.sparse.coo_matrix((expr_sp.data, (expr_sp.col, expr_sp.row)),
-                                     shape=(expr_sp.shape[1], expr_sp.shape[0]))
-    del expr_sp
+    expr_sp = sc.sparse.coo_matrix((nrows, ncols), np.float32)
+
+    iter_row_count = 100;
+
+    xcoord = []
+    ycoord = []
+    value = []
+
+    chunk_row_size = 10000
+    chunk_col_size = 10000
+
+    for i in range(0, nrows, chunk_row_size):
+        for j in range(0, ncols, chunk_col_size):
+            p = chunk_row_size
+            if i + chunk_row_size > nrows:
+                p = nrows - 1
+            q = chunk_col_size
+            if j + chunk_col_size > ncols:
+                q = ncols - j
+            expr_sub_row_coo = sc.sparse.coo_matrix(root[f"/{sample_id}.zarr/expression"][i:(i+p), j:(j+q)])
+            for k in range(0, expr_sub_row_coo.data.shape[0]):
+                xcoord.append(expr_sub_row_coo.row[k] + i)
+                ycoord.append(expr_sub_row_coo.col[k] + j)
+                value.append(expr_sub_row_coo.data[k])
+
+    xcoord = np.asarray(xcoord)
+    ycoord = np.asarray(ycoord)
+    value = np.asarray(value)
+
+    expr_sp_t = sc.sparse.coo_matrix((value, (ycoord, xcoord)), shape=(expr_sp.shape[1], expr_sp.shape[0]))
+
+    del xcoord
+    del ycoord
+    del value
 
     # ROW/GENE Metadata
 
