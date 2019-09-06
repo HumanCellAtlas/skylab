@@ -223,6 +223,7 @@ workflow Optimus {
   if (output_loom) {
     call ZarrUtils.OptimusZarrToLoom {
       input:
+        sample_id=sample_id,
         zarr_files = OptimusZarrConversion.zarr_output_files
     }
   }
