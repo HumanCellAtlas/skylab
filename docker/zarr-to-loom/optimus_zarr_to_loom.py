@@ -20,7 +20,7 @@ def main():
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument('--input-zarr', dest="input_zarr_path", required=True, help="Path to input ZARR file")
     parser.add_argument('--output-loom', dest="output_loom_path", required=True, help="Path to output loom file")
-    parser.add_argument('--sample_id', dest="sample_id", required=True, help="Sample identifier")
+    parser.add_argument('--sample-id', dest="sample_id", required=True, help="Sample identifier")
     args = parser.parse_args()
 
     input_zarr_path = args.input_zarr_path
