@@ -40,7 +40,7 @@ workflow Optimus {
   # this is used to scatter matched [r1_fastq, r2_fastq, i1_fastq] arrays
   Array[Int] indices = range(length(r1_fastq))
 
-  # If true produce the optinal loom output
+  # If true produce the optional loom output
   Boolean output_loom = false
 
   # this pipeline does not set any preemptible varibles and only relies on the task-level preemptible settings
