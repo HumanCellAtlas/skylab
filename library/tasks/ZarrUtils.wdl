@@ -156,13 +156,13 @@ task OptimusZarrToLoom {
         mv ${sep=' ' zarr_files} packed_zarr/
         mkdir unpacked_zarr
         unpackZARR.sh -i packed_zarr -o unpacked_zarr
-        optimus_zarr_to_loom.py --input-zarr unpacked_zarr --output-loom output.loom --sample_id ${sample_id}
+        optimus_zarr_to_loom.py --input-zarr unpacked_zarr --output-loom output.loom --sample-id ${sample_id}
     }
 
     runtime {
         docker: docker
         cpu: 1
-        memory: "10 GiB"
+        memory: "16 GiB"
         disks: "local-disk 100 HDD"
         preemptible: preemptible
     }
