@@ -10,6 +10,7 @@ workflow TestOptimusPR {
   String expected_bam_hash
   String expected_gene_metric_hash
   String expected_cell_metric_hash
+  String expected_loom_file_checksum
   File reference_matrix
 
   # Optimus inputs
@@ -32,7 +33,8 @@ workflow TestOptimusPR {
       tar_star_reference = tar_star_reference,
       annotations_gtf = annotations_gtf,
       ref_genome_fasta = ref_genome_fasta,
-      sample_id = sample_id
+      sample_id = sample_id,
+      output_loom = true
   }
 
   call checker.ValidateOptimus as checker {
@@ -43,12 +45,13 @@ workflow TestOptimusPR {
       matrix_col_index = target.matrix_col_index,
       gene_metrics = target.gene_metrics,
       cell_metrics = target.cell_metrics,
-
-
+      loom_file = target.loom_output_file,
+      
       reference_matrix = reference_matrix,
       expected_bam_hash = expected_bam_hash,
       expected_cell_metric_hash = expected_cell_metric_hash,
       expected_gene_metric_hash = expected_gene_metric_hash,
+      expected_loom_file_checksum = expected_loom_file_checksum
   }
 
 }
