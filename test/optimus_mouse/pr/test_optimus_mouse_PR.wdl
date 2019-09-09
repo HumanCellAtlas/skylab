@@ -38,6 +38,8 @@ workflow TestOptimusPR {
     input:
       bam = target.bam,
       matrix = target.matrix,
+      matrix_row_index = target.matrix_row_index,
+      matrix_col_index = target.matrix_col_index,
       gene_metrics = target.gene_metrics,
       cell_metrics = target.cell_metrics,
       expected_cell_metric_hash = expected_cell_metric_hash,
