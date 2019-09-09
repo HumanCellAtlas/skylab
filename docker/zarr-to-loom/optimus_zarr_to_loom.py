@@ -93,25 +93,21 @@ def main():
 
     numeric_field_names = root[f"/{sample_id}.zarr/gene_metadata_numeric_name"][:]
 
-    # Generate with a list comprehension
-    def add_to_gene_meta_by_index(i):
+    # Generate with a list
+    for i in range(0, numeric_field_names.shape[0]):
         name = numeric_field_names[i]
         data = root[f"/{sample_id}.zarr/gene_metadata_numeric"][:][:, i]
         row_attrs[name] = data
-
-    [add_to_gene_meta_by_index(i) for i in range(0, numeric_field_names.shape[0])]
 
     # COLUMN/CELL Metadata
     col_attrs = dict()
     col_attrs["CellID"] = root[f"/{sample_id}.zarr/cell_id"][:]
     bool_field_names = root[f"/{sample_id}.zarr/cell_metadata_bool_name"][:]
 
-    def add_to_cell_meta_bool_by_index(i):
+    for i in range(0, bool_field_names.shape[0]):
         name = bool_field_names[i]
         data = root[f"/{sample_id}.zarr/cell_metadata_bool"][:][:, i]
         col_attrs[name] = data
-
-    [add_to_cell_meta_bool_by_index(i) for i in range(0, bool_field_names.shape[0])]
 
     float_field_names = root[f"/{sample_id}.zarr/cell_metadata_float_name"][:]
 
