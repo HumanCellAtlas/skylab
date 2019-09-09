@@ -19,7 +19,7 @@ workflow Optimus {
     description: "The optimus 3' pipeline processes 10x genomics sequencing data based on the v2 chemistry. It corrects cell barcodes and UMIs, aligns reads, marks duplicates, and returns data as alignments in BAM format and as counts in sparse matrix exchange format."
   }
   # version of this pipeline
-  String version = "optimus_v1.3.3"
+  String version = "optimus_v1.3.5"
 
   # Sequencing data inputs
   Array[File] r1_fastq
