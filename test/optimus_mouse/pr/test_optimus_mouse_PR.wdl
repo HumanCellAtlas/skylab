@@ -40,8 +40,6 @@ workflow TestOptimusPR {
       matrix = target.matrix,
       gene_metrics = target.gene_metrics,
       cell_metrics = target.cell_metrics,
-      expected_bam_hash = expected_bam_hash,
-      expected_matrix_hash = expected_matrix_hash,
       expected_cell_metric_hash = expected_cell_metric_hash,
       expected_gene_metric_hash = expected_gene_metric_hash
   }
