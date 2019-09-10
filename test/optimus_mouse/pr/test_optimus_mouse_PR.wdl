@@ -1,5 +1,5 @@
 import "Optimus.wdl" as target
-import "ValidateOptimus.wdl" as checker
+import "ValidateOptimusMouse.wdl" as checker
 
 
 # this workflow will be run by the jenkins script that gets executed by PRs.
@@ -34,7 +34,7 @@ workflow TestOptimusPR {
       sample_id = sample_id
   }
 
-  call checker.ValidateOptimus as checker {
+  call checker.ValidateOptimusMouse as checker {
     input:
       bam = target.bam,
       matrix = target.matrix,
@@ -42,8 +42,10 @@ workflow TestOptimusPR {
       matrix_col_index = target.matrix_col_index,
       gene_metrics = target.gene_metrics,
       cell_metrics = target.cell_metrics,
+      expected_matrix_hash = expected_matrix_hash,
+      expected_bam_hash = expected_bam_hash,
       expected_cell_metric_hash = expected_cell_metric_hash,
-      expected_gene_metric_hash = expected_gene_metric_hash
+      expected_gene_metric_hash = expected_gene_metric_hash,
   }
 
 }

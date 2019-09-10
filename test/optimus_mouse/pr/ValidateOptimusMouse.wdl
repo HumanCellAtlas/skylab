@@ -1,15 +1,17 @@
-task ValidateOptimus {
+task ValidateOptimusMouse {
       File bam
       File matrix
+      File matrix_row_index
+      File matrix_col_index
       File gene_metrics
       File cell_metrics
-
-      Int required_disk = ceil((size(bam, "G") + size(matrix, "G")) * 1.1)
 
       String expected_bam_hash
       String expected_matrix_hash
       String expected_gene_metric_hash
       String expected_cell_metric_hash
+
+      Int required_disk = ceil((size(bam, "G") + size(matrix, "G")) * 1.1)
 
   command <<<
 
@@ -36,11 +38,6 @@ task ValidateOptimus {
       fail=true
     fi
     
-    if [ "$matrix_hash" != "${expected_matrix_hash}" ]; then
-      >&2 echo "matrix_hash ($matrix_hash) did not match expected hash (${expected_matrix_hash})"
-      fail=true
-    fi
-
     if [ "$gene_metric_hash" != "${expected_gene_metric_hash}" ]; then
       >&2 echo "gene_metric_hash ($gene_metric_hash) did not match expected hash (${expected_gene_metric_hash})"
       fail=true
