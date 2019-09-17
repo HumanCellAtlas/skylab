@@ -7,10 +7,10 @@ task Attach10xBarcodes {
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.4"
-  Int machine_mem_mb = 8250
+  Int machine_mem_mb = 48000
   Int cpu = 2
   # estimate that bam is approximately the size of all inputs plus 50%
-  Int disk = ceil((size(r2_unmapped_bam, "Gi") + size(r1_fastq, "Gi") + if (defined(i1_fastq)) then size(i1_fastq, "Gi") else 0) * 2.5)
+  Int disk = ceil((size(r2_unmapped_bam, "Gi") + size(r1_fastq, "Gi") + if (defined(i1_fastq)) then size(i1_fastq, "Gi") else 0) * 3)
   # by default request non preemptible machine to make sure the slow attach barcodes step completes
   Int preemptible = 0
 
