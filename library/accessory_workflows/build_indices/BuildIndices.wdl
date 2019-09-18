@@ -289,7 +289,7 @@ task BuildIntervalList {
 
   runtime {
     docker: "quay.io/humancellatlas/secondary-analysis-umitools:0.0.1"
-    memory: "8 GB"
+    memory: "8 GiB"
     disks: "local-disk 100 HDD"
     cpu: "8"
   }
