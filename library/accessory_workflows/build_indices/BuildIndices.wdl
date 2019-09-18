@@ -96,7 +96,7 @@ task BuildRsem {
   }
   runtime {
     docker: "quay.io/humancellatlas/secondary-analysis-rsem:v0.2.2-1.3.0"
-    memory: "10 GB"
+    memory: "10 GiB"
     disks: "local-disk 100 HDD"
   }
   output {
