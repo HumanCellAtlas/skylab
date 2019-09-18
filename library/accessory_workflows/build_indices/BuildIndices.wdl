@@ -248,7 +248,7 @@ task BuildPicardRefFlat {
 
   runtime {
     docker: "quay.io/humancellatlas/gtf_to_genepred:v0.0.0"
-    memory: "8 GB"
+    memory: "8 GiB"
     disks: "local-disk 100 HDD"
     cpu: "8"
   }
