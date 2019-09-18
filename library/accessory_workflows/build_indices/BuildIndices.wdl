@@ -221,7 +221,7 @@ task BuildHisat2SnpHaplotypeSplicing {
 
   runtime {
     docker:"quay.io/humancellatlas/secondary-analysis-hisat2:v0.3.0-2-2.1.0"
-    memory: "240 GB"
+    memory: "240 GiB"
     disks: "local-disk 100 HDD"
     cpu: "16"
   }
