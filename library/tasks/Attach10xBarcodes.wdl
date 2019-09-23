@@ -3,7 +3,7 @@ task Attach10xBarcodes {
   File? i1_fastq
   File r2_unmapped_bam
   File whitelist
-  Boolean tenX_v3_chemistry = false
+  String chemisty;
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.4"
@@ -23,7 +23,7 @@ task Attach10xBarcodes {
     i1_fastq: "optional, index fastq file; contains sample barcode"
     r2_unmapped_bam: "reverse unmapped bam file; contains alignable genomic information"
     whitelist: "10x genomics cell barcode whitelist"
-    tenX_v3_chemistry: "assume 10X Genomics v3 chemistry with 12bp UMI (in contrast to default v2 with 10bp UMI)"
+    chemistry: "chemistry employed, currently can be tenX_v2 or tenX_v3, the latter implies NO feature barcodes"
     docker: "(optional) the docker image containing the runtime environment for this task"
     machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
@@ -34,7 +34,7 @@ task Attach10xBarcodes {
   command {
     set -e
 
-    if [[ "$tenX_V3_chemistry" == "false" ]]
+    if [[ "$chemistry" == "tenX_v2" ]]
     then
         ## V2
         Attach10xBarcodes \
@@ -42,7 +42,8 @@ task Attach10xBarcodes {
             ${"--i1" + i1_fatq} \
 	    --u2 "${r2_unmapped_bam}" \
 	    --whitelist "${whitelist}"
-    else
+    elif [[ "$chemistry" == "tenX_v3" ]]
+    then
         ## V3
         AttachBarcodes \
             --r1 "${r1_fastq}" \
@@ -55,6 +56,9 @@ task Attach10xBarcodes {
             --cell-barcode-length 16 \
             --molecule-barcode-start-position 16 \
             --molecule-barcode-length 12
+    else
+	echo Error: unknown chemistry value: "$chemistry"
+	exit 1;
     fi
 
   }

@@ -34,7 +34,8 @@ workflow Optimus {
 
   # 10x parameters
   File whitelist
-  Boolean tenX_v3_chemistry = false
+  # tenX_v2, tenX_v3
+  String chemistry = "tenX_v2" 
 
   # environment-specific parameters
   String fastq_suffix = ""
@@ -80,7 +81,7 @@ workflow Optimus {
           i1_fastq = non_optional_i1_fastq[index],
           r2_unmapped_bam = FastqToUBam.bam_output,
           whitelist = whitelist,
-          tenX_v3_chemistry = tenX_v3_chemistry
+	  chemistry = chemistry
       }
     }
 
