@@ -3,7 +3,7 @@ task Attach10xBarcodes {
   File? i1_fastq
   File r2_unmapped_bam
   File whitelist
-  String chemisty;
+  String chemistry
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.4"
@@ -34,20 +34,21 @@ task Attach10xBarcodes {
   command {
     set -e
 
-    if [[ "$chemistry" == "tenX_v2" ]]
+    if [ "${chemistry}" == "tenX_v2" ]
     then
         ## V2
         Attach10xBarcodes \
             --r1 "${r1_fastq}" \
-            ${"--i1" + i1_fatq} \
+            ${"--i1 " + i1_fastq} \
             --u2 "${r2_unmapped_bam}" \
-            --whitelist "${whitelist}"
-    elif [[ "$chemistry" == "tenX_v3" ]]
+            --whitelist "${whitelist}" \
+	    --output-bamfile barcoded.bam
+    elif [ "${chemistry}" == "tenX_v3" ]
     then
         ## V3
         AttachBarcodes \
             --r1 "${r1_fastq}" \
-            ${"--i1" + i1_fatq} \
+            ${"--i1 " + i1_fastq} \
             --u2 "${r2_unmapped_bam}" \
             --whitelist "${whitelist}" \
             --sample-barcode-start-position 0 \
@@ -55,7 +56,8 @@ task Attach10xBarcodes {
             --cell-barcode-start-position 0 \
             --cell-barcode-length 16 \
             --molecule-barcode-start-position 16 \
-            --molecule-barcode-length 12
+            --molecule-barcode-length 12 \
+	    --output-bamfile barcoded.bam
     else
         echo Error: unknown chemistry value: "$chemistry"
         exit 1;
