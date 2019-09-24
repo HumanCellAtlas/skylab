@@ -81,7 +81,7 @@ workflow Optimus {
           i1_fastq = non_optional_i1_fastq[index],
           r2_unmapped_bam = FastqToUBam.bam_output,
           whitelist = whitelist,
-	  chemistry = chemistry
+         chemistry = chemistry
       }
     }
 
