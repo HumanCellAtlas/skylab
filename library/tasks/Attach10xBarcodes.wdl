@@ -40,8 +40,8 @@ task Attach10xBarcodes {
         Attach10xBarcodes \
             --r1 "${r1_fastq}" \
             ${"--i1" + i1_fatq} \
-	    --u2 "${r2_unmapped_bam}" \
-	    --whitelist "${whitelist}"
+            --u2 "${r2_unmapped_bam}" \
+            --whitelist "${whitelist}"
     elif [[ "$chemistry" == "tenX_v3" ]]
     then
         ## V3
@@ -49,7 +49,7 @@ task Attach10xBarcodes {
             --r1 "${r1_fastq}" \
             ${"--i1" + i1_fatq} \
             --u2 "${r2_unmapped_bam}" \
-	    --whitelist "${whitelist}" \
+            --whitelist "${whitelist}" \
             --sample-barcode-start-position 0 \
             --sample-barcode-length 8 \
             --cell-barcode-start-position 0 \
@@ -57,8 +57,8 @@ task Attach10xBarcodes {
             --molecule-barcode-start-position 16 \
             --molecule-barcode-length 12
     else
-	echo Error: unknown chemistry value: "$chemistry"
-	exit 1;
+        echo Error: unknown chemistry value: "$chemistry"
+        exit 1;
     fi
 
   }
