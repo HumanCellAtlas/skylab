@@ -14,8 +14,6 @@ Data are stored in the following chunked and compressed arrays:
 
 - gene_metadata_numeric_name ("<U40" # little-endian 40 char unicode)
 - gene_metadata_numeric (np.float32)
-- cell_metadata_uint_name ("<U40"  # little-endian 40 char unicode)
-- cell_metadata_uint (np.uint32)
 - cell_metadata_float_name ("<U40"  # little-endian 40 char unicode)
 - cell_metadata_float (np.float32)
 - cell_metadata_bool_name ("<U40"  # little-endian 40 char unicode)
