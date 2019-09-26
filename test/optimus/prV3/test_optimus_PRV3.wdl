@@ -23,6 +23,7 @@ workflow TestOptimusPR {
   File annotations_gtf  # gtf containing annotations for gene tagging
   File ref_genome_fasta  # genome fasta file
   String sample_id  # name of sample matching this file, inserted into read group header
+  String chemistry # chemistry identifier
 
   call target.Optimus as target {
     input:
@@ -34,7 +35,8 @@ workflow TestOptimusPR {
       annotations_gtf = annotations_gtf,
       ref_genome_fasta = ref_genome_fasta,
       sample_id = sample_id,
-      output_loom = true
+      output_loom = true,
+      chemistry = chemistry
   }
 
   call checker.ValidateOptimus as checker {

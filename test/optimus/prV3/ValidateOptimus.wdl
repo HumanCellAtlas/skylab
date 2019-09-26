@@ -1,6 +1,6 @@
 workflow ValidateOptimus {
      meta {
-         description: "Validate Optimus Outputs"
+         description: "Validate Optimus Outputs for V3 chemistry"
      }
 
      # Optimus output files to be checked

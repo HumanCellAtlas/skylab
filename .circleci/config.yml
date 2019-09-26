@@ -84,6 +84,15 @@ jobs:
                     ./test/trigger_test.sh optimus
                 no_output_timeout: 1.5h
 
+    test_optimus_v3:
+        machine: true
+        steps:
+            - checkout
+            - run:
+                command: |
+                    ./test/trigger_test.sh optimus prV3
+                no_output_timeout: 1.5h
+
     test_smartseq2:
         machine: true
         steps:
@@ -178,3 +187,4 @@ workflows:
           - test_portability_optimus
           - test_portability_optimus_mouse
           - test_portability_smartseq2_single_sample
+          - test_optimus_v3

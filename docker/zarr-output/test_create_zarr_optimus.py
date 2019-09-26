@@ -19,15 +19,11 @@ def test_add_cell_metrics():
                                       verbose=True);
     # Read the results back
     store_read = zarr.open(zarr.DirectoryStore(path))
-    cell_metadata_uint = store_read['cell_metadata_uint'][:]
-    cell_metadata_uint_name = store_read['cell_metadata_uint_name'][:]
     cell_metadata_float = store_read['cell_metadata_float'][:]
     cell_metadata_float_name = store_read['cell_metadata_float_name'][:]
     cell_metadata_bool = store_read['cell_metadata_bool'][:]
     cell_metadata_bool_name = store_read['cell_metadata_bool_name'][:]
 
-    assert cell_metadata_uint.shape == (10,22)
-    assert cell_metadata_uint_name.shape == (22,)
     assert cell_metadata_float.shape == (10,13)
     assert cell_metadata_float_name.shape == (13,)
     assert cell_metadata_bool.shape == (10,2)
