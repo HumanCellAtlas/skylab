@@ -173,7 +173,7 @@ task BuildHisat2 {
 }
 
 task BuildHisat2SnpHaplotypeSplicing {
-  # This version includes SNP, haplotype, and
+  # This version includes SNP, haplotype, and splices
   input {
     String organism
     String genome_short_string
