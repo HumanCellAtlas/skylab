@@ -27,7 +27,7 @@ human_inputs.json
   "BuildIndices.dbsnp_version": "150"
 }
 
-The resulting run will have several taxk execution buckets, the purpose of these are explained below.
+The resulting run will have several task execution buckets, the purpose of these are explained below.
 
 a) GetReference: this task simply fetches the reference files: the annotation file and the genome file
 

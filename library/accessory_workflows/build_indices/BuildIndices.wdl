@@ -72,7 +72,7 @@ task BuildStar {
 
   runtime {
     docker: "quay.io/humancellatlas/secondary-analysis-star:v0.2.2-2.5.3a-1.0.0"
-    memory: "50 GB"
+    memory: "50 GiB"
     disks :"local-disk 100 HDD"
     cpu:"16"
   }
@@ -96,7 +96,7 @@ task BuildRsem {
   }
   runtime {
     docker: "quay.io/humancellatlas/secondary-analysis-rsem:v0.2.2-1.3.0"
-    memory: "10 GB"
+    memory: "10 GiB"
     disks: "local-disk 100 HDD"
   }
   output {
@@ -127,7 +127,7 @@ task BuildHisat2FromRsem {
 
   runtime {
     docker: "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
-    memory: "8 GB"
+    memory: "8 GiB"
     disks: "local-disk 100 HDD"
     cpu: "8"
   }
@@ -162,7 +162,7 @@ task BuildHisat2 {
 
   runtime {
     docker: "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
-    memory: "8 GB"
+    memory: "8 GiB"
     disks: "local-disk 100 HDD"
     cpu: "8"
   }
@@ -221,7 +221,7 @@ task BuildHisat2SnpHaplotypeSplicing {
 
   runtime {
     docker:"quay.io/humancellatlas/secondary-analysis-hisat2:v0.3.0-2-2.1.0"
-    memory: "240 GB"
+    memory: "240 GiB"
     disks: "local-disk 100 HDD"
     cpu: "16"
   }
@@ -248,7 +248,7 @@ task BuildPicardRefFlat {
 
   runtime {
     docker: "quay.io/humancellatlas/gtf_to_genepred:v0.0.0"
-    memory: "8 GB"
+    memory: "8 GiB"
     disks: "local-disk 100 HDD"
     cpu: "8"
   }
@@ -289,7 +289,7 @@ task BuildIntervalList {
 
   runtime {
     docker: "quay.io/humancellatlas/secondary-analysis-umitools:0.0.1"
-    memory: "8 GB"
+    memory: "8 GiB"
     disks: "local-disk 100 HDD"
     cpu: "8"
   }
