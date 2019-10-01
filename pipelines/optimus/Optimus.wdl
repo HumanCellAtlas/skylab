@@ -71,8 +71,7 @@ workflow Optimus {
 
   call OptimusInputChecks.checkOptimusInput {
     input:
-      force_no_check = force_no_check
-
+      force_no_check = force_no_check,
       chemistry = chemistry
   }
 
