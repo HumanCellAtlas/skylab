@@ -13,6 +13,7 @@ import "Picard.wdl" as Picard
 import "UmiCorrection.wdl" as UmiCorrection
 import "ScatterBam.wdl" as ScatterBam
 import "ModifyGtf.wdl" as ModifyGtf
+import "OptimusInputChecks.wdl" as OptimusInputChecks
 
 workflow Optimus {
   meta {
@@ -62,6 +63,11 @@ workflow Optimus {
     tenX_v3_chemistry: "assume 10X Genomics v3 chemistry with 12bp UMI (in contrast to default v2 with 10bp UMI)"
     fastq_suffix: "when running in green box, need to add '.gz' for picard to detect the compression"
     output_zarr: "whether to run the taks that converts the outputs to Zarr format, by default it's true"
+  }
+
+  call OptimusInputChecks.checkOptimusInput {
+    input:
+      chemistry = chemistry;
   }
 
   scatter (index in indices) {
