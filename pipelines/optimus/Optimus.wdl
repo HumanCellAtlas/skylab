@@ -73,7 +73,7 @@ workflow Optimus {
     input:
       force_no_check = force_no_check
 
-      chemistry = chemistry;
+      chemistry = chemistry
   }
 
   scatter (index in indices) {
