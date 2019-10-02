@@ -10,17 +10,24 @@ task checkOptimusInput {
     set -e
     
     ## Set pass to true
-    pass=true
+    pass="true"
 
     ## Perform checks
-    if [[ ! ("${chemistry}" != "tenX_v2" && "${chemistry}" != "tenX_v3") ]]
+    if [[ ! ("${chemistry}" == "tenX_v2" || "${chemistry}" == "tenX_v3") ]]
     then
-	pass=1
+	pass="false"
 	echo "ERROR: Invalid value \"${chemistry}\" for input \"chemistry\""
     fi
 
+    echo Value of force_no_check is ${force_no_check}
+    if [[ ${force_no_check} == "true" ]]
+    then
+       echo "force_no_check is set: Ignoring input checks"
+       exit 0;
+    fi
+
     ## fail if any tests failed, ignore if force_no_check is set
-    if [[ $force_no_check || $pass ]]
+    if [[ $pass == "true" ]]
     then
       exit 0;
     else
