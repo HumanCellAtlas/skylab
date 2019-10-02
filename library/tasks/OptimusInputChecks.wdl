@@ -38,7 +38,7 @@ task checkOptimusInput {
   runtime {
     docker: "ubuntu:18.04"
     cpu: 1
-    memory: "1.0 GB"
+    memory: "1 GiB"
     disks: "local-disk 1 HDD"
   }
   
