@@ -19,7 +19,6 @@ task checkOptimusInput {
 	echo "ERROR: Invalid value \"${chemistry}\" for input \"chemistry\""
     fi
 
-    echo Value of force_no_check is ${force_no_check}
     if [[ ${force_no_check} == "true" ]]
     then
        echo "force_no_check is set: Ignoring input checks"
