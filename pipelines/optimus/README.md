@@ -30,7 +30,7 @@ Optimus can be deployed using [Cromwell](https://software.broadinstitute.org/wdl
 
 ## Inputs
 
-The necessary inputs for the Optimus pipeline are detailed in a json file, such as this [example](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/example_test_inputs.json) 
+The necessary inputs for the Optimus pipeline are detailed in a json file, such as in this [example](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/example_test_inputs.json). 
 
 ### Input Sample Data 
 
