@@ -1,3 +1,17 @@
+# Table of Contents
+- [Optimus Pipeline Overview](#optimus-pipeline-overview)
+  * [Introduction to the Optimus Workflow](#introduction-to-the-optimus-workflow)
+  * [Quick Start Table](#quick-start-table)
+- [Set-up](#set-up)
+  * [Installation](#installation)
+  * [Requirements](#requirements)
+  * [Inputs](#inputs)
+    + [Sample Data Input](#sample-data-input)
+    + [Additional Inputs](#additional-inputs)
+- [Running Optimus](#running-optimus)
+  * [Optimus Modules Summary](#optimus-modules-summary)
+  * [Components of Optimus](#components-of-optimus)
+
 # Optimus Pipeline Overview
 ![Diagram](Optimus_diagram.png)
 
@@ -19,7 +33,7 @@ Optimus has been validated for analyzing both [human](../../benchmarking/optimus
 | Aligner           |STAR       |[Dobin, et al.,2013](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3530905/)|
 | Transcript Quantification |Utilities for processing large-scale single cell datasets |[Sctools](https://github.com/HumanCellAtlas/sctools) |                      
 |Data Input File Format |File format in which sequencing data is provided |[FASTQ](https://academic.oup.com/nar/article/38/6/1767/3112533) |                       
-|Data Output File Format |File formats in which Optimus output is provided |[BAM](http://samtools.github.io/hts-specs/), [Zarr version 2](https://zarr.readthedocs.io/en/stable/spec/v2.html), Python numpy arrays (internal), [loom](http://loompy.org/) |
+|Data Output File Format |File formats in which Optimus output is provided |[BAM](http://samtools.github.io/hts-specs/), [Zarr version 2](https://zarr.readthedocs.io/en/stable/spec/v2.html), Python numpy arrays (internal), [Loom](http://loompy.org/) |
 
 # Set-up
 ## Installation  
@@ -32,7 +46,7 @@ Optimus can be deployed using [Cromwell](https://software.broadinstitute.org/wdl
 
 The necessary inputs for the Optimus pipeline are detailed in a json file, such as in this [example](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/example_test_inputs.json). 
 
-### Input Sample Data 
+### Sample Data Input
 
 Each 10X v2 and v3 3’ sequencing experiment generates triplets of Fastq files for any given sample:  
 
@@ -42,7 +56,7 @@ Each 10X v2 and v3 3’ sequencing experiment generates triplets of Fastq files 
 
 Note: Optimus is currently a single sample pipeline, but can take in multiple sets of fastqs for a sample that has been split over lanes of sequencing. 
 
-### Additinoal Inputs 
+### Additional Inputs 
 
 The following table provides information on specific input values.
 
@@ -75,7 +89,7 @@ Overall, the workflow:
 
 Special care is taken to flag but avoid the removal of reads that are not aligned or that do not contain recognizable barcodes. This design (which differs from many pipelines currently available) allows use of the entire dataset by those who may want to use alternative filtering or leverage the data for methodological development associated with the data processing.
 
-### 2. Converting R2 Fastq file to BAM
+### 1. Converting R2 Fastq file to BAM
 
 Because the pipeline processing steps require a BAM file format, the first step of Optimus is to [convert](https://broadinstitute.github.io/picard/command-line-overview.html#FastqToSam) the R2 Fastq file, containing the alignable genomic information, to a BAM file.
 
@@ -105,7 +119,7 @@ UMIs are designed to distinguish unique transcripts present in the cell at lysis
 
 In addition, the pipeline runs the EmptyDrops function from the [dropletUtils](http://bioconductor.org/packages/release/bioc/html/DropletUtils.html) R package to identify cell barcodes that correspond to empty droplets. Empty droplets are those that did not encapsulate a cell but instead acquired cell-free RNA from the solution in which the cells resided -- such as secreted RNA or RNA released when some cells lysed in solution ([Lun, et al., 2018](https://www.ncbi.nlm.nih.gov/pubmed/?term=30902100)). This ambient RNA can serve as a substrate for reverse transcription, leading to a small number of background reads. Cell barcodes that are not believed to represent cells are identified in the metrics and raw information from dropletUtils is provided to the user.
 
-### 7. Metric calculation
+### 7. Metric Calculation
 
 A number of [quality control tools](https://github.com/HumanCellAtlas/sctools) are used to assess the quality of the data output each time this pipeline is run. For a list of the tools and information about each one please see our [QC Metrics](/pipelines/hca-pipelines/data-processing-pipelines/qc-metrics) page.
 
