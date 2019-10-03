@@ -10,6 +10,15 @@
     + [Additional Inputs](#additional-inputs)
 - [Running Optimus](#running-optimus)
   * [Optimus Modules Summary](#optimus-modules-summary)
+    + [1. Converting R2 Fastq file to BAM](#1-converting-r2-fastq-file-to-bam)
+    + [2. Correcting and Attaching Cell Barcodes](#2-correcting-and-attaching-cell-barcodes)
+    + [3. Alignment](#3-alignment)
+    + [4. Gene Annotation](#4-gene-annotation)
+    + [5. UMI Correction](#5-umi-correction)
+    + [6. Identification of Empty Droplets](#6-identification-of-empty-droplets)
+    + [7. Metric Calculation](#7-metric-calculation)
+    + [8. Count Matrix Construction](#8-count-matrix-construction)
+    + [9. Outputs](#9-outputs)
   * [Components of Optimus](#components-of-optimus)
 
 # Optimus Pipeline Overview
