@@ -3,8 +3,7 @@
   * [Introduction to the Optimus Workflow](#introduction-to-the-optimus-workflow)
   * [Quick Start Table](#quick-start-table)
 - [Set-up](#set-up)
-  * [Installation](#installation)
-  * [Requirements](#requirements)
+  * [Optimus Installation and Requirements](#Optimus Installation and Requirements)
   * [Inputs](#inputs)
     + [Sample Data Input](#sample-data-input)
     + [Additional Inputs](#additional-inputs)
@@ -45,10 +44,9 @@ Optimus has been validated for analyzing both [human](../../benchmarking/optimus
 |Data Output File Format |File formats in which Optimus output is provided |[BAM](http://samtools.github.io/hts-specs/), [Zarr version 2](https://zarr.readthedocs.io/en/stable/spec/v2.html), Python numpy arrays (internal), [Loom](http://loompy.org/) |
 
 # Set-up
-## Installation  
-The Optimus pipeline code can be downloaded by cloning the github repository [Skylab](https://github.com/HumanCellAtlas/skylab/). For the latest release of Optimus, please see the realease tags prefixed with "optimus" [here](https://github.com/HumanCellAtlas/skylab/releases)
+## Optimus Installation and Requirements
+The Optimus pipeline code can be downloaded by cloning the github repository [Skylab](https://github.com/HumanCellAtlas/skylab/). For the latest release of Optimus, please see the realease tags prefixed with "optimus" [here](https://github.com/HumanCellAtlas/skylab/releases). 
 
-## Requirements  
 Optimus can be deployed using [Cromwell](https://software.broadinstitute.org/wdl/), a GA4GH compliant, flexible workflow management system that supports multiple computing platforms. Optimus can also be run in [Terra](https://app.terra.bio/#workspaces/help-gatk/HCA_Optimus_Pipeline), a cloud-based analysis platform. In this featured workspace the user will find the Optimus pipeline, configurations, required reference data and other inputs, and example testing data.
 
 ## Inputs
