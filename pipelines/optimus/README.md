@@ -3,7 +3,7 @@
   * [Introduction to the Optimus Workflow](#introduction-to-the-optimus-workflow)
   * [Quick Start Table](#quick-start-table)
 - [Set-up](#set-up)
-  * [Optimus Installation and Requirements](#Optimus Installation and Requirements)
+  * [Optimus Installation and Requirements](#optimus-installation-and-requirements)
   * [Inputs](#inputs)
     + [Sample Data Input](#sample-data-input)
     + [Additional Inputs](#additional-inputs)
