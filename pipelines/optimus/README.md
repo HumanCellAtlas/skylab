@@ -11,11 +11,11 @@ Optimus has been validated for analyzing both [human](../../benchmarking/optimus
 
 | Pipeline Features | Description | Source |
 |-------------------|---------------------------------------------------------------|-----------------------|
-|Assay Type | 10x Single Cell Expression (v2) |[10x Genomics](https://www.10xgenomics.com)
+|Assay Type | 10x Single Cell Expression (v2 and v3) |[10x Genomics](https://www.10xgenomics.com)
 | Overall Workflow  |Quality control module and transcriptome quantification module | Code available from [Github](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Optimus.wdl) |
 | Workflow Language |WDL          |[openWDL](https://github.com/openwdl/wdl)|
 | Genomic Reference Sequence|GRCh38 human genome primary sequence and M23 (GRCm38.p6) mouse genome primary sequence|GENCODE [human](https://www.gencodegenes.org/human/release_27.html) and [mouse](https://www.gencodegenes.org/mouse/release_M23.html)|
-|Transcriptomic Reference Annotation |V27 GenCode human transcriptome |[GENCODE](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_27/gencode.v27.annotation.gtf.gz)|
+|Transcriptomic Reference Annotation |V27 GenCode human transcriptome |GENCODE: [Human](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_27/gencode.v27.annotation.gtf.gz)and [Mouse](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M23/gencode.vM23.annotation.gtf.gz)
 | Aligner           |STAR       |[Dobin, et al.,2013](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3530905/)|
 | Transcript Quantification |Utilities for processing large-scale single cell datasets |[Sctools](https://github.com/HumanCellAtlas/sctools) |                      
 |Data Input File Format |File format in which sequencing data is provided |[FASTQ](https://academic.oup.com/nar/article/38/6/1767/3112533) |                       
@@ -28,22 +28,30 @@ The Optimus pipeline code can be downloaded by cloning the github repository [Sk
 ## Requirements  
 Optimus can be deployed using [Cromwell](https://software.broadinstitute.org/wdl/), a GA4GH compliant, flexible workflow management system that supports multiple computing platforms. Optimus can also be run in [Terra](https://app.terra.bio/#workspaces/help-gatk/HCA_Optimus_Pipeline), a cloud-based analysis platform. In this featured workspace the user will find the Optimus pipeline, configurations, required reference data and other inputs, and example testing data.
 
-## Input Files
+##Inputs
 
-### Input Data Preparation 
+The necessary inputs for the Optimus pipeline are detailed in a json file, such as this [example](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/example_test_inputs.json) 
 
-Each 10X v2 3’ sequencing experiment generates triplets of Fastq files:
+### Input Sample Data 
 
-1. forward reads (R1), containing the unique molecular identifier (UMI) and cell barcode sequences
-2. reverse reads (R2), which contain the alignable genomic information from the mRNA transcript 
-3. an index fastq file that contains the sample barcodes, when provided by the sequencing facility
+Each 10X v2 and v3 3’ sequencing experiment generates triplets of Fastq files for any given sample:  
 
-Example input file locations are specified in a json file, e.g., [here](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/example_test_inputs.json). The following table provides information on specific input values.
+1. A forward reads (r1_fastq), containing the unique molecular identifier (UMI) and cell barcode sequences
+2. A reverse reads (r2_fastq), which contain the alignable genomic information from the mRNA transcript 
+3. An index fastq (i1_fastq) that contains the sample barcodes, when provided by the sequencing facility
+
+Note: Optimus is currently a single sample pipeline, but can take in multiple sets of fastqs for a sample that has been split over lanes of sequencing. 
+
+### Additinoal Inputs 
+
+The following table provides information on specific input values.
 
 
 | Input Name | Description | Allowed Values |
 |------------|-------------|----------------|
 | chemistry  | chemistry used | "tenX_v2", "tenX_v3" |
+
+
 
 # Running Optimus
 
