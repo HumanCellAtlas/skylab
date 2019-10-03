@@ -3,11 +3,9 @@
 
 ## Introduction to the Optimus Workflow
 
-Optimus is a pipeline developed by the Data Coordination Platform (DCP) of the Human Cell Atlas (HCA) Project that supports processing of any 3' single-cell expression data generated with the [10X Genomic V2 and V3 assay](https://www.10xgenomics.com/solutions/single-cell/). It is an alignment and transcriptome quantification pipeline that corrects Cell Barcodes (CBs) and Unique Molecular Identifiers (UMIs), aligns reads to the genome, generates an expression count matrix in a UMI-aware manner, detects empty droplets, calculates summary statistics for genes and cells, returns read outputs in BAM format, and returns expression counts in numpy matrix, Zarr, and loom file formats. Special care is taken to keep all reads that may be useful to the downstream user, such as unaligned reads or reads with uncorrectable barcodes. This design provides flexibility to the downstream user and allows for alternative filtering or leveraging the data for novel methodological development.
+Optimus is a pipeline developed by the Data Coordination Platform (DCP) of the [Human Cell Atlas (HCA) Project](https://data.humancellatlas.org/) that supports processing of any 3' single-cell expression data generated with the [10X Genomic V2 and V3 assay](https://www.10xgenomics.com/solutions/single-cell/). It is an alignment and transcriptome quantification pipeline that corrects Cell Barcodes (CBs), aligns reads to the genome, corrects Unique Molecular Identifiers (UMIs),generates an expression count matrix in a UMI-aware manner, detects empty droplets, calculates summary statistics for genes and cells, returns read outputs in BAM format, and returns expression counts in numpy matrix, Zarr, and loom file formats. Special care is taken to keep all reads that may be useful to the downstream user, such as unaligned reads or reads with uncorrectable barcodes. This design provides flexibility to the downstream user and allows for alternative filtering or leveraging the data for novel methodological development.
 
-Optimus has been validated for analyzing both [human](../../benchmarking/optimus/optimus_report.rst) and [mouse](https://docs.google.com/document/d/1_3oO0ZQSrwEoe6D3GgKdSmAQ9qkzH_7wrE7x6_deL10/edit) data sets.   
-
-More details about the human validation can be found in the [in the original file](https://docs.google.com/document/d/158ba_xQM9AYyu8VcLWsIvSoEYps6PQhgddTr9H0BFmY/edit).
+Optimus has been validated for analyzing both [human](../../benchmarking/optimus/optimus_report.rst) and [mouse](https://docs.google.com/document/d/1_3oO0ZQSrwEoe6D3GgKdSmAQ9qkzH_7wrE7x6_deL10/edit) data sets. More details about the human validation can be found in the [in the original file](https://docs.google.com/document/d/158ba_xQM9AYyu8VcLWsIvSoEYps6PQhgddTr9H0BFmY/edit).
 
 ## Quick Start Table
 
@@ -16,7 +14,7 @@ More details about the human validation can be found in the [in the original fil
 |Assay Type | 10x Single Cell Expression (v2) |[10x Genomics](https://www.10xgenomics.com)
 | Overall Workflow  |Quality control module and transcriptome quantification module | Code available from [Github](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Optimus.wdl) |
 | Workflow Language |WDL          |[openWDL](https://github.com/openwdl/wdl)|
-| Genomic Reference Sequence|GRCh38 human genome primary sequence|[GENCODE](https://www.gencodegenes.org/human/release_27.html)|
+| Genomic Reference Sequence|GRCh38 human genome primary sequence and M23 (GRCm38.p6) mouse genome primary sequence|GENCODE [human](https://www.gencodegenes.org/human/release_27.html) and [mouse](https://www.gencodegenes.org/mouse/release_M23.html)|
 |Transcriptomic Reference Annotation |V27 GenCode human transcriptome |[GENCODE](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_27/gencode.v27.annotation.gtf.gz)|
 | Aligner           |STAR       |[Dobin, et al.,2013](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3530905/)|
 | Transcript Quantification |Utilities for processing large-scale single cell datasets |[Sctools](https://github.com/HumanCellAtlas/sctools) |                      
