@@ -28,7 +28,7 @@ The Optimus pipeline code can be downloaded by cloning the github repository [Sk
 ## Requirements  
 Optimus can be deployed using [Cromwell](https://software.broadinstitute.org/wdl/), a GA4GH compliant, flexible workflow management system that supports multiple computing platforms. Optimus can also be run in [Terra](https://app.terra.bio/#workspaces/help-gatk/HCA_Optimus_Pipeline), a cloud-based analysis platform. In this featured workspace the user will find the Optimus pipeline, configurations, required reference data and other inputs, and example testing data.
 
-##Inputs
+## Inputs
 
 The necessary inputs for the Optimus pipeline are detailed in a json file, such as this [example](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/example_test_inputs.json) 
 
