@@ -236,7 +236,7 @@ Following are the the types of files produced from the pipeline.
 ## Versioning
 
 | Version Name | Optimus Release Version | Date | Release Note | 
-| :---:  | :---: | :---: | :---: |
+| ---  | --- | --- | --- |
 | optimus_1.3.6_terra_patch2 | v1.3.6 (current) | 09/23/2019 | Optimus now optionally outputs a Loom formatted count matrix, which is turned on in this workspace's method configuration. |
 | optimus_v1.3.3_terra | v1.3.3 | 08/29/2019 | This version and newer have been validated to additionally support Mouse data on mm10. The gene expression per cell is now counted by gencode geneID instead of gene name. There is an additional output mapping geneID to gene name provided. This is a breaking change. | 
 | terra-optimus | v1.0.0 |03/30/2019 | Initial pipeline release. Validated on hg38 gencodev27. | 
