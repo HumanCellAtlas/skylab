@@ -25,6 +25,8 @@ workflow TestOptimusPR {
   String sample_id  # name of sample matching this file, inserted into read group header
   String chemistry # chemistry identifier
 
+  Boolean force_no_check
+
   call target.Optimus as target {
     input:
       r1_fastq = r1_fastq,
@@ -36,7 +38,8 @@ workflow TestOptimusPR {
       ref_genome_fasta = ref_genome_fasta,
       sample_id = sample_id,
       output_loom = true,
-      chemistry = chemistry
+      chemistry = chemistry,
+      force_no_check = force_no_check
   }
 
   call checker.ValidateOptimus as checker {

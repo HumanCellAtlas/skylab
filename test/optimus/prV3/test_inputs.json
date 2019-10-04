@@ -17,6 +17,7 @@
       "gs://hca-dcp-sc-pipelines-test-data/smallDatasets/chemistry_10X_V3/pbmc_10k_v3_chr21_genic/pbmc_10k_v3_S1_L002_I1_001.filtered.fastq.gz"
   ],
   "TestOptimusPR.chemistry": "tenX_v3",
+  "TestOptimusPR.force_no_check": "false",  
   "TestOptimusPR.whitelist": "gs://hca-dcp-sc-pipelines-test-data/whitelists/3M-february-2018.txt",
   "TestOptimusPR.tar_star_reference": "gs://hca-dcp-sc-pipelines-test-data/alignmentReferences/optimusGencodeV27/buildReference/output_bucket/star_primary_gencode_v27.tar",
   "TestOptimusPR.sample_id": "pr_test_dataset",
