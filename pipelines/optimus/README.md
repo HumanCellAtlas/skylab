@@ -6,7 +6,8 @@
   * [Optimus Installation and Requirements](#optimus-installation-and-requirements)
   * [Inputs](#inputs)
     + [Sample Data Input](#sample-data-input)
-    + [Additional Inputs](#additional-inputs)
+    + [Additional Reference Inputs](#additional-reference-inputs)
+    + [V2 or V3 Chemistry Input](#v2-or-v3-chemistry-input)
 - [Running Optimus](#running-optimus)
   * [Optimus Modules Summary](#optimus-modules-summary)
     + [1. Converting R2 Fastq file to BAM](#1-converting-r2-fastq-file-to-bam)
@@ -18,7 +19,7 @@
     + [7. Metric Calculation](#7-metric-calculation)
     + [8. Count Matrix Construction](#8-count-matrix-construction)
     + [9. Outputs](#9-outputs)
-  * [Components of Optimus](#components-of-optimus)
+  * [Additional Notes:](#additional-notes-)
 
 # Optimus Pipeline Overview
 ![Diagram](Optimus_diagram.png)
@@ -67,14 +68,11 @@ Note: Optimus is currently a single sample pipeline, but can take in multiple se
 
 The json file also contains metadata for the folowing reference information:
 
-Whitelist: a list of known cell barcodes from [10X genomics](https://www.10xgenomics.com/)
-
-Star reference genome for human or mouse built with a wdl [here]( https://github.com/HumanCellAtlas/skylab/blob/master/library/accessory_workflows/build_star_reference/BuildStarReferenceBundle.wdl)
-
-Sample_id: Name of sample matching file
-
-GTF gene annotation file: gtf containing annotations for gene tagging (must match star reference and organism)
-Reference genome fasta file: genome fasta file (must match star reference and organism)
+* Whitelist: a list of known cell barcodes from [10X genomics](https://www.10xgenomics.com/)
+* Star reference genome for human or mouse built with a wdl [here]( https://github.com/HumanCellAtlas/skylab/blob/master/library/accessory_workflows/build_star_reference/BuildStarReferenceBundle.wdl)
+* Sample_id: Name of sample matching file
+* GTF gene annotation file: gtf containing annotations for gene tagging (must match star reference and organism)
+* Reference genome fasta file: genome fasta file (must match star reference and organism)
 
 ### V2 or V3 Chemistry Input 
 
