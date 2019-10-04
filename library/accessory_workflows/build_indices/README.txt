@@ -2,7 +2,7 @@
        ------------------------------------
 The human and mouse reference files for the HCA pipelines (HCA SS2 and HCA Optimus pipeline) can be  
 prepared by using the BuildIndices.wdl WDL. 
-The WDL is self contained without and dependent WDL files. The references can be built by simply providing an 
+The WDL is self contained without any dependent WDL files. The references can be built by simply providing an 
 input JSON file to the above WDL.
 
 Following are two example input files for the above WDL:
