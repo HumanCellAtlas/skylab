@@ -63,15 +63,23 @@ Each 10X v2 and v3 3’ sequencing experiment generates triplets of Fastq files 
 
 Note: Optimus is currently a single sample pipeline, but can take in multiple sets of fastqs for a sample that has been split over lanes of sequencing. 
 
-### Additional Inputs 
+### Additional Reference Inputs
 
-The following table provides information on specific input values.
+The json file also contains metadata for the folowing reference information:
 
+Whitelist: a list of known cell barcodes from [10X genomics](https://www.10xgenomics.com/)
+Star reference genome for human or mouse built with a wdl [here]( https://github.com/HumanCellAtlas/skylab/blob/master/library/accessory_workflows/build_star_reference/BuildStarReferenceBundle.wdl)
+Sample_id: Name of sample matching file
+GTF gene annotation file: gtf containing annotations for gene tagging (must match star reference and organism)
+Reference genome fasta file: genome fasta file (must match star reference and organism)
 
-| Input Name | Description | Allowed Values |
-|------------|-------------|----------------|
-| chemistry  | chemistry used | "tenX_v2", "tenX_v3" |
+### V2 or V3 Chemistry Input 
 
+The chemistry (V2 or V3) for the sequencing experiment needs to be specified in the [optimus.wdl code](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Optimus.wdl). The default is set to V2 using the following the command:
+
+String chemistry = "tenX_v2" 
+
+To change to V3 chemistry, use "tenX_v3". 
 
 
 # Running Optimus
@@ -102,7 +110,7 @@ Because the pipeline processing steps require a BAM file format, the first step 
 
 ### 2. Correcting and Attaching Cell Barcodes
 
-Although the function of the cell barcodes is to identify unique cells, barcode errors can arise during sequencing (such as incorporation of the barcode into contaminating DNA or sequencing and PCR errors), making it difficult to distinguish unique cells from artifactual appearances of the barcode. Barcode errors are evaluated in the [Attach10xBarcodes](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/Attach10xBarcodes.wdl) step mentioned above, which compares the sequences against a whitelist of known barcode sequences.
+Although the function of the cell barcodes is to identify unique cells, barcode errors can arise during sequencing (such as incorporation of the barcode into contaminating DNA or sequencing and PCR errors), making it difficult to distinguish unique cells from artifactual appearances of the barcode. Barcode errors are evaluated in the [Attach10xBarcodes](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/Attach10xBarcodes.wdl), which compares the sequences against a whitelist of known barcode sequences.
 
 Next, the [Attach10xBarcodes](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/Attach10xBarcodes.wdl) step appends the UMI and Cell Barcode sequences from R1 to the corresponding R2 sequence as tags, in order to properly label the genomic information for alignment.
 
@@ -136,7 +144,13 @@ The pipeline outputs a count matrix that contains, for each cell barcode and for
 
 
 ### 9. Outputs
-The outputs from the Optimus pipeline can be identified from the outputs of the individual tasks, e.g. [here](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/example_test_outputs.json)
+The outputs from the Optimus pipeline can be identified from the outputs of the individual tasks. A sample json file for outputs is listed [here](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/example_test_outputs.json).
+
+Output files of the pipeline include:
+1. Cell x gene unnormalized count matrix
+2. Unfiltered, sorted BAM file (BamTags are used to tag reads that could be filtered downstream)
+3. Cell metadata, including cell metrics
+4. Gene metadata, including gene metrics
 
 Following are the the types of files produced from the pipeline.
 
@@ -153,5 +167,6 @@ Following are the the types of files produced from the pipeline.
 | zarr_output_files | {unique_id}.zarr!.zattrs | | zarr store? sparse matrix? | | Yes | | 
 | loom_output_file | output.loom | Loom | Loom | Loom file with expression data and metadata | N/A | N/A |
 
-### Components of Optimus
-The source code is available from [Github](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Optimus.wdl), an overview of the pipeline can be found on the [HCA Data Portal](https://prod.data.humancellatlas.org/) and the benchmarking that was performed on the pipeline can be found [here](https://docs.google.com/document/d/158ba_xQM9AYyu8VcLWsIvSoEYps6PQhgddTr9H0BFmY/edit#heading=h.calfpviouwbg). Some of the tasks in Optimus use the [sctools](https://github.com/HumanCellAtlas/sctools) library of utilities for large scale distributed single cell data processing, and [Picard](https://broadinstitute.github.io/picard/) tools, a set of command line tools for manipulating high-throughput sequencing data in formats such as SAM/BAM/CRAM and VCF.
+## Additional Notes:
+
+Some of the tasks in Optimus use the [sctools](https://github.com/HumanCellAtlas/sctools) library of utilities for large scale distributed single cell data processing, and [Picard](https://broadinstitute.github.io/picard/) tools, a set of command line tools for manipulating high-throughput sequencing data in formats such as SAM/BAM/CRAM and VCF.
