@@ -1,4 +1,3 @@
-# Table of Contents
 - [Optimus Pipeline Overview](#optimus-pipeline-overview)
   * [Introduction to the Optimus Workflow](#introduction-to-the-optimus-workflow)
   * [Quick Start Table](#quick-start-table)
@@ -19,7 +18,8 @@
     + [7. Metric Calculation](#7-metric-calculation)
     + [8. Count Matrix Construction](#8-count-matrix-construction)
     + [9. Outputs](#9-outputs)
-  * [Additional Notes](#additional-notes)
+- [Versioning](#versioning)
+- [Additional Notes](#additional-notes)
 
 # Optimus Pipeline Overview
 ![Diagram](Optimus_diagram.png)
@@ -233,7 +233,7 @@ Following are the the types of files produced from the pipeline.
 | zarr_output_files | {unique_id}.zarr!.zattrs | | zarr store? sparse matrix? | | Yes | | 
 | loom_output_file | output.loom | Loom | Loom | Loom file with expression data and metadata | N/A | N/A |
 
-## Versioning
+# Versioning
 
 | Optimus Release Version | Date | Release Note | 
 | :---: | :---: | :---: |
@@ -241,7 +241,7 @@ Following are the the types of files produced from the pipeline.
 | v1.3.3 | 08/29/2019 | This version and newer have been validated to additionally support Mouse data. The gene expression per cell is now counted by gencode geneID instead of gene name. There is an additional output mapping geneID to gene name provided. This is a breaking change. | 
 | v1.0.0 |03/30/2019 | Initial pipeline release. Validated on hg38 gencodev27. | 
 
-## Additional Notes
+# Additional Notes
 
 Some of the tasks in Optimus use the [sctools](https://github.com/HumanCellAtlas/sctools) library of utilities for large scale distributed single cell data processing, and [Picard](https://broadinstitute.github.io/picard/) tools, a set of command line tools for manipulating high-throughput sequencing data in formats such as SAM/BAM/CRAM and VCF.
 
