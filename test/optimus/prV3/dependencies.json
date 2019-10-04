@@ -16,5 +16,6 @@
   "Picard.wdl": "library/tasks/Picard.wdl",
   "UmiCorrection.wdl": "library/tasks/UmiCorrection.wdl",
   "ScatterBam.wdl": "library/tasks/ScatterBam.wdl",
-  "ModifyGtf.wdl": "library/tasks/ModifyGtf.wdl"
+  "ModifyGtf.wdl": "library/tasks/ModifyGtf.wdl",
+  "OptimusInputChecks.wdl": "library/tasks/OptimusInputChecks.wdl"
 }

@@ -13,6 +13,7 @@ import "Picard.wdl" as Picard
 import "UmiCorrection.wdl" as UmiCorrection
 import "ScatterBam.wdl" as ScatterBam
 import "ModifyGtf.wdl" as ModifyGtf
+import "OptimusInputChecks.wdl" as OptimusInputChecks
 
 workflow Optimus {
   meta {
@@ -45,6 +46,9 @@ workflow Optimus {
   # If true produce the optional loom output
   Boolean output_loom = false
 
+  # Set to true to override input checks and allow pipeline to proceed with invalid input
+  Boolean force_no_check = false
+
   # this pipeline does not set any preemptible varibles and only relies on the task-level preemptible settings
   # you could override the tasklevel preemptible settings by passing it as one of the workflows inputs
   # for example: `"Optimus.StarAlign.preemptible": 3` will let the StarAlign task, which by default disables the
@@ -62,6 +66,13 @@ workflow Optimus {
     tenX_v3_chemistry: "assume 10X Genomics v3 chemistry with 12bp UMI (in contrast to default v2 with 10bp UMI)"
     fastq_suffix: "when running in green box, need to add '.gz' for picard to detect the compression"
     output_zarr: "whether to run the taks that converts the outputs to Zarr format, by default it's true"
+    force_no_check: "Set to true to override input checks and allow pipeline to proceed with invalid input"
+  }
+
+  call OptimusInputChecks.checkOptimusInput {
+    input:
+      force_no_check = force_no_check,
+      chemistry = chemistry
   }
 
   scatter (index in indices) {
