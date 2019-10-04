@@ -1,3 +1,4 @@
+# Table of Contents
 - [Optimus Pipeline Overview](#optimus-pipeline-overview)
   * [Introduction to the Optimus Workflow](#introduction-to-the-optimus-workflow)
   * [Quick Start Table](#quick-start-table)
