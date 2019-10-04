@@ -235,14 +235,14 @@ task BuildPicardRefFlat {
     References references
   }
 
-  String refflat = basename(references.annotation_gtf, ".gtf") + ".refflat.txt"
+  String refflat_name = basename(references.annotation_gtf, ".gtf") + ".refflat.txt"
 
   command {
     set -eo pipefail
 
     gtfToGenePred -genePredExt -geneNameAsName2  ~{references.annotation_gtf} refflat.tmp.txt
 
-    paste <(cut -f 12 refflat.tmp.txt) <(cut -f 1-10 refflat.tmp.txt) > ~{refflat}
+    paste <(cut -f 12 refflat.tmp.txt) <(cut -f 1-10 refflat.tmp.txt) > ~{refflat_name}
 
   }
 
@@ -254,7 +254,7 @@ task BuildPicardRefFlat {
   }
 
   output {
-      File refflat = refflat
+      File refflat = refflat_name
   }
 }
 
@@ -263,7 +263,7 @@ task BuildIntervalList {
     References references
   }
 
-  String interval_list = basename(references.annotation_gtf, ".gtf") + ".interval_list"
+  String interval_list_name = basename(references.annotation_gtf, ".gtf") + ".interval_list"
 
   command <<<
     set -eo pipefail
@@ -274,16 +274,16 @@ task BuildIntervalList {
     samtools faidx ~{references.genome_fa}
     cut -f1,2 ~{references.genome_fa}.fai > sizes.genome
 
-    awk -F '\t'  '{  printf "@SQ\tSN:%s\tLN:%s\n", $1, $2 }' sizes.genome  >> ~{interval_list}
+    awk -F '\t'  '{  printf "@SQ\tSN:%s\tLN:%s\n", $1, $2 }' sizes.genome  >> ~{interval_list_name}
 
     grep 'gene_type "rRNA"' ~{references.annotation_gtf} |
         awk '$3 == "transcript"' |
-    cut -f1,4,5,7,9 | \
+    cut -f1,4,5,7,9 |
     perl -lane '
         /transcript_id "([^"]+)"/ or die "no transcript_id on $.";
         print join "\t", (@F[0,1,2,3], $1)
-    ' | \
-    sort -k1V -k2n -k3n  >> ~{interval_list}
+    ' |
+    sort -k1V -k2n -k3n  >> ~{interval_list_name}
 
   >>>
 
@@ -295,7 +295,7 @@ task BuildIntervalList {
   }
 
   output {
-      File interval_list = "${interval_list}"
+      File interval_list = interval_list_name
   }
 }
 
@@ -375,5 +375,7 @@ workflow BuildIndices {
     File hisat2_from_rsem_index = BuildHisat2FromRsem.hisat2_index
     File hisat2_index = BuildHisat2.hisat2_index
     File hisat2_snp_haplotype_splicing_index = BuildHisat2SnpHaplotypeSplicing.hisat2_index
+    File refflat = BuildPicardRefFlat.refflat
+    File interval_list = BuildIntervalList.interval_list
   }
 }

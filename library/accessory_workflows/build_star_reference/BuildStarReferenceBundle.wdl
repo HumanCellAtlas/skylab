@@ -12,7 +12,7 @@ task BuildStarReference {
   String ftp_path = "ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_~{organism}/release_~{gtf_version}"
   String genome_fa = "GRC~{organism_prefix}38.primary_assembly.genome.fa"
   String annotation_gtf = "gencode.v~{gtf_version}.primary_assembly.annotation.gtf"
-  String ref_name = "star_primary_gencode_~{organism}_v~{gtf_version}"
+  String star_ref_name = "star_primary_gencode_~{organism}_v~{gtf_version}.tar"
 
   command <<<
     set -eo pipefail
@@ -32,11 +32,11 @@ task BuildStarReference {
       --sjdbGTFfile ~{annotation_gtf} \
       --sjdbOverhang 100 \
       --runThreadN 16
-    tar -cvf "~{ref_name}.tar" star
+    tar -cvf "~{star_ref_name}" star
   >>>
 
   output {
-    File starRef = "~{ref_name}.tar"
+    File starRef = star_ref_name
   }
 
   runtime {
