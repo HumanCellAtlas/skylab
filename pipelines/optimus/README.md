@@ -233,6 +233,16 @@ Following are the the types of files produced from the pipeline.
 | zarr_output_files | {unique_id}.zarr!.zattrs | | zarr store? sparse matrix? | | Yes | | 
 | loom_output_file | output.loom | Loom | Loom | Loom file with expression data and metadata | N/A | N/A |
 
+## Versioning
+
+| Version Name | Optimus Release Version | Date | Release Note | 
+| :---:  | :---: | :---: | :---: |
+| optimus_1.3.6_terra_patch2 | v1.3.6 (current) | 09/23/2019 | Optimus now optionally outputs a Loom formatted count matrix, which is turned on in this workspace's method configuration. |
+| optimus_v1.3.3_terra | v1.3.3 | 08/29/2019 | This version and newer have been validated to additionally support Mouse data on mm10. The gene expression per cell is now counted by gencode geneID instead of gene name. There is an additional output mapping geneID to gene name provided. This is a breaking change. | 
+| terra-optimus | v1.0.0 |03/30/2019 | Initial pipeline release. Validated on hg38 gencodev27. | 
+
 ## Additional Notes
 
 Some of the tasks in Optimus use the [sctools](https://github.com/HumanCellAtlas/sctools) library of utilities for large scale distributed single cell data processing, and [Picard](https://broadinstitute.github.io/picard/) tools, a set of command line tools for manipulating high-throughput sequencing data in formats such as SAM/BAM/CRAM and VCF.
+
+
