@@ -2,8 +2,6 @@ workflow CellRanger {
     meta {
         description: "Analyze 3' single-cell RNA-seq data using the 10X Genomics Cellranger pipeline."
     }
-    # version of this pipeline
-    String version = "cellranger_v1.0.2"
 
     String sample_id
     Array[File] fastqs
@@ -43,9 +41,6 @@ workflow CellRanger {
    }
 
    output {
-       # version of this pipeline
-       String pipeline_version = version
-
        File qc = cellranger_count.qc
        File sorted_bam = cellranger_count.sorted_bam
        File sorted_bam_index = cellranger_count.sorted_bam_index

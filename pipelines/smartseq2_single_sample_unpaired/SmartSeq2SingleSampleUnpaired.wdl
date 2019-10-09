@@ -8,8 +8,6 @@ workflow SmartSeq2SingleCellUnpaired {
   meta {
     description: "Process SmartSeq2 scRNA-Seq data, include reads alignment, QC metrics collection, and gene expression quantitication"
   }
-  # version of this pipeline
-  String version = "smartseq2singleend_v1.0.0"
   # load annotation
   File genome_ref_fasta
   File rrna_intervals
@@ -118,8 +116,6 @@ workflow SmartSeq2SingleCellUnpaired {
 
 
   output {
-    # version of this pipeline
-    String pipeline_version = version
     # quality control outputs
     File aligned_bam = HISAT2SingleEnd.output_bam
     File bam_index = HISAT2SingleEnd.bam_index
