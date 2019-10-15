@@ -70,7 +70,7 @@ Note: Optimus is currently a single sample pipeline, but can take in multiple se
 The json file also contains metadata for the following reference information:
 
 * Whitelist: a list of known cell barcodes from [10X genomics](https://www.10xgenomics.com/)
-* Star reference genome for human or mouse built with a wdl [here]( https://github.com/HumanCellAtlas/skylab/blob/master/library/accessory_workflows/build_star_reference/BuildStarReferenceBundle.wdl)
+* STAR reference genome for human or mouse built with a wdl [here]( https://github.com/HumanCellAtlas/skylab/blob/master/library/accessory_workflows/build_star_reference/BuildStarReferenceBundle.wdl)
 * Sample_id: Name of sample matching file
 * GTF gene annotation file: gtf containing annotations for gene tagging (must match star reference and organism)
 * Reference genome fasta file: genome fasta file (must match star reference and organism)
@@ -94,11 +94,11 @@ To change to V3 chemistry, use "tenX_v3".
 Here we describe the modules of Optimus; [the code](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Optimus.wdl) and [library of tasks](https://github.com/HumanCellAtlas/skylab/tree/master/library/tasks) are available through Github.
 
 Overall, the workflow:
-1. Converts R2 Fastq file to BAM
-2. Corrects and attaches 10X Barcodes 
-3. Aligns reads to the genome
+1. Converts R2 Fastq file (containing alignable genomic information) to BAM
+2. Corrects and attaches 10X Barcodes using R1 Fastq file 
+3. Aligns reads to the genome with STAR
 4. Annotates genes with aligned reads
-5. Generates an expression count matrix in a UMI-aware fashion
+5. Corrects UMIs
 6. Detects empty droplets
 7. Calculates summary statistics (metrics) and count
 8. Produces a count matrix
