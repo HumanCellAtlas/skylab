@@ -67,7 +67,7 @@ Note: Optimus is currently a single sample pipeline, but can take in multiple se
 
 ### Additional Reference Inputs
 
-The json file also contains metadata for the folowing reference information:
+The json file also contains metadata for the following reference information:
 
 * Whitelist: a list of known cell barcodes from [10X genomics](https://www.10xgenomics.com/)
 * Star reference genome for human or mouse built with a wdl [here]( https://github.com/HumanCellAtlas/skylab/blob/master/library/accessory_workflows/build_star_reference/BuildStarReferenceBundle.wdl)
