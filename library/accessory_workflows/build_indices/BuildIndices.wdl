@@ -12,6 +12,10 @@ task GetReferences {
     String organism_prefix
   }
 
+  meta {
+    description: "Download files needed for building the designated references"
+  }
+
   String ftp_path = "ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_~{organism}/release_~{gtf_version}"
   String genome_fa = "GRC~{organism_prefix}38.primary_assembly.genome.fa"
   String annotation_gtf = "gencode.v~{gtf_version}.primary_assembly.annotation.gtf"
@@ -48,9 +52,12 @@ task BuildStar {
     References references
   }
 
+  meta {
+    description: "build reference index files for STAR aligner"
+  }
+
   String ref_name = "star_primary_gencode_~{organism}_v~{gtf_version}"
   String star_index_name = "~{ref_name}.tar"
-
 
   command <<<
     set -eo pipefail
@@ -83,6 +90,10 @@ task BuildRsem {
     String gtf_version
     String organism
     References references
+  }
+
+  meta {
+    description: "build reference index files for RSEM"
   }
 
   String ref_name = "star_primary_gencode_~{organism}_v~{gtf_version}"
@@ -377,5 +388,8 @@ workflow BuildIndices {
     File hisat2_snp_haplotype_splicing_index = BuildHisat2SnpHaplotypeSplicing.hisat2_index
     File refflat = BuildPicardRefFlat.refflat
     File interval_list = BuildIntervalList.interval_list
+
+    File genome_fa = GetReferences.references.genome_fa
+    File annotation_gtf = GetReferences.references.annotation_gtf
   }
 }
