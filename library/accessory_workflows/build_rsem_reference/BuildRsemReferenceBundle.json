@@ -1,5 +1,0 @@
-{
-  "RsemRef.fasta": "gs://broad-dsde-mint-dev-teststorage/reference/GRCh38_Gencode/GRCh38.primary_assembly.genome.fa",
-  "RsemRef.gtf": "gs://broad-dsde-mint-dev-teststorage/reference/GRCh38_Gencode/gencode.v27.primary_assembly.annotation.gtf",
-  "RsemRef.ref_name":"gencode_v27_primary"
-}
