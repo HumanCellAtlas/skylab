@@ -14,6 +14,7 @@
   "Optimus.whitelist": "gs://hca-dcp-mint-test-data/10x/whitelist/737K-august-2016.txt",
   "Optimus.tar_star_reference": "gs://hca-dcp-mint-test-data/reference/demo/star.tar",
   "Optimus.sample_id": "pbmc8k_test",
+  "TestOptimusPR.chemistry": "tenX_v2",
   "Optimus.annotations_gtf": "gs://hca-dcp-mint-test-data/reference/demo/hg19_ds/GSM1629193_hg19_ERCC.gtf.gz",
   "Optimus.ref_genome_fasta": "gs://hca-dcp-mint-test-data/reference/demo/chr21.fa"
 }
