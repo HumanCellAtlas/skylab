@@ -34,25 +34,26 @@ Optimus has been validated for analyzing both [human](../../benchmarking/optimus
 
 | Pipeline Features | Description | Source |
 |-------------------|---------------------------------------------------------------|-----------------------|
-|Assay Type | 10x Single Cell Expression (v2 and v3) |[10x Genomics](https://www.10xgenomics.com)
-| Overall Workflow  |Quality control module and transcriptome quantification module | Code available from [Github](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Optimus.wdl) |
-| Workflow Language |WDL          |[openWDL](https://github.com/openwdl/wdl)|
-| Genomic Reference Sequence|GRCh38 human genome primary sequence and M21 (GRCm38.p6) mouse genome primary sequence|GENCODE [Human](https://www.gencodegenes.org/human/release_27.html) and [Mouse](https://www.gencodegenes.org/mouse/release_M21.html)|
-|Transcriptomic Reference Annotation |V27 GenCode human transcriptome and M21 mouse transcriptome |GENCODE [Human](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_27/gencode.v27.annotation.gtf.gz) and [Mouse](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M21/gencode.vM21.annotation.gff3.gz) |
-| Aligner           |STAR       |[Dobin, et al.,2013](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3530905/)|
-| Transcript Quantification |Utilities for processing large-scale single cell datasets |[Sctools](https://github.com/HumanCellAtlas/sctools) |                      
-|Data Input File Format |File format in which sequencing data is provided |[FASTQ](https://academic.oup.com/nar/article/38/6/1767/3112533) |                       
-|Data Output File Format |File formats in which Optimus output is provided |[BAM](http://samtools.github.io/hts-specs/), [Zarr version 2](https://zarr.readthedocs.io/en/stable/spec/v2.html), Python numpy arrays (internal), [Loom](http://loompy.org/) |
+| Assay Type | 10x Single Cell Expression (v2 and v3) | [10x Genomics](https://www.10xgenomics.com)
+| Overall Workflow  | Quality control module and transcriptome quantification module | Code available from [Github](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Optimus.wdl) |
+| Workflow Language | WDL          | [openWDL](https://github.com/openwdl/wdl) |
+| Genomic Reference Sequence|GRCh38 human genome primary sequence and M21 (GRCm38.p6) mouse genome primary sequence|GENCODE [Human](https://www.gencodegenes.org/human/release_27.html) and [Mouse](https://www.gencodegenes.org/mouse/release_M21.html) 
+| Transcriptomic Reference Annotation | V27 GenCode human transcriptome and M21 mouse transcriptome | GENCODE [Human](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_27/gencode.v27.annotation.gtf.gz) and [Mouse](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M21/gencode.vM21.annotation.gff3.gz) |
+| Aligner           | STAR (v.2.5.3)       | [Dobin, et al.,2013](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3530905/) |
+| Transcript Quantification | Utilities for processing large-scale single cell datasets | [Sctools](https://github.com/HumanCellAtlas/sctools)                          
+| Data Input File Format | File format in which sequencing data is provided | [FASTQ](https://academic.oup.com/nar/article/38/6/1767/3112533) |                     
+| Data Output File Format | File formats in which Optimus output is provided | [BAM](http://samtools.github.io/hts-specs/), [Zarr version 2](https://zarr.readthedocs.io/en/stable/spec/v2.html), Python numpy arrays (internal), Loom (generated with [Loompy v.3.0)](http://loompy.org/) |
 
 # Set-up
+
 ## Optimus Installation and Requirements
-The Optimus pipeline code can be downloaded by cloning the github repository [Skylab](https://github.com/HumanCellAtlas/skylab/). For the latest release of Optimus, please see the realease tags prefixed with "optimus" [here](https://github.com/HumanCellAtlas/skylab/releases). 
+The Optimus pipeline code can be downloaded by cloning the GitHub repository [Skylab](https://github.com/HumanCellAtlas/skylab/). For the latest release of Optimus, please see the realease tags prefixed with "optimus" [here](https://github.com/HumanCellAtlas/skylab/releases). 
 
 Optimus can be deployed using [Cromwell](https://software.broadinstitute.org/wdl/), a GA4GH compliant, flexible workflow management system that supports multiple computing platforms. Optimus can also be run in [Terra](https://app.terra.bio/#workspaces/help-gatk/HCA_Optimus_Pipeline), a cloud-based analysis platform. In this featured workspace the user will find the Optimus pipeline, configurations, required reference data and other inputs, and example testing data.
 
 ## Inputs
 
-The necessary inputs for the Optimus pipeline are detailed in a json file, such as in this [example](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/example_test_inputs.json). 
+Optimus pipeline inputs are detailed in a json file, such as in this [example](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/example_test_inputs.json). 
 
 ### Sample Data Input
 
@@ -69,11 +70,11 @@ Note: Optimus is currently a single sample pipeline, but can take in multiple se
 The json file also contains metadata for the following reference information:
 
 * Whitelist: a list of known cell barcodes from [10X genomics](https://www.10xgenomics.com/)
-* STAR reference genome for human or mouse built with a wdl [here]( https://github.com/HumanCellAtlas/skylab/blob/master/library/accessory_workflows/build_star_reference/BuildStarReferenceBundle.wdl)
+* Tar_star_reference: a specifes-specific STAR reference genome TAR file generated using the [StarMkRef.wdl](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/StarMkref.wdl)
 * Sample_id: Name of sample matching file
 * GTF gene annotation file: gtf containing annotations for gene tagging (must match star reference and organism)
 * Reference genome fasta file: genome fasta file (must match star reference and organism)
-* The 10X chemistry (V2 or V3): This is an optional input and the default is set to V3.
+* The 10X chemistry (V2 or V3): This is an optional input and the default is set to V2.
 
 
 # Running Optimus
