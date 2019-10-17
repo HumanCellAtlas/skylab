@@ -71,8 +71,8 @@ The json file also contains metadata for the following reference information:
 
 * Whitelist: a list of known cell barcodes from [10X genomics](https://www.10xgenomics.com/)
 * Tar_star_reference: a specifes-specific STAR reference genome TAR file generated using the [StarMkRef.wdl](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/StarMkref.wdl)
-* Sample_id: a unique name describing the biological sample for which Optimus piepeline is analyzing sequencing data
-* GTF gene annotation file: gtf containing annotations for gene tagging (must match star reference and organism)
+* Sample_id: a unique name describing the biological sample or replicate that corresponds with the original fastq files
+* GTF gene annotation file: gtf containing annotations for gene tagging (must match star reference)
 * The 10X chemistry (V2 or V3): This is an optional input and the default is set to V2.
 
 
