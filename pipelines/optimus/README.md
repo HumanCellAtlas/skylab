@@ -13,10 +13,10 @@
     + [2. Correcting and Attaching Cell Barcodes](#2-correcting-and-attaching-cell-barcodes)
     + [3. Alignment](#3-alignment)
     + [4. Gene Annotation](#4-gene-annotation)
-    + [5. Metric Calculation](#7-metric-calculation)
-    + [6. Identification of Empty Droplets](#6-identification-of-empty-droplets)
-    + [7. UMI Correction](#5-umi-correction)
-    + [8. Count Matrix Construction](#8-count-matrix-construction)
+    + [5. UMI Correction](#5-umi-correction)
+    + [6. Metric Calculation](#6-metric-calculation)
+    + [7. Identification of Empty Droplets](#7-identification-of-empty-droplets)
+    + [8. Expression Matrix Construction](#8-expression-matrix-construction)
     + [9. Outputs](#9-outputs)
 - [Versioning](#versioning)
 - [Additional Notes](#additional-notes)
@@ -120,7 +120,12 @@ Optimus uses the [STAR alignment](https://github.com/HumanCellAtlas/skylab/blob/
 
 The [TagGeneExon](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/TagGeneExon.wdl) task then annotates each read with the type of sequence to which it aligns. These annotations include INTERGENIC, INTRONIC, and EXONIC, and are stored using the XF BAM tag. In cases where the gene corresponds to an intron or exon, the name of the gene that overlaps the alignment is associated with the read and stored using the GE BAM tag.
 
-### 5. Metric Calculation
+
+### 5. UMI Correction
+
+UMIs are designed to distinguish unique transcripts present in the cell at lysis from those arising from PCR amplification of these same transcripts. But, like cell barcodes, UMIs can also be incorrectly sequenced or amplified. Optimus uses the [UmiCorrection task](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/UmiCorrection.wdl) to apply a network-based, "directional" method ([Smith, et al., 2017](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5340976/)) to account for such errors. 
+
+### 6. Metric Calculation
 
 A number of [quality control tools](https://github.com/HumanCellAtlas/sctools) are used to assess the quality of the data output each time this pipeline is run. For a list of the tools and information about each one please see our [QC Metrics](/pipelines/hca-pipelines/data-processing-pipelines/qc-metrics) page. These metrics are included in ZARR and Loom output files.
 
@@ -188,17 +193,12 @@ A number of [quality control tools](https://github.com/HumanCellAtlas/sctools) a
 |`number_cells_detected_multiple`|[SC Tools](https://github.com/HumanCellAtlas/sctools/tree/master/src/sctools/metrics)|The number of cells which observe more than one read of this gene. [Metrics Definitions](https://sctools.readthedocs.io/en/latest/sctools.metrics.html#sctools.metrics.aggregator.GeneMetrics.number_cells_detected_multiple)|
 |`number_cells_expressing`|[SC Tools](https://github.com/HumanCellAtlas/sctools/tree/master/src/sctools/metrics)|The number of cells that detect this gene. [Metrics Definitions](https://sctools.readthedocs.io/en/latest/sctools.metrics.html#sctools.metrics.aggregator.GeneMetrics.number_cells_expressing)|
 
-### 6. Identification of Empty Droplets
+### 7. Identification of Empty Droplets
 
 In addition, the pipeline runs the EmptyDrops function from the [dropletUtils](http://bioconductor.org/packages/release/bioc/html/DropletUtils.html) R package to identify cell barcodes that correspond to empty droplets. Empty droplets are those that did not encapsulate a cell but instead acquired cell-free RNA from the solution in which the cells resided -- such as secreted RNA or RNA released when some cells lysed in solution ([Lun, et al., 2018](https://www.ncbi.nlm.nih.gov/pubmed/?term=30902100)). This ambient RNA can serve as a substrate for reverse transcription, leading to a small number of background reads. Cell barcodes that are not believed to represent cells are identified in the metrics and raw information from dropletUtils is provided to the user.
 
-### 7. UMI Correction
 
-UMIs are designed to distinguish unique transcripts present in the cell at lysis from those arising from PCR amplification of these same transcripts. But, like cell barcodes, UMIs can also be incorrectly sequenced or amplified. Optimus uses the [UmiCorrection task](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/UmiCorrection.wdl) to apply a network-based, "directional" method ([Smith, et al., 2017](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5340976/)) to account for such errors. 
-
-
-
-### 8. Count Matrix Construction
+### 8. Expression Matrix Construction
 
 The pipeline outputs a count matrix that contains, for each cell barcode and for each gene, the number of molecules that were observed. The script that generates this matrix evaluates every read. It discards any read that maps to more than one gene, and counts any remaining reads provided the triplet of cell barcode, molecule barcode, and gene name is unique, indicating the read originates from a single transcript present at the time of lysis of the cell.
 
