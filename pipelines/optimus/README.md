@@ -7,10 +7,9 @@
   * [Inputs](#inputs)
     + [Sample Data Input](#sample-data-input)
     + [Additional Reference Inputs](#additional-reference-inputs)
-    + [V2 or V3 Chemistry Input](#v2-or-v3-chemistry-input)
 - [Running Optimus](#running-optimus)
   * [Optimus Modules Summary](#optimus-modules-summary)
-    + [1. Converting R2 Fastq file to BAM](#1-converting-r2-fastq-file-to-bam)
+    + [1. Converting R2 Fastq file to UBAM](#1-converting-r2-fastq-file-to-ubam)
     + [2. Correcting and Attaching Cell Barcodes](#2-correcting-and-attaching-cell-barcodes)
     + [3. Alignment](#3-alignment)
     + [4. Gene Annotation](#4-gene-annotation)
@@ -74,14 +73,7 @@ The json file also contains metadata for the following reference information:
 * Sample_id: Name of sample matching file
 * GTF gene annotation file: gtf containing annotations for gene tagging (must match star reference and organism)
 * Reference genome fasta file: genome fasta file (must match star reference and organism)
-
-### V2 or V3 Chemistry Input 
-
-The chemistry (V2 or V3) for the sequencing experiment needs to be specified in the [optimus.wdl code](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Optimus.wdl). The default is set to V2 using the following the command:
-
-String chemistry = "tenX_v2" 
-
-To change to V3 chemistry, use "tenX_v3". 
+* The 10X chemistry (V2 or V3): This is an optional input and the default is set to V3.
 
 
 # Running Optimus
@@ -106,9 +98,9 @@ Overall, the workflow:
 
 Special care is taken to flag but avoid the removal of reads that are not aligned or that do not contain recognizable barcodes. This design (which differs from many pipelines currently available) allows use of the entire dataset by those who may want to use alternative filtering or leverage the data for methodological development associated with the data processing.
 
-### 1. Converting R2 Fastq file to BAM
+### 1. Converting R2 Fastq file to UBAM
 
-Because the pipeline processing steps require a BAM file format, the first step of Optimus is to [convert](https://broadinstitute.github.io/picard/command-line-overview.html#FastqToSam) the R2 Fastq file, containing the alignable genomic information, to a BAM file.
+Unlike fastq files, BAM files enable us to keep track of important metadata throughout all data processing steps. The first step of Optimus is to [convert](https://broadinstitute.github.io/picard/command-line-overview.html#FastqToSam) the R2 Fastq file, containing the alignable genomic information, to an unaligned BAM (UBAM) file.
 
 ### 2. Correcting and Attaching Cell Barcodes
 
@@ -122,7 +114,7 @@ The various BAM files are then [scattered](https://github.com/HumanCellAtlas/sky
 
 ### 3. Alignment
 
-The [STAR alignment](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/StarAlignBamSingleEnd.wdl) software ([Dobin, et al., 2013](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3530905/) is used to map barcoded reads in the BAM file to the human genome primary assembly reference (see table above for version information). STAR (Spliced Transcripts Alignment to a Reference) is widely-used for RNA-seq alignment and identifies the best matching location(s) on the reference for each sequencing read.
+The [STAR alignment](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/StarAlignBamSingleEnd.wdl) software ([Dobin, et al., 2013](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3530905/) is used to map barcoded reads in the BAM file to the human genome primary assembly reference (see table above for version information). STAR (Spliced Transcripts Alignment to a Reference) is a widely-used, splice-aware, RNA-seq alignment tool and identifies the best matching location(s) on the reference for each sequencing read. 
 
 ### 4. Gene Annotation
 
