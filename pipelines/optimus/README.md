@@ -9,7 +9,7 @@
     + [Additional Reference Inputs](#additional-reference-inputs)
 - [Running Optimus](#running-optimus)
   * [Optimus Modules Summary](#optimus-modules-summary)
-    + [1. Converting R2 Fastq file to UBAM](#1-converting-r2-fastq-file-to-ubam)
+    + [1. Converting R2 Fastq File to UBAM](#1-converting-r2-fastq-file-to-ubam)
     + [2. Correcting and Attaching Cell Barcodes](#2-correcting-and-attaching-cell-barcodes)
     + [3. Alignment](#3-alignment)
     + [4. Gene Annotation](#4-gene-annotation)
@@ -57,7 +57,7 @@ Optimus pipeline inputs are detailed in a json file, such as in this [example](h
 
 ### Sample Data Input
 
-Each 10X v2 and v3 3’ sequencing experiment generates triplets of Fastq files for any given sample:  
+Each 10X v2 and v3 3’ sequencing experiment generates triplets of fastq files for any given sample:  
 
 1. A forward reads (r1_fastq), containing the unique molecular identifier (UMI) and cell barcode sequences
 2. A reverse reads (r2_fastq), which contain the alignable genomic information from the mRNA transcript 
@@ -70,10 +70,10 @@ Note: Optimus is currently a single sample pipeline, but can take in multiple se
 The json file also contains metadata for the following reference information:
 
 * Whitelist: a list of known cell barcodes from [10X genomics](https://www.10xgenomics.com/)
-* Tar_star_reference: a specifes-specific STAR reference genome TAR file generated using the [StarMkRef.wdl](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/StarMkref.wdl)
+* Tar_star_reference: TAR file containing a specifes-specific reference genome and gtf; it is generated using the [StarMkRef.wdl](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/StarMkref.wdl)
 * Sample_id: a unique name describing the biological sample or replicate that corresponds with the original fastq files
-* GTF gene annotation file: gtf containing annotations for gene tagging (must match star reference)
-* The 10X chemistry (V2 or V3): This is an optional input and the default is set to V2.
+* Annotations_gtf: a GTF containing gene annotations used for gene tagging (must match gft in STAR reference)
+* Chemistry: an optional description of whether data was generated with V2 or V3 chemistry
 
 
 # Running Optimus
@@ -83,46 +83,46 @@ The json file also contains metadata for the following reference information:
 
 ## Optimus Modules Summary
 
-Here we describe the modules of Optimus; [the code](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Optimus.wdl) and [library of tasks](https://github.com/HumanCellAtlas/skylab/tree/master/library/tasks) are available through Github.
+Here we describe the modules ("tasks") of the Optimus Pipeliene; [the code](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Optimus.wdl) and [library of tasks](https://github.com/HumanCellAtlas/skylab/tree/master/library/tasks) are available through Github.
 
 Overall, the workflow:
-1. Converts R2 Fastq file (containing alignable genomic information) to BAM
-2. Corrects and attaches 10X Barcodes using R1 Fastq file 
-3. Aligns reads to the genome with STAR
+1. Converts R2 fastq file (containing alignable genomic information) to an unaligend BAM (UBAM)
+2. Corrects and attaches 10X Barcodes using the R1 Fastq file 
+3. Aligns reads to the genome with STAR v.2.5.3a
 4. Annotates genes with aligned reads
 5. Corrects UMIs
 6. Detects empty droplets
-7. Calculates summary statistics (metrics) and count
-8. Produces a count matrix
-9. Returns output in BAM, Zarr, or loom file formats
+7. Calculates summary metrics
+8. Produces a UMI-aware expression matrix
+9. Returns output in BAM, Zarr, or Loom file formats
 
 Special care is taken to flag but avoid the removal of reads that are not aligned or that do not contain recognizable barcodes. This design (which differs from many pipelines currently available) allows use of the entire dataset by those who may want to use alternative filtering or leverage the data for methodological development associated with the data processing.
 
-### 1. Converting R2 Fastq file to UBAM
+### 1. Converting R2 Fastq File to UBAM
 
-Unlike fastq files, BAM files enable us to keep track of important metadata throughout all data processing steps. The first step of Optimus is to [convert](https://broadinstitute.github.io/picard/command-line-overview.html#FastqToSam) the R2 Fastq file, containing the alignable genomic information, to an unaligned BAM (UBAM) file.
+Unlike fastq files, BAM files enable researchers to keep track of important metadata throughout all data processing steps. The first step of Optimus is to [convert](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/FastqToUBam.wdl) the R2 fastq file, containing the alignable genomic information, to an unaligned BAM (UBAM) file.
 
 ### 2. Correcting and Attaching Cell Barcodes
 
-Although the function of the cell barcodes is to identify unique cells, barcode errors can arise during sequencing (such as incorporation of the barcode into contaminating DNA or sequencing and PCR errors), making it difficult to distinguish unique cells from artifactual appearances of the barcode. Barcode errors are evaluated in the [Attach10xBarcodes](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/Attach10xBarcodes.wdl), which compares the sequences against a whitelist of known barcode sequences.
+Although the function of the cell barcodes is to identify unique cells, barcode errors can arise during sequencing (such as incorporation of the barcode into contaminating DNA or sequencing and PCR errors), making it difficult to distinguish unique cells from artifactual appearances of the barcode. The [Attach10xBarcodes](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/Attach10xBarcodes.wdl) task evaluates barcode errors by comparing the R1 fastq sequences against a whitelist of known barcode sequences.
 
-Next, the [Attach10xBarcodes](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/Attach10xBarcodes.wdl) step appends the UMI and Cell Barcode sequences from R1 to the corresponding R2 sequence as tags, in order to properly label the genomic information for alignment.
+Next, the [Attach10xBarcodes](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/Attach10xBarcodes.wdl) task appends the UMI and Cell Barcode sequences from the R1 fastq to the UBAM sequence as tags, properly labeling the genomic information for alignment.
 
-The output file contains the reads with correct barcodes, including barcodes that came within one edit distance ([Levenshtein distance](http://www.levenshtein.net/)) of matching the whitelist of barcode sequences and were corrected by this tool. Correct barcodes are assigned a “CB” tag. Uncorrectable barcodes (with more than one error) are preserved and given a “CR” (Cell barcode Raw) tag. Cell barcode quality scores are also preserved in the file under the “CY” tag.
+The output is a UBAM file containing the reads with correct barcodes, including barcodes that came within one edit distance ([Levenshtein distance](http://www.levenshtein.net/)) of matching the whitelist of barcode sequences and were corrected by this tool. Correct barcodes are assigned a “CB” tag. Uncorrectable barcodes (with more than one error) are preserved and given a “CR” (Cell barcode Raw) tag. Cell barcode quality scores are also preserved in the file under the “CY” tag.
 
-The various BAM files are then [scattered](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/ScatterBam.wdl) and [split](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/SplitBamByCellBarcode.wdl) into groups according to cell barcode to facilitate the following processing steps. 
+To facilitate subsequent processing steps, the pipeline then [scatters](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/ScatterBam.wdl) and [splits](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/SplitBamByCellBarcode.wdl) the corrected UBAM files into groups according to cell barcode. 
 
 ### 3. Alignment
 
-The [STAR alignment](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/StarAlignBamSingleEnd.wdl) software ([Dobin, et al., 2013](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3530905/) is used to map barcoded reads in the BAM file to the human genome primary assembly reference (see table above for version information). STAR (Spliced Transcripts Alignment to a Reference) is a widely-used, splice-aware, RNA-seq alignment tool and identifies the best matching location(s) on the reference for each sequencing read. 
+Optimus uses the [STAR alignment](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/StarAlignBamSingleEnd.wdl) task to map barcoded reads in the UBAM file to the genome primary assembly reference (see table above for version information). This task uses STAR (Spliced Transcripts Alignment to a Reference; [Dobin, et al., 2013](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3530905/) a standard, splice-aware, RNA-seq alignment tool.
 
 ### 4. Gene Annotation
 
-The [TagGeneExon](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/TagGeneExon.wdl) tool then annotates each read with the type of sequence to which it aligns. These annotations include INTERGENIC, INTRONIC, and EXONIC, and are stored using the XF BAM tag. In cases where the gene corresponds to an intron or exon, the name of the gene that overlaps the alignment is associated with the read and stored using the GE BAM tag.
+The [TagGeneExon](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/TagGeneExon.wdl) task then annotates each read with the type of sequence to which it aligns. These annotations include INTERGENIC, INTRONIC, and EXONIC, and are stored using the XF BAM tag. In cases where the gene corresponds to an intron or exon, the name of the gene that overlaps the alignment is associated with the read and stored using the GE BAM tag.
 
 ### 5. UMI Correction
 
-UMIs are designed to distinguish unique transcripts present in the cell at lysis from those arising from PCR amplification of these same transcripts. But, like cell barcodes, UMIs can also be incorrectly sequenced or amplified. Optimus uses the [UMI-tools software package](https://github.com/CGATOxford/UMI-tools), which applies a network-based method to account for such errors ([Smith, et al., 2017](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5340976/)). Optimus uses the “directional” method.
+UMIs are designed to distinguish unique transcripts present in the cell at lysis from those arising from PCR amplification of these same transcripts. But, like cell barcodes, UMIs can also be incorrectly sequenced or amplified. Optimus uses the [UmiCorrection task](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/UmiCorrection.wdl) to apply a network-based, "directional" method ([Smith, et al., 2017](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5340976/)) to account for such errors. 
 
 ### 6. Identification of Empty Droplets
 
