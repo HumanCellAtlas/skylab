@@ -3,7 +3,7 @@
   "TestOptimusPR.reference_matrix": "gs://hca-dcp-sc-pipelines-test-data/optimus-test-data/referenceMatrix_V3.rds",
   "TestOptimusPR.expected_cell_metric_hash": "1e05acb35a31c39c0fcc24343e11769c",
   "TestOptimusPR.expected_gene_metric_hash": "d7eb98daa99d2c2aa7aaaf8232e5baed",
-  "TestOptimusPR.expected_loom_file_checksum": "f2262d6181106aaa5f643ec3db733ec7",
+  "TestOptimusPR.expected_loom_file_checksum": "2fc4b324934aefe5f35e736f7ad73f97",
   "TestOptimusPR.r1_fastq": [
       "gs://hca-dcp-sc-pipelines-test-data/smallDatasets/chemistry_10X_V3/pbmc_10k_v3_chr21_genic/pbmc_10k_v3_S1_L001_R1_001.filtered.fastq.gz",
       "gs://hca-dcp-sc-pipelines-test-data/smallDatasets/chemistry_10X_V3/pbmc_10k_v3_chr21_genic/pbmc_10k_v3_S1_L002_R1_001.filtered.fastq.gz"
