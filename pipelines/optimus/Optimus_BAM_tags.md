@@ -1,5 +1,5 @@
 # What tags are included in an Optimus BAM file?
-The Optimus Pipeline outputs a barcoded, aligned BAM file. There are multiple tags within the BAM file, including standard tags from [10X genomics](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/output/bam) and [Sequence Alignment Map (SAM) files](https://samtools.github.io/hts-specs/SAMtags.pdf). The table below details the tags used by the Optimus Pipeline and any relevant sources.
+The Optimus Pipeline outputs a barcoded, BAM file of aligned reads. There are multiple tags within the BAM file, including standard tags from [10X genomics](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/output/bam) and [Sequence Alignment Map (SAM) files](https://samtools.github.io/hts-specs/SAMtags.pdf). The table below details the tags used by the Optimus Pipeline and any relevant sources.
 
 |Optimus Pipeline BAM Tag | Details | Source
 |---| --- | --- |
