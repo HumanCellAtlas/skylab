@@ -44,7 +44,7 @@ The Loom file is an HDF5 matrix file generated using [Loompy v.2.0.17](http://lo
 | `emptydrops_IsCell` | [dropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html) | Calls cells according to an FDR cutoff |
 | `emptydrops_Limited` | [dropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html) | Indicates whether a lower p-value could be obtained by increasing niters |
 |`emptydrops_LogProb` | [dropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html) | The log-probability of observing the barcode’s count vector under the null model |
-| `emptydrops_PValue'` | [dropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html) | Numeric, the Monte Carlo p-value against the null model | 
+| `emptydrops_PValue` | [dropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html) | Numeric, the Monte Carlo p-value against the null model | 
 | `emptydrops_Total` | [dropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html) | Numeric, the total counts for each barcode |
 
 ## Table 2. Row Attributes (Gene Metrics)
