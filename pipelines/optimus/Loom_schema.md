@@ -40,7 +40,7 @@ The Loom file is an HDF5 matrix file generated using [Loompy v.2.0.17](http://lo
 |`n_genes`|[SC Tools](https://github.com/HumanCellAtlas/sctools/tree/master/src/sctools/metrics)|The number of genes detected by this cell. [Metrics Definitions](https://sctools.readthedocs.io/en/latest/sctools.metrics.html#sctools.metrics.aggregator.CellMetrics.n_genes)|
 |`genes_detected_multiple_observations`|[SC Tools](https://github.com/HumanCellAtlas/sctools/tree/master/src/sctools/metrics)|The number of genes that are observed by more than one read in this cell. [Metrics Definitions](https://sctools.readthedocs.io/en/latest/sctools.metrics.html#sctools.metrics.aggregator.CellMetrics.genes_detected_multiple_observations)|
 | `reads_unmapped`| [SC Tools](https://github.com/HumanCellAtlas/sctools/blob/master/src/sctools/metrics/aggregator.py) | Reads that are non-transcriptomic |
-| `emptydrops_FDR` | [dropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html) | False Discovery Rate |
+| `emptydrops_FDR` | [dropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html) | False Discovery Rate (FDR) |
 | `emptydrops_IsCell` | [dropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html) | Calls cells according to an FDR cutoff |
 | `emptydrops_Limited` | [dropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html) | Indicates whether a lower p-value could be obtained by increasing niters |
 |`emptydrops_LogProb` | [dropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html) | The log-probability of observing the barcode’s count vector under the null model |
