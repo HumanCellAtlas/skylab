@@ -166,17 +166,15 @@ Output files of the pipeline include:
 
 Following are the types of files produced from the pipeline.
 
-| Output Name | Filename, if applicable | Output Type |Output Format | Notes/Description | Tool |
-| ------ | ------ | ------ | ------ | ------ | ------ | ------ |
-| pipeline_version | | Version of the processing pipeline run on this data | String | This is passed from the processing WDL to the adapter pipelines to be put into the metadata in the HCA | Lira |
-| bam | merged.bam | aligned bam | bam | coordinate sorted | A few tools; need to address this provenance |
-| matrix | sparse_counts.npz | GenexCell expression matrix | Numpy array | | Yes |sctools |
-| matrix_row_index | sparse_counts_row_index.npy | Index of cells in expression matrix | Numpy array index | sctools |
-| matrix_col_index | sparse_counts_col_index.npy | Index of genes in expression matrix | Numpy array index | sctools | 
-| cell_metrics | merged-cell-metrics.csv.gz | cell metrics | compressed csv | Matrix of metrics by cells | sctools |
-| gene_metrics | merged-gene-metrics.csv.gz | gene metrics | compressed csv | Matrix of metrics by genes | sctools |
-| cell_calls | empty_drops_result.csv | cell calls | csv | emptyDrops |
-| zarr_output_files | {unique_id}.zarr!.zattrs | | zarr store? sparse matrix? | 
+| Output Name | Filename, if applicable | Output Type |Output Format |
+| ------ |------ | ------ | ------ | 
+| pipeline_version | | Version of the processing pipeline run on this data | String | 
+| bam | merged.bam | aligned bam | bam |
+| matrix_row_index | sparse_counts_row_index.npy | Index of cells in expression matrix | Numpy array index |
+| matrix_col_index | sparse_counts_col_index.npy | Index of genes in expression matrix | Numpy array index | 
+| cell_metrics | merged-cell-metrics.csv.gz | cell metrics | compressed csv | Matrix of metrics by cells | 
+| gene_metrics | merged-gene-metrics.csv.gz | gene metrics | compressed csv | Matrix of metrics by genes | 
+| zarr_output_files | {unique_id}.zarr!.zattrs | Zarr | Array | 
 | loom_output_file | output.loom | Loom | Loom | Loom file with expression data and metadata | N/A |
 
 The Loom file is an optional output that is specified in the "meta" section of the [Optimus workflow](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Optimus.wdl) with the following boolean command:
