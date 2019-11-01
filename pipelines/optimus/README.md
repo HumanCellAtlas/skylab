@@ -160,7 +160,7 @@ Boolean output_loom = false
 Output files of the pipeline include:
 
 1. Cell x Gene unnormalized, but UMI-corrected, expression matrices
-2. Unfiltered, sorted BAM file with [barcode and downstream analysis Tags](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Optimus_BAM_tags.md)
+2. Unfiltered, sorted BAM file with barcode and downstream analysis [Tags](Bam_tags.md)
 3. Cell metadata, including cell metrics
 4. Gene metadata, including gene metrics
 
