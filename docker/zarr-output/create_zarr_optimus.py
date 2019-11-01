@@ -75,7 +75,7 @@ def add_gene_metrics(data_group, input_path, gene_ids, verbose=False):
             "gene_metadata_numeric_name",
             shape=(len(gene_metrics[0][1:]),),
             compressor=COMPRESSOR,
-            dtype="<U40",
+            dtype="<U80",
             chunks=(len(gene_metrics[0][1:]),),
             data=list(gene_metrics[0][1:]))
     else:
@@ -218,7 +218,7 @@ def add_cell_metrics(data_group, metrics_file, cell_ids, emptydrops_file, verbos
     final_df_bool = final_df[BoolColumnNames]
 
     # Data types for storage
-    header_datatype = "<U40"  # little-endian 40 char unicode
+    header_datatype = "<U80"  # little-endian 80 char unicode
     float_store_datatype = np.float32  # machine independent 32 bit float
     bool_store_datatype = np.bool  # boolean
 
@@ -291,7 +291,7 @@ def add_expression_counts(data_group, args):
             "cell_id",
             shape=(len(cell_ids),),
             compressor=COMPRESSOR,
-            dtype='<U40',
+            dtype='<U80',
             chunks=(10000,),
             data=list(cell_ids))
     else:
@@ -305,7 +305,7 @@ def add_expression_counts(data_group, args):
             "gene_id",
             shape=(len(gene_ids),),
             compressor=COMPRESSOR,
-            dtype='<U40',
+            dtype='<U80',
             chunks=(10000,),
             data=list(gene_ids))
     else:
@@ -319,7 +319,7 @@ def add_expression_counts(data_group, args):
         # insert the name of the "gene id to gene name map"  gene string metadata
         data_group.create_dataset('gene_metadata_string_name',
                                   compression=COMPRESSOR,
-                                  dtype='<U40',
+                                  dtype='<U80',
                                   chunks=(1, ),
                                   data=["gene_name"])
 
@@ -327,7 +327,7 @@ def add_expression_counts(data_group, args):
         data_group.create_dataset('gene_metadata_string',
                                   shape=(1, len(gene_ids),),
                                   compression=COMPRESSOR,
-                                  dtype='<U40',
+                                  dtype='<U80',
                                   chunks=(1, len(gene_ids)),
                                   data=[gene_names])
 
