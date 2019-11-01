@@ -12,11 +12,11 @@ The top level entity contains all the data arrays and has two attributes:
 
 Data are stored in the following chunked and compressed arrays:
 
-- gene_metadata_numeric_name ("<U80" # little-endian 40 char unicode)
+- gene_metadata_numeric_name ("<U80" # little-endian 80 char unicode)
 - gene_metadata_numeric (np.float32)
-- cell_metadata_float_name ("<U80"  # little-endian 40 char unicode)
+- cell_metadata_float_name ("<U80"  # little-endian 80 char unicode)
 - cell_metadata_float (np.float32)
-- cell_metadata_bool_name ("<U80"  # little-endian 40 char unicode)
+- cell_metadata_bool_name ("<U80"  # little-endian 80 char unicode)
 - cell_metadata_bool (np.bool)
 - cell_id ("<U80")
 - gene_id ("<U80")
