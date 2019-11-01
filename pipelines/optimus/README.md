@@ -76,7 +76,7 @@ The json file also contains metadata for the following reference information:
 * Whitelist: a list of known cell barcodes from [10X genomics](https://www.10xgenomics.com/) that corresponds to the V2 or V3 chemistry
 * Tar_star_reference: TAR file containing a species-specific reference genome and gtf; it is generated using the [StarMkRef.wdl](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/StarMkref.wdl)
 * Sample_id: a unique name describing the biological sample or replicate that corresponds with the original fastq files
-* Annotations_gtf: a GTF containing gene annotations used for gene tagging (must match gtf in STAR reference)
+* Annotations_gtf: a GTF containing gene annotations used for gene tagging (must match GTF in STAR reference)
 * Chemistry: an optional string description of whether data was generated with 10X V2 or V3 chemistry
   * Optional string: "tenX_v2" (default) or "tenX_v3"
 
