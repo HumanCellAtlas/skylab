@@ -30,7 +30,7 @@
 
 ## Introduction to the Optimus Workflow
 
-Optimus is a pipeline developed by the Data Coordination Platform (DCP) of the [Human Cell Atlas (HCA) Project](https://data.humancellatlas.org/) that supports processing of any 3' single-cell expression data generated with the [10X Genomic V2 or V3 assay](https://www.10xgenomics.com/solutions/single-cell/). It is an alignment and transcriptome quantification pipeline that corrects Cell Barcodes, aligns reads to the genome, corrects Unique Molecular Identifiers (UMIs), generates an expression matrix in a UMI-aware manner, calculates summary metrics for genes and cells, detects empty droplets, returns read outputs in BAM format, and returns cell gene expression in numpy matrix, Zarr, and Loom file formats. Special care is taken to keep all reads that may be useful to the downstream user, such as unaligned reads or reads with uncorrectable barcodes. This design provides flexibility to the downstream user and allows for alternative filtering or leveraging the data for novel methodological development.
+Optimus is a pipeline developed by the Data Coordination Platform (DCP) of the [Human Cell Atlas (HCA) Project](https://data.humancellatlas.org/) that supports processing of any 3' single-cell expression data generated with the [10x Genomic V2 or V3 assay](https://www.10xgenomics.com/solutions/single-cell/). It is an alignment and transcriptome quantification pipeline that corrects Cell Barcodes, aligns reads to the genome, corrects Unique Molecular Identifiers (UMIs), generates an expression matrix in a UMI-aware manner, calculates summary metrics for genes and cells, detects empty droplets, returns read outputs in BAM format, and returns cell gene expression in numpy matrix, Zarr, and Loom file formats. Special care is taken to keep all reads that may be useful to the downstream user, such as unaligned reads or reads with uncorrectable barcodes. This design provides flexibility to the downstream user and allows for alternative filtering or leveraging the data for novel methodological development.
 
 Optimus has been validated for analyzing both [human](https://github.com/HumanCellAtlas/skylab/blob/master/benchmarking/optimus/optimus_report.rst) and [mouse](https://docs.google.com/document/d/1_3oO0ZQSrwEoe6D3GgKdSmAQ9qkzH_7wrE7x6_deL10/edit) data sets. More details about the human validation can be found in the [in the original file](https://docs.google.com/document/d/158ba_xQM9AYyu8VcLWsIvSoEYps6PQhgddTr9H0BFmY/edit).
 
@@ -61,7 +61,7 @@ Optimus pipeline inputs are detailed in a json file, such as in this [example](h
 
 ### Sample Data Input
 
-Each 10X v2 and v3 3’ sequencing experiment generates triplets of fastq files for any given sample:  
+Each 10x v2 and v3 3’ sequencing experiment generates triplets of fastq files for any given sample:  
 
 1. A forward reads (r1_fastq), containing the unique molecular identifier (UMI) and cell barcode sequences
 2. A reverse reads (r2_fastq), which contain the alignable genomic information from the mRNA transcript 
@@ -73,11 +73,11 @@ Note: Optimus is currently a single sample pipeline, but can take in multiple se
 
 The json file also contains metadata for the following reference information:
 
-* Whitelist: a list of known cell barcodes from [10X genomics](https://www.10xgenomics.com/) that corresponds to the V2 or V3 chemistry
+* Whitelist: a list of known cell barcodes from [10x genomics](https://www.10xgenomics.com/) that corresponds to the V2 or V3 chemistry
 * Tar_star_reference: TAR file containing a species-specific reference genome and gtf; it is generated using the [StarMkRef.wdl](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/StarMkref.wdl)
 * Sample_id: a unique name describing the biological sample or replicate that corresponds with the original fastq files
 * Annotations_gtf: a GTF containing gene annotations used for gene tagging (must match GTF in STAR reference)
-* Chemistry: an optional string description of whether data was generated with 10X V2 or V3 chemistry
+* Chemistry: an optional string description of whether data was generated with 10x V2 or V3 chemistry
   * Optional string: "tenX_v2" (default) or "tenX_v3"
 
 # Running Optimus
@@ -90,7 +90,7 @@ Here we describe the modules ("tasks") of the Optimus pipeline; [the code](https
 
 Overall, the workflow:
 1. Converts R2 fastq file (containing alignable genomic information) to an unaligned BAM (UBAM)
-2. Corrects and attaches 10X Barcodes using the R1 Fastq file 
+2. Corrects and attaches 10x Barcodes using the R1 Fastq file 
 3. Aligns reads to the genome with STAR v.2.5.3a
 4. Annotates genes with aligned reads
 5. Corrects UMIs
@@ -103,7 +103,7 @@ The tools each Optimus task employs are detailed in the following table:
 
 | Task | Tool | 
 | --- | --- |
-| [Attach10XBarcodes](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/Attach10xBarcodes.wdl) |	[sctools](https://sctools.readthedocs.io/en/latest/sctools.html) |
+| [Attach10xBarcodes](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/Attach10xBarcodes.wdl) |	[sctools](https://sctools.readthedocs.io/en/latest/sctools.html) |
 | [StarAlignBamSingleEnd](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/StarAlignBamSingleEnd.wdl) |	[STAR](https://github.com/alexdobin/STAR) |
 | [TagGeneExon](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/TagGeneExon.wdl) |	[Drop-seq](https://github.com/broadinstitute/Drop-seq) |
 | [UmiCorrection](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/UmiCorrection.wdl) |	[Umi-tools](https://github.com/CGATOxford/UMI-tools) |
@@ -151,7 +151,7 @@ The Optimus [Count](https://github.com/HumanCellAtlas/skylab/blob/master/library
 
 ### 8. Identification of Empty Droplets
 
-Empty droplets are lipid droplets that did not encapsulate a cell during 10X sequencing, but instead acquired cell-free RNA (secreted RNA or RNA released during cell lysis) from the solution in which the cells resided ([Lun, et al., 2018](https://www.ncbi.nlm.nih.gov/pubmed/?term=30902100). This ambient RNA can serve as a substrate for reverse transcription, leading to a small number of background reads. The Optimus pipeline calls the [RunEmptyDrops](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/RunEmptyDrops.wdl) task which uses the [dropletUtils v.0.1.1](http://bioconductor.org/packages/release/bioc/html/DropletUtils.html) R package to flag cell barcodes that represent empty droplets rather than cells. A cell will be flagged if it contains fewer than 100 molecules. These metrics are stored in the output Zarr and [Loom](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Loom_schema.md) files. 
+Empty droplets are lipid droplets that did not encapsulate a cell during 10x sequencing, but instead acquired cell-free RNA (secreted RNA or RNA released during cell lysis) from the solution in which the cells resided ([Lun, et al., 2018](https://www.ncbi.nlm.nih.gov/pubmed/?term=30902100). This ambient RNA can serve as a substrate for reverse transcription, leading to a small number of background reads. The Optimus pipeline calls the [RunEmptyDrops](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/RunEmptyDrops.wdl) task which uses the [dropletUtils v.0.1.1](http://bioconductor.org/packages/release/bioc/html/DropletUtils.html) R package to flag cell barcodes that represent empty droplets rather than cells. A cell will be flagged if it contains fewer than 100 molecules. These metrics are stored in the output Zarr and [Loom](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Loom_schema.md) files. 
 
 Boolean output_loom = false
 
@@ -194,3 +194,5 @@ To obtain a Loom file, the boolean parameter "false" must be changed to "true".
 # Have Suggestions? 
 
 Coming soon, we will have a GitHub document dedicated to open issues! In the meantime, please help us make our tools better by contacting [Kylee Degatano](mailto:kdegatano@broadinstitute.org) for pipeline-related suggestions or questions.
+
+
