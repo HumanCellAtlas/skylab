@@ -1,5 +1,11 @@
 # optimus_v1.3.6
 
+## Date
+
+9/23/2019
+
+## Release Note
+
 This release adds the following features:
 
 EmptyDrops output is now included in the ZARR output
