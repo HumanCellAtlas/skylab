@@ -79,7 +79,7 @@ The json file also contains metadata for the following reference information:
 * Annotations_gtf: a GTF containing gene annotations used for gene tagging (must match GTF in STAR reference)
 * Chemistry: an optional string description of whether data was generated with 10x V2 or V3 chemistry
   * Optional string: "tenX_v2" (default) or "tenX_v3"
-
+   * Note: Optimus validates this string. If the string does not match these options, the pipeline will fail. You can remove the checks by setting "force_no_check = true" in the input json.
 # Running Optimus
 
 * The [Optimus.wdl](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Optimus.wdl) in the pipelines/optimus folder of the HCA skylab repository implements the workflow by importing individual modules ("tasks" written in  WDL script) from the skylab [Library](https://github.com/HumanCellAtlas/skylab/tree/master/library) folder.
@@ -153,14 +153,12 @@ The Optimus [Count](https://github.com/HumanCellAtlas/skylab/blob/master/library
 
 Empty droplets are lipid droplets that did not encapsulate a cell during 10x sequencing, but instead acquired cell-free RNA (secreted RNA or RNA released during cell lysis) from the solution in which the cells resided ([Lun, et al., 2018](https://www.ncbi.nlm.nih.gov/pubmed/?term=30902100). This ambient RNA can serve as a substrate for reverse transcription, leading to a small number of background reads. The Optimus pipeline calls the [RunEmptyDrops](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/RunEmptyDrops.wdl) task which uses the [dropletUtils v.0.1.1](http://bioconductor.org/packages/release/bioc/html/DropletUtils.html) R package to flag cell barcodes that represent empty droplets rather than cells. A cell will be flagged if it contains fewer than 100 molecules. These metrics are stored in the output Zarr and [Loom](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Loom_schema.md) files. 
 
-Boolean output_loom = false
-
 ### 9. Outputs
 
 Output files of the pipeline include:
 
 1. Cell x Gene unnormalized, but UMI-corrected, expression matrices
-2. Unfiltered, sorted BAM file with barcode and downstream analysis [Tags](Bam_tags.md)
+2. Unfiltered, sorted BAM file with barcode and downstream analysis [tags](Bam_tags.md)
 3. Cell metadata, including cell metrics
 4. Gene metadata, including gene metrics
 
@@ -177,9 +175,12 @@ Following are the types of files produced from the pipeline.
 | zarr_output_files | {unique_id}.zarr!.zattrs | Zarr | Array | 
 | loom_output_file | output.loom | Loom | Loom | Loom file with expression data and metadata | N/A |
 
+
+The Zarr array is the default output. The Zarr schema version is detailed in the array as 'optimus_output_schema_version'. The schema version is specified to the Zarr using the [create_zarr_optimus.py](https://github.com/HumanCellAtlas/skylab/blob/master/docker/zarr-output/create_zarr_optimus.py) script. 
+
 The Loom file is an optional output that is specified in the "meta" section of the [Optimus workflow](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Optimus.wdl) with the following boolean command:
 
-"Boolean output_loom = false"
+> "Boolean output_loom = false"
 
 To obtain a Loom file, the boolean parameter "false" must be changed to "true". 
 
