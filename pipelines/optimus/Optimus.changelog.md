@@ -1,8 +1,6 @@
-## Release Date
+Insert release date (xxxx-xx-xx)
 
-insert here
-
-## Type of Change (Add, Change, Deprecate, Remove, Fix, Security)
+Type of Change (Add, Change, Deprecate, Remove, Fix, Security):
 
 * insert here
 
@@ -12,11 +10,9 @@ insert here
 
 # optimus_v1.3.6
 
-## Release Date
-
 9/23/2019
 
-## Type of Change (Add, Change, Deprecate, Remove, Fix, Security)
+Type of Change (Add, Change, Deprecate, Remove, Fix, Security):
 
 * Add
 * Change
