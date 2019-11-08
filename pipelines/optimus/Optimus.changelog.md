@@ -4,7 +4,7 @@
 
 9/23/2019
 
-## Type of Change (Options: Add, Change, Deprecate, Remove, Fix, Security)
+## Type of Change (Add, Change, Deprecate, Remove, Fix, Security)
 
 * Add
 * Change
