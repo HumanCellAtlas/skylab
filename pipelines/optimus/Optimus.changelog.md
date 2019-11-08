@@ -1,11 +1,14 @@
 ## Release Date
 
-
+insert here
 
 ## Type of Change (Add, Change, Deprecate, Remove, Fix, Security)
 
+* insert here
 
 ## Release Note
+
+* insert here or say "No release note"
 
 # optimus_v1.3.6
 
