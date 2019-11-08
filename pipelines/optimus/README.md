@@ -79,7 +79,7 @@ The json file also contains metadata for the following reference information:
 * Annotations_gtf: a GTF containing gene annotations used for gene tagging (must match GTF in STAR reference)
 * Chemistry: an optional string description of whether data was generated with 10x V2 or V3 chemistry
   * Optional string: "tenX_v2" (default) or "tenX_v3"
-
+   * Note: Optimus validates this string. If the string does not match these options, the pipeline will fail. You can remove the checks by setting "force_no_check = true" in the input json.
 # Running Optimus
 
 * The [Optimus.wdl](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Optimus.wdl) in the pipelines/optimus folder of the HCA skylab repository implements the workflow by importing individual modules ("tasks" written in  WDL script) from the skylab [Library](https://github.com/HumanCellAtlas/skylab/tree/master/library) folder.
