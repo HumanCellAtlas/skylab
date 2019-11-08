@@ -10,7 +10,7 @@ Type of Change (Add, Change, Deprecate, Remove, Fix, Security):
 
 # optimus_v1.3.6
 
-9/23/2019
+2019-09-23
 
 Type of Change (Add, Change, Deprecate, Remove, Fix, Security):
 
