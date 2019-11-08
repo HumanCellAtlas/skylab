@@ -27,7 +27,7 @@ The GTF modification step is removed from the scatter, resulting in better perfo
 Documentation has been updated.
 
 
-## Type of Change (Add, Change, Deprecate, Remove, Fix, Security):
+#### Type of Change (Add, Change, Deprecate, Remove, Fix, Security):
 
 * Add
 * Change
