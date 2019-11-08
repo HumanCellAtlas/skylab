@@ -4,16 +4,24 @@
 
 9/23/2019
 
+## Type of Change (Options: Add, Change, Deprecate, Remove, Fix, Security)
+
+* Add
+* Change
+
 ## Release Note
 
 This release adds the following features:
 
-EmptyDrops output is now included in the ZARR output
-The GTF modification step is removed from the scatter, resulting in better performance and caching
-Memory of several tasks is increased
-The ZARR output is now compulsory and the relevant input flag has been removed
-Support for loom format has been added and an new optional flag dictates if the file is created
-Documentation has been updated
+* EmptyDrops output is now included in the ZARR output
+The GTF modification step is removed from the scatter, resulting in better performance and caching.
+
+* Memory of several tasks is increased.
+
+* The ZARR output is now compulsory and the relevant input flag has been removed.
+
+* Support for loom format has been added and a new optional flag dictates if the file is created
+Documentation has been updated.
 
 # optimus_v1.3.5
 
