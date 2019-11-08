@@ -12,11 +12,6 @@ Type of Change (Add, Change, Deprecate, Remove, Fix, Security):
 
 2019-09-23
 
-Type of Change (Add, Change, Deprecate, Remove, Fix, Security):
-
-* Add
-* Change
-
 ## Release Note
 
 This release adds the following features:
@@ -30,6 +25,13 @@ The GTF modification step is removed from the scatter, resulting in better perfo
 
 * Support for loom format has been added and a new optional flag dictates if the file is created
 Documentation has been updated.
+
+
+## Type of Change (Add, Change, Deprecate, Remove, Fix, Security):
+
+* Add
+* Change
+
 
 # optimus_v1.3.5
 
