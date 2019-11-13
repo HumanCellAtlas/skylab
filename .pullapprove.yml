@@ -1,9 +1,6 @@
 version: 3
 
 pullapprove_conditions:
-- condition: "'ci/circleci: build' in statuses.successful"
-  unmet_status: failure
-  explanation: "Circle CI tests must pass before review starts"
 
 - condition: "'ci/circleci: test_emptyDropsWrapper' in statuses.successful"
   unmet_status: failure
@@ -24,6 +21,7 @@ groups:
 
     reviews:
       required: 1
+      request: 0
       author_value: 1 # if author in group reduce number of approvals needed by this number
 
     reviewers:
@@ -33,8 +31,8 @@ groups:
   software-review:
     reviews:
       required: 1
+      request: 0
       author_value: 0 # if author in group reduce number of approvals needed by this number
-      request_order: random  # reviewers will be chosen in a random order
 
     reviewers:
       teams:
@@ -47,8 +45,8 @@ groups:
       - "'ENG-ONLY' not in labels"
     reviews:
       required: 1
+      request: 0
       author_value: 0 # if author in group reduce number of approvals needed by this number
-      request_order: random  # reviewers will be chosen in a random order
 
     reviewers:
       teams:

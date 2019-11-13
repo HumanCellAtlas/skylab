@@ -1,5 +1,0 @@
-{
-  "StarRef.fasta": "gs://broad-dsde-mint-dev-teststorage/reference/GRCh38_Gencode/GRCh38.primary_assembly.genome.fa",
-  "StarRef.gtf": "gs://broad-dsde-mint-dev-teststorage/reference/GRCh38_Gencode/gencode.v27.primary_assembly.annotation.gtf",
-  "StarRef.ref_name":"star_primary_gencode_v27"
-}

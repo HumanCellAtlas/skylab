@@ -9,7 +9,7 @@ workflow SmartSeq2SingleCell {
     description: "Process SmartSeq2 scRNA-Seq data, include reads alignment, QC metrics collection, and gene expression quantitication"
   }
   # version of this pipeline
-  String version = "smartseq2_v2.4.0"
+  String version = "smartseq2_v2.5.0"
   # load annotation
   File genome_ref_fasta
   File rrna_intervals
@@ -27,7 +27,6 @@ workflow SmartSeq2SingleCell {
   String output_name
   File fastq1
   File fastq2
-  Int max_retries = 0
 
   # whether to convert the outputs to Zarr format, by default it's set to true
   Boolean output_zarr = true
@@ -46,7 +45,6 @@ workflow SmartSeq2SingleCell {
     output_name: "Output name, can include path"
     fastq1: "R1 in paired end reads"
     fastq2: "R2 in paired end reads"
-    max_retries: "(optional) retry this number of times if task fails -- use with caution, see skylab README for details"
     output_zarr: "whether to run the taks that converts the outputs to Zarr format, by default it's true"
   }
 
@@ -60,7 +58,6 @@ workflow SmartSeq2SingleCell {
       ref_name = hisat2_ref_name,
       sample_name = sample_name,
       output_basename = quality_control_output_basename,
-      max_retries = max_retries,
   }
 
   call Picard.CollectMultipleMetrics {
@@ -68,7 +65,6 @@ workflow SmartSeq2SingleCell {
       aligned_bam = HISAT2PairedEnd.output_bam,
       genome_ref_fasta = genome_ref_fasta,
       output_basename = quality_control_output_basename,
-      max_retries = max_retries,
   }
 
   call Picard.CollectRnaMetrics {
@@ -78,14 +74,12 @@ workflow SmartSeq2SingleCell {
       rrna_intervals = rrna_intervals,
       output_basename = quality_control_output_basename,
       stranded = stranded,
-      max_retries = max_retries,
   }
 
   call Picard.CollectDuplicationMetrics {
     input:
       aligned_bam = HISAT2PairedEnd.output_bam,
       output_basename = quality_control_output_basename,
-      max_retries = max_retries,
   }
 
   String data_output_basename = output_name + "_rsem"
@@ -98,7 +92,6 @@ workflow SmartSeq2SingleCell {
       ref_name = hisat2_ref_trans_name,
       sample_name = sample_name,
       output_basename = data_output_basename,
-      max_retries = max_retries,
   }
 
   call RSEM.RSEMExpression {
@@ -106,7 +99,6 @@ workflow SmartSeq2SingleCell {
       trans_aligned_bam = HISAT2Transcriptome.output_bam,
       rsem_genome = rsem_ref_index,
       output_basename = data_output_basename,
-      max_retries = max_retries,
       is_paired = true
   }
 

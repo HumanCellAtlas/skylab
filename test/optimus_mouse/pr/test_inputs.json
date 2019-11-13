@@ -1,0 +1,21 @@
+{
+  "TestOptimusPR.expected_bam_hash": "cf55587ab4bd6e6d84669f3e58dd6dec",
+  "TestOptimusPR.expected_matrix_hash": "79d0e000e9e707e16fce1ecc1559cd5d",
+  "TestOptimusPR.expected_cell_metric_hash": "109b13b85f4da87a78e1d4b90a80bb1c",
+  "TestOptimusPR.expected_gene_metric_hash": "4b6c96731ecdfc9e93c2d6e4b4b13e6a",
+  "TestOptimusPR.r1_fastq": [
+    "gs://broad-dsde-mint-dev-teststorage/ajc-test/heart_1k_v2_test_fastqs/heart_1k_test_v2_S1_L001_R1_001.fastq.gz"
+  ],
+  "TestOptimusPR.r2_fastq": [
+    "gs://broad-dsde-mint-dev-teststorage/ajc-test/heart_1k_v2_test_fastqs/heart_1k_test_v2_S1_L001_R2_001.fastq.gz"
+  ],
+  "TestOptimusPR.i1_fastq": [
+    "gs://broad-dsde-mint-dev-teststorage/ajc-test/heart_1k_v2_test_fastqs/heart_1k_test_v2_S1_L001_I1_001.fastq.gz"
+  ],
+  "TestOptimusPR.whitelist": "gs://hca-dcp-mint-test-data/10x/whitelist/737K-august-2016.txt",
+  "TestOptimusPR.tar_star_reference": "gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/mouse_reference/star_primary_gencode_mouse_vM21.tar",
+  "TestOptimusPR.sample_id": "heart_1k_test_v2_S1",
+  "TestOptimusPR.chemistry": "tenX_v2",
+  "TestOptimusPR.annotations_gtf": "gs://broad-dsde-mint-dev-teststorage/ajc-test/gencode.vM21.annotation.gtf.gz",
+  "TestOptimusPR.ref_genome_fasta": "gs://broad-dsde-mint-dev-teststorage/ajc-test/GRCm38.primary_assembly.genome.fa"
+}
