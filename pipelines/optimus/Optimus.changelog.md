@@ -1,16 +1,16 @@
-Insert release date (xxxx-xx-xx)
+# Future Release Version 1.3.7
+Insert commit date (xxxx-xx-xx)
 
 Type of Change (Add, Change, Deprecate, Remove, Fix, Security):
 
 * insert here
 
-## Release Note
 
-* insert here or say "No release note"
+* insert here or say "No observable change"
 
 # optimus_v1.3.6
 
-2019-09-23
+2019-09-23 (Date of Last Commit)
 
 ## Release Note
 
@@ -25,12 +25,6 @@ The GTF modification step is removed from the scatter, resulting in better perfo
 
 * Support for loom format has been added and a new optional flag dictates if the file is created
 Documentation has been updated.
-
-
-#### Type of Change (Add, Change, Deprecate, Remove, Fix, Security):
-
-* Add
-* Change
 
 
 # optimus_v1.3.5
