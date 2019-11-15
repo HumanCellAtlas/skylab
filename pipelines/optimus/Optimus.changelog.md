@@ -1,10 +1,3 @@
-# Future Release Version Name
-
-YYY-MM-DD (Date of Last Commit)
-
-* insert first bulleted note here
-
-* insert note point here
 
 # optimus_v1.4.0
 
