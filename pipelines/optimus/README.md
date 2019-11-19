@@ -1,7 +1,6 @@
 | Pipeline Version | Date Updated | Documentation Author | Questions or Feedback |
 | :----: | :---: | :----: | :--------------: |
 | [optimus_v1.4.0](https://github.com/HumanCellAtlas/skylab/releases/tag/optimus_v1.4.0) | November 08, 2019 | [Elizabeth Kiernan](mailto:ekiernan@broadinstitute.org) | Please file GitHub issues in skylab or contact [Kylee Degatano](mailto:kdegatano@broadinstitute.org) |
-| [optimus_v1.3.6](https://github.com/HumanCellAtlas/skylab/releases/tag/optimus_v1.3.6) | October 10, 2019 | [Elizabeth Kiernan](mailto:ekiernan@broadinstitute.org) | Please file GitHub issues in skylab or contact [Kylee Degatano](mailto:kdegatano@broadinstitute.org) |
 
 # Table of Contents
 - [Optimus Pipeline Overview](#optimus-pipeline-overview)
@@ -187,12 +186,7 @@ To obtain a Loom file, the boolean parameter "false" must be changed to "true".
 
 # Versioning
 
-| Optimus Release Version | Date | Release Note | 
-| :---: | :---: | :---: |
-| [v1.4.0](https://github.com/HumanCellAtlas/skylab/releases/tag/optimus_v1.4.0) (current) | 11/08/2019 | Optimus now supports processing 10X V3 Chemistry scRNAseq data. By default, the pipeline processes 10X V2, V3 must be specified as an input. EmptyDrops calls are now a column in Zarr output. |
-| v1.3.6 | 09/23/2019 | Optimus now optionally outputs a Loom formatted count matrix. |
-| v1.3.3 | 08/29/2019 | This version and newer have been validated to additionally support Mouse data. The gene expression per cell is now counted by gencode geneID instead of gene name. There is an additional output mapping geneID to gene name provided. This is a breaking change. | 
-| v1.0.0 |03/30/2019 | Initial pipeline release. Validated on hg38 GENCODE v27. | 
+All Optimus pipeline releases are documented in the [Optimus changelog](Optimus.changelog.md). 
 
 # Have Suggestions? 
 
