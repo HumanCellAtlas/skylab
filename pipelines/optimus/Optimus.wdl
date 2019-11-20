@@ -13,6 +13,7 @@ import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/optimus_v1.4.0_t
 import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/optimus_v1.4.0_terra/library/tasks/UmiCorrection.wdl" as UmiCorrection
 import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/optimus_v1.4.0_terra/library/tasks/ScatterBam.wdl" as ScatterBam
 import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/optimus_v1.4.0_terra/library/tasks/ModifyGtf.wdl" as ModifyGtf
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/optimus_v1.4.0_terra/library/tasks/OptimusInputChecks.wdl" as OptimusInputChecks
 
 workflow Optimus {
   meta {
