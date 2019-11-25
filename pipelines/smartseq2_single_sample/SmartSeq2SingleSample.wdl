@@ -3,6 +3,7 @@ import "Picard.wdl" as Picard
 import "RSEM.wdl" as RSEM
 import "GroupMetricsOutputs.wdl" as GroupQCs
 import "ZarrUtils.wdl" as ZarrUtils
+import "SS2InputChecks.wdl" as SS2InputChecks
 
 workflow SmartSeq2SingleCell {
   meta {
@@ -48,6 +49,13 @@ workflow SmartSeq2SingleCell {
     fastq2: "R2 in paired end reads"
     output_zarr: "whether to run the taks that converts the outputs to Zarr format, by default it's true"
     paired_end: "Boolean flag denoting if the sample is paired end or not"
+  }
+
+  call  SS2InputChecks.SS2InputChecks {
+    input:
+        fastq1 = fastq1,
+        fastq2 = fastq2,
+        paired_end = paired_end
   }
 
   String quality_control_output_basename = output_name + "_qc"
