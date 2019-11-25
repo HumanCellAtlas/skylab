@@ -58,7 +58,7 @@ task SmartSeq2ZarrConversion {
 
 task OptimusZarrConversion {
   #runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-zarr-output:0.0.1"
+  String docker = "quay.io/humancellatlas/secondary-analysis-zarr-output:0.0.2"
 
   # name of the sample
   String sample_id

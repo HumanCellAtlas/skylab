@@ -49,6 +49,19 @@ jobs:
                     python test/run_portability_test.py --test-directories test/optimus/pr/
                 no_output_timeout: 1.5h
 
+    test_portability_optimus_mouse:
+        docker:
+            - image: circleci/python:3.6.1
+        steps:
+            - checkout
+            - run:
+                command: |
+                    python3 -m venv venv
+                    . venv/bin/activate
+                    pip install requests
+                    python test/run_portability_test.py --test-directories test/optimus_mouse/pr
+                no_output_timeout: 1.5h
+
     test_portability_smartseq2_single_sample:
         docker:
             - image: circleci/python:3.6.1
@@ -71,14 +84,33 @@ jobs:
                     ./test/trigger_test.sh optimus
                 no_output_timeout: 1.5h
 
+    test_optimus_v3:
+        machine: true
+        steps:
+            - checkout
+            - run:
+                command: |
+                    ./test/trigger_test.sh optimus prV3
+                no_output_timeout: 1.5h
+
     test_smartseq2:
         machine: true
         steps:
             - checkout
             - run:
-                  command: |
-                      ./test/trigger_test.sh smartseq2_single_sample
-                  no_output_timeout: 1.5h
+                command: |
+                    ./test/trigger_test.sh smartseq2_single_sample
+                no_output_timeout: 1.5h
+
+    test_optimus_mouse:
+        machine: true
+
+        steps:
+            - checkout
+            - run:
+                command: |
+                    ./test/trigger_test.sh optimus_mouse
+                no_output_timeout: 1.5h
 
     test_smartseq2_unpaired:
       machine: true
@@ -141,6 +173,7 @@ workflows:
     test_all:
         jobs:
           - test_optimus
+          - test_optimus_mouse
           - test_smartseq2
           - test_smartseq2_unpaired
           - test_emptyDropsWrapper
@@ -152,4 +185,6 @@ workflows:
           - test_portability_smartseq2_single_sample_unpaired
           - test_portability_bulk_rna_pipeline
           - test_portability_optimus
+          - test_portability_optimus_mouse
           - test_portability_smartseq2_single_sample
+          - test_optimus_v3
