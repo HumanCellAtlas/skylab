@@ -27,6 +27,7 @@ workflow SmartSeq2SingleCell {
   String output_name
   File fastq1
   File? fastq2
+  Boolean paired_end
 
   # whether to convert the outputs to Zarr format, by default it's set to true
   Boolean output_zarr = true
@@ -46,11 +47,12 @@ workflow SmartSeq2SingleCell {
     fastq1: "R1 in paired end reads"
     fastq2: "R2 in paired end reads"
     output_zarr: "whether to run the taks that converts the outputs to Zarr format, by default it's true"
+    paired_end: "Boolean flag denoting if the sample is paired end or not"
   }
 
   String quality_control_output_basename = output_name + "_qc"
 
-   if( defined(fastq2) ) {
+   if( paired_end ) {
      call HISAT2.HISAT2PairedEnd {
        input:
          hisat2_ref = hisat2_ref_index,
@@ -61,7 +63,7 @@ workflow SmartSeq2SingleCell {
          output_basename = quality_control_output_basename,
      } 
   } 
-  if( !defined(fastq2) ) {
+  if( !paired_end ) {
      call HISAT2.HISAT2SingleEnd {
        input:
          hisat2_ref = hisat2_ref_index,
@@ -100,7 +102,7 @@ workflow SmartSeq2SingleCell {
 
   String data_output_basename = output_name + "_rsem"
   
-  if( defined(fastq2) ) {
+  if( paired_end ) {
       call HISAT2.HISAT2RSEM as HISAT2Transcriptome {
         input:
           hisat2_ref = hisat2_ref_trans_index,
@@ -112,7 +114,7 @@ workflow SmartSeq2SingleCell {
       }
   }
 
-if( !defined(fastq2) ) {
+  if( !paired_end ) {
       call HISAT2.HISAT2RSEMSingleEnd as HISAT2SingleEndTranscriptome {
         input:
           hisat2_ref = hisat2_ref_trans_index,
@@ -125,15 +127,13 @@ if( !defined(fastq2) ) {
 
   File HISAT2RSEM_output_bam = select_first([ HISAT2Transcriptome.output_bam, HISAT2SingleEndTranscriptome.output_bam] )
   File HISAT2RSEM_log_file = select_first([ HISAT2Transcriptome.log_file, HISAT2SingleEndTranscriptome.log_file] )
-  
-  Boolean is_paired = defined(fastq2)
 
   call RSEM.RSEMExpression {
     input:
       trans_aligned_bam = HISAT2RSEM_output_bam,
       rsem_genome = rsem_ref_index,
       output_basename = data_output_basename,
-      is_paired = is_paired
+      is_paired = paired_end
   }
 
   Array[File]  picard_row_outputs = [CollectMultipleMetrics.alignment_summary_metrics,CollectDuplicationMetrics.dedup_metrics,CollectRnaMetrics.rna_metrics,CollectMultipleMetrics.gc_bias_summary_metrics]
@@ -152,6 +152,7 @@ if( !defined(fastq2) ) {
       rsem_stats = RSEMExpression.rsem_cnt,
       output_name = output_name
   }
+
   if (output_zarr) {
     call ZarrUtils.SmartSeq2ZarrConversion {
       input:
@@ -160,7 +161,6 @@ if( !defined(fastq2) ) {
         sample_name=sample_name
     }
   }
-
 
   output {
     # version of this pipeline
