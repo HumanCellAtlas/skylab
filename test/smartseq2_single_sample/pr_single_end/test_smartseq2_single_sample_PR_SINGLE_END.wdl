@@ -21,7 +21,6 @@ workflow TestSmartSeq2SingleCellPR {
   String sample_name
   String output_name
   File fastq1
-  File fastq2
 
   call target_wdl.SmartSeq2SingleCell as target_workflow {
     input:
@@ -37,8 +36,7 @@ workflow TestSmartSeq2SingleCellPR {
       sample_name = sample_name,
       output_name = output_name,
       fastq1 = fastq1,
-      fastq2 = fastq2,
-      paired_end = true,
+      paired_end = false,
       force_no_check = false
   }
 
