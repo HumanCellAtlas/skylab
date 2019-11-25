@@ -5,5 +5,6 @@
   "Picard.wdl": "library/tasks/Picard.wdl",
   "RSEM.wdl": "library/tasks/RSEM.wdl",
   "GroupMetricsOutputs.wdl": "library/tasks/GroupMetricsOutputs.wdl",
-  "ZarrUtils.wdl": "library/tasks/ZarrUtils.wdl"
+  "ZarrUtils.wdl": "library/tasks/ZarrUtils.wdl",
+  "SS2InputChecks.wdl": "library/tasks/SS2InputChecks.wdl"
 }
