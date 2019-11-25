@@ -148,12 +148,10 @@ workflow SmartSeq2SingleCell {
 
   Array[File]  picard_row_outputs = [CollectMultipleMetrics.alignment_summary_metrics,CollectDuplicationMetrics.dedup_metrics,CollectRnaMetrics.rna_metrics,CollectMultipleMetrics.gc_bias_summary_metrics]
 
-  #File? picard_row_optional_outputs = CollectMultipleMetrics.insert_size_metrics[0]
-
+  # This output only exists for PE and select_first fails if array is empty
   if ( length(CollectMultipleMetrics.insert_size_metrics) > 0 ) {
     File? picard_row_optional_outputs = select_first(CollectMultipleMetrics.insert_size_metrics)
   }
-
 
   Array[File?]   picard_table_outputs = [CollectMultipleMetrics.base_call_dist_metrics,CollectMultipleMetrics.gc_bias_detail_metrics,CollectMultipleMetrics.pre_adapter_details_metrics,CollectMultipleMetrics.pre_adapter_summary_metrics,CollectMultipleMetrics.bait_bias_detail_metrics,CollectMultipleMetrics.error_summary_metrics]
 
