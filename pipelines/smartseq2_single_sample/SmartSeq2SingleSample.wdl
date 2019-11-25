@@ -29,6 +29,7 @@ workflow SmartSeq2SingleCell {
   File fastq1
   File? fastq2
   Boolean paired_end
+  Boolean force_no_check = false
 
   # whether to convert the outputs to Zarr format, by default it's set to true
   Boolean output_zarr = true
@@ -51,11 +52,12 @@ workflow SmartSeq2SingleCell {
     paired_end: "Boolean flag denoting if the sample is paired end or not"
   }
 
-  call  SS2InputChecks.SS2InputChecks {
+  call  SS2InputChecks.checkSS2Input {
     input:
         fastq1 = fastq1,
         fastq2 = fastq2,
-        paired_end = paired_end
+        paired_end = paired_end,
+        force_no_check = force_no_check,
   }
 
   String quality_control_output_basename = output_name + "_qc"
@@ -146,14 +148,14 @@ workflow SmartSeq2SingleCell {
 
   Array[File]  picard_row_outputs = [CollectMultipleMetrics.alignment_summary_metrics,CollectDuplicationMetrics.dedup_metrics,CollectRnaMetrics.rna_metrics,CollectMultipleMetrics.gc_bias_summary_metrics]
 
-  Array[File?]  picard_row_optional_outputs = select_all(CollectMultipleMetrics.insert_size_metrics)
+  File?  picard_row_optional_outputs = CollectMultipleMetrics.insert_size_metrics[0]
 
   Array[File?]   picard_table_outputs = [CollectMultipleMetrics.base_call_dist_metrics,CollectMultipleMetrics.gc_bias_detail_metrics,CollectMultipleMetrics.pre_adapter_details_metrics,CollectMultipleMetrics.pre_adapter_summary_metrics,CollectMultipleMetrics.bait_bias_detail_metrics,CollectMultipleMetrics.error_summary_metrics]
 
   call GroupQCs.GroupQCOutputs {
    input:
       picard_row_outputs = picard_row_outputs,
-      picard_row_optional_outputs = picard_row_optional_outputs,
+      picard_row_optional_outputs = CollectMultipleMetrics.insert_size_metrics,
       picard_table_outputs = picard_table_outputs,
       hisat2_stats = HISAT2_log_file,
       hisat2_trans_stats = HISAT2RSEM_log_file,
@@ -176,7 +178,7 @@ workflow SmartSeq2SingleCell {
     # quality control outputs
     File aligned_bam = HISAT2_output_bam
     File bam_index = HISAT2_bam_index
-    Array[File?] insert_size_metrics =  picard_row_optional_outputs
+    File? insert_size_metrics =  picard_row_optional_outputs
     File quality_distribution_metrics = CollectMultipleMetrics.quality_distribution_metrics
     File quality_by_cycle_metrics = CollectMultipleMetrics.quality_by_cycle_metrics
     File bait_bias_summary_metrics = CollectMultipleMetrics.bait_bias_summary_metrics

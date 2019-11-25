@@ -18,10 +18,10 @@ task checkSS2Input {
     pass="true"
 
     ## Perform checks
-    if [[ ! -f "$fastq1" ]]
+    if [[ ! -f "${fastq1}" ]]
     then
-    pass="false"]
-    echo "ERROR: Fastq1 not provided"
+    pass="false"
+    echo "ERROR: fastq1 (${fastq1}) not provided"
     fi
 
     if [[ ${paired_end_str} == "true" && ! -f "${fastq2}" ]]
