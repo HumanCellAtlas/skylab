@@ -1,0 +1,8 @@
+{
+		"Picard.wdl": "Picard.wdl",
+    "RSEM.wdl": "RSEM.wdl",
+    "HISAT2.wdl": "HISAT2.wdl",
+    "SmartSeq2SingleSample.wdl":"SmartSeq2SingleSample.wdl",
+    "RunBenchmarkingAnalysis.wdl":"RunBenchmarkingAnalysis.wdl",
+    "BenchmarkingTasks.wdl":"BenchmarkingTasks.wdl"
+}
