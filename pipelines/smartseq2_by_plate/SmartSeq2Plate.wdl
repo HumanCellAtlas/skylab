@@ -1,5 +1,4 @@
 import "SmartSeq2SingleSample.wdl" as single_cell_run
-import "RunBenchmarkingAnalysis.wdl" as run_benchmarking
 import "SmartSeq2PlateAggregation.wdl" as ss2_plate_aggregation
        
 workflow RunSmartSeq2ByPlate {
@@ -8,13 +7,16 @@ workflow RunSmartSeq2ByPlate {
   File rrna_intervals
   File gene_ref_flat
   File gtf_file
-  #load index
+
+  # load index
   File hisat2_ref_index
   File hisat2_ref_trans_index
   File rsem_ref_index
+
   # ref index name
   File hisat2_ref_name
   File hisat2_ref_trans_name
+
   # samples
   String stranded
   String sra_dir
@@ -22,20 +24,8 @@ workflow RunSmartSeq2ByPlate {
   Array[String] sraIDs
   String batch_id
   String docker
- # for benchmarking
-  File base_datafile
-  File benchmarking_output_name
-  File metadata_file
-  File base_metrics
-  String metadata_keys
-  String groups
-  String low_cut
-  String high_cut
-  String met_keys
-  Int    npcs
-  String benchmarking_docker
 
-  ## Run the SS2 pipeline
+  # Run the SS2 pipeline for each cell in a scatter
   scatter(idx in range(length(sraIDs))) { 
     call single_cell_run.SmartSeq2SingleCell as sc {
       input:
@@ -56,27 +46,28 @@ workflow RunSmartSeq2ByPlate {
    }
   }
 
-  ## This should be split out
-  scatter(i in range(length(out_types))){
-    call ss2_plate_aggregation.AggregateDataMatrix as AggregateGene {
-      input:
-        filename_array = sc.rsem_gene_results,
-        col_name = out_types[i],
-        output_name =batch_id+"_gene_" + out_types[i] + ".csv",
+  call ss2_plate_aggregation.AggregateDataMatrix as AggregateGene {
+    input:
+      filename_array = sc.rsem_gene_results,
+        col_name = "est_counts",
+        output_name =batch_id+"_gene_est_counts.csv",
         docker = docker
-      }
-    call ss2_plate_aggregation.AggregateDataMatrix as AggregateIsoform {
+  }
+
+   call ss2_plate_aggregation.AggregateDataMatrix as AggregateIsoform {
       input:
         filename_array = sc.rsem_isoform_results,
-        col_name = out_types[i],
-        output_name = batch_id+"_isoform_" + out_types[i] + ".csv",
+        col_name = "tpm",
+        output_name = batch_id+"_isoform_tpm.csv",
         docker = docker
     }
-   }
  
   Array[String] row_metrics_names = ["alignment_summary_metrics","rna_metrics","dedup_metrics","insert_size_metrics","gc_bias_summary_metrics"]
+  
   Array[String] table_metrics_names = ["base_call_dist_metrics","gc_bias_detail_metrics","pre_adapter_details_metrics","bait_bias_detail_metrics","bait_bias_summary_metrics","error_summary_metrics"]
+  
   Array[Array[File]] row_metrics = [sc.alignment_summary_metrics,sc.rna_metrics, sc.dedup_metrics, sc.insert_size_metrics,sc.gc_bias_summary_metrics]
+  
   Array[Array[File]] table_metrics = [sc.base_call_dist_metrics,sc.gc_bias_detail_metrics,sc.pre_adapter_details_metrics,sc.bait_bias_detail_metrics,sc.bait_bias_summary_metrics,sc.error_summary_metrics]
 
   Array[String] hisat2_logs_names = ["hisat2_log_file","hisat2_transcriptome_log_file"]
@@ -84,8 +75,8 @@ workflow RunSmartSeq2ByPlate {
 
   Array[String] rsem_logs_names = ["rsem_cnt_log"] 
   Array[Array[File]] rsem_logs = [sc.rsem_cnt_log]
+
   scatter(i in range(length(row_metrics))){
-    
     call ss2_plate_aggregation.AggregateQCMetrics as AggregateRow {
       input:
         metric_files = row_metrics[i],
@@ -94,8 +85,8 @@ workflow RunSmartSeq2ByPlate {
         docker = docker
     }
   }
+  
   scatter(i in range(length(hisat2_logs))){
-    
     call ss2_plate_aggregation.AggregateQCMetrics as AggregateHisat2 {
       input:
         metric_files = hisat2_logs[i],
@@ -106,7 +97,6 @@ workflow RunSmartSeq2ByPlate {
   }
 
  scatter(i in range(length(rsem_logs))){
-  
     call ss2_plate_aggregation.AggregateQCMetrics as AggregateRsem {
       input:
         metric_files = rsem_logs[i],
@@ -116,7 +106,7 @@ workflow RunSmartSeq2ByPlate {
     }
   } 
 
-scatter(i in range(length(table_metrics))){
+  scatter(i in range(length(table_metrics))){
     call ss2_plate_aggregation.AggregateQCMetrics as AppendTable {
       input:
         metric_files = table_metrics[i],
@@ -136,37 +126,10 @@ scatter(i in range(length(table_metrics))){
       docker = docker
   }
 
-call run_benchmarking.RunBenchmarkingAnalysis {
-    input:
-      base_datafile = base_datafile,
-      updated_datafile = AggregateGene.aggregated_result[1],
-      output_name = benchmarking_output_name,
-      gtf_file = gtf_file,
-      metadata_file = metadata_file,
-      base_metrics = base_metrics,
-      updated_metrics = AggregateCore.aggregated_result,
-      metadata_keys = metadata_keys,
-      groups = groups,
-      low_cut = low_cut,
-      high_cut = high_cut,
-      met_keys =met_keys,
-      npcs =npcs, 
-      docker = benchmarking_docker
-  }
-
-output {
-  File core_QC = AggregateCore.aggregated_result
-  Array[File] qc_tabls = AppendTable.aggregated_result
-  Array[File] gene_matrix = AggregateGene.aggregated_result
-  Array[File] isoform_matrix = AggregateIsoform.aggregated_result
-  File qc_html = RunBenchmarkingAnalysis.qc_html
-  File qc_test_stats = RunBenchmarkingAnalysis.qc_test_stats
-  File confounding_html = RunBenchmarkingAnalysis.confounding_html
-  File confounding_results = RunBenchmarkingAnalysis.confounding_results
-  File reproducibility_html = RunBenchmarkingAnalysis.reproducibility_html
-  File reproducibility_ttest_base = RunBenchmarkingAnalysis.reproducibility_ttest_base
-  File reproducibility_ttest_updated = RunBenchmarkingAnalysis.reproducibility_ttest_updated
-  File quantification_html = RunBenchmarkingAnalysis.quantification_html
-  File comparative_html = RunBenchmarkingAnalysis.comparative_html
+  output {
+    File core_QC = AggregateCore.aggregated_result
+    Array[File] qc_tabls = AppendTable.aggregated_result
+    Array[File] gene_matrix = AggregateGene.aggregated_result
+    Array[File] isoform_matrix = AggregateIsoform.aggregated_result
   }
 }  
