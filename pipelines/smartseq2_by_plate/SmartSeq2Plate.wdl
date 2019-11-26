@@ -19,18 +19,17 @@ workflow RunSmartSeq2ByPlate {
 
   # samples
   String stranded
-  String sra_dir
-  Array[String] out_types = ["est_counts","tpm"]  
-  Array[String] sraIDs
+  String file_prefix
+  Array[String] input_file_names
   String batch_id
   String docker
 
   # Run the SS2 pipeline for each cell in a scatter
-  scatter(idx in range(length(sraIDs))) { 
+  scatter(idx in range(length(input_file_names))) { 
     call single_cell_run.SmartSeq2SingleCell as sc {
       input:
-        fastq1 = sra_dir + '/' + sraIDs[idx] + "_1.fastq.gz",
-        fastq2 = sra_dir + '/' + sraIDs[idx] + "_2.fastq.gz", 
+        fastq1 = file_prefix + '/' + input_file_names[idx] + "_1.fastq.gz",
+        fastq2 = file_prefix + '/' + input_file_names[idx] + "_2.fastq.gz", 
         gtf_file = gtf_file,
         stranded = stranded,
         genome_ref_fasta = genome_ref_fasta,
@@ -41,11 +40,12 @@ workflow RunSmartSeq2ByPlate {
         hisat2_ref_trans_index = hisat2_ref_trans_index,
         hisat2_ref_trans_name = hisat2_ref_trans_name,
         rsem_ref_index = rsem_ref_index,
-        sample_name = sraIDs[idx],
-        output_name = sraIDs[idx]
+        sample_name = input_file_names[idx],
+        output_name = input_file_names[idx]
    }
   }
 
+  ## Aggregate the gene counts
   call ss2_plate_aggregation.AggregateDataMatrix as AggregateGene {
     input:
       filename_array = sc.rsem_gene_results,
@@ -54,27 +54,31 @@ workflow RunSmartSeq2ByPlate {
         docker = docker
   }
 
-   call ss2_plate_aggregation.AggregateDataMatrix as AggregateIsoform {
+  ## Aggregate the Isoform counts
+  call ss2_plate_aggregation.AggregateDataMatrix as AggregateIsoform {
       input:
         filename_array = sc.rsem_isoform_results,
         col_name = "tpm",
         output_name = batch_id+"_isoform_tpm.csv",
         docker = docker
-    }
+  }
+  
+  ### Row metrics ###  
+  Array[Array[File]] row_metrics = [
+    sc.alignment_summary_metrics,
+    sc.rna_metrics,
+    sc.dedup_metrics,
+    sc.insert_size_metrics,
+    sc.gc_bias_summary_metrics
+  ]
  
-  Array[String] row_metrics_names = ["alignment_summary_metrics","rna_metrics","dedup_metrics","insert_size_metrics","gc_bias_summary_metrics"]
-  
-  Array[String] table_metrics_names = ["base_call_dist_metrics","gc_bias_detail_metrics","pre_adapter_details_metrics","bait_bias_detail_metrics","bait_bias_summary_metrics","error_summary_metrics"]
-  
-  Array[Array[File]] row_metrics = [sc.alignment_summary_metrics,sc.rna_metrics, sc.dedup_metrics, sc.insert_size_metrics,sc.gc_bias_summary_metrics]
-  
-  Array[Array[File]] table_metrics = [sc.base_call_dist_metrics,sc.gc_bias_detail_metrics,sc.pre_adapter_details_metrics,sc.bait_bias_detail_metrics,sc.bait_bias_summary_metrics,sc.error_summary_metrics]
-
-  Array[String] hisat2_logs_names = ["hisat2_log_file","hisat2_transcriptome_log_file"]
-  Array[Array[File]] hisat2_logs = [sc.hisat2_log_file,sc.hisat2_transcriptome_log_file]
-
-  Array[String] rsem_logs_names = ["rsem_cnt_log"] 
-  Array[Array[File]] rsem_logs = [sc.rsem_cnt_log]
+  Array[String] row_metrics_names = [
+    "alignment_summary_metrics",
+    "rna_metrics",
+    "dedup_metrics",
+    "insert_size_metrics",
+    "gc_bias_summary_metrics"
+  ]
 
   scatter(i in range(length(row_metrics))){
     call ss2_plate_aggregation.AggregateQCMetrics as AggregateRow {
@@ -85,7 +89,10 @@ workflow RunSmartSeq2ByPlate {
         docker = docker
     }
   }
-  
+
+  ### Hisat2 Logs ###
+  Array[String] hisat2_logs_names = ["hisat2_log_file", "hisat2_transcriptome_log_file"]
+  Array[Array[File]] hisat2_logs = [sc.hisat2_log_file, sc.hisat2_transcriptome_log_file]
   scatter(i in range(length(hisat2_logs))){
     call ss2_plate_aggregation.AggregateQCMetrics as AggregateHisat2 {
       input:
@@ -96,7 +103,10 @@ workflow RunSmartSeq2ByPlate {
     }
   }
 
- scatter(i in range(length(rsem_logs))){
+  ### Rsem Logs ###
+  Array[String] rsem_logs_names = ["rsem_cnt_log"] 
+  Array[Array[File]] rsem_logs = [sc.rsem_cnt_log]
+  scatter(i in range(length(rsem_logs))){
     call ss2_plate_aggregation.AggregateQCMetrics as AggregateRsem {
       input:
         metric_files = rsem_logs[i],
@@ -105,6 +115,25 @@ workflow RunSmartSeq2ByPlate {
         docker = docker
     }
   } 
+
+  ### Table Metrics ###  
+  Array[Array[File]] table_metrics = [
+    sc.base_call_dist_metrics,
+    sc.gc_bias_detail_metrics,
+    sc.pre_adapter_details_metrics,
+    sc.bait_bias_detail_metrics,
+    sc.bait_bias_summary_metrics,
+    sc.error_summary_metrics
+  ]
+
+  Array[String] table_metrics_names = [
+    "base_call_dist_metrics",
+    "gc_bias_detail_metrics",
+    "pre_adapter_details_metrics",
+    "bait_bias_detail_metrics",
+    "bait_bias_summary_metrics",
+    "error_summary_metrics"
+  ]
 
   scatter(i in range(length(table_metrics))){
     call ss2_plate_aggregation.AggregateQCMetrics as AppendTable {
@@ -115,7 +144,8 @@ workflow RunSmartSeq2ByPlate {
         docker = docker
     }
   }
- 
+
+  ###
   call ss2_plate_aggregation.AggregateQCMetricsCore as AggregateCore {
     input:
       picard_metric_files = AggregateRow.aggregated_result,
