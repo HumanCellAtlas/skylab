@@ -2,35 +2,55 @@ import "SmartSeq2SingleSample.wdl" as single_cell_run
 import "SmartSeq2PlateAggregation.wdl" as ss2_plate_aggregation
        
 workflow RunSmartSeq2ByPlate {
-  # load annotation
+  meta {
+    description: "The RunSmartSeq2ByPlate pipeline runs multiple SS2 samples in a single pipeline invocation"
+  }
+
+  # Version of this pipeline
+  String version = "RunSmartSeq2ByPlate_v0.0.1"
+
+  # Gene Annotation
   File genome_ref_fasta
   File rrna_intervals
   File gene_ref_flat
-  File gtf_file
 
-  # load index
+  # Reference index information
+  File hisat2_ref_name
+  File hisat2_ref_trans_name
   File hisat2_ref_index
   File hisat2_ref_trans_index
   File rsem_ref_index
 
-  # ref index name
-  File hisat2_ref_name
-  File hisat2_ref_trans_name
-
-  # samples
+  # Sample information
   String stranded
   String file_prefix
   Array[String] input_file_names
   String batch_id
   String docker
 
+  # Parameter metadata information
+  parameter_meta {
+    genome_ref_fasta: "Genome reference in fasta format"
+    rrna_intervals: "rRNA interval file required by Picard"
+    gene_ref_flat: "Gene refflat file required by Picard"
+    hisat2_ref_name: "HISAT2 reference index name"
+    hisat2_ref_trans_name: "HISAT2 transcriptome index file name"
+    hisat2_ref_index: "HISAT2 reference index file in tarball"
+    hisat2_ref_trans_index: "HISAT2 transcriptome index file in tarball"
+    rsem_ref_index: "RSEM reference index file in tarball"
+    stranded: "Library strand information example values: FR RF NONE"
+    file_prefix: "Prefix for the fastq files"
+    input_file_names: "Array of filename prefixes, will be appended with _1.fastq.gz and _2.fastq.gz"
+    batch_id: " Identifier for the batch"
+n  }
+
+  ### Execution starts here ###
   # Run the SS2 pipeline for each cell in a scatter
   scatter(idx in range(length(input_file_names))) { 
     call single_cell_run.SmartSeq2SingleCell as sc {
       input:
         fastq1 = file_prefix + '/' + input_file_names[idx] + "_1.fastq.gz",
         fastq2 = file_prefix + '/' + input_file_names[idx] + "_2.fastq.gz", 
-        gtf_file = gtf_file,
         stranded = stranded,
         genome_ref_fasta = genome_ref_fasta,
         rrna_intervals = rrna_intervals,
@@ -145,7 +165,7 @@ workflow RunSmartSeq2ByPlate {
     }
   }
 
-  ###
+  ### Aggergate QC Metrics ###
   call ss2_plate_aggregation.AggregateQCMetricsCore as AggregateCore {
     input:
       picard_metric_files = AggregateRow.aggregated_result,
@@ -156,6 +176,7 @@ workflow RunSmartSeq2ByPlate {
       docker = docker
   }
 
+  ### Pipeline output ###
   output {
     File core_QC = AggregateCore.aggregated_result
     Array[File] qc_tabls = AppendTable.aggregated_result
