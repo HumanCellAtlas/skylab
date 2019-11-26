@@ -1,81 +1,8 @@
 import "SmartSeq2SingleSample.wdl" as single_cell_run
 import "RunBenchmarkingAnalysis.wdl" as run_benchmarking
-task AggregateDataMatrix{
-  Array[File] filename_array
-  String col_name
-  String output_name
-  String docker = "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.0.2"
-  command {
-    set -e
-    git clone --branch jx-ss2-for-unity https://github.com/HumanCellAtlas/skylab
-    python skylab/pipelines/smartseq2_by_plate/MergeDataMatrix.py -f ${sep=' ' filename_array}  -t ${col_name} -o ${output_name}
-    ls -lrth
-    head ${output_name}
-    
-  }
-  output{
-    File aggregated_result = "${output_name}"
-  }
-  runtime {
-    docker: docker
-    memory: "2 GB"
-    disks: "local-disk 10 HDD"
-    cpu: 1
-    preemptible: 5
-    maxRetries: 1
-  }
-}
-task AggregateQCMetrics{
-  Array[File] metric_files
-  String output_name
-  String docker = "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.0.2"
-  String run_type
-  command {
-    set -e
-    git clone --branch jx-ss2-for-unity https://github.com/HumanCellAtlas/skylab
-    python skylab/pipelines/smartseq2_by_plate/AggregateMetrics.py -f ${sep=' ' metric_files}   -o ${output_name} -t ${run_type}
-  }
-  output{
-    File aggregated_result = output_name+".csv"
- }
-  runtime {
-    docker: docker
-    memory: "2 GB"
-    disks: "local-disk 10 HDD"
-    cpu: 1
-    preemptible: 5
-    maxRetries: 1
-  }
-}
-task AggregateQCMetricsCore{
-  Array[File] picard_metric_files
-  Array[File] rsem_stats_files
-  Array[File] hisat2_stats_files
-  String output_name
-  String docker = "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.0.2"
-  String run_type
-  command {
-    set -e
-    git clone --branch jx-ss2-for-unity https://github.com/HumanCellAtlas/skylab
-    python skylab/pipelines/smartseq2_by_plate/AggregateMetrics.py -f ${sep=' ' picard_metric_files} ${sep=' ' hisat2_stats_files} ${sep=' ' rsem_stats_files}   -o ${output_name} -t ${run_type}
-  }
-  output{
-    File aggregated_result = output_name+".csv"
- }
-  runtime {
-    docker: docker
-    memory: "2 GB"
-    disks: "local-disk 10 HDD"
-    cpu: 1
-    preemptible: 5
-    maxRetries: 1
-  }
-}
-
-
-
+import "SmartSeq2PlateAggregation.wdl" as ss2_plate_aggregation
+       
 workflow RunSmartSeq2ByPlate {
-
   # load annotation
   File genome_ref_fasta
   File rrna_intervals
@@ -108,6 +35,7 @@ workflow RunSmartSeq2ByPlate {
   Int    npcs
   String benchmarking_docker
 
+  ## Run the SS2 pipeline
   scatter(idx in range(length(sraIDs))) { 
     call single_cell_run.SmartSeq2SingleCell as sc {
       input:
@@ -127,22 +55,25 @@ workflow RunSmartSeq2ByPlate {
         output_name = sraIDs[idx]
    }
   }
+
+  ## This should be split out
   scatter(i in range(length(out_types))){
-    call AggregateDataMatrix as AggregateGene {
+    call ss2_plate_aggregation.AggregateDataMatrix as AggregateGene {
       input:
         filename_array = sc.rsem_gene_results,
         col_name = out_types[i],
         output_name =batch_id+"_gene_" + out_types[i] + ".csv",
         docker = docker
       }
-    call AggregateDataMatrix as AggregateIsoform {
+    call ss2_plate_aggregation.AggregateDataMatrix as AggregateIsoform {
       input:
         filename_array = sc.rsem_isoform_results,
         col_name = out_types[i],
         output_name = batch_id+"_isoform_" + out_types[i] + ".csv",
         docker = docker
     }
- }
+   }
+ 
   Array[String] row_metrics_names = ["alignment_summary_metrics","rna_metrics","dedup_metrics","insert_size_metrics","gc_bias_summary_metrics"]
   Array[String] table_metrics_names = ["base_call_dist_metrics","gc_bias_detail_metrics","pre_adapter_details_metrics","bait_bias_detail_metrics","bait_bias_summary_metrics","error_summary_metrics"]
   Array[Array[File]] row_metrics = [sc.alignment_summary_metrics,sc.rna_metrics, sc.dedup_metrics, sc.insert_size_metrics,sc.gc_bias_summary_metrics]
@@ -155,7 +86,7 @@ workflow RunSmartSeq2ByPlate {
   Array[Array[File]] rsem_logs = [sc.rsem_cnt_log]
   scatter(i in range(length(row_metrics))){
     
-    call AggregateQCMetrics as AggregateRow {
+    call ss2_plate_aggregation.AggregateQCMetrics as AggregateRow {
       input:
         metric_files = row_metrics[i],
         output_name = batch_id+"_"+row_metrics_names[i],
@@ -165,7 +96,7 @@ workflow RunSmartSeq2ByPlate {
   }
   scatter(i in range(length(hisat2_logs))){
     
-    call AggregateQCMetrics as AggregateHisat2 {
+    call ss2_plate_aggregation.AggregateQCMetrics as AggregateHisat2 {
       input:
         metric_files = hisat2_logs[i],
         output_name = batch_id+"_"+hisat2_logs_names[i],
@@ -176,7 +107,7 @@ workflow RunSmartSeq2ByPlate {
 
  scatter(i in range(length(rsem_logs))){
   
-    call AggregateQCMetrics as AggregateRsem {
+    call ss2_plate_aggregation.AggregateQCMetrics as AggregateRsem {
       input:
         metric_files = rsem_logs[i],
         output_name = batch_id+"_"+rsem_logs_names[i],
@@ -184,8 +115,9 @@ workflow RunSmartSeq2ByPlate {
         docker = docker
     }
   } 
-  scatter(i in range(length(table_metrics))){
-    call AggregateQCMetrics as AppendTable {
+
+scatter(i in range(length(table_metrics))){
+    call ss2_plate_aggregation.AggregateQCMetrics as AppendTable {
       input:
         metric_files = table_metrics[i],
         output_name = batch_id+"_"+table_metrics_names[i],
@@ -194,7 +126,7 @@ workflow RunSmartSeq2ByPlate {
     }
   }
  
-  call AggregateQCMetricsCore as AggregateCore {
+  call ss2_plate_aggregation.AggregateQCMetricsCore as AggregateCore {
     input:
       picard_metric_files = AggregateRow.aggregated_result,
       hisat2_stats_files= AggregateHisat2.aggregated_result,
@@ -203,7 +135,8 @@ workflow RunSmartSeq2ByPlate {
       run_type = "Core",
       docker = docker
   }
- call run_benchmarking.RunBenchmarkingAnalysis {
+
+call run_benchmarking.RunBenchmarkingAnalysis {
     input:
       base_datafile = base_datafile,
       updated_datafile = AggregateGene.aggregated_result[1],
@@ -220,7 +153,8 @@ workflow RunSmartSeq2ByPlate {
       npcs =npcs, 
       docker = benchmarking_docker
   }
- output {
+
+output {
   File core_QC = AggregateCore.aggregated_result
   Array[File] qc_tabls = AppendTable.aggregated_result
   Array[File] gene_matrix = AggregateGene.aggregated_result
