@@ -1,0 +1,26 @@
+{
+    "expected_core_QC_hash": "",
+    "expected_qc_tabls_hash": "",
+    "expected_gene_matrix_hash": "",
+    "expected_isoform_matrix_hash": "",
+    "RunSmartSeq2ByPlate.genome_ref_fasta": "gs://hca-dcp-analysis-pipelines-reference/alignmentReferences/GRCm38_Gencode_vM21/GRCm38.primary_assembly.genome.fa",
+    "RunSmartSeq2ByPlate.rrna_intervals": "gs://hca-dcp-analysis-pipelines-reference/alignmentReferences/GRCm38_Gencode_vM21/gencode.vM21.primary_assembly.rRNA.interval_list",
+    "RunSmartSeq2ByPlate.gene_ref_flat": "gs://hca-dcp-analysis-pipelines-reference/alignmentReferences/GRCm38_Gencode_vM21/gencode.vM21.primary_assembly.refflat.txt",
+    "RunSmartSeq2ByPlate.hisat2_ref_name": "hisat2_primary_gencode_mouse_vM21",
+    "RunSmartSeq2ByPlate.hisat2_ref_trans_name": "hisat2_from_rsem_star_primary_gencode_mouse_vM21",
+    "RunSmartSeq2ByPlate.hisat2_ref_index": "gs://hca-dcp-analysis-pipelines-reference/alignmentReferences/GRCm38_Gencode_vM21/hisat2_primary_gencode_mouse_vM21.tar.gz",
+    "RunSmartSeq2ByPlate.hisat2_ref_trans_index": "gs://hca-dcp-analysis-pipelines-reference/alignmentReferences/GRCm38_Gencode_vM21/hisat2_from_rsem_star_primary_gencode_mouse_vM21.tar.gz",
+    "RunSmartSeq2ByPlate.rsem_ref_index": "gs://hca-dcp-analysis-pipelines-reference/alignmentReferences/GRCm38_Gencode_vM21/rsem_primary_gencode_mouse_vM21.tar",
+    "RunSmartSeq2ByPlate.stranded":"NONE",
+    "RunSmartSeq2ByPlate.file_prefix":"gs://hca-dcp-mint-test-data/nb-scratch/gl_633/data",
+    "RunSmartSeq2ByPlate.input_file_names": [
+        "Ifnar1_KO_LPS_4h_S10",
+        "Ifnar1_KO_LPS_4h_S11",
+        "Ifnar1_KO_LPS_4h_S12",
+        "Ifnar1_KO_LPS_4h_S13",
+        "Ifnar1_KO_LPS_4h_S14",
+        "Ifnar1_KO_LPS_4h_S15",
+        "Ifnar1_KO_LPS_4h_S16"
+    ],
+    "RunSmartSeq2ByPlate.batch_id":"PR_test"
+}

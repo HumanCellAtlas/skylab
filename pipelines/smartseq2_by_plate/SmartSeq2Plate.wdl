@@ -26,7 +26,6 @@ workflow RunSmartSeq2ByPlate {
   String file_prefix
   Array[String] input_file_names
   String batch_id
-  String docker
 
   # Parameter metadata information
   parameter_meta {
@@ -42,7 +41,7 @@ workflow RunSmartSeq2ByPlate {
     file_prefix: "Prefix for the fastq files"
     input_file_names: "Array of filename prefixes, will be appended with _1.fastq.gz and _2.fastq.gz"
     batch_id: " Identifier for the batch"
-n  }
+  }
 
   ### Execution starts here ###
   # Run the SS2 pipeline for each cell in a scatter
@@ -71,7 +70,6 @@ n  }
       filename_array = sc.rsem_gene_results,
         col_name = "est_counts",
         output_name =batch_id+"_gene_est_counts.csv",
-        docker = docker
   }
 
   ## Aggregate the Isoform counts
@@ -80,7 +78,6 @@ n  }
         filename_array = sc.rsem_isoform_results,
         col_name = "tpm",
         output_name = batch_id+"_isoform_tpm.csv",
-        docker = docker
   }
   
   ### Row metrics ###  
@@ -106,7 +103,6 @@ n  }
         metric_files = row_metrics[i],
         output_name = batch_id+"_"+row_metrics_names[i],
         run_type = "Picard",
-        docker = docker
     }
   }
 
@@ -119,7 +115,6 @@ n  }
         metric_files = hisat2_logs[i],
         output_name = batch_id+"_"+hisat2_logs_names[i],
         run_type = "HISAT2",
-        docker  = docker
     }
   }
 
@@ -132,7 +127,6 @@ n  }
         metric_files = rsem_logs[i],
         output_name = batch_id+"_"+rsem_logs_names[i],
         run_type = "RSEM",
-        docker = docker
     }
   } 
 
@@ -160,8 +154,7 @@ n  }
       input:
         metric_files = table_metrics[i],
         output_name = batch_id+"_"+table_metrics_names[i],
-        run_type = "PicardTable",
-        docker = docker
+        run_type = "PicardTable"
     }
   }
 
@@ -172,8 +165,7 @@ n  }
       hisat2_stats_files= AggregateHisat2.aggregated_result,
       rsem_stats_files = AggregateRsem.aggregated_result,
       output_name = batch_id+"_"+"QCs",
-      run_type = "Core",
-      docker = docker
+      run_type = "Core"
   }
 
   ### Pipeline output ###
