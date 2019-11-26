@@ -172,7 +172,7 @@ workflow RunSmartSeq2ByPlate {
   output {
     File core_QC = AggregateCore.aggregated_result
     Array[File] qc_tabls = AppendTable.aggregated_result
-    Array[File] gene_matrix = AggregateGene.aggregated_result
-    Array[File] isoform_matrix = AggregateIsoform.aggregated_result
+    File gene_matrix = AggregateGene.aggregated_result
+    File isoform_matrix = AggregateIsoform.aggregated_result
   }
 }  

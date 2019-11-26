@@ -1,5 +1,6 @@
 {
   "SmartSeq2SingleSample.wdl": "pipelines/smartseq2_single_sample/SmartSeq2SingleSample.wdl",
+  "SmartSeq2Plate.wdl": "pipelines/smartseq2_by_plate/SmartSeq2Plate.wdl",
   "ValidateSmartSeq2Plate.wdl": "test/smartseq2_plate/pr/ValidateSmartSeq2Plate.wdl",
   "HISAT2.wdl": "library/tasks/HISAT2.wdl",
   "Picard.wdl": "library/tasks/Picard.wdl",
