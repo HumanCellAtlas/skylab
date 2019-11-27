@@ -26,6 +26,7 @@ workflow RunSmartSeq2ByPlate {
   String file_prefix
   Array[String] input_file_names
   String batch_id
+  Boolean paired_end
 
   # Parameter metadata information
   parameter_meta {
@@ -41,6 +42,7 @@ workflow RunSmartSeq2ByPlate {
     file_prefix: "Prefix for the fastq files"
     input_file_names: "Array of filename prefixes, will be appended with _1.fastq.gz and _2.fastq.gz"
     batch_id: " Identifier for the batch"
+    paired_end: "Is the sample paired end or not"
   }
 
   ### Execution starts here ###
@@ -60,7 +62,8 @@ workflow RunSmartSeq2ByPlate {
         hisat2_ref_trans_name = hisat2_ref_trans_name,
         rsem_ref_index = rsem_ref_index,
         sample_name = input_file_names[idx],
-        output_name = input_file_names[idx]
+        output_name = input_file_names[idx],
+        paired_end = paired_end
    }
   }
 
@@ -82,19 +85,11 @@ workflow RunSmartSeq2ByPlate {
   
   ### Row metrics ###  
   Array[Array[File]] row_metrics = [
-    sc.alignment_summary_metrics,
-    sc.rna_metrics,
-    sc.dedup_metrics,
-    sc.insert_size_metrics,
-    sc.gc_bias_summary_metrics
+    sc.rna_metrics
   ]
  
   Array[String] row_metrics_names = [
-    "alignment_summary_metrics",
-    "rna_metrics",
-    "dedup_metrics",
-    "insert_size_metrics",
-    "gc_bias_summary_metrics"
+    "rna_metrics"
   ]
 
   scatter(i in range(length(row_metrics))){
@@ -106,47 +101,13 @@ workflow RunSmartSeq2ByPlate {
     }
   }
 
-  ### Hisat2 Logs ###
-  Array[String] hisat2_logs_names = ["hisat2_log_file", "hisat2_transcriptome_log_file"]
-  Array[Array[File]] hisat2_logs = [sc.hisat2_log_file, sc.hisat2_transcriptome_log_file]
-  scatter(i in range(length(hisat2_logs))){
-    call ss2_plate_aggregation.AggregateQCMetrics as AggregateHisat2 {
-      input:
-        metric_files = hisat2_logs[i],
-        output_name = batch_id+"_"+hisat2_logs_names[i],
-        run_type = "HISAT2",
-    }
-  }
-
-  ### Rsem Logs ###
-  Array[String] rsem_logs_names = ["rsem_cnt_log"] 
-  Array[Array[File]] rsem_logs = [sc.rsem_cnt_log]
-  scatter(i in range(length(rsem_logs))){
-    call ss2_plate_aggregation.AggregateQCMetrics as AggregateRsem {
-      input:
-        metric_files = rsem_logs[i],
-        output_name = batch_id+"_"+rsem_logs_names[i],
-        run_type = "RSEM",
-    }
-  } 
-
   ### Table Metrics ###  
   Array[Array[File]] table_metrics = [
-    sc.base_call_dist_metrics,
-    sc.gc_bias_detail_metrics,
-    sc.pre_adapter_details_metrics,
-    sc.bait_bias_detail_metrics,
-    sc.bait_bias_summary_metrics,
-    sc.error_summary_metrics
+    sc.bait_bias_summary_metrics
   ]
 
   Array[String] table_metrics_names = [
-    "base_call_dist_metrics",
-    "gc_bias_detail_metrics",
-    "pre_adapter_details_metrics",
-    "bait_bias_detail_metrics",
-    "bait_bias_summary_metrics",
-    "error_summary_metrics"
+    "bait_bias_summary_metrics"
   ]
 
   scatter(i in range(length(table_metrics))){
@@ -158,20 +119,25 @@ workflow RunSmartSeq2ByPlate {
     }
   }
 
-  ### Aggergate QC Metrics ###
-  call ss2_plate_aggregation.AggregateQCMetricsCore as AggregateCore {
+  ### Aggregate QC Metrics ###
+  call ss2_plate_aggregation.AggregateQCMetrics as AggregateCore {
     input:
       picard_metric_files = AggregateRow.aggregated_result,
-      hisat2_stats_files= AggregateHisat2.aggregated_result,
-      rsem_stats_files = AggregateRsem.aggregated_result,
       output_name = batch_id+"_"+"QCs",
       run_type = "Core"
   }
 
   ### Pipeline output ###
   output {
+    # Bam files and their indexes
+    Array[File] bam_files = sc.aligned_bam
+    Array[File] bam_index_files = sc.bam_index
+
+    # Picard merged QC
     File core_QC = AggregateCore.aggregated_result
-    Array[File] qc_tabls = AppendTable.aggregated_result
+    Array[File] qc_tables = AppendTable.aggregated_result
+
+    # Isoform and gene matrix
     File gene_matrix = AggregateGene.aggregated_result
     File isoform_matrix = AggregateIsoform.aggregated_result
   }

@@ -2,11 +2,11 @@ import "SmartSeq2Plate.wdl" as target_wdl
 import "ValidateSmartSeq2Plate.wdl" as checker_wdl
 
 # this task will be run by the jenkins script that gets executed on our PRs.
-workflow TestSmartSeq2SingleCellPR {
+workflow TestSmartSeq2ByPlate {
 
   # expected hashes of target_workflow outputs
   String expected_core_QC_hash
-  String expected_qc_tabls_hash
+  String expected_qc_tables_hash
   String expected_gene_matrix_hash
   String expected_isoform_matrix_hash
 
@@ -20,6 +20,7 @@ workflow TestSmartSeq2SingleCellPR {
   File hisat2_ref_trans_index
   File rsem_ref_index
   String stranded
+  Boolean paired_end
 
   # Plate information and input files
   String file_prefix
@@ -39,17 +40,18 @@ workflow TestSmartSeq2SingleCellPR {
       stranded = stranded,
       file_prefix = file_prefix,
       input_file_names = input_file_names,
-      batch_id = batch_id
+      batch_id = batch_id,
+      paired_end = paired_end
   }
 
   call checker_wdl.ValidateSmartSeq2Plate as checker_workflow {
     input:
      core_QC = target_workflow.core_QC,
-     qc_tabls = target_workflow.qc_tabls,
+     qc_tables = target_workflow.qc_tables,
      gene_matrix = target_workflow.gene_matrix,
      isoform_matrix = target_workflow.isoform_matrix,
      expected_core_QC_hash = expected_core_QC_hash,
-     expected_qc_tabls_hash = expected_qc_tabls_hash,
+     expected_qc_tables_hash = expected_qc_tables_hash,
      expected_gene_matrix_hash = expected_gene_matrix_hash,
      expected_isoform_matrix_hash =expected_isoform_matrix_hash
   }

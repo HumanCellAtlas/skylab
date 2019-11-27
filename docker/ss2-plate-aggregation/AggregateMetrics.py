@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from crimson import picard
 import argparse
 import os

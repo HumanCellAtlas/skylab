@@ -1,11 +1,11 @@
 task ValidateSmartSeq2Plate {
     File core_QC
-    Array[File] qc_tabls
+    Array[File] qc_tables
     File gene_matrix
     File isoform_matrix
 
     String expected_core_QC_hash
-    String expected_qc_tabls_hash
+    String expected_qc_tables_hash
     String expected_gene_matrix_hash
     String expected_isoform_matrix_hash
 

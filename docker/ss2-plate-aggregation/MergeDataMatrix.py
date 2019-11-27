@@ -11,8 +11,10 @@ def MergeRsemQuantification(filenames, col_name, output):
         file_name = filenames[kk]
         base_name = basename(file_name)
         # sample_name is the prefix of input file name, such as SRR123456
+        # NB: It's unclear what this is doing and why REVIEW
         sample_name = base_name.split('.')[0].split('_')[0]
         btype = base_name.split('.')[1]
+        # NB: What this if does and why is not clear
         # load data, only select gene id, length and a data column
         if btype == "genes":
             dat = pd.read_csv(
