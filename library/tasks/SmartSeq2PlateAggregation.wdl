@@ -1,4 +1,4 @@
-task AggregateDataMatrix{
+task AggregateDataMatrix {
   Array[File] filename_array
   String col_name
   String output_name
@@ -27,11 +27,15 @@ task AggregateDataMatrix{
   }
 }
 
-task AggregateQCMetrics{
+task AggregateQCMetrics {
   Array[File] metric_files
   String output_name
   String docker = "quay.io/humancellatlas/secondary-analysis-ss2-plate-aggregation:0.0.1"
   String run_type
+
+  meta {
+    description: "aggregate count data"
+  }
   
   command {
     set -e
@@ -50,4 +54,32 @@ task AggregateQCMetrics{
     preemptible: 5
     maxRetries: 1
   }
+}
+
+task AggregateSmartSeq2Zarr {
+    Array[Array[File]?] zarr_input
+    String output_file_name
+    String docker = "quay.io/humancellatlas/secondary-analysis-ss2-plate-aggregation:0.0.1"
+    Int disk = 100
+
+    meta {
+      description: "aggregate the zarr output"
+    }
+
+    command {
+      echo "Hello world" > dummy_output.txt
+    }
+
+    output {
+        File dummy_output = "dummy_output.txt"
+    }
+
+    runtime {
+      docker: docker
+      memory: "2 GiB"
+      disks: "local-disk ${disk} HDD"
+      cpu: 1
+      preemptible: 3
+      maxRetries: 1
+    }
 }

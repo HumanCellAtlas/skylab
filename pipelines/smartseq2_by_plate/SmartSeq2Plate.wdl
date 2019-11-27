@@ -63,7 +63,8 @@ workflow RunSmartSeq2ByPlate {
         rsem_ref_index = rsem_ref_index,
         sample_name = input_file_names[idx],
         output_name = input_file_names[idx],
-        paired_end = paired_end
+        paired_end = paired_end,
+        output_zarr = true
    }
   }
 
@@ -72,7 +73,7 @@ workflow RunSmartSeq2ByPlate {
     input:
       filename_array = sc.rsem_gene_results,
         col_name = "est_counts",
-        output_name =batch_id+"_gene_est_counts.csv",
+        output_name = batch_id+"_gene_est_counts.csv",
   }
 
   ## Aggregate the Isoform counts
@@ -84,14 +85,8 @@ workflow RunSmartSeq2ByPlate {
   }
   
   ### Row metrics ###  
-  Array[Array[File]] row_metrics = [
-    sc.rna_metrics
-  ]
- 
-  Array[String] row_metrics_names = [
-    "rna_metrics"
-  ]
-
+  Array[Array[File]] row_metrics = [ sc.rna_metrics ]
+  Array[String] row_metrics_names = [ "rna_metrics" ]
   scatter(i in range(length(row_metrics))){
     call ss2_plate_aggregation.AggregateQCMetrics as AggregateRow {
       input:
@@ -102,14 +97,8 @@ workflow RunSmartSeq2ByPlate {
   }
 
   ### Table Metrics ###  
-  Array[Array[File]] table_metrics = [
-    sc.bait_bias_summary_metrics
-  ]
-
-  Array[String] table_metrics_names = [
-    "bait_bias_summary_metrics"
-  ]
-
+  Array[Array[File]] table_metrics = [ sc.bait_bias_summary_metrics ]
+  Array[String] table_metrics_names = [ "bait_bias_summary_metrics" ]
   scatter(i in range(length(table_metrics))){
     call ss2_plate_aggregation.AggregateQCMetrics as AppendTable {
       input:
@@ -122,9 +111,16 @@ workflow RunSmartSeq2ByPlate {
   ### Aggregate QC Metrics ###
   call ss2_plate_aggregation.AggregateQCMetrics as AggregateCore {
     input:
-      picard_metric_files = AggregateRow.aggregated_result,
+      metric_files = AggregateRow.aggregated_result,
       output_name = batch_id+"_"+"QCs",
       run_type = "Core"
+  }
+
+  ### Aggregate the Zarr Files Directly ###
+  call ss2_plate_aggregation.AggregateSmartSeq2Zarr as AggregateZarr {
+    input:
+      zarr_input = sc.zarr_output_files,
+      output_file_name = batch_id
   }
 
   ### Pipeline output ###
@@ -140,5 +136,7 @@ workflow RunSmartSeq2ByPlate {
     # Isoform and gene matrix
     File gene_matrix = AggregateGene.aggregated_result
     File isoform_matrix = AggregateIsoform.aggregated_result
+
+    File dummy_output = AggregateZarr.dummy_output
   }
 }  
