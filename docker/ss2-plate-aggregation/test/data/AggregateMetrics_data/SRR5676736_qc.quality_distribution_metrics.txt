@@ -1,0 +1,14 @@
+## htsjdk.samtools.metrics.StringHeader
+# CollectMultipleMetrics INPUT=/cromwell_root/broad-dsde-mint-dev-cromwell-execution/caas-cromwell-executions/TestSmartSeq2ByPlate/32f2692a-215e-46ad-8d5c-5272f3b5751f/call-target_workflow/target_wdl.RunSmartSeq2ByPlate/b061001c-c661-482f-bfa8-f788bb433c6a/call-sc/shard-7/single_cell_run.SmartSeq2SingleCell/bf8f9c97-3fad-4ee1-b02f-154f3fc67082/call-HISAT2PairedEnd/SRR5676736_qc.bam ASSUME_SORTED=true OUTPUT=SRR5676736_qc METRIC_ACCUMULATION_LEVEL=[ALL_READS] FILE_EXTENSION=.txt PROGRAM=[CollectAlignmentSummaryMetrics, CollectInsertSizeMetrics, CollectGcBiasMetrics, CollectBaseDistributionByCycle, QualityScoreDistribution, MeanQualityByCycle, CollectSequencingArtifactMetrics, CollectQualityYieldMetrics] VALIDATION_STRINGENCY=SILENT REFERENCE_SEQUENCE=/cromwell_root/hca-dcp-analysis-pipelines-reference/alignmentReferences/GRCm38_Gencode_vM21/GRCm38.primary_assembly.genome.fa    STOP_AFTER=0 INCLUDE_UNPAIRED=false VERBOSITY=INFO QUIET=false COMPRESSION_LEVEL=5 MAX_RECORDS_IN_RAM=500000 CREATE_INDEX=false CREATE_MD5_FILE=false GA4GH_CLIENT_SECRETS=client_secrets.json USE_JDK_DEFLATER=false USE_JDK_INFLATER=false
+## htsjdk.samtools.metrics.StringHeader
+# Started on: Tue Nov 26 20:32:20 UTC 2019
+
+
+## HISTOGRAM	java.lang.Byte
+QUALITY	COUNT_OF_Q
+14	11025307
+21	2046007
+27	2495836
+32	14039095
+36	181191368
+
