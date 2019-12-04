@@ -85,14 +85,21 @@ task AggregateSmartSeq2Zarr {
       mkdir unpacked_zarr
       /tools/unpackZARR.sh -m -i packed_zarr -o unpacked_zarr
 
-      # Check that the directory structure has been unpacked correctly
-      tree > dummy_output.txt
+      # Merge the zarr files
+      /tools/ss2_zarr_merge.py --input-zarr-directory unpacked_zarr --output-zarr-file output_zarr --plate-sample-id plateid --check-all-headers
 
-      # TODO process the directory structure and generate a single ZARR with all the information
+      # Flatten the zarr
+      mkdir zarrout
+      exportfiles=`find output_zarr -type f`
+      for f in $exportfiles; do
+        newfilename=`echo $f | tr "/" "!"`
+        mv $f zarrout/$newfilename
+       done
+
     }
 
     output {
-        File dummy_output = "dummy_output.txt"
+        Array[File] zarr_output_files = glob("zarrout/*zarr*")
     }
 
     runtime {

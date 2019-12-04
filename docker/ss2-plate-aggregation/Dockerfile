@@ -4,8 +4,7 @@ LABEL maintainer="Mint Team <mintteam@broadinstitute.org>" \
       software="python 3.6.2" \
       description="python 3.6.2 with pysam, sctools, requests, and a basic science stack"
 
-RUN apt update && apt install -y \
-    samtools
+RUN apt update && apt install -y samtools tree
 
 RUN pip3 install \
     crimson==0.4.0 \
@@ -24,8 +23,7 @@ RUN pip3 install \
 RUN mkdir /tools
 WORKDIR /tools
 
-RUN apt-get install -y tree
-
 COPY AggregateMetrics.py .
 COPY MergeDataMatrix.py .
 COPY unpackZARR.sh .
+COPY ss2_zarr_merge.py .
