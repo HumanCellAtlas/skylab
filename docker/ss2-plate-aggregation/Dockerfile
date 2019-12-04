@@ -24,5 +24,8 @@ RUN pip3 install \
 RUN mkdir /tools
 WORKDIR /tools
 
+RUN apt-get install -y tree
+
 COPY AggregateMetrics.py .
 COPY MergeDataMatrix.py .
+COPY unpackZARR.sh .
