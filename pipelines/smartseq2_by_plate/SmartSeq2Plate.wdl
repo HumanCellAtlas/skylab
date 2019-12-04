@@ -137,6 +137,6 @@ workflow RunSmartSeq2ByPlate {
     File gene_matrix = AggregateGene.aggregated_result
     File isoform_matrix = AggregateIsoform.aggregated_result
 
-    File dummy_output = AggregateZarr.dummy_output
+    Array[File] zarrout = AggregateZarr.zarr_output_files
   }
 }  
