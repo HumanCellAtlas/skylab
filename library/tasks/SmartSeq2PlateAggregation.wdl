@@ -76,7 +76,7 @@ task AggregateSmartSeq2Zarr {
 
       # Move all the packed zarrs into a single directory for unpackZarr to work on
       mkdir packed_zarr
-      for f in $( cat input_files )
+      for f in $( cat input_files.txt )
       do
         mv $f packed_zarr/$( basename $f )
       done
@@ -94,7 +94,7 @@ task AggregateSmartSeq2Zarr {
       for f in $exportfiles; do
         newfilename=`echo $f | tr "/" "!"`
         mv $f zarrout/$newfilename
-       done
+      done
 
     }
 
