@@ -182,13 +182,10 @@ workflow SmartSeq2SingleCell {
     File aligned_bam = HISAT2_output_bam
     File bam_index = HISAT2_bam_index
     File? insert_size_metrics =  picard_row_optional_outputs
-
-    # Metrics we output
     File quality_distribution_metrics = CollectMultipleMetrics.quality_distribution_metrics
     File quality_by_cycle_metrics = CollectMultipleMetrics.quality_by_cycle_metrics
     File bait_bias_summary_metrics = CollectMultipleMetrics.bait_bias_summary_metrics
     File rna_metrics = CollectRnaMetrics.rna_metrics
-
     Array[File] group_results = GroupQCOutputs.group_files
     # data outputs
     File aligned_transcriptome_bam = HISAT2RSEM_output_bam
