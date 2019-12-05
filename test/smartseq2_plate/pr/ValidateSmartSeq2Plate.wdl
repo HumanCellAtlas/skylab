@@ -8,7 +8,7 @@ task ValidateSmartSeq2Plate {
     # catch intermittent failures
     set -eo pipefail
 
-    # Always pass for debug
+    # Always pass -- just a plumbing test
     exit 0;
   >>>
   
