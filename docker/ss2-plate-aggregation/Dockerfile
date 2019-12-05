@@ -1,6 +1,6 @@
 FROM python:3.6.2
 
-LABEL maintainer="Mint Team <mintteam@broadinstitute.org>" \
+LABEL maintainer="Lantern Team <lantern@broadinstitute.org>" \
       software="python 3.6.2" \
       description="python 3.6.2 with pysam, sctools, requests, and a basic science stack"
 
