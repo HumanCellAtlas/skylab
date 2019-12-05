@@ -46,97 +46,67 @@ workflow RunSmartSeq2ByPlate {
   }
 
   ### Execution starts here ###
-  # Run the SS2 pipeline for each cell in a scatter
-  scatter(idx in range(length(input_file_names))) { 
-    call single_cell_run.SmartSeq2SingleCell as sc {
-      input:
-        fastq1 = file_prefix + '/' + input_file_names[idx] + "_1.fastq.gz",
-        fastq2 = file_prefix + '/' + input_file_names[idx] + "_2.fastq.gz", 
-        stranded = stranded,
-        genome_ref_fasta = genome_ref_fasta,
-        rrna_intervals = rrna_intervals,
-        gene_ref_flat = gene_ref_flat,
-        hisat2_ref_index = hisat2_ref_index,
-        hisat2_ref_name = hisat2_ref_name,
-        hisat2_ref_trans_index = hisat2_ref_trans_index,
-        hisat2_ref_trans_name = hisat2_ref_trans_name,
-        rsem_ref_index = rsem_ref_index,
-        sample_name = input_file_names[idx],
-        output_name = input_file_names[idx],
-        paired_end = paired_end,
-        output_zarr = true
-   }
+  if (paired_end) {
+      scatter(idx in range(length(input_file_names))) {
+        call single_cell_run.SmartSeq2SingleCell as sc {
+          input:
+            fastq1 = file_prefix + '/' + input_file_names[idx] + "_1.fastq.gz",
+            fastq2 = file_prefix + '/' + input_file_names[idx] + "_2.fastq.gz",
+            stranded = stranded,
+            genome_ref_fasta = genome_ref_fasta,
+            rrna_intervals = rrna_intervals,
+            gene_ref_flat = gene_ref_flat,
+            hisat2_ref_index = hisat2_ref_index,
+            hisat2_ref_name = hisat2_ref_name,
+            hisat2_ref_trans_index = hisat2_ref_trans_index,
+            hisat2_ref_trans_name = hisat2_ref_trans_name,
+            rsem_ref_index = rsem_ref_index,
+            sample_name = input_file_names[idx],
+            output_name = input_file_names[idx],
+            paired_end = paired_end,
+            output_zarr = true
+        }
+      }
+  }
+  if (!paired_end) {
+        scatter(idx in range(length(input_file_names))) {
+          call single_cell_run.SmartSeq2SingleCell as sc_se {
+            input:
+              fastq1 = file_prefix + '/' + input_file_names[idx] + "_1.fastq.gz",
+              stranded = stranded,
+              genome_ref_fasta = genome_ref_fasta,
+              rrna_intervals = rrna_intervals,
+              gene_ref_flat = gene_ref_flat,
+              hisat2_ref_index = hisat2_ref_index,
+              hisat2_ref_name = hisat2_ref_name,
+              hisat2_ref_trans_index = hisat2_ref_trans_index,
+              hisat2_ref_trans_name = hisat2_ref_trans_name,
+              rsem_ref_index = rsem_ref_index,
+              sample_name = input_file_names[idx],
+              output_name = input_file_names[idx],
+              paired_end = paired_end,
+              output_zarr = true
+          }
+        }
   }
 
-  ## Aggregate the gene counts
-  call ss2_plate_aggregation.AggregateDataMatrix as AggregateGene {
-    input:
-      filename_array = sc.rsem_gene_results,
-        col_name = "est_counts",
-        output_name = batch_id+"_gene_est_counts.csv",
-  }
-
-  ## Aggregate the Isoform counts
-  call ss2_plate_aggregation.AggregateDataMatrix as AggregateIsoform {
-      input:
-        filename_array = sc.rsem_isoform_results,
-        col_name = "tpm",
-        output_name = batch_id+"_isoform_tpm.csv",
-  }
-  
-  ### Row metrics ###  
-  Array[Array[File]] row_metrics = [ sc.rna_metrics ]
-  Array[String] row_metrics_names = [ "rna_metrics" ]
-  scatter(i in range(length(row_metrics))){
-    call ss2_plate_aggregation.AggregateQCMetrics as AggregateRow {
-      input:
-        metric_files = row_metrics[i],
-        output_name = batch_id+"_"+row_metrics_names[i],
-        run_type = "Picard",
-    }
-  }
-
-  ### Table Metrics ###  
-  Array[Array[File]] table_metrics = [ sc.bait_bias_summary_metrics ]
-  Array[String] table_metrics_names = [ "bait_bias_summary_metrics" ]
-  scatter(i in range(length(table_metrics))){
-    call ss2_plate_aggregation.AggregateQCMetrics as AppendTable {
-      input:
-        metric_files = table_metrics[i],
-        output_name = batch_id+"_"+table_metrics_names[i],
-        run_type = "PicardTable"
-    }
-  }
-
-  ### Aggregate QC Metrics ###
-  call ss2_plate_aggregation.AggregateQCMetrics as AggregateCore {
-    input:
-      metric_files = AggregateRow.aggregated_result,
-      output_name = batch_id+"_"+"QCs",
-      run_type = "Core"
-  }
+  Array[Array[File]?] zarr_output_files = select_first([sc.zarr_output_files, sc_se.zarr_output_files])
+  Array[File] bam_files_intermediate = select_first([sc.aligned_bam, sc_se.aligned_bam])
+  Array[File] bam_index_files_intermediate = select_first([sc.bam_index, sc_se.bam_index])
 
   ### Aggregate the Zarr Files Directly ###
   call ss2_plate_aggregation.AggregateSmartSeq2Zarr as AggregateZarr {
     input:
-      zarr_input = sc.zarr_output_files,
+      zarr_input = zarr_output_files,
       output_file_name = batch_id
   }
 
   ### Pipeline output ###
   output {
     # Bam files and their indexes
-    Array[File] bam_files = sc.aligned_bam
-    Array[File] bam_index_files = sc.bam_index
-
-    # Picard merged QC
-    File core_QC = AggregateCore.aggregated_result
-    Array[File] qc_tables = AppendTable.aggregated_result
-
-    # Isoform and gene matrix
-    File gene_matrix = AggregateGene.aggregated_result
-    File isoform_matrix = AggregateIsoform.aggregated_result
-
+    Array[File] bam_files = bam_files_intermediate
+    Array[File] bam_index_files = bam_index_files_intermediate
     Array[File] zarrout = AggregateZarr.zarr_output_files
   }
-}  
+
+}

@@ -56,6 +56,7 @@ task AggregateQCMetrics {
   }
 }
 
+
 task AggregateSmartSeq2Zarr {
     Array[Array[File]?] zarr_input
     String output_file_name

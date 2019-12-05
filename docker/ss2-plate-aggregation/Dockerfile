@@ -23,7 +23,5 @@ RUN pip3 install \
 RUN mkdir /tools
 WORKDIR /tools
 
-COPY AggregateMetrics.py .
-COPY MergeDataMatrix.py .
 COPY unpackZARR.sh .
 COPY ss2_zarr_merge.py .
