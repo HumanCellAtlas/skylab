@@ -111,6 +111,15 @@ jobs:
                       ./test/trigger_test.sh smartseq2_plate
                 no_output_timeout: 1.5h
 
+    test_smartseq2_plate_single_end:
+        machine: true
+        steps:
+            - checkout
+            - run:
+                  command: |
+                      ./test/trigger_test.sh smartseq2_plate pr_single_end
+                  no_output_timeout: 1.5h
+
     test_smartseq2_single_end:
         machine: true
         steps:
@@ -208,3 +217,4 @@ workflows:
           - test_portability_smartseq2_single_sample
           - test_optimus_v3
           - test_smartseq2_plate
+          - test_smartseq2_plate_single_end
