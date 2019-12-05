@@ -1,22 +1,29 @@
-# Full Length scRNA-Seq Processing Pipeline
+| Pipeline Version | Date Updated | Documentation Author | Questions or Feedback |
+| :----: | :---: | :----: | :--------------: |
+| [smartseq2_v2.5.0](https://github.com/HumanCellAtlas/skylab/releases/tag/smartseq2_v2.5.0) | November 07, 2019 | [Elizabeth Kiernan](mailto:ekiernan@broadinstitute.org) | Please file GitHub issues in skylab or contact [Kylee Degatano](mailto:kdegatano@broadinstitute.org) |
 
-## Menu
-* [**scRNASeq Pipeline Overview**](#scrnaseq-pipeline-overview)
-	* [Pipeline Schematics](#pipeline-schematics)
-* [**SmartSeq2 scRNASeq Quality Control**](#smartseq2-scrnaseq-qc)
-  * [Reference Genomes And Annotation](#reference-genomes-and-annotation)
-  * [Build Reference Index](#build-reference-index)
-  * [Aligner and Alignment](#aligner-and-alignment)
-  * [Picard Post Alignment Quality Control](#picard-post-alignment-qc)
-* [**SmartSeq2 scRNASeq Quantification**](#smartseq2-scrnaseq-quantification)
-	* [Transcriptome Alignment](#transcriptome-alignment)
-	* [RSEM quantification](#rsem-quantification)
-* [**Enviroment**](#environment)
-* [**QC Reports**](#qc-reports)
+# Table of Contents
 
-## scRNASeq Pipeline Overview
 
-The full length [SMART-seq 2](https://www.nature.com/articles/nprot.2014.006) scRNASeq pipeline is designed to process data submitted to the [Human Cell Atlas](https://www.humancellatlas.org/). The pipeline is written in WDL, is freely available on [Github](https://github.com/HumanCellAtlas/skylab), and can be run by any compliant WDL runner (e.g. [crowmell](https://github.com/broadinstitute/cromwell)). The pipeline is designed to process stranded or un-stranded paired-ended scRNA-seq data.
+# Smart-Seq2 Pipeline Overview
+
+## Introduction to the Smart-seq2 Pipeline
+
+The full length [Smart-seq 2](https://www.nature.com/articles/nprot.2014.006) scRNASeq pipeline is designed to process data submitted to the [Human Cell Atlas](https://www.humancellatlas.org/). The pipeline is written in WDL, is freely available on [GitHub](https://github.com/HumanCellAtlas/skylab), and can be run by any compliant WDL runner (e.g. [crowmell](https://github.com/broadinstitute/cromwell)). The pipeline is designed to process stranded or un-stranded paired-ended scRNA-seq data.
+
+## Quick Start Table
+
+| Pipeline Features | Description | Source |
+|-------------------|---------------------------------------------------------------|-----------------------|
+| Assay Type | Smart-seq2 | [Smart-seq2](https://www.nature.com/articles/nprot.2014.006)
+| Overall Workflow  | Quality control module and transcriptome quantification module | Code available from [Github](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/smartseq2_single_sample/SmartSeq2SingleSample.wdl) |
+| Workflow Language | WDL | [openWDL](https://github.com/openwdl/wdl) |
+| Genomic Reference Sequence| GRCh38 human genome primary sequence and M21 (GRCm38.p6) mouse genome primary sequence | GENCODE [Human](https://www.gencodegenes.org/human/release_27.html) and [Mouse](https://www.gencodegenes.org/mouse/release_M21.html) 
+| Transcriptomic Reference Annotation | V27 GENCODE human transcriptome and M21 mouse transcriptome | GENCODE [Human](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_27/gencode.v27.annotation.gtf.gz) and [Mouse](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M21/gencode.vM21.annotation.gff3.gz) |
+| Aligner  | HISAT2 (v.2.1.0) | [Kim, et al.,2019](https://www.nature.com/articles/s41587-019-0201-4) |
+| Transcript Quantification | Utilities for processing large-scale single cell datasets | [RSEM v.1.3.0](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-12-323)                          
+| Data Input File Format | File format in which sequencing data is provided | [FASTQ](https://academic.oup.com/nar/article/38/6/1767/3112533) |                     
+| Data Output File Format | File formats in which Optimus output is provided | [BAM](http://samtools.github.io/hts-specs/), [Zarr version 2](https://zarr.readthedocs.io/en/stable/spec/v2.html) |
 
 ### Pipeline Schematics
 
