@@ -23,7 +23,23 @@ The full length [Smart-seq 2](https://www.nature.com/articles/nprot.2014.006) sc
 | Aligner  | HISAT2 (v.2.1.0) | [Kim, et al.,2019](https://www.nature.com/articles/s41587-019-0201-4) |
 | Transcript Quantification | Utilities for processing large-scale single cell datasets | [RSEM v.1.3.0](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-12-323)                          
 | Data Input File Format | File format in which sequencing data is provided | [FASTQ](https://academic.oup.com/nar/article/38/6/1767/3112533) |                     
-| Data Output File Format | File formats in which Optimus output is provided | [BAM](http://samtools.github.io/hts-specs/), [Zarr version 2](https://zarr.readthedocs.io/en/stable/spec/v2.html) |
+| Data Output File Format | File formats in which Smart-seq2 output is provided | [BAM](http://samtools.github.io/hts-specs/), [Zarr version 2](https://zarr.readthedocs.io/en/stable/spec/v2.html) |
+
+# Set-Up
+
+## Smart-seq2 Installation and Requirements
+
+The Smart-seq2 pipeline code can be downloaded by cloning the GitHub repository skylab. For the latest release of Smart-seq2, please see the [release tags prefixed with "Smartseq2"](https://github.com/HumanCellAtlas/skylab/releases).
+
+Smart-seq2 is deployed using Cromwell, a GA4GH compliant, flexible workflow management system that supports multiple computing platforms. 
+
+## Inputs
+
+Smart-seq2 sample inputs are found in the [SmartSeq2SingleSampleExample.json](SmartSeq2SingleSampleExample.json) file. 
+
+### Sample data input
+
+The pipeline can accept both single and paired-end reads in the form of fastq files. 
 
 ### Pipeline Schematics
 
@@ -32,7 +48,7 @@ The pipeline include two modules, a **Quality Control module** and a **Transcrip
 [[images/pipelines/pipeline_two_tracks.png]]
 View the full size figure of this pipeline [schematics](https://raw.githubusercontent.com/wiki/HumanCellAtlas/skylab/images/pipelines/pipeline_two_tracks.png)
 
-## SmartSeq2 scRNASeq Quality Control
+## Smart-seq2 scRNASeq Quality Control
 In this section, we will describe each step in the Quality Control (QC). The QC tasks have been incorperated into the SmartSeq2 WDL file.
 
 ### Reference Genomes and Annotation
