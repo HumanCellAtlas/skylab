@@ -23,7 +23,7 @@ The full length [Smart-seq 2](https://www.nature.com/articles/nprot.2014.006) sc
 | Aligner  | HISAT2 (v.2.1.0) | [Kim, et al.,2019](https://www.nature.com/articles/s41587-019-0201-4) |
 | Transcript Quantification | Utilities for processing large-scale single cell datasets | [RSEM v.1.3.0](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-12-323)                          
 | Data Input File Format | File format in which sequencing data is provided | [FASTQ](https://academic.oup.com/nar/article/38/6/1767/3112533) |                     
-| Data Output File Format | File formats in which Smart-seq2 output is provided | [BAM](http://samtools.github.io/hts-specs/), [Zarr version 2](https://zarr.readthedocs.io/en/stable/spec/v2.html) |
+| Data Output File Format | File formats in which Smart-seq2 output is provided | [BAM](http://samtools.github.io/hts-specs/), [Zarr version 2](https://zarr.readthedocs.io/en/stable/spec/v2.html)(optional output) |
 
 # Set-Up
 
@@ -40,6 +40,25 @@ Smart-seq2 sample inputs are found in the [SmartSeq2SingleSampleExample.json](Sm
 ### Sample data input
 
 The pipeline can accept both single and paired-end reads in the form of fastq files. 
+
+For paired-end reads, there will be two fastq files:
+
+*  fastq1:forward reads
+*  fastq2:reverse reads
+
+### Additional Reference Inputs:
+*  hisat2_ref_trans_name
+*  rrna_intervals
+*  star_ref_index
+*  hisat2_ref_index
+*  genome_ref_fasta
+*  hisat2_ref_trans_index
+*  rsem_ref_index
+*  gene_ref_flat
+*  hisat2_ref_name
+*  stranded
+*  sample_name
+*  output_name
 
 ### Pipeline Schematics
 
