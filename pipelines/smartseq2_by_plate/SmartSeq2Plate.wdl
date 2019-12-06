@@ -105,7 +105,7 @@ workflow RunSmartSeq2ByPlate {
   }
 
   if (output_loom) {
-    call ZarrUtils.SmartSeq2PlateToLoom {
+    call ZarrUtils.SmartSeq2PlateToLoom as ZarrToLoom {
        input:
          batch_id = batch_id,
          zarr_files = AggregateZarr.zarr_output_files
@@ -118,6 +118,7 @@ workflow RunSmartSeq2ByPlate {
     Array[File] bam_files = bam_files_intermediate
     Array[File] bam_index_files = bam_index_files_intermediate
     Array[File] zarrout = AggregateZarr.zarr_output_files
+    File? loom_output = ZarrToLoom.loom_output
   }
 
 }
