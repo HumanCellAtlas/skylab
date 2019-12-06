@@ -70,7 +70,9 @@ The [SmartSeq2SingleSample.wdl](SmartSeq2SingleSample.wdl) is in the pipelines/o
 Here we describe the modules ("tasks") of the Optimus pipeline; [the code](SmartSeq2SingleSample.wdl) and [library of tasks](https://github.com/HumanCellAtlas/skylab/tree/master/library) are available through GitHub.
 
 Overall, the workflow:
+
 1. 
+2. 
 
 ### Pipeline Schematics
 
