@@ -142,13 +142,12 @@ task SmartSeq2PlateToLoom {
     command {
         set -euo pipefail
 
-
         mkdir packed_zarr
         mv ${sep=' ' zarr_files} packed_zarr/
         mkdir unpacked_zarr
         unpackZARR.sh -i packed_zarr -o unpacked_zarr
 
-        echo debug > output.loom
+        ss2_plate_zarr_to_loom.py --input-zarr unpacked_zarr --output-loom output.loom --sample-id ${batch_id}
     }
 
     runtime {
