@@ -1,3 +1,4 @@
+
 task SmartSeq2ZarrConversion {
 
   #runtime values
@@ -127,6 +128,44 @@ task OptimusZarrConversion {
     Array[File] zarr_output_files = glob("zarrout/*zarr*")
   }
 }
+
+task SmartSeq2PlateToLoom {
+    String batch_id
+    Array[File] zarr_files
+
+    # runtime values
+    String docker = "quay.io/humancellatlas/zarr-to-loom:0.0.1"
+
+    Int preemptible = 3
+    Int cpu = 1
+
+    meta: {
+        description: "This task converts the optimus plate SS2 ZARR output into a loom file"
+    }
+
+    parameter_meta: {
+        batch_id: "Batch identifier"
+        zarr_files: "Array of flattened ZARR files"
+    }
+
+    command {
+        set -euo pipefail
+    }
+
+    runtime {
+        docker: docker
+        cpu: 1
+        memory: "4 GiB"
+        disks: "local-disk 100 HDD"
+        preemptible: preemptible
+    }
+
+    output {
+        File loom_output = "output.loom"
+    }
+
+}
+
 
 task OptimusZarrToLoom {
     String sample_id

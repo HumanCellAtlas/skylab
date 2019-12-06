@@ -28,6 +28,8 @@ workflow RunSmartSeq2ByPlate {
   String batch_id
   Boolean paired_end
 
+  Boolean output_loom
+
   # Parameter metadata information
   parameter_meta {
     genome_ref_fasta: "Genome reference in fasta format"
@@ -99,6 +101,14 @@ workflow RunSmartSeq2ByPlate {
     input:
       zarr_input = zarr_output_files,
       output_file_name = batch_id
+  }
+
+  if (output_loom) {
+    call ZarrUtils.SS2plateToLoom {
+       input:
+         batch_id = batch_id,
+         zarr_files = AggregateZarr.zarr_output_files
+    }
   }
 
   ### Pipeline output ###
