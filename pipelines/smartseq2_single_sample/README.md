@@ -24,7 +24,7 @@ The Smart-seq 2 pipeline is designed by the [Data Coordination Platform](https:/
 | Aligner  | HISAT2 (v.2.1.0) | [Kim, et al.,2019](https://www.nature.com/articles/s41587-019-0201-4) |
 | Transcript Quantification | Utilities for processing large-scale single cell datasets | [RSEM v.1.3.0](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-12-323)                          
 | Data Input File Format | File format in which sequencing data is provided | [FASTQ](https://academic.oup.com/nar/article/38/6/1767/3112533) |                     
-| Data Output File Format | File formats in which Smart-seq2 output is provided | [BAM](http://samtools.github.io/hts-specs/), [Zarr version 2](https://zarr.readthedocs.io/en/stable/spec/v2.html)(optional output) |
+| Data Output File Format | File formats in which Smart-seq2 output is provided | [BAM](http://samtools.github.io/hts-specs/), [Zarr version 2](https://zarr.readthedocs.io/en/stable/spec/v2.html) (optional output) |
 
 # Set-Up
 
