@@ -41,7 +41,8 @@ workflow TestSmartSeq2ByPlate {
       file_prefix = file_prefix,
       input_file_names = input_file_names,
       batch_id = batch_id,
-      paired_end = paired_end
+      paired_end = paired_end,
+      output_loom = true
   }
 
   call checker_wdl.ValidateSmartSeq2Plate as checker_workflow {

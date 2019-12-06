@@ -1,5 +1,6 @@
 import "SmartSeq2SingleSample.wdl" as single_cell_run
 import "SmartSeq2PlateAggregation.wdl" as ss2_plate_aggregation
+import "ZarrUtils.wdl" as ZarrUtils
        
 workflow RunSmartSeq2ByPlate {
   meta {
@@ -104,7 +105,7 @@ workflow RunSmartSeq2ByPlate {
   }
 
   if (output_loom) {
-    call ZarrUtils.SS2plateToLoom {
+    call ZarrUtils.SmartSeq2PlateToLoom {
        input:
          batch_id = batch_id,
          zarr_files = AggregateZarr.zarr_output_files

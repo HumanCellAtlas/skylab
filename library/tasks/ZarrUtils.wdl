@@ -139,17 +139,16 @@ task SmartSeq2PlateToLoom {
     Int preemptible = 3
     Int cpu = 1
 
-    meta: {
-        description: "This task converts the optimus plate SS2 ZARR output into a loom file"
-    }
-
-    parameter_meta: {
-        batch_id: "Batch identifier"
-        zarr_files: "Array of flattened ZARR files"
-    }
-
     command {
         set -euo pipefail
+
+
+        mkdir packed_zarr
+        mv ${sep=' ' zarr_files} packed_zarr/
+        mkdir unpacked_zarr
+        unpackZARR.sh -i packed_zarr -o unpacked_zarr
+
+        echo debug > output.loom
     }
 
     runtime {
