@@ -1,6 +1,5 @@
 #!/usr/bin/env  python3
 
-
 import os
 import sys
 import zarr
@@ -10,6 +9,7 @@ from scipy.sparse import coo_matrix
 import argparse
 import numpy as np
 
+
 def main():
     description = """This script converts SS2 pipeline zarr output into loom"""
     parser = argparse.ArgumentParser(description=description)
@@ -18,6 +18,7 @@ def main():
     parser.add_argument('--sample-id', dest='sample_id', required=True, help="Sample identifier")
     args = parser.parse_args()
 
+    # Do input checks
     if not os.path.isdir(args.input_zarr_path):
         sys.exit("Error: the input zarr path is not a directoyr")
     if os.path.exists(args.output_loom_path):
@@ -50,14 +51,26 @@ def main():
     del ycoord
     del value
 
+    # Save the gene metadata (just names)
     row_attrs = {
         "Gene": root.output_zarr.gene_id[:]
     }
 
+    # Save the cell metadata
     col_attrs = dict()
     col_attrs["CellID"] = root.output_zarr.cell_id[:]
+    numeric_field_names = root.output_zarr.cell_metadata_numeric_name[:]
+    for i in range(0, numeric_field_names.shape[0]):
+        name = numeric_field_names[i]
+        data = root.output_zarr.cell_metadata_numeric[:,i]
+        col_attrs[name] = data
+    string_field_names = root.output_zarr.cell_metadata_string_name[:]
+    for i in range(0, string_field_names.shape[0]):
+        name = string_field_names[i]
+        data = root.output_zarr.cell_metadata_string[:,i]
+        col_attrs[name] = data
 
-
+    # Create the loom file
     loompy.create(args.output_loom_path, expr_sp_t, row_attrs, col_attrs)
 
 
