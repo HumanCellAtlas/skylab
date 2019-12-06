@@ -40,12 +40,10 @@ Smart-seq2 sample inputs are found in the [SmartSeq2SingleSampleExample.json](Sm
 
 ### Sample data input
 
-The pipeline is designed for both single and paired-end reads in the form of fastq files. 
+The pipeline is designed for both single and paired-end reads in the form of fastq files. The workflow accepts two fastq files for paired-end experiments and one fastq file single-end experiments. The workflow only processes one sample at a time. 
 
-For paired-end reads, there will be two fastq files:
-
-*  fastq1:forward reads
-*  fastq2:reverse reads
+*  fastq1:forward reads for sample with paired-end sequencing (or reads for sample with single-end sequencing)
+*  fastq2:reverse reads for sample with paired-end sequencing (not applicable for samples with single-end sequencing)
 
 ### Additional Reference Inputs:
 *  hisat2_ref_trans_name
@@ -71,8 +69,10 @@ Here we describe the modules ("tasks") of the Optimus pipeline; [the code](Smart
 
 Overall, the workflow:
 
-1. 
-2. 
+1. Validates inputs
+2. Aligns reads to the genome with HISAT2 v.2.1.0
+3. Calculates summary metrics from aligned BAM using Picard
+4. **STOP HERE: NEED TO LOOK AT WHAT HISAT DOES FOR RSEM**
 
 ### Pipeline Schematics
 
