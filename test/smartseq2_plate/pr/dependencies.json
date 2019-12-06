@@ -8,6 +8,5 @@
   "GroupMetricsOutputs.wdl": "library/tasks/GroupMetricsOutputs.wdl",
   "ZarrUtils.wdl": "library/tasks/ZarrUtils.wdl",
   "SS2InputChecks.wdl": "library/tasks/SS2InputChecks.wdl",
-  "SmartSeq2PlateAggregation.wdl": "library/tasks/SmartSeq2PlateAggregation.wdl",
-  "ZarrUtils.wdl": "library/tasks/ZarrUtils.wdl"
+  "SmartSeq2PlateAggregation.wdl": "library/tasks/SmartSeq2PlateAggregation.wdl"
 }

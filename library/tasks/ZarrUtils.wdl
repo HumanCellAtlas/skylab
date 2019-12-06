@@ -134,7 +134,7 @@ task SmartSeq2PlateToLoom {
     Array[File] zarr_files
 
     # runtime values
-    String docker = "quay.io/humancellatlas/zarr-to-loom:0.0.1"
+    String docker = "quay.io/humancellatlas/zarr-to-loom:0.0.2"
 
     Int preemptible = 3
     Int cpu = 1
@@ -148,12 +148,13 @@ task SmartSeq2PlateToLoom {
         unpackZARR.sh -i packed_zarr -o unpacked_zarr
 
         ss2_plate_zarr_to_loom.py --input-zarr unpacked_zarr --output-loom output.loom --sample-id ${batch_id}
+
     }
 
     runtime {
         docker: docker
         cpu: 1
-        memory: "4 GiB"
+        memory: "48 GiB"
         disks: "local-disk 100 HDD"
         preemptible: preemptible
     }
