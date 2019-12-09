@@ -90,7 +90,6 @@ jobs:
                     ./test/trigger_test.sh smartseq2_single_sample
                 no_output_timeout: 1.5h
 
-
     test_smartseq2_multisample:
         machine: true
         steps:
@@ -196,4 +195,3 @@ workflows:
           - test_optimus_v3
           - test_smartseq2_multisample
           - test_smartseq2_multisample_single_end
-

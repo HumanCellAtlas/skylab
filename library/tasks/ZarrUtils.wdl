@@ -1,4 +1,3 @@
-
 task SmartSeq2ZarrConversion {
 
   #runtime values
