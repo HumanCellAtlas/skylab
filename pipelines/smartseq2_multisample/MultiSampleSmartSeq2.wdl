@@ -7,7 +7,7 @@ workflow MultiSampleSmartSeq2 {
   }
 
   # Version of this pipeline
-  String version = "MultiSampleSmartSeq2_v0.0.1"
+  String version = "MultiSampleSmartSeq2_v1.0.0"
 
   # Gene Annotation
   File genome_ref_fasta
