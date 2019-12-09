@@ -3,6 +3,11 @@
 # Usage function
 function usage() {
   echo "Usage: $0 [-m] -i input_directory -o output_directory"
+  echo ""
+  echo "    -i  input directory with a zarr DirectoryStore flattened by replaceing / with !"
+  echo "    -o  output directory to reconstruct zarr in, must exist"
+  echo "    -m  move instead of copy files from input to the output"
+  echo ""
 }
 
 # Defaults
@@ -23,14 +28,14 @@ while getopts ":i:o:hm" opt; do
       ;;
     h)
       usage
-      exit 0;
+      exit 0
       ;;
     m)
       execCommand='mv'
       ;;
     *)
       usage
-      exit 1;
+      exit 1
       ;;
     esac
 done
@@ -39,19 +44,27 @@ shift $((OPTIND -1))
 # Check the inputs
 if [ -z "$inputDir" ]; then
   echo "Error: input directory (-i) not specified"
-  exit 1;
+  exit 1
 fi
 if [ -z "$outputDir" ]; then
   echo "Error: output directory (-o) not specified"
-  exit 1;
+  exit 1
 fi
 if [ ! -d "$inputDir" ]; then
-  echo "Error the input directory path is not a directory";
-  exit 1;
+  echo "Error the input directory path is not a directory"
+  exit 1
+fi
+if [ ! -r "$inputDir" ]; then
+  echo "Error the input directory is not readable"
+  exit 1
 fi
 if [ ! -d "$outputDir" ]; then
-  echo "Error; the output directory path is not a directory";
-  exit;
+  echo "Error: the output directory path is not a directory"
+  exit 1
+fi
+if [ ! -w "$outputDir" ]; then
+  echo "Error the output directory is not writable"
+  exit 1
 fi
 
 # Do the conversion

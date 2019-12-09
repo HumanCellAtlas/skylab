@@ -15,7 +15,7 @@ task ValidateSmartSeq2Plate {
   runtime {
     docker: "ubuntu:16.04"
     cpu: 1
-    memory: "3.75 GB"
+    memory: "3.5 GiB"
     disks: "local-disk 10 HDD"
   }
 }

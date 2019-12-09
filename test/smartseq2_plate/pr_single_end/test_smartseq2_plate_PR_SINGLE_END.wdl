@@ -1,7 +1,6 @@
 import "SmartSeq2Plate.wdl" as target_wdl
 import "ValidateSmartSeq2Plate.wdl" as checker_wdl
 
-# this task will be run by the jenkins script that gets executed on our PRs.
 workflow TestSmartSeq2ByPlate {
 
   # expected hashes of target_workflow outputs

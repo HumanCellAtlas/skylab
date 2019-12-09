@@ -48,7 +48,7 @@ workflow RunSmartSeq2ByPlate {
   ### Execution starts here ###
   if (paired_end) {
       scatter(idx in range(length(input_file_names))) {
-        call single_cell_run.SmartSeq2SingleCell as sc {
+        call single_cell_run.SmartSeq2SingleCell as sc_pe {
           input:
             fastq1 = file_prefix + '/' + input_file_names[idx] + "_1.fastq.gz",
             fastq2 = file_prefix + '/' + input_file_names[idx] + "_2.fastq.gz",
@@ -90,9 +90,9 @@ workflow RunSmartSeq2ByPlate {
         }
   }
 
-  Array[Array[File]?] zarr_output_files = select_first([sc.zarr_output_files, sc_se.zarr_output_files])
-  Array[File] bam_files_intermediate = select_first([sc.aligned_bam, sc_se.aligned_bam])
-  Array[File] bam_index_files_intermediate = select_first([sc.bam_index, sc_se.bam_index])
+  Array[Array[File]?] zarr_output_files = select_first([sc_pe.zarr_output_files, sc_se.zarr_output_files])
+  Array[File] bam_files_intermediate = select_first([sc_pe.aligned_bam, sc_se.aligned_bam])
+  Array[File] bam_index_files_intermediate = select_first([sc_pe.bam_index, sc_se.bam_index])
 
   ### Aggregate the Zarr Files Directly ###
   call ss2_plate_aggregation.AggregateSmartSeq2Zarr as AggregateZarr {
