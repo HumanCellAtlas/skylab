@@ -1,7 +1,7 @@
 import "MultiSampleSmartSeq2.wdl" as target_wdl
 import "ValidateMultiSampleSmartSeq2.wdl" as checker_wdl
 
-workflow TestSmartSeq2ByPlate {
+workflow TestMultiSampleSmartSeq2 {
 
   # expected hashes of target_workflow outputs
   String expected_core_QC_hash
