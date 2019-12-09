@@ -1,9 +1,0 @@
-{
-  "SmartSeq2SingleSampleUnpaired.wdl": "pipelines/smartseq2_single_sample_unpaired/SmartSeq2SingleSampleUnpaired.wdl",
-  "ValidateSmartSeq2SingleCell.wdl": "test/smartseq2_single_sample_unpaired/pr/ValidateSmartSeq2SingleCell.wdl",
-  "HISAT2.wdl": "library/tasks/HISAT2.wdl",
-  "Picard.wdl": "library/tasks/Picard.wdl",
-  "RSEM.wdl": "library/tasks/RSEM.wdl",
-  "GroupMetricsOutputs.wdl": "library/tasks/GroupMetricsOutputs.wdl",
-  "ZarrUtils.wdl": "library/tasks/ZarrUtils.wdl"
-}
