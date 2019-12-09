@@ -1,5 +1,5 @@
-import "SmartSeq2Plate.wdl" as target_wdl
-import "ValidateSmartSeq2Plate.wdl" as checker_wdl
+import "MultiSampleSmartSeq2.wdl" as target_wdl
+import "ValidateMultiSampleSmartSeq2.wdl" as checker_wdl
 
 workflow TestSmartSeq2ByPlate {
 
@@ -26,7 +26,7 @@ workflow TestSmartSeq2ByPlate {
   Array[String] input_file_names
   String batch_id
 
-  call target_wdl.RunSmartSeq2ByPlate as target_workflow {
+  call target_wdl.MultiSampleSmartSeq2 as target_workflow {
     input:
       genome_ref_fasta = genome_ref_fasta,
       rrna_intervals = rrna_intervals,

@@ -1,13 +1,13 @@
 import "SmartSeq2SingleSample.wdl" as single_cell_run
 import "SmartSeq2PlateAggregation.wdl" as ss2_plate_aggregation
        
-workflow RunSmartSeq2ByPlate {
+workflow MultiSampleSmartSeq2 {
   meta {
-    description: "The RunSmartSeq2ByPlate pipeline runs multiple SS2 samples in a single pipeline invocation"
+    description: "The MultiSampleSmartSeq2 pipeline runs multiple SS2 samples in a single pipeline invocation"
   }
 
   # Version of this pipeline
-  String version = "RunSmartSeq2ByPlate_v0.0.1"
+  String version = "MultiSampleSmartSeq2_v0.0.1"
 
   # Gene Annotation
   File genome_ref_fasta
