@@ -108,5 +108,4 @@ workflow MultiSampleSmartSeq2 {
     Array[File] bam_index_files = bam_index_files_intermediate
     Array[File] zarrout = AggregateZarr.zarr_output_files
   }
-
 }

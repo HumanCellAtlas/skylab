@@ -28,7 +28,7 @@ task AggregateSmartSeq2Zarr {
       /tools/unpackZARR.sh -m -i packed_zarr -o unpacked_zarr
 
       # Merge the zarr files
-      /tools/ss2_zarr_merge.py --input-zarr-directory unpacked_zarr --output-zarr-file output_zarr --plate-sample-id plateid --check-all-headers
+      /tools/ss2_zarr_merge.py --input-zarr-directory unpacked_zarr --output-zarr-file output_zarr --plate-sample-id plateid
 
       # Flatten the zarr
       mkdir zarrout
