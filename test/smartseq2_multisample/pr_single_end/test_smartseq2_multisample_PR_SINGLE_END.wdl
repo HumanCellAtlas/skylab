@@ -20,6 +20,7 @@ workflow TestMultiSampleSmartSeq2 {
   File rsem_ref_index
   String stranded
   Boolean paired_end
+  Boolean output_loom
 
   # Plate information and input files
   String file_prefix
@@ -47,6 +48,7 @@ workflow TestMultiSampleSmartSeq2 {
     input:
       bam_files = target_workflow.bam_files,
       bam_index_files = target_workflow.bam_index_files,
-      zarrout = target_workflow.zarrout
+      zarrout = target_workflow.zarrout,
+      loom_output = target_workflow.loom_output
   }
 }
