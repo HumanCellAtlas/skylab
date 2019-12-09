@@ -1,5 +1,6 @@
 import "SmartSeq2SingleSample.wdl" as single_cell_run
 import "SmartSeq2PlateAggregation.wdl" as ss2_plate_aggregation
+import "ZarrUtils.wdl" as ZarrUtils
        
 workflow MultiSampleSmartSeq2 {
   meta {
@@ -27,6 +28,8 @@ workflow MultiSampleSmartSeq2 {
   Array[String] input_file_names
   String batch_id
   Boolean paired_end
+
+  Boolean output_loom
 
   # Parameter metadata information
   parameter_meta {
@@ -101,11 +104,20 @@ workflow MultiSampleSmartSeq2 {
       output_file_name = batch_id
   }
 
+   if (output_loom) {
+    call ZarrUtils.SmartSeq2PlateToLoom as ZarrToLoom {
+       input:
+         batch_id = batch_id,
+         zarr_files = AggregateZarr.zarr_output_files
+    }
+  }
+
   ### Pipeline output ###
   output {
     # Bam files and their indexes
     Array[File] bam_files = bam_files_intermediate
     Array[File] bam_index_files = bam_index_files_intermediate
     Array[File] zarrout = AggregateZarr.zarr_output_files
+    File? loom_output = ZarrToLoom.loom_output
   }
 }

@@ -2,6 +2,7 @@ task ValidateSmartSeq2Plate {
     Array[File] bam_files
     Array[File] bam_index_files
     Array[File] zarrout
+    File loom_output
 
   command <<<
 

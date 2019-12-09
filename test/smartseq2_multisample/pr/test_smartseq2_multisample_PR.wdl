@@ -20,6 +20,7 @@ workflow TestMultiSampleSmartSeq2 {
   File rsem_ref_index
   String stranded
   Boolean paired_end
+  Boolean output_loom
 
   # Plate information and input files
   String file_prefix
@@ -40,13 +41,15 @@ workflow TestMultiSampleSmartSeq2 {
       file_prefix = file_prefix,
       input_file_names = input_file_names,
       batch_id = batch_id,
-      paired_end = paired_end
+      paired_end = paired_end,
+      output_loom = output_loom
   }
 
   call checker_wdl.ValidateSmartSeq2Plate as checker_workflow {
     input:
       bam_files = target_workflow.bam_files,
       bam_index_files = target_workflow.bam_index_files,
-      zarrout = target_workflow.zarrout
+      zarrout = target_workflow.zarrout,
+      loom_output = target_workflow.loom_output
   }
 }

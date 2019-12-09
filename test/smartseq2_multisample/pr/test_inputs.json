@@ -18,5 +18,6 @@
             "SRR5676734", "SRR5676735", "SRR5676736", "SRR5676738", "SRR5676739", "SRR5676740",  "SRR5676741", "SRR5676742",
             "SRR5676743", "SRR5676744", "SRR5676745", "SRR5676746", "SRR5676747", "SRR5676737", "SRR5676748", "SRR5676749",
             "SRR5676750"],
-    "TestMultiSampleSmartSeq2.batch_id":"PR_test"
+    "TestMultiSampleSmartSeq2.batch_id":"PR_test",
+    "TestMultiSampleSmartSeq2.output_loom": true
 }
