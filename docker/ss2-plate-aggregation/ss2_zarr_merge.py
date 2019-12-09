@@ -23,7 +23,7 @@ def main():
     parser.add_argument('--input-zarr-directory',
                         dest='input_zarr_dir',
                         required=True,
-                        help="Path to input zarr directory")
+                        help="Path to input zarr directory in DirectoryStore format")
     parser.add_argument('--output-zarr-file',
                         dest='output_zarr_file',
                         required=True,
@@ -31,11 +31,11 @@ def main():
     parser.add_argument('--plate-sample-id',
                         dest='plate_sample_id',
                         required=True,
-                        help="Plate sample id")
-    parser.add_argument('--check-all-headers',
-                        dest='check_all_headers',
+                        help="Plate sample id for output zarr")
+    parser.add_argument('--no-check-all-headers',
+                        dest='no_check_all_headers',
                         action='store_true',
-                        help="Check that the input from all files match")
+                        help="Skip the header match test")
     args = parser.parse_args()
 
     # The list of ZARR files that we need to merge
@@ -56,6 +56,7 @@ def main():
             output_root = zarr.group(output_store, overwrite=True)
             output_root.attrs['README'] = ("The schema adopted in this zarr store may undergo "
                                            "changes in the future")
+            output_root.attrs['ss2_output_schema_version'] = '1.0.0'
             output_root.attrs['sample_id'] = args.plate_sample_id
             # Get the number of genes we have to store
             number_of_genes = len(root.gene_id[:])
@@ -118,7 +119,7 @@ def main():
             )
             first_cell = False
         else:
-            if (args.check_all_headers):
+            if (not args.no_check_all_headers):
                     if not np.array_equal(group_gene_id[:], root.gene_id[:]):
                         raise MismatchingInputHeader("Gene ids didn't match")
                     if not np.array_equal(group_numeric_metadata_name[:], root.cell_metadata_numeric_name[:]):
