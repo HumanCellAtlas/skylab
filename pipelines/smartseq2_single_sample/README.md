@@ -49,17 +49,26 @@ The pipeline is designed for both single and paired-end reads in the form of fas
 *  fastq2:reverse reads for sample with paired-end sequencing (not applicable for samples with single-end sequencing)
 
 ### Additional Reference Inputs:
-*  hisat2_ref_trans_name
-*  rrna_intervals: RNA interval file required by Picard
-*  hisat2_ref_index: HISAT2 reference index file in tarball
-*  genome_ref_fasta: Genome reference in fasta format
-*  hisat2_ref_trans_index: HISAT2 transcriptome index file in tarball
-*  rsem_ref_index: RSEM reference index file in tarball
-*  gene_ref_flat: Gene refflat file required by Picard
-*  hisat2_ref_name: HISAT2 reference index name
-*  stranded: Library strand information for HISAT2; example values include FR(read corresponds to transcript), RF(read corresponds to reverse compliment of transcript), or NONE
+
 *  sample_name: Sample name or Cell ID
 *  output_name: output name, can include path
+
+**For HISAT2 Genomic Alignment:**
+*  hisat2_ref_index: HISAT2 reference index file in tarball
+*  hisat2_ref_name: HISAT2 reference index name
+
+**For Picard Quality Control Metrics:**
+*  genome_ref_fasta: Genome reference in fasta format
+*  gene_ref_flat: Gene refflat file required by Picard
+*  rrna_intervals: RNA interval file required by Picard
+*  stranded: Library strand information for HISAT2; example values include FR(read corresponds to transcript), RF(read corresponds to reverse compliment of transcript), or NONE
+
+**For HISAT2 Transcriptomic Alignment:**
+*  hisat2_ref_trans_index: HISAT2 transcriptome index file in tarball
+*  hisat2_ref_trans_name
+
+**For RSEM Gene Expression Quantificaiton:**
+*  rsem_ref_index: RSEM reference index file in tarball
 
 # Running Smart-seq2
 
