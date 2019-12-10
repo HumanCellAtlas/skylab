@@ -61,11 +61,11 @@ The pipeline is designed for both single and paired-end reads in the form of fas
 *  sample_name: Sample name or Cell ID
 *  output_name: output name, can include path
 
-## Running Smart-seq2
+# Running Smart-seq2
 
 The [SmartSeq2SingleSample.wdl](SmartSeq2SingleSample.wdl) is in the pipelines/optimus folder of the HCA skylab repository and implements the workflow by importing individual modules ("tasks" written in WDL script) from the skylab [Library](https://github.com/HumanCellAtlas/skylab/tree/master/library) folder.
 
-### Smarts-seq2 Modules Summary
+## Smarts-seq2 Modules Summary
 
 Here we describe the modules ("tasks") of the Optimus pipeline; [the code](SmartSeq2SingleSample.wdl) and [library of tasks](https://github.com/HumanCellAtlas/skylab/tree/master/library) are available through GitHub.
 
@@ -82,7 +82,6 @@ Part 2:Transcriptome Quantification Modules
 ## Part 1: Quality Control Modules
 ### 1. Align reads using HISAT2
 HISAT2 accepts paired- or single-ended reads in the form of fastq files. The first step of alignment requires a reference index. HISAT2 can incorporate exons, splice sites and single nucleotide polymorphism (SNP) locations into the index file for alignment. HISAT2 also provides a set of python scripts to build an index using Ensembl or RefSeq annotations. We modify this [script](https://github.com/HumanCellAtlas/skylab/blob/master/docker/hisat2/make_grch38_snp_tran_gencode.sh) to construct an index with the Gencode annotation. The workflow to build the reference index is [here](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/accessories/build_hisat2_reference/BuilHISAT2Referencebundle.wdl). HISAT2 uses a graph-based alignment and has succeeded HISAT, Tophat2 and Bowtie2. The output of HISAT2 alignment workflow is a bam file.
-
 
 ### 2. Calculate summary metrics using Picard
 **[Background]** **Picard** is a set of command line tools (in Java) for manipulating high-throughput sequencing data and also can be used to generate QC reports for RNA-seq.  
@@ -118,6 +117,6 @@ The quantification of genes and transcripts is done with the [RSEM](https://dewe
 RSEM provides a program to extract and pre-process the reference sequences, then build its index. The workflow to build the RSEM index is available at [Github](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/accessory_workflows/build_rsem_reference/BuildRsemReferenceBundle.wdl). To learn more about how to build the RSEM index, refer to the [RSEM website](http://deweylab.biostat.wisc.edu/rsem/rsem-prepare-reference.html#description).
 **Note** A transcriptome reference Fasta file is included in RSEM index bundle. This file will be used to create the HISAT2 transcriptome index.
 
-## Outputs
+# Outputs
 
-## Versioning
+# Versioning
