@@ -1,22 +1,22 @@
 task ValidateSmartSeq2Plate {
-    Array[File] bam_files
-    Array[File] bam_index_files
-    Array[File] zarrout
     File loom_output
+    File truth_loom
+
+    Int disk_size = ceil(size(loom_output,"GiB") + size(truth_loom, "GiB") + 10)
 
   command <<<
 
     # catch intermittent failures
     set -eo pipefail
 
-    # Always pass -- just a plumbing test
-    exit 0;
+    /tools/loomCompare.py --truth-loom ${truth_loom} --check-loom ${loom_output} --delta-cutoff 10
+
   >>>
   
   runtime {
-    docker: "ubuntu:16.04"
+    docker: "quay.io/humancellatlas/loom-delta-test:0.0.1"
     cpu: 1
-    memory: "3.5 GiB"
-    disks: "local-disk 10 HDD"
+    memory: "8 GiB"
+    disks: "local-disk 1${disk_size} HDD"
   }
 }
