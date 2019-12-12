@@ -128,6 +128,43 @@ task OptimusZarrConversion {
   }
 }
 
+task SmartSeq2PlateToLoom {
+    String batch_id
+    Array[File] zarr_files
+
+    # runtime values
+    String docker = "quay.io/humancellatlas/zarr-to-loom:0.0.2"
+
+    Int preemptible = 3
+    Int cpu = 1
+
+    command {
+        set -euo pipefail
+
+        mkdir packed_zarr
+        mv ${sep=' ' zarr_files} packed_zarr/
+        mkdir unpacked_zarr
+        unpackZARR.sh -i packed_zarr -o unpacked_zarr
+
+        ss2_plate_zarr_to_loom.py --input-zarr unpacked_zarr --output-loom output.loom --sample-id ${batch_id}
+
+    }
+
+    runtime {
+        docker: docker
+        cpu: 1
+        memory: "48 GiB"
+        disks: "local-disk 100 HDD"
+        preemptible: preemptible
+    }
+
+    output {
+        File loom_output = "output.loom"
+    }
+
+}
+
+
 task OptimusZarrToLoom {
     String sample_id
     Array[File] zarr_files

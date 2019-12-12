@@ -1,8 +1,5 @@
 {
-    "TestMultiSampleSmartSeq2.expected_core_QC_hash": "",
-    "TestMultiSampleSmartSeq2.expected_qc_tables_hash": "",
-    "TestMultiSampleSmartSeq2.expected_gene_matrix_hash": "",
-    "TestMultiSampleSmartSeq2.expected_isoform_matrix_hash": "",
+    "TestMultiSampleSmartSeq2.truth_loom": "gs://hca-dcp-mint-test-data/smartseq2_multisample/pr_test_truth/ss2_multisample_truth_20191212.loom",
     "TestMultiSampleSmartSeq2.genome_ref_fasta": "gs://hca-dcp-analysis-pipelines-reference/alignmentReferences/GRCm38_Gencode_vM21/GRCm38.primary_assembly.genome.fa",
     "TestMultiSampleSmartSeq2.rrna_intervals": "gs://hca-dcp-analysis-pipelines-reference/alignmentReferences/GRCm38_Gencode_vM21/gencode.vM21.primary_assembly.rRNA.interval_list",
     "TestMultiSampleSmartSeq2.gene_ref_flat": "gs://hca-dcp-analysis-pipelines-reference/alignmentReferences/GRCm38_Gencode_vM21/gencode.vM21.primary_assembly.refflat.txt",
