@@ -51,27 +51,19 @@ The pipeline is designed for both single and paired-end reads in the form of fas
 ### Additional Reference Inputs:
 The Smartseq2 Single Sample workflow requires multiple reference indexes. Information on how these indexes are created is found in the [Creating_Smartseq2_References]() documentation. The table below describes the references and each tool that uses the reference as input.
 
-| Reference name | Reference Description | Purpose | Tool |
+| Workflow Step | Reference name | Reference Description | Tool |
 | --- | --- | --- | --- |
-| sample_name | Sample name or Cell ID | --- | NA |
-| output_name | Output name, can include path | ---| NA |
-| hisat2_ref_index | HISAT2 reference index file in tarball | Genomic alignment with HISAT2 | HISAT2 |
-| hisat2_ref_name | HISAT2 reference index name | Genomic alignment with HISAT2 | HISAT2 |
-
-
-
-**For Picard-generated Quality Control Metrics:**
-*  genome_ref_fasta: Genome reference in fasta format
-*  gene_ref_flat: [Gene refflat](https://software.broadinstitute.org/software/igv/genePred) file required by Picard
-*  rrna_intervals: RNA interval file required by Picard
-*  stranded: Library strand information for HISAT2; example values include FR(read corresponds to transcript), RF(read corresponds to reverse compliment of transcript), or NONE
-
-**For Transcriptomic Alignment with HISAT2:**
-*  hisat2_ref_trans_index: HISAT2 transcriptome index file in tarball
-*  hisat2_ref_trans_name:HISAT2 transcriptome index file name
-
-**For Gene Expression Quantificaiton with RSEM:**
-*  rsem_ref_index: RSEM reference index file in tarball
+| All | sample_name | Sample name or Cell ID | NA |
+| All | output_name | Output name, can include path | NA |
+| **Genomic alignment with HISAT2** | hisat2_ref_index | HISAT2 reference index file in tarball | HISAT2 |
+|     | hisat2_ref_name | HISAT2 reference index name | HISAT2 |
+| **Picard-generated Quality Control Metrics** | genome_ref_fasta | Genome reference in fasta format | Picard |
+|     | gene_ref_flat | [Gene refflat](https://software.broadinstitute.org/software/igv/genePred) file required by Picard | Picard |
+|     | rrna_intervals | RNA interval file required by Picard | Picard |
+|     | stranded | Library strand information for HISAT2; example values include FR(read corresponds to transcript), RF(read corresponds to reverse compliment of transcript), or NONE | Picard |
+| **For Transcriptomic Alignment with HISAT2** | hisat2_ref_trans_index | HISAT2 transcriptome index file in tarball | HISAT2 |
+|     | hisat2_ref_trans_name | HISAT2 transcriptome index file name | HISAT2 |
+| **Gene Expression Quantificaiton with RSEM** | rsem_ref_index | RSEM reference index file in tarball |
 
 # Running Smart-seq2
 
