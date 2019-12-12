@@ -7,7 +7,7 @@
 
 # Smart-Seq2 Pipeline Overview
 
-![](pipeline_two_tracks.png)
+![](Slide.png)
 
 ## Introduction to the Smart-seq2 Pipeline
 
