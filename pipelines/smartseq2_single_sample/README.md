@@ -27,6 +27,7 @@ This pipeline is validated to support both human and mouse datasets.
 | Genomic Reference Sequence (for validation)| GRCh38 human genome primary sequence and M21 (GRCm38.p6) mouse genome primary sequence | GENCODE [Human](https://www.gencodegenes.org/human/release_27.html) and [Mouse](https://www.gencodegenes.org/mouse/release_M21.html) 
 | Transcriptomic Reference Annotation (for validation) | V27 GENCODE human transcriptome and M21 mouse transcriptome | GENCODE [Human](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_27/gencode.v27.annotation.gtf.gz) and [Mouse](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M21/gencode.vM21.annotation.gff3.gz) |
 | Aligner  | HISAT2 (v.2.1.0) | [Kim, et al.,2019](https://www.nature.com/articles/s41587-019-0201-4) |
+| QC Metrics | Picard(v.2.10.10 | Broad Institute [(https://broadinstitute.github.io/picard/)](https://broadinstitute.github.io/picard/)   |
 | Transcript Quantification | Utilities for processing large-scale single cell datasets | [RSEM v.1.3.0](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-12-323)                          
 | Data Input File Format | File format in which sequencing data is provided | [FASTQ](https://academic.oup.com/nar/article/38/6/1767/3112533) |                     
 | Data Output File Formats | File formats in which Smart-seq2 output is provided | [BAM](http://samtools.github.io/hts-specs/), [Zarr version 2](https://zarr.readthedocs.io/en/stable/spec/v2.html) (optional output), CSV (QC Metrics) |
@@ -41,14 +42,14 @@ The workflow is deployed using [Cromwell](https://github.com/broadinstitute/crom
 
 ## Inputs
 
-Example Smart-seq2 single sample inputs are found in the [SmartSeq2SingleSampleExample.json](SmartSeq2SingleSampleExample.json) file. 
+Example Smart-seq2 Single Sample inputs are found in the [SmartSeq2SingleSampleExample.json](SmartSeq2SingleSampleExample.json) file. 
 
 ### Sample data input
 
 The pipeline is designed for both single- and paired-end reads in the form of fastq files. The workflow accepts two fastq files for paired-end experiments and one fastq file single-end experiments. It processes one sample (cell) at a time.  
 
-*  fastq1:forward reads for sample with paired-end sequencing (or reads for sample with single-end sequencing)
-*  fastq2:reverse reads for sample with paired-end sequencing (not applicable for samples with single-end sequencing)
+*  fastq1: forward reads for sample with paired-end sequencing (or reads for sample with single-end sequencing)
+*  fastq2: reverse reads for sample with paired-end sequencing (not applicable for samples with single-end sequencing)
 
 ### Additional Reference Inputs:
 The Smartseq2 Single Sample workflow requires multiple reference indexes. Information on how these indexes are created is found in the [Creating_Smartseq2_References]() documentation. The table below describes the references and each tool that uses the reference as input.
