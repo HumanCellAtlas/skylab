@@ -62,8 +62,8 @@ The Smartseq2 Single Sample workflow requires multiple reference indexes. Inform
 |     | hisat2_ref_name | HISAT2 reference index name | HISAT2 |
 | **Picard-generated Quality Control Metrics** | genome_ref_fasta | Genome reference in fasta format | Picard |
 |     | gene_ref_flat | [RefFlat](https://software.broadinstitute.org/software/igv/genePred) file containing the location of RNA transcripts, exon start sites, etc.  | Picard |
-|     | rrna_intervals | RNA interval file required by Picard | Picard |
-|     | stranded | Library strand information for HISAT2; example values include FR(read corresponds to transcript), RF(read corresponds to reverse compliment of transcript), or NONE | Picard |
+|     | rrna_intervals | Ribosomal RNA intervals file | Picard |
+|     | stranded | Library strand information for HISAT2; example values include FR (read corresponds to transcript), RF(read corresponds to reverse compliment of transcript), or NONE | Picard |
 | **Transcriptomic Alignment with HISAT2** | hisat2_ref_trans_index | HISAT2 transcriptome index file in tarball | HISAT2 |
 |     | hisat2_ref_trans_name | HISAT2 transcriptome index file name | HISAT2 |
 | **Gene Expression Quantificaiton with RSEM** | rsem_ref_index | RSEM reference index file in tarball |
@@ -93,11 +93,13 @@ The Smartseq2 Single Sample workflow uses the [HISAT2.wdl task](https://github.c
 #### 1.2 Calculate summary metrics using Picard
 Quality control measurements are calculated with [Picard tools](https://broadinstitute.github.io/picard/), command line tools used for manipulating high-throughput sequencing data. Picard uses the aligned BAM file generated with HISAT2 as input. Additionally, it requires a reference genome fasta, a gene refflat, and an RNA intervals file (see the [Creating_Smartseq2_References]() documentation). 
 
-The [Picard.wdl](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/Picard.wdl) generates QC metrics by calling three tasks:
+The [Picard.wdl](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/Picard.wdl) generates QC metrics by using three tasks:
 
-*  [CollectMultipleMetrics](https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.0.0/picard_analysis_CollectMultipleMetrics.php): a tool that uses the aligned BAM file and reference genome fasta to collect metrics on alignement, insert size, GC bias, base distribution by cycle, quality score distribution, quality distribution by cycle, sequencing artifacts, and quality yield.
-*  [CollectRnaMetrics](https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.0.0/picard_analysis_CollectRnaSeqMetrics.php)
-*  [CollectDuplicationMetrics](https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.4.0/picard_sam_markduplicates_MarkDuplicates.php)
+*  [CollectMultipleMetrics](https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.0.0/picard_analysis_CollectMultipleMetrics.php): calls the  CollectMultipleMetrics tool which uses the aligned BAM file and reference genome fasta to collect metrics on alignement, insert size, GC bias, base distribution by cycle, quality score distribution, quality distribution by cycle, sequencing artifacts, and quality yield.
+
+*  [CollectRnaMetrics](https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.0.0/picard_analysis_CollectRnaSeqMetrics.php): calls the CollectRnaSeqMetrics tool which uses the aligned BAM, a RefFlat genome annotation file, and a ribosomal intervals file to produce RNA alignment metrics (metric descriptions are found in the [Picard Metrics Dictionary](http://broadinstitute.github.io/picard/picard-metric-definitions.html#RnaSeqMetrics). 
+
+*  [CollectDuplicationMetrics](https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.4.0/picard_sam_markduplicates_MarkDuplicates.php): calls a the MarkDuplicates tool which uses the aligned BAM to identify duplicate reads (output metrics are listed in the [Picard Metrics Dictionary](http://broadinstitute.github.io/picard/picard-metric-definitions.html#DuplicationMetrics).
 
 
 ### Part 2: SmartSeq2 scRNASeq Quantification
