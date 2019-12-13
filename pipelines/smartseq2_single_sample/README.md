@@ -16,7 +16,7 @@
     + [Part 1: Quality Control Tasks](#part-1--quality-control-tasks)
       - [1.1 Align reads to the genome using HISAT2](#11-align-reads-to-the-genome-using-hisat2)
       - [1.2 Calculate summary metrics using Picard](#12-calculate-summary-metrics-using-picard)
-    + [Part 2: SmartSeq2 Transcriptome Quantification](#part-2--smartseq2-transcriptome-quantification)
+    + [Part 2: Transcriptome Quantification Tasks](#part-2-transcriptome-quantification-tasks)
       - [2.1 Align reads to the transcriptome using HISAT2](#21-align-reads-to-the-transcriptome-using-hisat2)
       - [2.2 Quantify gene expression using RSEM](#22-quantify-gene-expression-using-rsem)
   * [Outputs](#outputs)
@@ -132,7 +132,7 @@ After the Smartseq2 workflow generates Picard metrics, some (but not all) metric
 *  rna_metrics
 *  gc_bias_summary_metrics
 
-### Part 2: SmartSeq2 Transcriptome Quantification
+### Part 2: Transcriptome Quantification Tasks
 #### 2.1 Align reads to the transcriptome using HISAT2
 The [HISAT2RSEM task](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/HISAT2.wdl) uses the hisat2_ref_trans_index file and the sample fastq files to align reads to the reference transcriptome. The output of this task is a transcriptome-aligned BAM file and alignment log file.
 
