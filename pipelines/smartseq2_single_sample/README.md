@@ -120,18 +120,6 @@ The [Picard task](https://github.com/HumanCellAtlas/skylab/blob/master/library/t
 
 *  CollectDuplicationMetrics: calls the [MarkDuplicates](https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.4.0/picard_sam_markduplicates_MarkDuplicates.php) tool which uses the aligned BAM to identify duplicate reads (output metrics are listed in the [Picard Metrics Dictionary](http://broadinstitute.github.io/picard/picard-metric-definitions.html#DuplicationMetrics)).
 
-After the Smartseq2 workflow generates Picard metrics, the [GroupMetricsOutputs task](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/GroupMetricsOutputs.wdl) combines some (but not all) metrics into a "group_results" CSV file array. The workflow uses this array in downstream Zarr file conversion. The following [Picard metrics](http://broadinstitute.github.io/picard/picard-metric-definitions.html#) are inputs for this task:
-
-*  base_call_dist_metrics
-*  gc_bias_detail_metrics
-*  pre_adapter_details_metrics
-*  pre_adapter_summary_metrics
-*  bait_bias_detail_metrics
-*  error_summary_metrics
-*  alignment_summary_metrics
-*  dedup_metrics
-*  rna_metrics
-*  gc_bias_summary_metrics
 
 ### Part 2: Transcriptome Quantification Tasks
 #### 2.1 Align reads to the transcriptome using HISAT2
@@ -151,8 +139,24 @@ The RSEM task returns the following output files:
 
 Only the rsem_gene, rsem_isoform, and rsem_cnt files are used for the final outputs of the Smartseq2 Single Sample workflow.
 
+After the Smartseq2 workflow generates HISAT2, Picard and RSEM metrics, the [GroupMetricsOutputs task](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/GroupMetricsOutputs.wdl) combines some (but not all) metrics into a "group_results" CSV file array. The workflow uses this array in downstream Zarr file conversion. The following HISAT2, [Picard](http://broadinstitute.github.io/picard/picard-metric-definitions.html#) and [RSEM](http://deweylab.biostat.wisc.edu/rsem/rsem-calculate-expression.html) outputs are inputs for this task:
+
+*  HISAT2_log_file
+*  base_call_dist_metrics
+*  gc_bias_detail_metrics
+*  pre_adapter_details_metrics
+*  pre_adapter_summary_metrics
+*  bait_bias_detail_metrics
+*  error_summary_metrics
+*  alignment_summary_metrics
+*  dedup_metrics
+*  rna_metrics
+*  gc_bias_summary_metrics
+*  HISAT2RSEM_log_file
+*  RSEMExpression.rsem_cnt
+
 ## Outputs
-The final outputs of the Smartseq2 Single Sample workflow are listed in the following table:
+The table below details the final outputs of the Smartseq2 Single Sample workflow.
 
 | Output Name	|	Output Description |	Output Format |
 | --- | --- | --- | 
