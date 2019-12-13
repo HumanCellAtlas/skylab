@@ -3,7 +3,24 @@
 | [smartseq2_v2.5.0](https://github.com/HumanCellAtlas/skylab/releases/tag/smartseq2_v2.5.0) | November 07, 2019 | [Elizabeth Kiernan](mailto:ekiernan@broadinstitute.org) | Please file GitHub issues in skylab or contact [Kylee Degatano](mailto:kdegatano@broadinstitute.org) |
 
 # Table of Contents
-
+- [Smart-Seq2 Single Sample Pipeline Overview](#smart-seq2-single-sample-pipeline-overview)
+  * [Introduction to the Smart-seq2 Pipeline](#introduction-to-the-smart-seq2-pipeline)
+  * [Quick Start Table](#quick-start-table)
+- [Set-Up](#set-up)
+  * [Smart-seq2 Installation and Requirements](#smart-seq2-installation-and-requirements)
+  * [Inputs](#inputs)
+    + [Sample data input](#sample-data-input)
+    + [Additional Reference Inputs:](#additional-reference-inputs-)
+- [Running Smart-seq2](#running-smart-seq2)
+  * [Smarts-seq2 Task Summary](#smarts-seq2-task-summary)
+    + [Part 1: Quality Control Tasks](#part-1--quality-control-tasks)
+      - [1.1 Align reads to the genome using HISAT2](#11-align-reads-to-the-genome-using-hisat2)
+      - [1.2 Calculate summary metrics using Picard](#12-calculate-summary-metrics-using-picard)
+    + [Part 2: SmartSeq2 Transcriptome Quantification](#part-2--smartseq2-transcriptome-quantification)
+      - [2.1 Align reads to the transcriptome using HISAT2](#21-align-reads-to-the-transcriptome-using-hisat2)
+      - [2.2 Quantify gene expression using RSEM](#22-quantify-gene-expression-using-rsem)
+  * [Outputs](#outputs)
+- [Versioning](#versioning)
 
 # Smart-Seq2 Single Sample Pipeline Overview
 
