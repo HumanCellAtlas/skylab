@@ -84,7 +84,7 @@ The Smartseq2 Single Sample workflow requires multiple reference indexes. Inform
 |     | stranded | Library strand information for HISAT2; example values include FR (read corresponds to transcript), RF(read corresponds to reverse compliment of transcript), or NONE | Picard |
 | **Transcriptomic Alignment with HISAT2** | hisat2_ref_trans_index | HISAT2 transcriptome index file in tarball | HISAT2 |
 |     | hisat2_ref_trans_name | HISAT2 transcriptome index file name | HISAT2 |
-| **Gene Expression Quantificaiton with RSEM** | rsem_ref_index | RSEM reference index file in tarball |
+| **Gene Expression Quantificaiton with RSEM** | rsem_ref_index | RSEM reference index file in tarball | RSEM |
 
 # Running Smart-seq2
 
