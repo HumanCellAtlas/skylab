@@ -21,6 +21,7 @@
       - [2.2 Quantify gene expression using RSEM](#22-quantify-gene-expression-using-rsem)
   * [Outputs](#outputs)
 - [Versioning](#versioning)
+- [Have_Suggestions?](#have-suggestions)
 
 # Smart-Seq2 Single Sample Pipeline Overview
 
