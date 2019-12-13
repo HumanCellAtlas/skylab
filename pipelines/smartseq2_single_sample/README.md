@@ -106,9 +106,20 @@ The [Picard.wdl](https://github.com/HumanCellAtlas/skylab/blob/master/library/ta
 The [HISAT2RSEM](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/HISAT2.wdl) task uses the hisat2_ref_trans_index file and the sample fastq files to align reads to the reference transcriptome. The output of this task is an aligned BAM file and alignment log file.
 
 #### 2.2 Quantify gene expression using RSEM
-[RSEM](https://deweylab.github.io/RSEM/rsem-calculate-expression.html) is a software package for quantifying transcript abundance ([Li and Dewey, 2011](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-12-323). The Smartseq2 Single Sample workflow uses the [RSEM task](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/RSEM.wdl) to calculate expression estimates from a transcriptome-aligned BAM file and rsem_ref_index file. The tool [rsem-calculate-expression](http://deweylab.biostat.wisc.edu/rsem/rsem-calculate-expression.html) in the RSEM package is used to estimate gene/isoform expression levels. The RSEM task returns output files for . 
+[RSEM](https://deweylab.github.io/RSEM/rsem-calculate-expression.html) is a software package for quantifying transcript abundances ([Li and Dewey, 2011](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-12-323)). The Smartseq2 Single Sample workflow uses the [RSEM task](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/RSEM.wdl) to calculate expression estimates from a transcriptome-aligned BAM file uing the rsem_ref_index file for reference input. The RSEM tool [rsem-calculate-expression](http://deweylab.biostat.wisc.edu/rsem/rsem-calculate-expression.html) is used to estimate gene/isoform expression. 
+
+The RSEM task returns the following output files:
+*  rsem_gene: gene level expression estimates in FPKM, TPM, and expected counts
+*  rsem_isoform: isoform level expression estimates in FPKM, TPM, and expected counts
+*  rsem_time: the time consumed by aligning reads 
+*  rsem_cnt: alignment statistics
+*  rsem_model: RNA-seq model parameters
+*  rsem_theta: fraction of reads resulting from background
+
+Only the rsem_gene, rsem_isoform, and rsem_cnt files are used for the final outputs of the Smartseq 2 Single Sample workflow.
 
 # Outputs
+
 
 # Versioning
 All Smart-seq Single Sample release notes are documented in the [Smartseq2 Single Sample changelog](SmartSeq2SingleSample.changelog.md).
