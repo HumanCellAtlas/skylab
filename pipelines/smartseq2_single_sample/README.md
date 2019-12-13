@@ -54,7 +54,7 @@ This pipeline is validated to support both human and mouse datasets.
 
 ## Smart-seq2 Installation and Requirements
 
-The Smart-seq2 workflow code can be downloaded by cloning the GitHub [skylab repository](https://github.com/HumanCellAtlas/skylab). For the latest release of Smart-seq2, please see the [release tags prefixed with "Smartseq2"](https://github.com/HumanCellAtlas/skylab/releases).
+The Smart-seq2 workflow code can be downloaded by cloning the GitHub [skylab repository](https://github.com/HumanCellAtlas/skylab). For the latest release of Smart-seq2, please see the [Smartseq2 Single Sample changelog](SmartSeq2SingleSample.changelog.md).
 
 The workflow is deployed using [Cromwell](https://github.com/broadinstitute/cromwell), a GA4GH compliant, flexible workflow management system that supports multiple computing platforms. 
 
