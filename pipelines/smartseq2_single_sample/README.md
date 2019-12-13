@@ -74,9 +74,9 @@ The [SmartSeq2SingleSample.wdl](SmartSeq2SingleSample.wdl) is in the [pipelines/
 
 ## Smarts-seq2 Task Summary
 
-Here we describe the tasks of the Smartseq2 Single Sample pipeline; [the code](SmartSeq2SingleSample.wdl) and [library of tasks](https://github.com/HumanCellAtlas/skylab/tree/master/library) are available through GitHub.
+Here we describe the tasks of the Smartseq2 Single Sample pipeline; [the code](SmartSeq2SingleSample.wdl) and [library of tasks](https://github.com/HumanCellAtlas/skylab/tree/master/library) are available through GitHub. Prior to alignment, the workflow has an input validatio
 
-Overall, the workflow has two parts:
+Overall, the workflow is divided into two parts that are completed after an initial input validation step:
 
 **Part 1: Quality Control Tasks**
  1. Aligns reads to the genome with HISAT2 v.2.1.0
@@ -91,7 +91,7 @@ Overall, the workflow has two parts:
 The Smartseq2 Single Sample workflow uses the [HISAT2.wdl task](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/HISAT2.wdl) to perform graph-based alignment of paired- or single-end reads (in the form of fastq files) to a reference genome. This task uses HISAT2, a fast-paced, cost-efficient alignment tool. For reference input, HISAT2 requires an index which can be built following the [HCA's build_indices documentation](https://github.com/HumanCellAtlas/skylab/tree/master/library/accessory_workflows/build_indices). HISAT2 can determine the presence of non-transcript sequences and true transcript sequences, taking into account the presence of single-nucleotide polymorphisms by using references such as NCBI's [dbSNP Build 150](https://www.ncbi.nlm.nih.gov/projects/SNP/snp_summary.cgi?view+summary=view+summary&build_id=150). The HISAT2 outputs are an aligned bam file, a bam index, and an alignment log file. 
 
 #### 1.2 Calculate summary metrics using Picard
-Quality control measurements are calculated with [Picard tools](https://broadinstitute.github.io/picard/), command line tools used for manipulating high-throughput sequencing data. Picard uses the aligned BAM file generated with HISAT2 as input. Additionally, it requires a reference genome fasta, a gene refflat, and an RNA intervals file (see the [Creating_Smartseq2_References]() documentation). 
+Quality control measurements are calculated with [Picard tools](https://broadinstitute.github.io/picard/), command line tools used for manipulating high-throughput sequencing data. Picard uses the aligned BAM file generated with HISAT2 as input. Additionally, it requires a reference genome fasta, a gene refflat, and an RNA intervals file (see the [Creating_Smartseq2_References]() documentation). The outputs of this task are txt and pdf files for each metric.
 
 The [Picard.wdl](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/Picard.wdl) generates QC metrics by using three tasks:
 
