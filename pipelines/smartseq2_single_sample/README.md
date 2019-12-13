@@ -98,7 +98,7 @@ Overall, the workflow is divided into two parts that are completed after an init
 
 **Part 1: Quality Control Tasks**
  1. Aligns reads to the genome with HISAT2 v.2.1.0
- 2. Calculates summary metrics from an aligned BAM using Picard
+ 2. Calculates summary metrics from an aligned BAM using Picard v.2.10.10
 
 **Part 2: Transcriptome Quantification Tasks**
  1. Aligns reads to the transcriptome with HISAT v.2.1.0
