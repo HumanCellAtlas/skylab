@@ -94,7 +94,7 @@ The [SmartSeq2SingleSample.wdl](SmartSeq2SingleSample.wdl) is in the [pipelines/
 
 Here we describe the tasks of the Smartseq2 Single Sample pipeline; [the code](SmartSeq2SingleSample.wdl) and [library of tasks](https://github.com/HumanCellAtlas/skylab/tree/master/library) are available through GitHub. 
 
-Overall, the workflow is divided into two parts that are completed after an initial input validation step:
+Overall, the workflow is divided into two parts that are completed after an initial input validation step.
 
 **Part 1: Quality Control Tasks**
  1. Aligns reads to the genome with HISAT2 v.2.1.0
