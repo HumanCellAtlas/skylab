@@ -111,4 +111,7 @@ Smartseq2 Single Sample uses [RSEM](https://deweylab.github.io/RSEM/rsem-calcula
 # Outputs
 
 # Versioning
-# Pipeline Improvements
+All Smart-seq Single Sample release notes are documented in the [Smartseq2 Single Sample changelog](SmartSeq2SingleSample.changelog.md)
+
+# Have Suggestions?
+Coming soon, we will have a GitHub document dedicated to open issues! In the meantime, please help us make our tools better by contacting [Kylee Degatano](mailto:kdegatano@broadinstitute.org) for pipeline-related suggestions or questions.
