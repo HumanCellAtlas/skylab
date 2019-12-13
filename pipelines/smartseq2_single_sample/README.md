@@ -61,7 +61,7 @@ The Smartseq2 Single Sample workflow requires multiple reference indexes. Inform
 | **Genomic alignment with HISAT2** | hisat2_ref_index | HISAT2 reference index file in tarball | HISAT2 |
 |     | hisat2_ref_name | HISAT2 reference index name | HISAT2 |
 | **Picard-generated Quality Control Metrics** | genome_ref_fasta | Genome reference in fasta format | Picard |
-|     | gene_ref_flat | [Gene refflat](https://software.broadinstitute.org/software/igv/genePred) file required by Picard | Picard |
+|     | gene_ref_flat | [RefFlat](https://software.broadinstitute.org/software/igv/genePred) file containing the location of RNA transcripts, exon start sites, etc.  | Picard |
 |     | rrna_intervals | RNA interval file required by Picard | Picard |
 |     | stranded | Library strand information for HISAT2; example values include FR(read corresponds to transcript), RF(read corresponds to reverse compliment of transcript), or NONE | Picard |
 | **Transcriptomic Alignment with HISAT2** | hisat2_ref_trans_index | HISAT2 transcriptome index file in tarball | HISAT2 |
