@@ -70,7 +70,7 @@ The Smartseq2 Single Sample workflow requires multiple reference indexes. Inform
 
 # Running Smart-seq2
 
-The [SmartSeq2SingleSample.wdl](SmartSeq2SingleSample.wdl) is in the[pipelines/smartseq2_single_sample folder](https://github.com/HumanCellAtlas/skylab/tree/master/pipelines/smartseq2_single_sample) of the HCA skylab repository and implements the workflow by importing individual tasks (written in WDL script) from the skylab [Library](https://github.com/HumanCellAtlas/skylab/tree/master/library).
+The [SmartSeq2SingleSample.wdl](SmartSeq2SingleSample.wdl) is in the [pipelines/smartseq2_single_sample folder](https://github.com/HumanCellAtlas/skylab/tree/master/pipelines/smartseq2_single_sample) of the HCA skylab repository and implements the workflow by importing individual tasks (written in WDL script) from the skylab [Library](https://github.com/HumanCellAtlas/skylab/tree/master/library).
 
 ## Smarts-seq2 Task Summary
 
