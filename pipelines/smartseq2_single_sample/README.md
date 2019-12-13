@@ -107,10 +107,10 @@ Overall, the workflow is divided into two parts that are completed after an init
 
 ### Part 1: Quality Control Tasks
 #### 1.1 Align reads to the genome using HISAT2
-HISAT2 is a fast-paced, cost-efficient alignment tool that can determine the presence of non-transcript sequences and true transcript sequences, taking into account the presence of single-nucleotide polymorphisms ([Kim et al.,2019](https://www.nature.com/articles/s41587-019-0201-4)). The Smartseq2 Single Sample workflow uses the [HISAT2 task](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/HISAT2.wdl) to call HISAT2 and perform graph-based alignment of paired- or single-end reads (in the form of fastq files) to a reference genome. This task  requires a reference index which can be built following the [HCA's build_indices documentation](https://github.com/HumanCellAtlas/skylab/tree/master/library/accessory_workflows/build_indices). The outputs of the task include an aligned BAM file, a BAM index, and an alignment log file. 
+HISAT2 is a fast-paced, cost-efficient alignment tool that can determine the presence of non-transcript sequences and true transcript sequences, taking into account the presence of single-nucleotide polymorphisms ([Kim et al.,2019](https://www.nature.com/articles/s41587-019-0201-4)). The Smartseq2 Single Sample workflow uses the [HISAT2 task](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/HISAT2.wdl) to call HISAT2 and perform graph-based alignment of paired- or single-end reads (in the form of fastq files) to a reference genome. This task  requires a reference index which can be built following the [HCA's build_indices documentation](https://github.com/HumanCellAtlas/skylab/tree/master/library/accessory_workflows/build_indices). The outputs of the task include a genome-aligned BAM file, a BAM index, and an alignment log file. 
 
 #### 1.2 Calculate summary metrics using Picard
-[Picard](https://broadinstitute.github.io/picard/) is a suite of command line tools used for manipulating high-throughput sequencing data. The [Picard task](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/Picard.wdl) uses Picard tools to calculate quality control measurements on the HISAT2-aligned BAM file. The task requires a reference genome fasta, a RefFlat gene annotation file, and an RNA intervals file (see the [Creating_Smartseq2_References](Creating_Smartseq2_References.md) documentation). The outputs of the task are text and PDF files for each metric.
+[Picard](https://broadinstitute.github.io/picard/) is a suite of command line tools used for manipulating high-throughput sequencing data. The [Picard task](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/Picard.wdl) uses Picard tools to calculate quality control measurements on the HISAT2 genome-aligned BAM file. The task requires a reference genome fasta, a RefFlat gene annotation file, and an RNA intervals file (see the [Creating_Smartseq2_References](Creating_Smartseq2_References.md) documentation). The outputs of the task are text and PDF files for each metric.
 
 The [Picard task](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/Picard.wdl) generates QC metrics by using three sub-tasks:
 
@@ -120,7 +120,8 @@ The [Picard task](https://github.com/HumanCellAtlas/skylab/blob/master/library/t
 
 *  CollectDuplicationMetrics: calls the [MarkDuplicates](https://software.broadinstitute.org/gatk/documentation/tooldocs/4.0.4.0/picard_sam_markduplicates_MarkDuplicates.php) tool which uses the aligned BAM to identify duplicate reads (output metrics are listed in the [Picard Metrics Dictionary](http://broadinstitute.github.io/picard/picard-metric-definitions.html#DuplicationMetrics)).
 
-After the Smartseq2 workflow generates Picard metrics, some (but not all) metrics are combined into a "group_results" CSV file array for downstream Zarr file conversion using the [GroupMetricsOutputs task](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/GroupMetricsOutputs.wdl). The following [Picard metrics](http://broadinstitute.github.io/picard/picard-metric-definitions.html#) are inputs for this task:
+After the Smartseq2 workflow generates Picard metrics, the [GroupMetricsOutputs task](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/GroupMetricsOutputs.wdl) combines some (but not all) metrics into a "group_results" CSV file array. The workflow uses this array in downstream Zarr file conversion. The following [Picard metrics](http://broadinstitute.github.io/picard/picard-metric-definitions.html#) are inputs for this task:
+
 *  base_call_dist_metrics
 *  gc_bias_detail_metrics
 *  pre_adapter_details_metrics
@@ -134,10 +135,11 @@ After the Smartseq2 workflow generates Picard metrics, some (but not all) metric
 
 ### Part 2: Transcriptome Quantification Tasks
 #### 2.1 Align reads to the transcriptome using HISAT2
-The [HISAT2RSEM task](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/HISAT2.wdl) uses the hisat2_ref_trans_index file and the sample fastq files to align reads to the reference transcriptome. The output of this task is a transcriptome-aligned BAM file and alignment log file.
+The [HISAT2RSEM task](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/HISAT2.wdl) uses HISAT2 to align reads to the reference transcriptome. The task requires the hisat2_ref_trans_index file and the sample fastq files as input. The output of this task is a transcriptome-aligned BAM file and an alignment log file.
 
 #### 2.2 Quantify gene expression using RSEM
 [RSEM](https://deweylab.github.io/RSEM/README.html#de) is a software package for quantifying transcript abundances ([Li and Dewey, 2011](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-12-323)). The Smartseq2 Single Sample workflow uses the [RSEM task](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/RSEM.wdl) to calculate expression estimates from a transcriptome-aligned BAM file using the rsem_ref_index file for reference input. The RSEM tool [rsem-calculate-expression](http://deweylab.biostat.wisc.edu/rsem/rsem-calculate-expression.html) is used to estimate gene/isoform expression. 
+
 
 The RSEM task returns the following output files:
 *  rsem_gene: gene level expression estimates in FPKM, TPM, and expected counts
@@ -147,7 +149,7 @@ The RSEM task returns the following output files:
 *  rsem_model: RNA-seq model parameters
 *  rsem_theta: fraction of reads resulting from background
 
-Only the rsem_gene, rsem_isoform, and rsem_cnt files are used for the final outputs of the Smartseq 2 Single Sample workflow.
+Only the rsem_gene, rsem_isoform, and rsem_cnt files are used for the final outputs of the Smartseq2 Single Sample workflow.
 
 ## Outputs
 The final outputs of the Smartseq2 Single Sample workflow are listed in the following table:
@@ -168,7 +170,6 @@ The final outputs of the Smartseq2 Single Sample workflow are listed in the foll
 | zarr_output_files | Optional array of output files | Zarr |
 
 The final optional Zarr array includes only the group_results CSV files and the rsem_gene_results.
-
 
 # Versioning
 All Smartseq2 Single Sample release notes are documented in the [Smartseq2 Single Sample changelog](SmartSeq2SingleSample.changelog.md).
