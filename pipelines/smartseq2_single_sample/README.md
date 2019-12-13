@@ -92,7 +92,7 @@ The [SmartSeq2SingleSample.wdl](SmartSeq2SingleSample.wdl) is in the [pipelines/
 
 ## Smartsseq2 Task Summary
 
-Here we describe the tasks of the Smartseq2 Single Sample pipeline; [the code](SmartSeq2SingleSample.wdl) and [library of tasks](https://github.com/HumanCellAtlas/skylab/tree/master/library) are available through GitHub. Prior to alignment, the workflow has an input validation
+Here we describe the tasks of the Smartseq2 Single Sample pipeline; [the code](SmartSeq2SingleSample.wdl) and [library of tasks](https://github.com/HumanCellAtlas/skylab/tree/master/library) are available through GitHub. 
 
 Overall, the workflow is divided into two parts that are completed after an initial input validation step:
 
