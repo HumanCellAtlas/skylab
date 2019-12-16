@@ -12,16 +12,14 @@ More details about the Smart-seq2 pipeline can be read in the [Smart-seq2 Single
 
 The [Smartseq2PlateExample.json](SmartSeq2PlateExample.json) file provides example inputs for the Smart-seq2 Multi Sample workflow. 
 
-### Sample data Input
+### Sample Data Input
 The sample data inputs are identifical to those specified in the [Smart-seq2 Single Sample README](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/smartseq2_single_sample/README.md). The Smart-seq2 Multi Sample workflow processes both single- and paired-end samples; however, these samples can not be mixed in the same run. 
-
-In addition to the Smart-seq2 Single Sample inputs, the multi sample workflow requires the inputs listed in the following table.
-
 
 
 ### Additional Input
 The reference inputs are identical to those specified in the Additional Reference Inputs section of the [Smart-seq2 Single Sample README](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/smartseq2_single_sample/README.md). 
 
+In addition to the Smart-seq2 Single Sample inputs, the multi sample workflow requires the inputs listed in the following table.
 
 
 
