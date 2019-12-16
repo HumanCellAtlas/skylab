@@ -69,13 +69,16 @@ The pipeline is designed for both single- and paired-end reads in the form of fa
 *  fastq1: forward reads for sample with paired-end sequencing (or reads for sample with single-end sequencing)
 *  fastq2: reverse reads for sample with paired-end sequencing (not applicable for samples with single-end sequencing)
 
+The workflow will use modified tasks depending if a sample is paired-end or single-end. This is designated with a boolean, as detailed in the following Reference Inputs section.
+
 ### Additional Reference Inputs:
-The Smart-seq2 Single Sample workflow requires multiple reference indexes. Information on how these indexes are created is found in the [Creating_Smartseq2_References](Creating_Smartseq2_References.md) documentation. The table below describes the references and each tool that uses the reference as input.
+The Smart-seq2 Single Sample workflow requires multiple reference indexes. Information on how these indexes are created is found in the [Creating_Smartseq2_References](Creating_Smartseq2_References.md) documentation. The table below describes the references and each tool that uses the reference as input. 
 
 | Workflow Step | Reference name | Reference Description | Tool |
 | --- | --- | --- | --- |
 | All | sample_name | Sample name or Cell ID | NA |
 | All | output_name | Output name, can include path | NA |
+| All | paired_end | A boolean describing if sample is paired-end | 
 | **Genomic alignment with HISAT2** | hisat2_ref_index | HISAT2 reference index file in tarball | HISAT2 |
 |     | hisat2_ref_name | HISAT2 reference index name | HISAT2 |
 | **Picard-generated Quality Control Metrics** | genome_ref_fasta | Genome reference in fasta format | Picard |
