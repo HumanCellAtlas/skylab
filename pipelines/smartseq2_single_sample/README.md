@@ -33,7 +33,7 @@ The Smart-seq2 Single Sample pipeline is designed by the [Data Coordination Plat
 
 The Smart-seq2 Single Sample workflow is divided into two parts which run in parallel. In part one, the workflow aligns reads to the genome and performs quality control on genome-aligned BAMs. In part two, it aligns reads to the transcriptome and generates gene expression estimates from transcriptome-aligned BAMs. The pipeline returns reads and expression estimates in BAM, and read counts and QC metrics in CSV format. An optional Zarr format output is also available.
 
-This pipeline is validated to support both [human](https://docs.google.com/document/d/1MonsTG8UnROHZ_XpulrSZNTxO988KEH6T6h45plFYQg/edit#heading=h.ixoqmhbabdvh) and [mouse](https://docs.google.com/document/d/12zGTFROrcXEByt9z0h06qjSqb9vWutn28Tx6YiND1Ds/edit) datasets.   
+This pipeline has been validated to support both [human](https://docs.google.com/document/d/1MonsTG8UnROHZ_XpulrSZNTxO988KEH6T6h45plFYQg/edit#heading=h.ixoqmhbabdvh) and [mouse](https://docs.google.com/document/d/12zGTFROrcXEByt9z0h06qjSqb9vWutn28Tx6YiND1Ds/edit) datasets.   
 
 ## Quick Start Table
 
