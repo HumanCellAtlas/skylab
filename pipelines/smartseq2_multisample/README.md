@@ -36,11 +36,13 @@ In addition to the Smart-seq2 Single Sample inputs, the multi sample workflow re
  ## Smart-seq2 Multi Sample Task Summary
  The Smart-seq2 Multi Sample pipeline calls three tasks:
  
- 1) SmartSeq2SingleSample.wdl: runs the Smart-seq2 Single Sample workflow
- 2) SmartSeq2PlateAggregation.wdl: moves all Zarr output files from the batch into a single directory
- 3) ZarrUtils.wdl: an optional workflow that converts the Zarr array to Loom file format 
+ 1) [SmartSeq2SingleSample.wdl](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/smartseq2_single_sample/SmartSeq2SingleSample.wdl): runs the Smart-seq2 Single Sample workflow
+ 2) [SmartSeq2PlateAggregation.wdl](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/SmartSeq2PlateAggregation.wdl): moves all Zarr output files from the batch into a single directory
+ 3) [ZarrUtils.wdl](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/ZarrUtils.wdl): an optional workflow that converts the Zarr array to Loom file format 
  
  ## Outputs
+ 
+ The outputs of the Smart-seq2 Multi Sample workflow 
  
  # Versioning
  
