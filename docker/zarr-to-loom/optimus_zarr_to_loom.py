@@ -19,9 +19,9 @@ def main():
     # Parse the arguments
     description = """This script converts ZARR optimus output to loom format"""
     parser = argparse.ArgumentParser(description=description)
-    parser.add_argument('--input-zarr', dest="input_zarr_path", required=True, help="Path to input ZARR file")
-    parser.add_argument('--output-loom', dest="output_loom_path", required=True, help="Path to output loom file")
-    parser.add_argument('--sample-id', dest="sample_id", required=True, help="Sample identifier")
+    parser.add_argument('--input-zarr', dest="input_zarr_path", required=True, help="Path to input ZARR file", type=str)
+    parser.add_argument('--output-loom', dest="output_loom_path", required=True, help="Path to output loom file", type=str)
+    parser.add_argument('--sample-id', dest="sample_id", required=True, help="Sample identifier", type=str)
     args = parser.parse_args()
 
     input_zarr_path = args.input_zarr_path
