@@ -16,8 +16,8 @@ The [Smartseq2PlateExample.json](SmartSeq2PlateExample.json) file provides examp
 The sample data inputs are identifical to those specified in the [Smart-seq2 Single Sample README](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/smartseq2_single_sample/README.md). The Smart-seq2 Multi Sample workflow processes both single- and paired-end samples; however, these samples can not be mixed in the same run. 
 For the Multi Sample workflow, fastq files must be named with the following convention:
 
-*sample_id*\_1.fastq (forward reads for paired-end samples or reads for single-end samples)
-*sample_id*\_2.fastq (reverse reads for paired-end samples and not applicable to single-end samples)
+*"sample_filename prefix"*\_1.fastq (forward reads for paired-end samples or reads for single-end samples)
+*"sample_filename prefix"*\_2.fastq (reverse reads for paired-end samples and not applicable to single-end samples)
 
 
 ### Additional Input
@@ -28,12 +28,9 @@ In addition to the Smart-seq2 Single Sample inputs, the multi sample workflow re
 | Input name | Input Description | Input Type |
 | --- | --- | --- |
 | file_prefix | The URL path to the fastq file folder | String | 
-| input_file_names | Array of filename prefixes; will be appended with \_1.fastq.gz and \_2.fastq.gz | Array of Strings |
+| input_file_names | Array of filename prefixes; workflow will be append with \_1.fastq.gz and \_2.fastq.gz | Array of Strings |
 | bacth_id | Identifier for the batch of multiple samples | String |
 | output_loom | boolean description for optional loom output | Boolean |
-
-
-The "input_file_names" is an array containing only the prefix for each fastq file. For example, if you have a paired-end sample called "Sample1", the two fastq file names will be "Sample1_1.fastq" and "Sample1_2.fastq". The input_file_names array would only use the prefix "Sample1" in addition to the other sample name prefixes. 
 
  
  ## Smart-seq2 Multi Sample Task Summary
