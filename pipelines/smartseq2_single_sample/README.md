@@ -1,6 +1,6 @@
 | Pipeline Version | Date Updated | Documentation Author | Questions or Feedback |
 | :----: | :---: | :----: | :--------------: |
-| [smartseq2_v2.5.0](https://github.com/HumanCellAtlas/skylab/releases/tag/smartseq2_v2.5.0) | November 07, 2019 | [Elizabeth Kiernan](mailto:ekiernan@broadinstitute.org) | Please file GitHub issues in skylab or contact [Kylee Degatano](mailto:kdegatano@broadinstitute.org) |
+| [smartseq2_v3.0.0](https://github.com/HumanCellAtlas/skylab/releases/tag/smartseq2_v3.0.0) | December 16, 2019 | [Elizabeth Kiernan](mailto:ekiernan@broadinstitute.org) | Please file GitHub issues in skylab or contact [Kylee Degatano](mailto:kdegatano@broadinstitute.org) |
 
 # Table of Contents
 - [Smart-seq2 Single Sample Pipeline Overview](#smart-seq2-single-sample-pipeline-overview)
