@@ -28,7 +28,7 @@ In addition to the Smart-seq2 Single Sample inputs, the multi sample workflow re
 | bacth_id | Identifier for the batch of multiple samples | String |
 | output_loom | boolean description for optional loom output | Boolean |
 
-Please note: the input_file_names is the prefix for each fastq file. For example, if you have a paired-end sample called "Sample1", the two fastq file names will be "Sample1_1.fastq" and "Sample1_2.fastq" and the input_file_names array would use the prefix "Sample1" in addition to the other sample name prefixes. 
+The input_file_names is the prefix for each fastq file. For example, if you have a paired-end sample called "Sample1", the two fastq file names will be "Sample1_1.fastq" and "Sample1_2.fastq" and the input_file_names array would use the prefix "Sample1" in addition to the other sample name prefixes. 
 
  
  ## Smart-seq2 Multi Sample Task Summary
