@@ -16,8 +16,8 @@ The [Smartseq2PlateExample.json](SmartSeq2PlateExample.json) file provides examp
 The sample data inputs are identifical to those specified in the [Smart-seq2 Single Sample README](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/smartseq2_single_sample/README.md). The Smart-seq2 Multi Sample workflow processes both single- and paired-end samples; however, these samples can not be mixed in the same run. 
 For the Multi Sample workflow, fastq files must be named with the following convention:
 
-*"sample_filename prefix"*\_1.fastq (forward reads for paired-end samples or reads for single-end samples)
-*"sample_filename prefix"*\_2.fastq (reverse reads for paired-end samples and not applicable to single-end samples)
+*"sample filename prefix"*\_1.fastq (forward reads for paired-end samples or reads for single-end samples)
+*"sample filename prefix"*\_2.fastq (reverse reads for paired-end samples and not applicable to single-end samples)
 
 
 ### Additional Input
