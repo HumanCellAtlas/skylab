@@ -1,4 +1,4 @@
-# smartseq2_v2.5.0
+# smartseq2_v3.0.0
 
 2019-12-16 (Date of Last Commit)
 
