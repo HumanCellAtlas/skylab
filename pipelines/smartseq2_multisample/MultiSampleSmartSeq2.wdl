@@ -1,7 +1,7 @@
 import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/smartseq2_multisample_v0.0.1-rc1_terra/smartseq2_single_sample/SmartSeq2SingleSample.wdl" as single_cell_run
 import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/smartseq2_multisample_v0.0.1-rc1_terra/library/tasks/SmartSeq2PlateAggregation.wdl" as ss2_plate_aggregation
 import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/smartseq2_multisample_v0.0.1-rc1_terra/library/tasks/ZarrUtils.wdl" as ZarrUtils
-       
+
 workflow MultiSampleSmartSeq2 {
   meta {
     description: "The MultiSampleSmartSeq2 pipeline runs multiple SS2 samples in a single pipeline invocation"
