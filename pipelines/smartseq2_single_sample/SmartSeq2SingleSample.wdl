@@ -10,7 +10,7 @@ workflow SmartSeq2SingleCell {
     description: "Process SmartSeq2 scRNA-Seq data, include reads alignment, QC metrics collection, and gene expression quantitication"
   }
   # version of this pipeline
-  String version = "smartseq2_v2.5.0"
+  String version = "smartseq2_v3.0.0"
   # load annotation
   File genome_ref_fasta
   File rrna_intervals
