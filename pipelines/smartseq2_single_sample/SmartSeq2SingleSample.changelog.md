@@ -6,4 +6,9 @@
 * Removed a previous version of a standalone single-end pipeline
 
 
-More changelog information is coming soon. For more release information, please see release notes for [releases tagged with Smartseq2](https://github.com/HumanCellAtlas/skylab/releases). 
+# smartseq2_v2.5.0
+
+2019-11-07 (Date of Last Commit)
+
+* Removed max_retries parameter so that a default value can be set by the workflow options
+
