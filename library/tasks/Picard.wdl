@@ -145,7 +145,7 @@ task CollectMultipleMetrics {
     File gc_bias_dist_pdf = "${output_basename}.gc_bias.pdf"
     File gc_bias_summary_metrics = "${output_basename}.gc_bias.summary_metrics.txt"
     Array[File] insert_size_hist = glob("${output_basename}.insert_size_histogram.pdf")
-    Array[File] insert_size_metrics = glob("${output_basename}.insert_size_metrics.txt")
+    Array[File?] insert_size_metrics = glob("${output_basename}.insert_size_metrics.txt")
     File quality_distribution_metrics = "${output_basename}.quality_distribution_metrics.txt"
     File quality_distribution_dist_pdf = "${output_basename}.quality_distribution.pdf"
     File quality_by_cycle_metrics = "${output_basename}.quality_by_cycle_metrics.txt"

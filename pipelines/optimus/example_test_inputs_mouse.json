@@ -1,0 +1,17 @@
+{
+  "Optimus.r1_fastq": [
+      "https://d2nhj9g34unfro.cloudfront.net/browse/heart_data/test/heart_1k_test_v2_S1_L001_R1_001.fastq.gz"
+  ],
+  "Optimus.r2_fastq": [
+      "https://d2nhj9g34unfro.cloudfront.net/browse/heart_data/test/heart_1k_test_v2_S1_L001_R2_001.fastq.gz"
+  ],
+  "Optimus.i1_fastq": [
+      "https://d2nhj9g34unfro.cloudfront.net/browse/heart_data/test/heart_1k_test_v2_S1_L001_I1_001.fastq.gz"
+  ],
+  "Optimus.whitelist": "gs://hca-dcp-mint-test-data/10x/whitelist/737K-august-2016.txt",
+  "Optimus.tar_star_reference": "gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/mouse_reference/star_primary_gencode_mouse_vM21.tar",
+  "Optimus.sample_id": "heart_1k_test_v2_S1",
+  "Optimus.chemistry": "tenX_v2",
+  "Optimus.annotations_gtf": "https://d2nhj9g34unfro.cloudfront.net/browse/heart_data/gencode.vM21.annotation.gtf.gz",
+  "Optimus.ref_genome_fasta": "https://d2nhj9g34unfro.cloudfront.net/browse/heart_data/GRCm38.primary_assembly.genome.fa"
+}

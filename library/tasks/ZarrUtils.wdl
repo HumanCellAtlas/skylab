@@ -58,7 +58,7 @@ task SmartSeq2ZarrConversion {
 
 task OptimusZarrConversion {
   #runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-zarr-output:0.0.1"
+  String docker = "quay.io/humancellatlas/secondary-analysis-zarr-output:0.0.2"
 
   # name of the sample
   String sample_id
@@ -128,3 +128,82 @@ task OptimusZarrConversion {
   }
 }
 
+task SmartSeq2PlateToLoom {
+    String batch_id
+    Array[File] zarr_files
+
+    # runtime values
+    String docker = "quay.io/humancellatlas/zarr-to-loom:0.0.2"
+
+    Int preemptible = 3
+    Int cpu = 1
+
+    command {
+        set -euo pipefail
+
+        mkdir packed_zarr
+        mv ${sep=' ' zarr_files} packed_zarr/
+        mkdir unpacked_zarr
+        unpackZARR.sh -i packed_zarr -o unpacked_zarr
+
+        ss2_plate_zarr_to_loom.py --input-zarr unpacked_zarr --output-loom output.loom --sample-id ${batch_id}
+
+    }
+
+    runtime {
+        docker: docker
+        cpu: 1
+        memory: "48 GiB"
+        disks: "local-disk 100 HDD"
+        preemptible: preemptible
+    }
+
+    output {
+        File loom_output = "output.loom"
+    }
+
+}
+
+
+task OptimusZarrToLoom {
+    String sample_id
+    Array[File] zarr_files
+
+    # runtime values
+    String docker = "quay.io/humancellatlas/zarr-to-loom:0.0.1"
+
+    Int preemptible = 3
+    Int cpu = 1
+
+    meta {
+         description: "This task converts the Optimus Zarr output into a loom file"
+    }
+
+    parameter_meta {
+        machine_mem_mb: "(optional) the amount of memory in (MiB) to provision for this task"
+        cpu: "(optional) the number of cpus to provision for this task"
+        preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non-preemptible machine"
+    }
+
+    command {
+        set -euo pipefail
+
+        mkdir packed_zarr
+        mv ${sep=' ' zarr_files} packed_zarr/
+        mkdir unpacked_zarr
+        unpackZARR.sh -i packed_zarr -o unpacked_zarr
+        optimus_zarr_to_loom.py --input-zarr unpacked_zarr --output-loom output.loom --sample-id ${sample_id}
+    }
+
+    runtime {
+        docker: docker
+        cpu: 1
+        memory: "16 GiB"
+        disks: "local-disk 100 HDD"
+        preemptible: preemptible
+    }
+
+    output {
+        File loom_output = "output.loom"
+    }
+}

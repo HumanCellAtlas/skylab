@@ -5,7 +5,7 @@ task SplitBamByCellBarcode {
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.5"
 
-  Int machine_mem_mb = 3850
+  Int machine_mem_mb = 15258
   Int cpu = 16
 
   # we can calculate disk size for arrays of input files in WDL 1.0

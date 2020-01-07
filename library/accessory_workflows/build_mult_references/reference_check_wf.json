@@ -1,4 +1,0 @@
-{
-  "CheckReference.input_metadata": "gs://broad-dsde-mint-dev-teststorage/reference/ref_run_list_MGH30.tsv",
-  "CheckReference.sra_dir":"gs://broad-dsde-mint-dev-teststorage/patel_ap/"
-}

@@ -13,13 +13,14 @@ import "Picard.wdl" as Picard
 import "UmiCorrection.wdl" as UmiCorrection
 import "ScatterBam.wdl" as ScatterBam
 import "ModifyGtf.wdl" as ModifyGtf
+import "OptimusInputChecks.wdl" as OptimusInputChecks
 
 workflow Optimus {
   meta {
     description: "The optimus 3' pipeline processes 10x genomics sequencing data based on the v2 chemistry. It corrects cell barcodes and UMIs, aligns reads, marks duplicates, and returns data as alignments in BAM format and as counts in sparse matrix exchange format."
   }
   # version of this pipeline
-  String version = "optimus_v1.3.4"
+  String version = "optimus_v1.4.0"
 
   # Sequencing data inputs
   Array[File] r1_fastq
@@ -32,16 +33,21 @@ workflow Optimus {
   File annotations_gtf
   File ref_genome_fasta
 
-  # 10x v2 parameters
+  # 10x parameters
   File whitelist
+  # tenX_v2, tenX_v3
+  String chemistry = "tenX_v2" 
 
   # environment-specific parameters
   String fastq_suffix = ""
   # this is used to scatter matched [r1_fastq, r2_fastq, i1_fastq] arrays
   Array[Int] indices = range(length(r1_fastq))
 
-  # whether to convert the outputs to Zarr format, by default it's set to true
-  Boolean output_zarr = true
+  # If true produce the optional loom output
+  Boolean output_loom = false
+
+  # Set to true to override input checks and allow pipeline to proceed with invalid input
+  Boolean force_no_check = false
 
   # this pipeline does not set any preemptible varibles and only relies on the task-level preemptible settings
   # you could override the tasklevel preemptible settings by passing it as one of the workflows inputs
@@ -56,9 +62,17 @@ workflow Optimus {
     tar_star_reference: "star genome reference"
     annotations_gtf: "gtf containing annotations for gene tagging (must match star reference)"
     ref_genome_fasta: "genome fasta file (must match star reference)"
-    whitelist: "10x genomics cell barcode whitelist for 10x V2"
+    whitelist: "10x genomics cell barcode whitelist"
+    tenX_v3_chemistry: "assume 10X Genomics v3 chemistry with 12bp UMI (in contrast to default v2 with 10bp UMI)"
     fastq_suffix: "when running in green box, need to add '.gz' for picard to detect the compression"
     output_zarr: "whether to run the taks that converts the outputs to Zarr format, by default it's true"
+    force_no_check: "Set to true to override input checks and allow pipeline to proceed with invalid input"
+  }
+
+  call OptimusInputChecks.checkOptimusInput {
+    input:
+      force_no_check = force_no_check,
+      chemistry = chemistry
   }
 
   scatter (index in indices) {
@@ -77,7 +91,8 @@ workflow Optimus {
           r1_fastq = r1_fastq[index],
           i1_fastq = non_optional_i1_fastq[index],
           r2_unmapped_bam = FastqToUBam.bam_output,
-          whitelist = whitelist
+          whitelist = whitelist,
+          chemistry = chemistry
       }
     }
 
@@ -87,7 +102,8 @@ workflow Optimus {
         input:
           r1_fastq = r1_fastq[index],
           r2_unmapped_bam = FastqToUBam.bam_output,
-          whitelist = whitelist
+          whitelist = whitelist,
+          chemistry = chemistry
       }
     }
 
@@ -208,33 +224,42 @@ workflow Optimus {
       col_index = MergeCountFiles.col_index
   }
 
-  if (output_zarr) {
-    call ZarrUtils.OptimusZarrConversion{
+  call ZarrUtils.OptimusZarrConversion{
+    input:
+      sample_id = sample_id,
+      annotation_file = annotations_gtf,
+      cell_metrics = MergeCellMetrics.cell_metrics,
+      gene_metrics = MergeGeneMetrics.gene_metrics,
+      sparse_count_matrix = MergeCountFiles.sparse_count_matrix,
+      cell_id = MergeCountFiles.row_index,
+      gene_id = MergeCountFiles.col_index,
+      empty_drops_result = RunEmptyDrops.empty_drops_result
+  }
+
+  if (output_loom) {
+    call ZarrUtils.OptimusZarrToLoom {
       input:
-        sample_id=sample_id,
-        annotation_file=annotations_gtf,
-        cell_metrics = MergeCellMetrics.cell_metrics,
-        gene_metrics = MergeGeneMetrics.gene_metrics,
-        sparse_count_matrix = MergeCountFiles.sparse_count_matrix,
-        cell_id = MergeCountFiles.row_index,
-        gene_id = MergeCountFiles.col_index,
-        empty_drops_result = RunEmptyDrops.empty_drops_result
+        sample_id = sample_id,
+        zarr_files = OptimusZarrConversion.zarr_output_files
     }
-   }
+  }
 
   output {
-      # version of this pipeline
-      String pipeline_version = version
+    # version of this pipeline
+    String pipeline_version = version
 
-      File bam = MergeSorted.output_bam
-      File matrix = MergeCountFiles.sparse_count_matrix
-      File matrix_row_index = MergeCountFiles.row_index
-      File matrix_col_index = MergeCountFiles.col_index
-      File cell_metrics = MergeCellMetrics.cell_metrics
-      File gene_metrics = MergeGeneMetrics.gene_metrics
-      File cell_calls = RunEmptyDrops.empty_drops_result
+    File bam = MergeSorted.output_bam
+    File matrix = MergeCountFiles.sparse_count_matrix
+    File matrix_row_index = MergeCountFiles.row_index
+    File matrix_col_index = MergeCountFiles.col_index
+    File cell_metrics = MergeCellMetrics.cell_metrics
+    File gene_metrics = MergeGeneMetrics.gene_metrics
+    File cell_calls = RunEmptyDrops.empty_drops_result
 
-      # zarr
-      Array[File]? zarr_output_files = OptimusZarrConversion.zarr_output_files
+    # zarr
+    Array[File] zarr_output_files = OptimusZarrConversion.zarr_output_files
+
+    # loom
+    File? loom_output_file = OptimusZarrToLoom.loom_output
   }
 }
