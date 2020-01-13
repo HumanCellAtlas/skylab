@@ -199,6 +199,9 @@ workflows:
     test_all:
         jobs:
           - test_optimus
+          - test_optimus_snrnaseq
+          - test_optimus_v3
+     	  - test_optimus_snrnaseq_v3
 #          - test_optimus_mouse
 #          - test_smartseq2
 #          - test_smartseq2_single_end
@@ -212,8 +215,6 @@ workflows:
 #          - test_portability_optimus
 #          - test_portability_optimus_mouse
 #          - test_portability_smartseq2_single_sample
-          - test_optimus_v3
 #          - test_smartseq2_multisample
 #          - test_smartseq2_multisample_single_end
-	  - test_optimus_snrnaseq
- 	  - test_optimus_snrnaseq_v3
+
