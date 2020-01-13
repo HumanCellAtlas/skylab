@@ -201,7 +201,7 @@ workflows:
           - test_optimus
           - test_optimus_snrnaseq
           - test_optimus_v3
-     	  - test_optimus_snrnaseq_v3
+          - test_optimus_snrnaseq_v3
 #          - test_optimus_mouse
 #          - test_smartseq2
 #          - test_smartseq2_single_end
