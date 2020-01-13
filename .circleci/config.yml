@@ -215,3 +215,5 @@ workflows:
           - test_optimus_v3
 #          - test_smartseq2_multisample
 #          - test_smartseq2_multisample_single_end
+	  -test_optimus_snrnaseq
+ 	  -test_optimus_snrnaseq_v3
