@@ -91,7 +91,7 @@ jobs:
                     ./test/trigger_test.sh optimus prV3
                 no_output_timeout: 1.5h
 
-    test_optimus_snrna v3:
+    test_optimus_snrna_v3:
         machine: true
         steps:
             - checkout
