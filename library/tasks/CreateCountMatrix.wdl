@@ -55,6 +55,7 @@ task DropSeqToolsDigitalExpression {
 task CreateSparseCountMatrix {
   File bam_input
   File gtf_file
+  String counting_mode = "sc_rna"
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.2"
@@ -109,6 +110,7 @@ task MergeCountFiles {
   Array[File] sparse_count_matrices
   Array[File] row_indices
   Array[File] col_indices
+  String counting_mode = "sc_rna"
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.2"

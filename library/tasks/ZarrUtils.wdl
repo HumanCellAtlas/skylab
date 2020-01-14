@@ -76,6 +76,8 @@ task OptimusZarrConversion {
   File gene_id
   # emptydrops output metadata
   File empty_drops_result
+  String counting_mode = "sc_rna"
+  
 
   Int preemptible = 3
 
@@ -168,6 +170,7 @@ task SmartSeq2PlateToLoom {
 task OptimusZarrToLoom {
     String sample_id
     Array[File] zarr_files
+    String counting_mode = "sc_rna"
 
     # runtime values
     String docker = "quay.io/humancellatlas/zarr-to-loom:0.0.1"

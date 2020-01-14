@@ -36,7 +36,10 @@ workflow Optimus {
   # 10x parameters
   File whitelist
   # tenX_v2, tenX_v3
-  String chemistry = "tenX_v2" 
+  String chemistry = "tenX_v2"
+
+  # Mode for counting either "sc_rna" or "sn_rna"
+  String counting_mode = "sc_rna"
 
   # environment-specific parameters
   String fastq_suffix = ""
@@ -190,7 +193,8 @@ workflow Optimus {
     call Count.CreateSparseCountMatrix {
       input:
         bam_input = PreCountSort.bam_output,
-        gtf_file = ModifyGtf.modified_gtf
+        gtf_file = ModifyGtf.modified_gtf,
+	counting_mode = counting_mode
     }
   }
 
@@ -214,7 +218,8 @@ workflow Optimus {
     input:
       sparse_count_matrices = CreateSparseCountMatrix.sparse_count_matrix,
       row_indices = CreateSparseCountMatrix.row_index,
-      col_indices = CreateSparseCountMatrix.col_index
+      col_indices = CreateSparseCountMatrix.col_index,
+      counting_mode = counting_mode
   }
 
   call RunEmptyDrops.RunEmptyDrops {
@@ -233,14 +238,16 @@ workflow Optimus {
       sparse_count_matrix = MergeCountFiles.sparse_count_matrix,
       cell_id = MergeCountFiles.row_index,
       gene_id = MergeCountFiles.col_index,
-      empty_drops_result = RunEmptyDrops.empty_drops_result
+      empty_drops_result = RunEmptyDrops.empty_drops_result,
+      counting_mode = counting_mode
   }
 
   if (output_loom) {
     call ZarrUtils.OptimusZarrToLoom {
       input:
         sample_id = sample_id,
-        zarr_files = OptimusZarrConversion.zarr_output_files
+        zarr_files = OptimusZarrConversion.zarr_output_files,
+	counting_mode = counting_mode
     }
   }
 
