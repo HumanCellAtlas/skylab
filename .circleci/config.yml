@@ -200,8 +200,8 @@ workflows:
         jobs:
           - test_optimus
           - test_optimus_snrna
-          - test_optimus_v3
-          - test_optimus_snrna_v3
+#          - test_optimus_v3
+#          - test_optimus_snrna_v3
 #          - test_optimus_mouse
 #          - test_smartseq2
 #          - test_smartseq2_single_end
