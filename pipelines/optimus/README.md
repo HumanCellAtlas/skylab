@@ -143,7 +143,7 @@ UMIs are designed to distinguish unique transcripts present in the cell at lysis
 
 ### 6. Summary Metric Calculation
 
-The [Metrics](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/SequenceDataWithMoleculeTagMetrics.wdl) task uses [sctools](https://github.com/HumanCellAtlas/sctools) to calculate summary metrics which help assess the quality of the data output each time this pipeline is run. These metrics are included in the Zarr and [Loom](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Loom_schema.md) output files.
+The [Metrics](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/SequenceDataWithMoleculeTagMetrics.wdl) task uses [sctools](https://github.com/HumanCellAtlas/sctools) to calculate summary metrics which help assess the quality of the data output each time this pipeline is run. These metrics are included in the Zarr and Loom files. A detailed list of these metrics is found in the [Loom schema documentation](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Loom_schema.md) output files.
 
 ### 7. Expression Matrix Construction
 
