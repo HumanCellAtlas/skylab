@@ -139,7 +139,7 @@ The [TagGeneExon](https://github.com/HumanCellAtlas/skylab/blob/master/library/t
 
 ### 5. UMI Correction
 
-UMIs are designed to distinguish unique transcripts present in the cell at lysis from those arising from PCR amplification of these same transcripts. But, like cell barcodes, UMIs can also be incorrectly sequenced or amplified. The [UmiCorrection] (https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/UmiCorrection.wdl)task uses [Umi-tools v.0.0.1](https://pypi.org/project/umi-tools/0.0.1/) to apply a network-based, "directional" correction method ([Smith, et al., 2017](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5340976/)) to account for such errors. 
+UMIs are designed to distinguish unique transcripts present in the cell at lysis from those arising from PCR amplification of these same transcripts. But, like cell barcodes, UMIs can also be incorrectly sequenced or amplified. The [UmiCorrection](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/UmiCorrection.wdl)task uses [Umi-tools v.0.0.1](https://pypi.org/project/umi-tools/0.0.1/) to apply a network-based, "directional" correction method ([Smith, et al., 2017](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5340976/)) to account for such errors. 
 
 ### 6. Summary Metric Calculation
 
