@@ -247,7 +247,7 @@ workflow Optimus {
       input:
         sample_id = sample_id,
         zarr_files = OptimusZarrConversion.zarr_output_files,
-	counting_mode = counting_mode
+	  counting_mode = counting_mode
     }
   }
 
