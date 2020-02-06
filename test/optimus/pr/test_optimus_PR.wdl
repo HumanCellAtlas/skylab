@@ -39,8 +39,7 @@ workflow TestOptimusPR {
       sample_id = sample_id,
       output_loom = true,
       chemistry = chemistry,
-      force_no_check = force_no_check,
-      run_empty_drops = false
+      force_no_check = force_no_check
   }
 
   call checker.ValidateOptimus as checker {

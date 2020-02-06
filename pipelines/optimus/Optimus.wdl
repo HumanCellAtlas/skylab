@@ -43,9 +43,6 @@ workflow Optimus {
   # this is used to scatter matched [r1_fastq, r2_fastq, i1_fastq] arrays
   Array[Int] indices = range(length(r1_fastq))
 
-  # Run empty drops or not
-  Boolean run_empty_drops = true
-
   # If true produce the optional loom output
   Boolean output_loom = false
 
@@ -220,13 +217,11 @@ workflow Optimus {
       col_indices = CreateSparseCountMatrix.col_index
   }
 
-  if (run_empty_drops) {
-    call RunEmptyDrops.RunEmptyDrops {
-      input:
-        sparse_count_matrix = MergeCountFiles.sparse_count_matrix,
-        row_index = MergeCountFiles.row_index,
-        col_index = MergeCountFiles.col_index
-    }
+  call RunEmptyDrops.RunEmptyDrops {
+    input:
+      sparse_count_matrix = MergeCountFiles.sparse_count_matrix,
+      row_index = MergeCountFiles.row_index,
+      col_index = MergeCountFiles.col_index
   }
 
   call ZarrUtils.OptimusZarrConversion{
@@ -259,7 +254,7 @@ workflow Optimus {
     File matrix_col_index = MergeCountFiles.col_index
     File cell_metrics = MergeCellMetrics.cell_metrics
     File gene_metrics = MergeGeneMetrics.gene_metrics
-    File? cell_calls = RunEmptyDrops.empty_drops_result
+    File cell_calls = RunEmptyDrops.empty_drops_result
 
     # zarr
     Array[File] zarr_output_files = OptimusZarrConversion.zarr_output_files
