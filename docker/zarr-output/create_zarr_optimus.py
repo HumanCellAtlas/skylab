@@ -260,8 +260,13 @@ def add_cell_metrics(data_group, metrics_file, cell_ids, emptydrops_file, verbos
     final_df_float = final_df_float.apply(pd.to_numeric)
 
     # Create metadata tables and their headers for float
+#    data_group.create_dataset("cell_metadata_float_name", shape=[final_df_float.shape[1], 1],
+#                              compressor=COMPRESSOR, dtype=header_datatype, data=final_df_float.columns.astype(str))
+
+
     data_group.create_dataset("cell_metadata_float_name", shape=[final_df_float.shape[1], 1],
-                              compressor=COMPRESSOR, dtype=header_datatype, data=final_df_float.columns.astype(str))
+                              compressor=COMPRESSOR, dtype=header_datatype)
+
     data_group.create_dataset("cell_metadata_float", shape=final_df_float.shape, compressor=COMPRESSOR,
                               dtype=float_store_datatype, data=final_df_float.to_numpy(dtype=float_store_datatype))
     if verbose:
@@ -269,9 +274,10 @@ def add_cell_metrics(data_group, metrics_file, cell_ids, emptydrops_file, verbos
             final_df_float.shape[0], final_df_float.shape[1]))
 
     # Create metadata tables and their headers for bool
-    data_group.create_dataset("cell_metadata_bool_name", shape=[final_df_bool.shape[1], 1],
+    if emptydrops_file:
+        data_group.create_dataset("cell_metadata_bool_name", shape=[final_df_bool.shape[1], 1],
                               compressor=COMPRESSOR, dtype=header_datatype, data=final_df_bool.columns.astype(str))
-    data_group.create_dataset("cell_metadata_bool", shape=final_df_bool.shape, compressor=COMPRESSOR,
+        data_group.create_dataset("cell_metadata_bool", shape=final_df_bool.shape, compressor=COMPRESSOR,
                               dtype=bool_store_datatype, data=final_df_bool.to_numpy(dtype=bool_store_datatype))
     if verbose:
         logging.info("Added cell metadata_bool with {} rows and {} columns".format(
