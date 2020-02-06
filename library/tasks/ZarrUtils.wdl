@@ -58,7 +58,7 @@ task SmartSeq2ZarrConversion {
 
 task OptimusZarrConversion {
   #runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-zarr-output:0.0.2"
+  String docker = "quay.io/humancellatlas/secondary-analysis-zarr-output:nbtest3"
 
   # name of the sample
   String sample_id
@@ -75,7 +75,7 @@ task OptimusZarrConversion {
   # file (.npy) that contains the array of gene names
   File gene_id
   # emptydrops output metadata
-  File empty_drops_result
+  File? empty_drops_result
 
   Int preemptible = 3
 
@@ -93,8 +93,10 @@ task OptimusZarrConversion {
   command {
     set -euo pipefail
 
+    [[ ! -z "${empty_drops_result}" ]] && empty_drops_param="--empty_drops_file ${empty_drops_result}" || empty_drops_param=""
+
     python3 /tools/create_zarr_optimus.py \
-       --empty_drops_file ${empty_drops_result} \
+       $empty_drops_param \
        --annotation_file ${annotation_file}\
        --cell_metrics ${cell_metrics}\
        --gene_metrics ${gene_metrics}\

@@ -45,6 +45,6 @@ task RunEmptyDrops {
     }
 
     output {
-        File empty_drops_result = "empty_drops_result.csv"
+        File? empty_drops_result = "empty_drops_result.csv"
     }
 }

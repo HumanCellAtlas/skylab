@@ -149,70 +149,104 @@ def add_cell_metrics(data_group, metrics_file, cell_ids, emptydrops_file, verbos
 
     # Read the csv input files
     metrics_df = pd.read_csv(metrics_file, dtype=str)
-    emptydrops_df = pd.read_csv(emptydrops_file, dtype=str)
+    if emptydrops_file:
+        emptydrops_df = pd.read_csv(emptydrops_file, dtype=str)
 
     # Check that input is valid
     if (metrics_df.shape[0] == 0 or metrics_df.shape[1] == 0):
         logging.error("Cell metrics table is not valid")
         raise ValueError()
-    if (emptydrops_df.shape[0] == 0 or emptydrops_df.shape[1] == 0):
-        logging.error("EmptyDrops table is not valid")
-        raise ValueError()
+    if emptydrops_file:
+        if (emptydrops_df.shape[0] == 0 or emptydrops_df.shape[1] == 0):
+            logging.error("EmptyDrops table is not valid")
+            raise ValueError()
 
     # Rename cell columns for both datasets to cell_id
-    emptydrops_df = emptydrops_df.rename(columns={"CellId": "cell_id"})
+    if emptydrops_file:
+        emptydrops_df = emptydrops_df.rename(columns={"CellId": "cell_id"})
     metrics_df = metrics_df.rename(columns={"Unnamed: 0": "cell_id"})
 
     # Drop first row that contains non-cell information from metrics file, this contains aggregate information
     metrics_df = metrics_df.iloc[1:]
 
-    # Prefix emptydrops column names (except the key cell_id)
-    colnames = list(emptydrops_df.columns)
-    newcolnames = ["emptydrops_" + s for s in colnames]
-    namemap = dict(zip(colnames, newcolnames))
-    # Do not map the cell_id as it will be used for the merge
-    del namemap["cell_id"]
-    emptydrops_df = emptydrops_df.rename(columns=namemap)
+    if emptydrops_file:
+        # Prefix emptydrops column names (except the key cell_id)
+        colnames = list(emptydrops_df.columns)
+        newcolnames = ["emptydrops_" + s for s in colnames]
+        namemap = dict(zip(colnames, newcolnames))
+        # Do not map the cell_id as it will be used for the merge
+        del namemap["cell_id"]
+        emptydrops_df = emptydrops_df.rename(columns=namemap)
 
     # Confirm that the emptydrops table is a subset of the cell metadata table, fail if not
-    if (not emptydrops_df.cell_id.isin(metrics_df.cell_id).all()):
-        logging.error("Not all emptydrops cells can be found in the metrics table.")
-        raise Exception("Not all emptydrops cells can be found in the metrics table.")
+    if emptydrops_file:
+        if (not emptydrops_df.cell_id.isin(metrics_df.cell_id).all()):
+            logging.error("Not all emptydrops cells can be found in the metrics table.")
+            raise Exception("Not all emptydrops cells can be found in the metrics table.")
 
     # Merge the two tables
-    merged_df = metrics_df.merge(emptydrops_df, on="cell_id", how="outer")
+    if emptydrops_file:
+        merged_df = metrics_df.merge(emptydrops_df, on="cell_id", how="outer")
+    else:
+        merged_df = metrics_df
 
     # Order the cells by merging with cell_ids
     cellorder_df = pd.DataFrame(data={'cell_id': cell_ids})
     final_df = cellorder_df.merge(merged_df, on='cell_id', how="left")
 
     # Split the pandas DataFrame into different data types for storing in the ZARR
-    FloatColumnNames = [# UInt
-                        "n_reads", "noise_reads", "perfect_molecule_barcodes",
-                        "reads_mapped_exonic", "reads_mapped_intronic", "reads_mapped_utr",
-                        "reads_mapped_uniquely", "reads_mapped_multiple", "duplicate_reads",
-                        "spliced_reads", "antisense_reads", "n_molecules", "n_fragments",
-                        "fragments_with_single_read_evidence", "molecules_with_single_read_evidence",
-                        "perfect_cell_barcodes", "reads_mapped_intergenic",
-                        "reads_unmapped", "reads_mapped_too_many_loci",
-                        "n_genes", "genes_detected_multiple_observations",
-                        "emptydrops_Total",
-                        # Float32
-                        "molecule_barcode_fraction_bases_above_30_mean",
-                        "molecule_barcode_fraction_bases_above_30_variance",
-                        "genomic_reads_fraction_bases_quality_above_30_mean",
-                        "genomic_reads_fraction_bases_quality_above_30_variance",
-                        "genomic_read_quality_mean",
-                        "genomic_read_quality_variance",
-                        "reads_per_fragment",
-                        "fragments_per_molecule",
-                        "cell_barcode_fraction_bases_above_30_mean",
-                        "cell_barcode_fraction_bases_above_30_variance",
-                        "emptydrops_LogProb",
-                        "emptydrops_PValue",
-                        "emptydrops_FDR"]
-    BoolColumnNames = ["emptydrops_Limited", "emptydrops_IsCell"]
+    if emptydrops_file:
+        FloatColumnNames = [# UInt
+            "n_reads", "noise_reads", "perfect_molecule_barcodes",
+            "reads_mapped_exonic", "reads_mapped_intronic", "reads_mapped_utr",
+            "reads_mapped_uniquely", "reads_mapped_multiple", "duplicate_reads",
+            "spliced_reads", "antisense_reads", "n_molecules", "n_fragments",
+            "fragments_with_single_read_evidence", "molecules_with_single_read_evidence",
+            "perfect_cell_barcodes", "reads_mapped_intergenic",
+            "reads_unmapped", "reads_mapped_too_many_loci",
+            "n_genes", "genes_detected_multiple_observations",
+            "emptydrops_Total",
+            # Float32
+            "molecule_barcode_fraction_bases_above_30_mean",
+            "molecule_barcode_fraction_bases_above_30_variance",
+            "genomic_reads_fraction_bases_quality_above_30_mean",
+            "genomic_reads_fraction_bases_quality_above_30_variance",
+            "genomic_read_quality_mean",
+            "genomic_read_quality_variance",
+            "reads_per_fragment",
+            "fragments_per_molecule",
+            "cell_barcode_fraction_bases_above_30_mean",
+            "cell_barcode_fraction_bases_above_30_variance",
+            "emptydrops_LogProb",
+            "emptydrops_PValue",
+            "emptydrops_FDR"]
+        BoolColumnNames = ["emptydrops_Limited", "emptydrops_IsCell"]
+    else:
+        FloatColumnNames = [# UInt
+            "n_reads", "noise_reads", "perfect_molecule_barcodes",
+            "reads_mapped_exonic", "reads_mapped_intronic", "reads_mapped_utr",
+            "reads_mapped_uniquely", "reads_mapped_multiple", "duplicate_reads",
+            "spliced_reads", "antisense_reads", "n_molecules", "n_fragments",
+            "fragments_with_single_read_evidence", "molecules_with_single_read_evidence",
+            "perfect_cell_barcodes", "reads_mapped_intergenic",
+            "reads_unmapped", "reads_mapped_too_many_loci",
+            "n_genes", "genes_detected_multiple_observations",
+            # Float32
+            "molecule_barcode_fraction_bases_above_30_mean",
+            "molecule_barcode_fraction_bases_above_30_variance",
+            "genomic_reads_fraction_bases_quality_above_30_mean",
+            "genomic_reads_fraction_bases_quality_above_30_variance",
+            "genomic_read_quality_mean",
+            "genomic_read_quality_variance",
+            "reads_per_fragment",
+            "fragments_per_molecule",
+            "cell_barcode_fraction_bases_above_30_mean",
+            "cell_barcode_fraction_bases_above_30_variance"
+            ]
+        # There are not bool columns names when empty drops is not run
+        BoolColumnNames = []
 
+    
     # Split the dataframe
     final_df_float = final_df[FloatColumnNames]
     final_df_bool = final_df[BoolColumnNames]
@@ -398,7 +432,7 @@ def main():
 
     parser.add_argument('--empty_drops_file',
                         dest="empty_drops_file",
-                        required=True,
+                        required=False,
                         help="A csv file with the output of the emptyDrops step in Optimus")
 
     parser.add_argument('--cell_metrics',
