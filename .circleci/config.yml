@@ -127,16 +127,6 @@ jobs:
                     ./test/trigger_test.sh optimus_mouse
                 no_output_timeout: 1.5h
 
-    test_emptyDropsWrapper:
-        docker:
-            - image: quay.io/humancellatlas/secondary-analysis-dropletutils:0.1.2
-        steps:
-            - checkout
-            - run:
-                command: |
-                    cd docker/emptydrops/emptyDropsWrapper/test/
-                    ./test_emptyDropsWrapper.sh
-
     test_npz2rds:
         docker:
             - image: quay.io/humancellatlas/secondary-analysis-dropletutils:0.1.2
