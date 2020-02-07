@@ -29,7 +29,7 @@ printf "done\n"
 
 ## Run empty drops
 printf "Running emptyDrops..."
-../emptyDropsWrapper.R -i ${rdsFileName} -o ${emptyDropsOutput}
+../emptyDropsWrapper.R -i ${rdsFileName} -o ${emptyDropsOutput} --emptydrops-lower 1
 printf "done\n"
 
 ## Check the output md5 checksum
