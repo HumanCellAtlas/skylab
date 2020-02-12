@@ -1,12 +1,17 @@
-task CellSortBam {
-  File bam_input
+version 1.0
 
-  # runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.2"
-  Int machine_mem_mb = 100000
-  Int cpu = 2
-  Int disk = ceil(size(bam_input, "Gi") * 8)
-  Int preemptible = 3
+task CellSortBam {
+  input {
+    File bam_input
+
+    # runtime values
+    String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.2"
+    Int machine_mem_mb = 100000
+    Int cpu = 2
+    Int disk = ceil(size(bam_input, "Gi") * 8)
+    Int preemptible = 3
+  }
+  
 
   meta {
     description: "Sort bam_input by cell, then molecule, then gene."
@@ -41,14 +46,17 @@ task CellSortBam {
 }
 
 task GeneSortBam {
-  File bam_input
+  input {
+    File bam_input
 
-  # runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.2"
-  Int machine_mem_mb = 100000
-  Int cpu = 2
-  Int disk = ceil(size(bam_input, "Gi") * 4)
-  Int preemptible = 3
+    # runtime values
+    String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.2"
+    Int machine_mem_mb = 100000
+    Int cpu = 2
+    Int disk = ceil(size(bam_input, "Gi") * 4)
+    Int preemptible = 3
+  }
+  
 
   meta {
     description: "Sort bam_input by gene, then cell, then molecule."

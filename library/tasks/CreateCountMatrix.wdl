@@ -1,13 +1,18 @@
-task DropSeqToolsDigitalExpression {
-  File bam_input
-  File whitelist
+version 1.0
 
-  # runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-dropseqtools:v0.2.2-1.12"
-  Int machine_mem_mb = 8250
-  Int cpu = 1
-  Int disk = ceil((size(bam_input, "Gi") + size(whitelist, "Gi")) * 4.0) + 1
-  Int preemptible = 3
+task DropSeqToolsDigitalExpression {
+  input {
+    File bam_input
+    File whitelist
+
+    # runtime values
+    String docker = "quay.io/humancellatlas/secondary-analysis-dropseqtools:v0.2.2-1.12"
+    Int machine_mem_mb = 8250
+    Int cpu = 1
+    Int disk = ceil((size(bam_input, "Gi") + size(whitelist, "Gi")) * 4.0) + 1
+    Int preemptible = 3
+  }
+  
 
   meta {
     description: "Constructs a tab-delimited gzipped count matrix from a bam file containing reads marked with cell barcodes (CB), molecule barcodes (UB) and gene ids (GE)"
@@ -53,15 +58,18 @@ task DropSeqToolsDigitalExpression {
 
 
 task CreateSparseCountMatrix {
-  File bam_input
-  File gtf_file
+  input {
+    File bam_input
+    File gtf_file
 
-  # runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.2"
-  Int machine_mem_mb = 8250
-  Int cpu = 1
-  Int disk = ceil(size(bam_input, "Gi") + size(gtf_file, "Gi")) * 4 + 10
-  Int preemptible = 3
+    # runtime values
+    String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.2"
+    Int machine_mem_mb = 8250
+    Int cpu = 1
+    Int disk = ceil(size(bam_input, "Gi") + size(gtf_file, "Gi")) * 4 + 10
+    Int preemptible = 3
+  }
+  
 
   meta {
     description: "Constructs a compressed sparse row matrix from a bam file containing reads marked with cell barcodes (CB), molecule barcodes (UB) and gene ids (GE)"
@@ -106,16 +114,19 @@ task CreateSparseCountMatrix {
 }
 
 task MergeCountFiles {
-  Array[File] sparse_count_matrices
-  Array[File] row_indices
-  Array[File] col_indices
+  input {
+    Array[File] sparse_count_matrices
+    Array[File] row_indices
+    Array[File] col_indices
 
-  # runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.2"
-  Int machine_mem_mb = 8250
-  Int cpu = 1
-  Int disk = 20  # todo find out how to make this adaptive with Array[file] input
-  Int preemptible = 3
+    # runtime values
+    String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.2"
+    Int machine_mem_mb = 8250
+    Int cpu = 1
+    Int disk = 20  # todo find out how to make this adaptive with Array[file] input
+    Int preemptible = 3
+  }
+  
 
   meta {
     description: "Constructs a compressed sparse row matrix by concatenating multiple input matrices"

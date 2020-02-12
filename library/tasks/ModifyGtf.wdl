@@ -1,13 +1,18 @@
-task ReplaceGeneNameWithGeneID {
-  File original_gtf
+version 1.0
 
-  #runtime values
-  String docker = "quay.io/humancellatlas/modify-gtf:0.1.0"
-  Int machine_mem_mb = 8250
-  Int cpu = 1
-  Int disk = ceil(size(original_gtf, "Gi") * 2) + 10
-  Int preemptible = 3
-  String modified_gtf_location = "gene_id_as_gene_name.gtf.gz"
+task ReplaceGeneNameWithGeneID {
+  input {
+    File original_gtf
+
+    #runtime values
+    String docker = "quay.io/humancellatlas/modify-gtf:0.1.0"
+    Int machine_mem_mb = 8250
+    Int cpu = 1
+    Int disk = ceil(size(original_gtf, "Gi") * 2) + 10
+    Int preemptible = 3
+    String modified_gtf_location = "gene_id_as_gene_name.gtf.gz"
+  }
+  
 
   meta {
     description: "Modifies the gene_name field in a gtf to contain the values of gene_id instead."

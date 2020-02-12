@@ -1,22 +1,27 @@
+version 1.0
+
 task RunEmptyDrops {
-    # Input data
-    File sparse_count_matrix
-    File col_index
-    File row_index
+    input {
+        # Input data
+        File sparse_count_matrix
+        File col_index
+        File row_index
 
-    # emptyDrops Params
-    Float niters = 10000.0
-    Float fdr_cutoff = 0.01
+        # emptyDrops Params
+        Float niters = 10000.0
+        Float fdr_cutoff = 0.01
 
-    # other params
-    Int min_molecules = 100
+        # other params
+        Int min_molecules = 100
 
-    # runtime values
-    String docker = "quay.io/humancellatlas/secondary-analysis-dropletutils:0.1.1"
-    Int machine_mem_mb = 10000
-    Int cpu = 1
-    Int disk = 20
-    Int preemptible = 3
+        # runtime values
+        String docker = "quay.io/humancellatlas/secondary-analysis-dropletutils:0.1.1"
+        Int machine_mem_mb = 10000
+        Int cpu = 1
+        Int disk = 20
+        Int preemptible = 3
+    }
+    
 
     meta {
         description: "Runs empty drops on the count matrix and calls cells on the  basis of the provided cutoff value"

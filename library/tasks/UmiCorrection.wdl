@@ -1,18 +1,22 @@
+version 1.0
+
 task CorrectUMItools {
-    File bam_input
-    File bam_index
+    input {
+        File bam_input
+        File bam_index
 
-    # runtime values
-    String docker = "quay.io/humancellatlas/secondary-analysis-umitools:0.0.1"
+        # runtime values
+        String docker = "quay.io/humancellatlas/secondary-analysis-umitools:0.0.1"
 
-    String output_bam_filename = "output.bam"
-    String groupout_filename = "groupout.tsv"
+        String output_bam_filename = "output.bam"
+        String groupout_filename = "groupout.tsv"
 
-    ## TODO: Optimize these values
-    Int machine_mem_mb = 16000
-    Int cpu = 1
-    Int disk = ceil(size(bam_input, "Gi") * 6) + 50
-    Int preemptible = 3
+        ## TODO: Optimize these values
+        Int machine_mem_mb = 16000
+        Int cpu = 1
+        Int disk = ceil(size(bam_input, "Gi") * 6) + 50
+        Int preemptible = 3
+    }
 
     meta {
         description: "Marks duplicates using umitools group specifically for single-cell experiments"
