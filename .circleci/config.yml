@@ -182,7 +182,6 @@ workflows:
           - test_optimus_mouse
           - test_smartseq2
           - test_smartseq2_single_end
-#          - test_emptyDropsWrapper
           - test_npz2rds
           - test_snap_atac
           - test_sc_atac
