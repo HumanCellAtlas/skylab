@@ -16,7 +16,6 @@ task SplitBamByCellBarcode {
     # by default request non preemptible machine to make sure the slow cell barcode split step completes
     Int preemptible = 0
   }
-  
 
   meta {
     description: "Splits a bam file into chunks of size_in_mb, guaranteeing that all information for each cell is fully contained in only one of the chunks"

@@ -4,9 +4,9 @@ task ScatterBam {
   input {
     File bam_to_scatter
     Int scatter_width
-    Int disk_size = ceil(size(bam_to_scatter, "GiB") * 3)
   }
   
+  Int disk_size = ceil(size(bam_to_scatter, "GiB") * 3)
 
   command <<<
     mkdir scattered_bams

@@ -9,14 +9,14 @@ task FastqToUBam {
     # runtime values
     String docker = "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
     Int machine_mem_mb = 3850
-    # give the command 500MB of overhead
-    Int command_mem_mb = machine_mem_mb - 500
     Int cpu = 1
     # estimate that bam is approximately equal in size to fastq, add 20% buffer
     Int disk = ceil(size(fastq_file, "GiB") * 2.2)
     Int preemptible = 3
   }
-  
+
+  # give the command 500MB of overhead
+  Int command_mem_mb = machine_mem_mb - 500
 
   meta {
     description: "Converts a fastq file into an unaligned bam file."

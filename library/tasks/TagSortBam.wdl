@@ -11,7 +11,6 @@ task CellSortBam {
     Int disk = ceil(size(bam_input, "Gi") * 8)
     Int preemptible = 3
   }
-  
 
   meta {
     description: "Sort bam_input by cell, then molecule, then gene."

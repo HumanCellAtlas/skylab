@@ -14,7 +14,6 @@ task StarAlignBamSingleEnd {
     # by default request non preemptible machine to make sure the slow star alignment step completes
     Int preemptible = 0
   }
-  
 
   meta {
     description: "Aligns reads in bam_input to the reference genome in tar_star_reference"

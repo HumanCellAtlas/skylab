@@ -10,15 +10,15 @@ task MergeSortBamFiles {
     # runtime values
     String docker = "us.gcr.io/broad-gotc-prod/genomes-in-the-cloud:2.3.3-1513176735"
     Int machine_mem_mb = 18150
-    # give the command 500MiB of overhead
-    Int command_mem_mb = machine_mem_mb - 500
     Int cpu = 1
     # default to 500GiB of space
     Int disk = 500
     # by default request non preemptible machine to make sure the slow mergsort step completes
     Int preemptible = 0
   }
-  
+
+  # give the command 500MiB of overhead
+  Int command_mem_mb = machine_mem_mb - 500
 
   meta {
     description: "Merge multiple bam files in the specified sort order"

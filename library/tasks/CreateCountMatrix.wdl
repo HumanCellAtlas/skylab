@@ -12,7 +12,6 @@ task DropSeqToolsDigitalExpression {
     Int disk = ceil((size(bam_input, "Gi") + size(whitelist, "Gi")) * 4.0) + 1
     Int preemptible = 3
   }
-  
 
   meta {
     description: "Constructs a tab-delimited gzipped count matrix from a bam file containing reads marked with cell barcodes (CB), molecule barcodes (UB) and gene ids (GE)"

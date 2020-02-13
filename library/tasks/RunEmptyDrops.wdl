@@ -21,7 +21,6 @@ task RunEmptyDrops {
         Int disk = 20
         Int preemptible = 3
     }
-    
 
     meta {
         description: "Runs empty drops on the count matrix and calls cells on the  basis of the provided cutoff value"

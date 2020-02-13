@@ -4,8 +4,7 @@ task checkOptimusInput {
   input {
     String chemistry
     Boolean force_no_check
-  }
-  
+  }  
 
   meta {
     description: "checks optimus input values and fails the pipeline immediately"

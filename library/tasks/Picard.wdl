@@ -9,11 +9,12 @@ task SortBam {
         String docker = "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
         Int machine_mem_mb = 8250
         Int machine_overhead_mb = 500
-        Int command_mem_mb = machine_mem_mb - machine_overhead_mb
         Int cpu = 1
-        Int disk = ceil(size(bam_input, "Gi") * 6) + 50
         Int preemptible = 3
     }
+
+    Int command_mem_mb = machine_mem_mb - machine_overhead_mb
+    Int disk = ceil(size(bam_input, "Gi") * 6) + 50
 
     meta {
         description: "Sorts bam"
