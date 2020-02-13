@@ -1,23 +1,28 @@
+version 1.0
+
 workflow ValidateOptimus {
      meta {
          description: "Validate Optimus Outputs for V3 chemistry"
      }
 
-     # Optimus output files to be checked
-     File bam
-     File matrix
-     File matrix_row_index
-     File matrix_col_index
-     File cell_metrics
-     File gene_metrics
-     File loom_file
+     input {
+         # Optimus output files to be checked
+         File bam
+         File matrix
+         File matrix_row_index
+         File matrix_col_index
+         File cell_metrics
+         File gene_metrics
+         File? loom_file
 
-     # Reference data and checksums
-     File reference_matrix
-     String expected_bam_hash
-     String expected_cell_metric_hash
-     String expected_gene_metric_hash
-     String expected_loom_file_checksum
+         # Reference data and checksums
+         File reference_matrix
+         String expected_bam_hash
+         String expected_cell_metric_hash
+         String expected_gene_metric_hash
+         String expected_loom_file_checksum
+     }
+     
 
      call ValidateBam as ValidateBam {
          input:
@@ -54,11 +59,18 @@ workflow ValidateOptimus {
              metric_and_index_validation_result = ValidateMetrics.result,
              loom_validation_result = ValidateLoom.result
     }
+
+    output {
+
+    }
 }
 
 task ValidateBam {
-    File bam
-    String expected_checksum
+    input {
+        File bam
+        String expected_checksum
+    }
+    
     Int required_disk = ceil(size(bam, "G") * 1.1)
 
     command <<<
@@ -90,8 +102,10 @@ task ValidateBam {
 }
 
 task ValidateLoom {
-    File loom_file
-    String expected_loom_file_checksum
+    input {
+        File? loom_file
+        String expected_loom_file_checksum
+    }
 
     Int required_disk = ceil( size(loom_file, "G") * 1.1)
 
@@ -124,10 +138,12 @@ task ValidateLoom {
 }
 
 task ValidateMatrix {
-    File matrix
-    File matrix_row_index
-    File matrix_col_index
-    File reference_matrix
+    input {
+        File matrix
+        File matrix_row_index
+        File matrix_col_index
+        File reference_matrix
+    }
 
     Int required_disk = ceil( size(matrix, "G") * 1.1 )
 
@@ -170,11 +186,14 @@ task ValidateMatrix {
 }
 
 task ValidateMetrics {
-    File cell_metrics
-    File gene_metrics
+    input {
+        File cell_metrics
+        File gene_metrics
 
-    String expected_cell_metric_hash
-    String expected_gene_metric_hash
+        String expected_cell_metric_hash
+        String expected_gene_metric_hash
+    }
+    
 
     Int required_disk = ceil( (size(cell_metrics, "G") + size(gene_metrics, "G") )* 1.1)
 
@@ -223,12 +242,15 @@ task ValidateMetrics {
 }
 
 task GenerateReport {
-      String bam_validation_result
-      String metric_and_index_validation_result
-      String matrix_validation_result
-      String loom_validation_result
+    input {
+        String bam_validation_result
+        String metric_and_index_validation_result
+        String matrix_validation_result
+        String loom_validation_result
+    }
+      
 
-      Int required_disk = 1
+    Int required_disk = 1
 
   command <<<
 
