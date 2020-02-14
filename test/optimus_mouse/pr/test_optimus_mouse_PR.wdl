@@ -1,6 +1,6 @@
 version 1.0
 
-import "../../../pipelines/optimus/Optimus.wdl" as target
+import "Optimus.wdl" as target
 import "ValidateOptimusMouse.wdl" as checker
 
 
