@@ -10,10 +10,10 @@ RUN pip3 install \
     crimson==0.4.0 \
     HTSeq==0.9.0 \
     matplotlib==2.1.0 \
-    numpy==1.12.0 \
-    pandas==0.20.3 \
+    numpy==1.17.4 \
+    pandas==0.25.0 \
     pysam==0.12.0.1 \
-    requests==2.18.4 \
+    requests==2.20.0 \
     scipy==0.18.1 \
     sctools==0.1.6 \
     tables==3.4.2 \
