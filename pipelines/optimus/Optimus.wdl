@@ -36,7 +36,7 @@ workflow Optimus {
   # 10x parameters
   File whitelist
   # tenX_v2, tenX_v3
-  String chemistry = "tenX_v2" 
+  String chemistry = "tenX_v2"
 
   # environment-specific parameters
   String fastq_suffix = ""
@@ -45,6 +45,9 @@ workflow Optimus {
 
   # If true produce the optional loom output
   Boolean output_loom = false
+
+  # Emptydrops lower cutoff
+  Int emptydrops_lower = 100
 
   # Set to true to override input checks and allow pipeline to proceed with invalid input
   Boolean force_no_check = false
@@ -221,7 +224,8 @@ workflow Optimus {
     input:
       sparse_count_matrix = MergeCountFiles.sparse_count_matrix,
       row_index = MergeCountFiles.row_index,
-      col_index = MergeCountFiles.col_index
+      col_index = MergeCountFiles.col_index,
+      emptydrops_lower = emptydrops_lower
   }
 
   call ZarrUtils.OptimusZarrConversion{

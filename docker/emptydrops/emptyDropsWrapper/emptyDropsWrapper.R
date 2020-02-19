@@ -122,7 +122,7 @@ inputRDS <- opt$input_rds
 output_csv <- opt$output_csv
 FDRcutoff <- opt$fdr_cutoff
 verbose <- opt$verbose
-ed_param_lower <- opt$verbose
+ed_param_lower <- opt$ed_lower
 ed_param_niters <- opt$ed_niters
 ed_param_test.ambient <- opt$ed_test_ambient
 ed_param_ignore <- opt$ed_ignore
