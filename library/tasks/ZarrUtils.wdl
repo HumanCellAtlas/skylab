@@ -59,7 +59,7 @@ task SmartSeq2ZarrConversion {
 task OptimusZarrConversion {
   input {
     #runtime values
-    String docker = "quay.io/humancellatlas/secondary-analysis-zarr-output:0.0.2"
+    String docker = "quay.io/humancellatlas/secondary-analysis-zarr-output:0.0.3"
 
     # name of the sample
     String sample_id
@@ -81,7 +81,6 @@ task OptimusZarrConversion {
     Int preemptible = 3
   }
   
-
   meta {
     description: "This task will converts some of the outputs of Optimus pipeline into a zarr file"
   }

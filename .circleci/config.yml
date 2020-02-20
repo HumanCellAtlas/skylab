@@ -139,7 +139,7 @@ jobs:
 
     test_npz2rds:
         docker:
-            - image: quay.io/humancellatlas/secondary-analysis-dropletutils:0.1.0
+            - image: quay.io/humancellatlas/secondary-analysis-dropletutils:0.1.2
         steps:
             - checkout
             - run:
@@ -182,7 +182,6 @@ workflows:
           - test_optimus_mouse
           - test_smartseq2
           - test_smartseq2_single_end
-          - test_emptyDropsWrapper
           - test_npz2rds
           - test_snap_atac
           - test_sc_atac

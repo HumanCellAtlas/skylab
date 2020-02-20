@@ -21,7 +21,7 @@ workflow Optimus {
   meta {
     description: "The optimus 3' pipeline processes 10x genomics sequencing data based on the v2 chemistry. It corrects cell barcodes and UMIs, aligns reads, marks duplicates, and returns data as alignments in BAM format and as counts in sparse matrix exchange format."
   }
-
+  
   input {
     # version of this pipeline
     String version = "optimus_v1.4.0"
@@ -44,6 +44,12 @@ workflow Optimus {
 
     # environment-specific parameters
     String fastq_suffix = ""
+    
+    # Emptydrops lower cutoff
+    Int emptydrops_lower = 100
+    
+    # Set to true to override input checks and allow pipeline to proceed with invalid input
+    Boolean force_no_check = false
 
     # If true produce the optional loom output
     Boolean output_loom = false
@@ -227,7 +233,8 @@ workflow Optimus {
     input:
       sparse_count_matrix = MergeCountFiles.sparse_count_matrix,
       row_index = MergeCountFiles.row_index,
-      col_index = MergeCountFiles.col_index
+      col_index = MergeCountFiles.col_index,
+      emptydrops_lower = emptydrops_lower
   }
 
   call ZarrUtils.OptimusZarrConversion{
