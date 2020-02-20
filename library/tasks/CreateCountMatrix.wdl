@@ -81,13 +81,18 @@ task CreateSparseCountMatrix {
   command {
     set -e
 
+    if [[ ${counting_mode} -eq "sc_rna" ]]
+    then
+      counting_mode_arg=" --sn-rna-seq-mode "
+    fi
+
     CreateCountMatrix \
       --bam-file ${bam_input} \
       --output-prefix sparse_counts \
       --gtf-annotation-file ${gtf_file} \
       --cell-barcode-tag CB \
       --molecule-barcode-tag UB \
-      --gene-id-tag GE
+      --gene-id-tag GE $counting_mode_arg
 
   }
 
