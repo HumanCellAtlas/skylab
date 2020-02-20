@@ -159,7 +159,7 @@ jobs:
 
     test_npz2rds:
         docker:
-            - image: quay.io/humancellatlas/secondary-analysis-dropletutils:0.1.0
+            - image: quay.io/humancellatlas/secondary-analysis-dropletutils:0.1.2
         steps:
             - checkout
             - run:
@@ -200,21 +200,21 @@ workflows:
         jobs:
           - test_optimus
           - test_optimus_snrna
-#          - test_optimus_v3
-#          - test_optimus_snrna_v3
-#          - test_optimus_mouse
-#          - test_smartseq2
-#          - test_smartseq2_single_end
+          - test_optimus_snrna_v3
 #          - test_emptyDropsWrapper
-#          - test_npz2rds
-#          - test_snap_atac
-#          - test_sc_atac
-#          - test_bulk_rna
-#          - test_portability_snap_atac
-#          - test_portability_bulk_rna_pipeline
-#          - test_portability_optimus
-#          - test_portability_optimus_mouse
-#          - test_portability_smartseq2_single_sample
-#          - test_smartseq2_multisample
-#          - test_smartseq2_multisample_single_end
+          - test_optimus_mouse
+          - test_smartseq2
+          - test_smartseq2_single_end
+          - test_npz2rds
+          - test_snap_atac
+          - test_sc_atac
+          - test_bulk_rna
+          - test_portability_snap_atac
+          - test_portability_bulk_rna_pipeline
+          - test_portability_optimus
+          - test_portability_optimus_mouse
+          - test_portability_smartseq2_single_sample
+          - test_optimus_v3
+          - test_smartseq2_multisample
+          - test_smartseq2_multisample_single_end
 

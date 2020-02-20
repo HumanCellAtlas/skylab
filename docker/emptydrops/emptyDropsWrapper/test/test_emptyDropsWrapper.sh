@@ -8,7 +8,7 @@ testDataFileName="pbmc4k_raw_gene_bc_matrices.tar.gz"
 testDataInputMatrixPath="raw_gene_bc_matrices/GRCh38"
 rdsFileName="pbmc4k.rds"
 emptyDropsOutput="pbmc4k_emptyDrops.csv"
-md5checksum="c2b0c8f24b9f8383f7de710774c9bbab"
+md5checksum="3de6a25eae8d5522c3a6989ab92479c1"
 # Extra things extracted from the "testDataURL" you want to clean up
 extraCleanup="raw_gene_bc_matrices"
 
@@ -29,7 +29,7 @@ printf "done\n"
 
 ## Run empty drops
 printf "Running emptyDrops..."
-../emptyDropsWrapper.R -i ${rdsFileName} -o ${emptyDropsOutput}
+../emptyDropsWrapper.R -i ${rdsFileName} -o ${emptyDropsOutput} --emptydrops-lower 1
 printf "done\n"
 
 ## Check the output md5 checksum
@@ -46,13 +46,13 @@ then
     echo 'PASSED'
     exitCode=0
 else
-    echo 'FAIL'
+    echo "FAILED Expected $md5checksum got $md5out"
     exitCode=1
 fi
 printf "done\n"
 
 ## Cleanup
-rm ${emptyDropsOutput} ${testDataFileName} ${rdsFileName}
-rm -r ${extraCleanup}
+#rm ${emptyDropsOutput} ${testDataFileName} ${rdsFileName}
+#rm -r ${extraCleanup}
 
 exit $exitCode

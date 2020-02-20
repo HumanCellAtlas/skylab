@@ -1,5 +1,6 @@
+
 import "Optimus.wdl" as target
-import "ValidateOptimusMouse.wdl" as checker
+import "ValidateOptimus.wdl" as checker
 
 
 # this workflow will be run by the jenkins script that gets executed by PRs.
@@ -7,9 +8,10 @@ workflow TestOptimusPR {
 
   # output hashes
   String expected_bam_hash
-  String expected_matrix_hash
   String expected_gene_metric_hash
   String expected_cell_metric_hash
+  String expected_loom_file_checksum
+  File reference_matrix
 
   # Optimus inputs
   Array[File] r1_fastq
@@ -21,6 +23,9 @@ workflow TestOptimusPR {
   File annotations_gtf  # gtf containing annotations for gene tagging
   File ref_genome_fasta  # genome fasta file
   String sample_id  # name of sample matching this file, inserted into read group header
+  String chemistry # chemistry identifier
+
+  Boolean force_no_check
 
   call target.Optimus as target {
     input:
@@ -32,10 +37,12 @@ workflow TestOptimusPR {
       annotations_gtf = annotations_gtf,
       ref_genome_fasta = ref_genome_fasta,
       sample_id = sample_id,
-      emptydrops_lower =1 
+      output_loom = true,
+      chemistry = chemistry,
+      force_no_check = force_no_check
   }
 
-  call checker.ValidateOptimusMouse as checker {
+  call checker.ValidateOptimus as checker {
     input:
       bam = target.bam,
       matrix = target.matrix,
@@ -43,10 +50,13 @@ workflow TestOptimusPR {
       matrix_col_index = target.matrix_col_index,
       gene_metrics = target.gene_metrics,
       cell_metrics = target.cell_metrics,
-      expected_matrix_hash = expected_matrix_hash,
+      loom_file = target.loom_output_file,
+      
+      reference_matrix = reference_matrix,
       expected_bam_hash = expected_bam_hash,
       expected_cell_metric_hash = expected_cell_metric_hash,
       expected_gene_metric_hash = expected_gene_metric_hash,
+      expected_loom_file_checksum = expected_loom_file_checksum
   }
 
 }
