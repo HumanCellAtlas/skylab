@@ -1,18 +1,23 @@
-task Attach10xBarcodes {
-  File r1_fastq
-  File? i1_fastq
-  File r2_unmapped_bam
-  File whitelist
-  String chemistry
+version 1.0
 
-  # runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.4"
-  Int machine_mem_mb = 48000
-  Int cpu = 2
-  # estimate that bam is approximately the size of all inputs plus 50%
-  Int disk = ceil((size(r2_unmapped_bam, "Gi") + size(r1_fastq, "Gi") + if (defined(i1_fastq)) then size(i1_fastq, "Gi") else 0) * 3)
-  # by default request non preemptible machine to make sure the slow attach barcodes step completes
-  Int preemptible = 0
+task Attach10xBarcodes {
+  input {
+    File r1_fastq
+    File? i1_fastq
+    File r2_unmapped_bam
+    File whitelist
+    String chemistry
+
+    # runtime values
+    String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.4"
+    Int machine_mem_mb = 48000
+    Int cpu = 2
+    # estimate that bam is approximately the size of all inputs plus 50%
+    Int disk = ceil((size(r2_unmapped_bam, "Gi") + size(r1_fastq, "Gi") + if (defined(i1_fastq)) then size(i1_fastq, "Gi") else 0) * 3)
+    # by default request non preemptible machine to make sure the slow attach barcodes step completes
+    Int preemptible = 0
+  }
+  
 
   meta {
     description: "attaches barcodes found in r1 (forward) and i1 (index) fastq files to corresponding reads in the r2 (reverse) bam file"
@@ -42,7 +47,7 @@ task Attach10xBarcodes {
             ${"--i1 " + i1_fastq} \
             --u2 "${r2_unmapped_bam}" \
             --whitelist "${whitelist}" \
-	    --output-bamfile barcoded.bam
+            --output-bamfile barcoded.bam
     elif [ "${chemistry}" == "tenX_v3" ]
     then
         ## V3
@@ -57,7 +62,7 @@ task Attach10xBarcodes {
             --cell-barcode-length 16 \
             --molecule-barcode-start-position 16 \
             --molecule-barcode-length 12 \
-	    --output-bamfile barcoded.bam
+            --output-bamfile barcoded.bam
     else
         echo Error: unknown chemistry value: "$chemistry"
         exit 1;

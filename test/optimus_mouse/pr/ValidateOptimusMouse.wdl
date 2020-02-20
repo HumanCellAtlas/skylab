@@ -1,17 +1,21 @@
+version 1.0
+
 task ValidateOptimusMouse {
-      File bam
-      File matrix
-      File matrix_row_index
-      File matrix_col_index
-      File gene_metrics
-      File cell_metrics
+  input {
+    File bam
+    File matrix
+    File matrix_row_index
+    File matrix_col_index
+    File gene_metrics
+    File cell_metrics
 
-      String expected_bam_hash
-      String expected_matrix_hash
-      String expected_gene_metric_hash
-      String expected_cell_metric_hash
+    String expected_bam_hash
+    String expected_matrix_hash
+    String expected_gene_metric_hash
+    String expected_cell_metric_hash
+  }
 
-      Int required_disk = ceil((size(bam, "G") + size(matrix, "G")) * 1.1)
+  Int required_disk = ceil((size(bam, "G") + size(matrix, "G")) * 1.1)
 
   command <<<
 
