@@ -54,9 +54,6 @@ workflow Optimus {
     # If true produce the optional loom output
     Boolean output_loom = false
 
-    # Set to true to override input checks and allow pipeline to proceed with invalid input
-    Boolean force_no_check = false
-
     # this pipeline does not set any preemptible varibles and only relies on the task-level preemptible settings
     # you could override the tasklevel preemptible settings by passing it as one of the workflows inputs
     # for example: `"Optimus.StarAlign.preemptible": 3` will let the StarAlign task, which by default disables the
