@@ -151,8 +151,8 @@ task ValidateMatrix {
        set -eo pipefail
 
        ## Convert matrix to format that can be read by R
-       npz2rds.sh -c ${matrix_col_index} -r ${matrix_row_index} \
-           -d ${matrix} -o matrix.rds
+       npz2rds.sh -c ~{matrix_col_index} -r ~{matrix_row_index} \
+           -d ~{matrix} -o matrix.rds
 
        cp ${reference_matrix} referenceMatrix.rds
 
@@ -201,8 +201,8 @@ task ValidateMetrics {
        set -eo pipefail
 
         # check matrix row and column indexes files hash
-        gene_metric_hash=$(zcat "${gene_metrics}" | md5sum | awk '{print $1}')
-        cell_metric_hash=$(zcat "${cell_metrics}" | md5sum | awk '{print $1}')
+        gene_metric_hash=$(zcat "~{gene_metrics}" | md5sum | awk '{print $1}')
+        cell_metric_hash=$(zcat "~{cell_metrics}" | md5sum | awk '{print $1}')
 
         fail=false
 
