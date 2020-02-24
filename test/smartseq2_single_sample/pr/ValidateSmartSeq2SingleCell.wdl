@@ -1,10 +1,14 @@
+version 1.0
+
 task ValidateSmartSeq2SingleCell {
+    input {
       File counts
       String expected_counts_hash
 
       File? target_metrics
       String expected_metrics_hash
-
+    }
+    
   command <<<
 
     # catch intermittent failures

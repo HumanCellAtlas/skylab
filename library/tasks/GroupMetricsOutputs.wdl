@@ -1,17 +1,21 @@
+version 1.0
+
 task GroupQCOutputs {
-  Array[File] picard_row_outputs
-  Array[File?] picard_row_optional_outputs
-  Array[File?] picard_table_outputs
-  File hisat2_stats
-  File hisat2_trans_stats
-  File rsem_stats
-  String output_name
-  # Runtime
-  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.4"
-  Int mem = 3
-  Int cpu = 1
-  Int disk_space = 20 
-  Int preemptible = 5
+  input {
+    Array[File] picard_row_outputs
+    Array[File?] picard_row_optional_outputs
+    Array[File?] picard_table_outputs
+    File hisat2_stats
+    File hisat2_trans_stats
+    File rsem_stats
+    String output_name
+    # Runtime
+    String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.4"
+    Int mem = 3
+    Int cpu = 1
+    Int disk_space = 20 
+    Int preemptible = 5
+  }
 
   meta {
     description: "This task will group the Picard metrics"

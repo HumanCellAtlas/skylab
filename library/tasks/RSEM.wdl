@@ -1,9 +1,14 @@
-task RSEMExpression {
-  File trans_aligned_bam
-  File rsem_genome
-  String output_basename
-  Boolean is_paired
+version 1.0
 
+
+task RSEMExpression {
+  input {
+    File trans_aligned_bam
+    File rsem_genome
+    String output_basename
+    Boolean is_paired
+  }
+  
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-rsem:v0.2.2-1.3.0"
   Int machine_mem_mb = 3850

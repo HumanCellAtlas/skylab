@@ -1,11 +1,16 @@
-task checkSS2Input {
-  File fastq1
-  File? fastq2
-  Boolean paired_end
-  Boolean force_no_check
+version 1.0
 
-  Int disk = ceil((size(fastq1, "GiB") + size(fastq2, "GiB")) + 10)
-  String paired_end_str = if paired_end then "true" else "false"
+task checkSS2Input {
+  input {
+    File fastq1
+    File? fastq2
+    Boolean paired_end
+    Boolean force_no_check
+
+    Int disk = ceil((size(fastq1, "GiB") + size(fastq2, "GiB")) + 10)
+    String paired_end_str = if paired_end then "true" else "false"
+  }
+
 
   meta {
     description: "checks ss2 input values and fails the pipeline immediately"

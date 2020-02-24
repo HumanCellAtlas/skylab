@@ -1,3 +1,5 @@
+version 1.0
+
 import "HISAT2.wdl" as HISAT2
 import "Picard.wdl" as Picard
 import "RSEM.wdl" as RSEM
@@ -9,27 +11,30 @@ workflow SmartSeq2SingleCell {
   meta {
     description: "Process SmartSeq2 scRNA-Seq data, include reads alignment, QC metrics collection, and gene expression quantitication"
   }
-  # version of this pipeline
-  String version = "smartseq2_v3.0.0"
-  # load annotation
-  File genome_ref_fasta
-  File rrna_intervals
-  File gene_ref_flat
-  # load index
-  File hisat2_ref_index
-  File hisat2_ref_trans_index
-  File rsem_ref_index
-  # ref index name
-  String hisat2_ref_name
-  String hisat2_ref_trans_name
-  # samples
-  String stranded
-  String sample_name
-  String output_name
-  File fastq1
-  File? fastq2
-  Boolean paired_end
-  Boolean force_no_check = false
+
+  input {
+    # version of this pipeline
+    String version = "smartseq2_v3.0.0"
+    # load annotation
+    File genome_ref_fasta
+    File rrna_intervals
+    File gene_ref_flat
+    # load index
+    File hisat2_ref_index
+    File hisat2_ref_trans_index
+    File rsem_ref_index
+    # ref index name
+    String hisat2_ref_name
+    String hisat2_ref_trans_name
+    # samples
+    String stranded
+    String sample_name
+    String output_name
+    File fastq1
+    File? fastq2
+    Boolean paired_end
+    Boolean force_no_check = false
+  }
 
   # whether to convert the outputs to Zarr format, by default it's set to true
   Boolean output_zarr = true
