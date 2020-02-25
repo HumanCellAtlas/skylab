@@ -4,7 +4,7 @@ task HISAT2PairedEnd {
   input {
     File hisat2_ref
     File fastq1
-    File fastq2
+    File? fastq2
     String ref_name
     String output_basename
     String sample_name
@@ -99,7 +99,7 @@ task HISAT2RSEM {
   input {
     File hisat2_ref
     File fastq1
-    File fastq2
+    File? fastq2
     String ref_name
     String output_basename
     String sample_name

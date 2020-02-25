@@ -72,7 +72,7 @@ workflow SmartSeq2SingleCell {
        input:
          hisat2_ref = hisat2_ref_index,
          fastq1 = fastq1,
-         fastq2 = fastq2,
+         fastq2 = select_first([fastq2]),
          ref_name = hisat2_ref_name,
          sample_name = sample_name,
          output_basename = quality_control_output_basename,
@@ -151,15 +151,14 @@ workflow SmartSeq2SingleCell {
       is_paired = paired_end
   }
 
-  Array[File]  picard_row_outputs = [CollectMultipleMetrics.alignment_summary_metrics,CollectDuplicationMetrics.dedup_metrics,CollectRnaMetrics.rna_metrics,CollectMultipleMetrics.gc_bias_summary_metrics]
+  Array[File] picard_row_outputs = [CollectMultipleMetrics.alignment_summary_metrics,CollectDuplicationMetrics.dedup_metrics,CollectRnaMetrics.rna_metrics,CollectMultipleMetrics.gc_bias_summary_metrics]
 
   # This output only exists for PE and select_first fails if array is empty
   if ( length(CollectMultipleMetrics.insert_size_metrics) > 0 ) {
     File? picard_row_optional_outputs = select_first(CollectMultipleMetrics.insert_size_metrics)
   }
 
-  Array[File?]   picard_table_outputs = [CollectMultipleMetrics.base_call_dist_metrics,CollectMultipleMetrics.gc_bias_detail_metrics,CollectMultipleMetrics.pre_adapter_details_metrics,CollectMultipleMetrics.pre_adapter_summary_metrics,CollectMultipleMetrics.bait_bias_detail_metrics,CollectMultipleMetrics.error_summary_metrics]
-
+  Array[File] picard_table_outputs = [CollectMultipleMetrics.base_call_dist_metrics,CollectMultipleMetrics.gc_bias_detail_metrics,CollectMultipleMetrics.pre_adapter_details_metrics,CollectMultipleMetrics.pre_adapter_summary_metrics,CollectMultipleMetrics.bait_bias_detail_metrics,CollectMultipleMetrics.error_summary_metrics]
   call GroupQCs.GroupQCOutputs {
    input:
       picard_row_outputs = picard_row_outputs,
