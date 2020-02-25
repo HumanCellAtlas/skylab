@@ -1,8 +1,12 @@
+version 1.0
+
 task AggregateSmartSeq2Zarr {
-    Array[Array[File]?] zarr_input
-    String output_file_name
-    String docker = "quay.io/humancellatlas/secondary-analysis-ss2-plate-aggregation:0.0.1"
-    Int disk = 100
+    input {
+        Array[Array[File]?] zarr_input
+        String output_file_name
+        String docker = "quay.io/humancellatlas/secondary-analysis-ss2-plate-aggregation:0.0.1"
+        Int disk = 100
+    }
 
     Array[File] zarrs_flat = flatten(select_all(zarr_input))
 

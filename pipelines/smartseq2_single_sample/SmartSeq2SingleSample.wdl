@@ -34,10 +34,11 @@ workflow SmartSeq2SingleCell {
     File? fastq2
     Boolean paired_end
     Boolean force_no_check = false
+    # whether to convert the outputs to Zarr format, by default it's set to true
+    Boolean output_zarr = true
   }
 
-  # whether to convert the outputs to Zarr format, by default it's set to true
-  Boolean output_zarr = true
+
 
   parameter_meta {
     genome_ref_fasta: "Genome reference in fasta format"

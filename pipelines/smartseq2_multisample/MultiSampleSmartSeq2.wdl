@@ -1,3 +1,5 @@
+version 1.0
+
 import "SmartSeq2SingleSample.wdl" as single_cell_run
 import "SmartSeq2PlateAggregation.wdl" as ss2_plate_aggregation
 import "ZarrUtils.wdl" as ZarrUtils
@@ -7,29 +9,31 @@ workflow MultiSampleSmartSeq2 {
     description: "The MultiSampleSmartSeq2 pipeline runs multiple SS2 samples in a single pipeline invocation"
   }
 
-  # Version of this pipeline
-  String version = "MultiSampleSmartSeq2_v1.0.0"
+  input {
+      # Version of this pipeline
+      String version = "MultiSampleSmartSeq2_v1.0.0"
 
-  # Gene Annotation
-  File genome_ref_fasta
-  File rrna_intervals
-  File gene_ref_flat
+      # Gene Annotation
+      File genome_ref_fasta
+      File rrna_intervals
+      File gene_ref_flat
 
-  # Reference index information
-  File hisat2_ref_name
-  File hisat2_ref_trans_name
-  File hisat2_ref_index
-  File hisat2_ref_trans_index
-  File rsem_ref_index
+      # Reference index information
+      File hisat2_ref_name
+      File hisat2_ref_trans_name
+      File hisat2_ref_index
+      File hisat2_ref_trans_index
+      File rsem_ref_index
 
-  # Sample information
-  String stranded
-  String file_prefix
-  Array[String] input_file_names
-  String batch_id
-  Boolean paired_end
+      # Sample information
+      String stranded
+      String file_prefix
+      Array[String] input_file_names
+      String batch_id
+      Boolean paired_end
 
-  Boolean output_loom
+      Boolean output_loom
+  }
 
   # Parameter metadata information
   parameter_meta {
