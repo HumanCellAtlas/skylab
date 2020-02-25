@@ -76,8 +76,8 @@ workflow SmartSeq2SingleCell {
          ref_name = hisat2_ref_name,
          sample_name = sample_name,
          output_basename = quality_control_output_basename,
-     } 
-  } 
+     }
+  }
   if( !paired_end ) {
      call HISAT2.HISAT2SingleEnd {
        input:
@@ -86,8 +86,8 @@ workflow SmartSeq2SingleCell {
          ref_name = hisat2_ref_name,
          sample_name = sample_name,
          output_basename = quality_control_output_basename,
-     } 
-  } 
+     }
+  }
 
   File HISAT2_output_bam = select_first([ HISAT2PairedEnd.output_bam, HISAT2SingleEnd.output_bam] )
   File HISAT2_bam_index = select_first([ HISAT2PairedEnd.bam_index, HISAT2SingleEnd.bam_index] )
@@ -116,7 +116,7 @@ workflow SmartSeq2SingleCell {
   }
 
   String data_output_basename = output_name + "_rsem"
-  
+
   if( paired_end ) {
       call HISAT2.HISAT2RSEM as HISAT2Transcriptome {
         input:
@@ -158,11 +158,19 @@ workflow SmartSeq2SingleCell {
     File? picard_row_optional_outputs = select_first(CollectMultipleMetrics.insert_size_metrics)
   }
 
-  Array[File] picard_table_outputs = [CollectMultipleMetrics.base_call_dist_metrics,CollectMultipleMetrics.gc_bias_detail_metrics,CollectMultipleMetrics.pre_adapter_details_metrics,CollectMultipleMetrics.pre_adapter_summary_metrics,CollectMultipleMetrics.bait_bias_detail_metrics,CollectMultipleMetrics.error_summary_metrics]
+  Array[File] picard_table_outputs = [
+    CollectMultipleMetrics.base_call_dist_metrics,
+    CollectMultipleMetrics.gc_bias_detail_metrics,
+    CollectMultipleMetrics.pre_adapter_details_metrics,
+    CollectMultipleMetrics.pre_adapter_summary_metrics,
+    CollectMultipleMetrics.bait_bias_detail_metrics,
+    CollectMultipleMetrics.error_summary_metrics,
+  ]
+
   call GroupQCs.GroupQCOutputs {
    input:
       picard_row_outputs = picard_row_outputs,
-      picard_row_optional_outputs = CollectMultipleMetrics.insert_size_metrics,
+      picard_row_optional_outputs = select_all(CollectMultipleMetrics.insert_size_metrics),
       picard_table_outputs = picard_table_outputs,
       hisat2_stats = HISAT2_log_file,
       hisat2_trans_stats = HISAT2RSEM_log_file,
