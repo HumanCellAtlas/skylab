@@ -102,7 +102,6 @@ task CollectMultipleMetrics {
     Int disk = ceil(size(aligned_bam, "GiB") + size(genome_ref_fasta, "GiB") + 10)
     Int preemptible = 5
   }
-  
 
   meta {
     description: "This Picard task will collect multiple QC metrics, such as CollectAlignmentSummaryMetrics and CollectInsertSizeMetrics."

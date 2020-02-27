@@ -11,7 +11,6 @@ task checkSS2Input {
     String paired_end_str = if paired_end then "true" else "false"
   }
 
-
   meta {
     description: "checks ss2 input values and fails the pipeline immediately"
   }

@@ -68,7 +68,6 @@ task CreateSparseCountMatrix {
     Int disk = ceil(size(bam_input, "Gi") + size(gtf_file, "Gi")) * 4 + 10
     Int preemptible = 3
   }
-  
 
   meta {
     description: "Constructs a compressed sparse row matrix from a bam file containing reads marked with cell barcodes (CB), molecule barcodes (UB) and gene ids (GE)"

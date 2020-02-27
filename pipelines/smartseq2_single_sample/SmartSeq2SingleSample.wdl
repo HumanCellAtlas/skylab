@@ -38,8 +38,6 @@ workflow SmartSeq2SingleCell {
     Boolean output_zarr = true
   }
 
-
-
   parameter_meta {
     genome_ref_fasta: "Genome reference in fasta format"
     rrna_intervals: "rRNA interval file required by Picard"

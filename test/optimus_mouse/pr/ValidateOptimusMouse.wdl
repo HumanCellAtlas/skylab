@@ -27,7 +27,7 @@ task ValidateOptimusMouse {
     # metadata
 
 
-    unzip "${matrix}"
+    unzip "~{matrix}"
     matrix_hash=$(find . -name "*.npy" -type f -exec md5sum {} \; | sort -k 2 | md5sum | awk '{print $1}')
     gene_metric_hash=$(zcat "~{gene_metrics}" | md5sum | awk '{print $1}')
     cell_metric_hash=$(zcat "~{cell_metrics}" | md5sum | awk '{print $1}')
