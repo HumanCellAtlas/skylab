@@ -1,17 +1,21 @@
+version 1.0
+
 task RSEMExpression {
-  File trans_aligned_bam
-  File rsem_genome
-  String output_basename
-  Boolean is_paired
-
-  # runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-rsem:v0.2.2-1.3.0"
-  Int machine_mem_mb = 3850
-  Int cpu = 4
-  # use provided disk number or dynamically size on our own, with 20GiB of additional disk
-  Int disk = ceil(size(trans_aligned_bam, "GiB") + size(rsem_genome, "GiB") + 20)
-  Int preemptible = 5
-
+  input {
+    File trans_aligned_bam
+    File rsem_genome
+    String output_basename
+    Boolean is_paired
+  
+    # runtime values
+    String docker = "quay.io/humancellatlas/secondary-analysis-rsem:v0.2.2-1.3.0"
+    Int machine_mem_mb = 3850
+    Int cpu = 4
+    # use provided disk number or dynamically size on our own, with 20GiB of additional disk
+    Int disk = ceil(size(trans_aligned_bam, "GiB") + size(rsem_genome, "GiB") + 20)
+    Int preemptible = 5
+  }
+  
   meta {
     description: "This task will quantify gene expression matrix by using RSEM. The output include gene-level and isoform-level results."
   }

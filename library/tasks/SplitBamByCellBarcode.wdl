@@ -1,17 +1,21 @@
+version 1.0
+
 task SplitBamByCellBarcode {
-  Array[File] bams_to_split
-  Float size_in_mb = 1024.0
+  input {
+    Array[File] bams_to_split
+    Float size_in_mb = 1024.0
 
-  # runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.5"
+    # runtime values
+    String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.5"
 
-  Int machine_mem_mb = 15258
-  Int cpu = 16
+    Int machine_mem_mb = 15258
+    Int cpu = 16
 
-  # we can calculate disk size for arrays of input files in WDL 1.0
-  Int disk = 500
-  # by default request non preemptible machine to make sure the slow cell barcode split step completes
-  Int preemptible = 0
+    # we can calculate disk size for arrays of input files in WDL 1.0
+    Int disk = 500
+    # by default request non preemptible machine to make sure the slow cell barcode split step completes
+    Int preemptible = 0
+  }
 
   meta {
     description: "Splits a bam file into chunks of size_in_mb, guaranteeing that all information for each cell is fully contained in only one of the chunks"

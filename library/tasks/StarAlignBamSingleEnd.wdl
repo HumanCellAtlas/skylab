@@ -1,15 +1,19 @@
-task StarAlignBamSingleEnd {
-  File bam_input
-  File tar_star_reference
+version 1.0
 
-  # runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-star:v0.2.2-2.5.3a-40ead6e"
-  Int machine_mem_mb = ceil((size(tar_star_reference, "Gi")) + 6) * 1100
-  Int cpu = 16
-  # multiply input size by 2.2 to account for output bam file + 20% overhead, add size of reference.
-  Int disk = ceil((size(tar_star_reference, "Gi") * 2.5) + (size(bam_input, "Gi") * 2.5))
-  # by default request non preemptible machine to make sure the slow star alignment step completes
-  Int preemptible = 0
+task StarAlignBamSingleEnd {
+  input {
+    File bam_input
+    File tar_star_reference
+
+    # runtime values
+    String docker = "quay.io/humancellatlas/secondary-analysis-star:v0.2.2-2.5.3a-40ead6e"
+    Int machine_mem_mb = ceil((size(tar_star_reference, "Gi")) + 6) * 1100
+    Int cpu = 16
+    # multiply input size by 2.2 to account for output bam file + 20% overhead, add size of reference.
+    Int disk = ceil((size(tar_star_reference, "Gi") * 2.5) + (size(bam_input, "Gi") * 2.5))
+    # by default request non preemptible machine to make sure the slow star alignment step completes
+    Int preemptible = 0
+  }
 
   meta {
     description: "Aligns reads in bam_input to the reference genome in tar_star_reference"
