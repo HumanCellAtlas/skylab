@@ -1,24 +1,24 @@
+version 1.0
+
 task SmartSeq2ZarrConversion {
+  input {
+    #runtime values
+    String docker = "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.1.10"
+    # the gene count file "<sample_id>_rsem.genes.results" in the task results folder call-RSEMExpression
+    File rsem_gene_results
+    # file named "<sample_id>_QCs.csv" in the folder  "call-GroupQCOutputs/glob-*" of the the SS2  output
+    Array[File] smartseq_qc_files
+    # name of the sample
+    String sample_name
 
-  #runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.1.10"
-  # the gene count file "<sample_id>_rsem.genes.results" in the task results folder call-RSEMExpression
-  File rsem_gene_results
-  # file named "<sample_id>_QCs.csv" in the folder  "call-GroupQCOutputs/glob-*" of the the SS2  output
-  Array[File] smartseq_qc_files
-  # name of the sample
-  String sample_name
-
-  Int preemptible = 3
+    Int preemptible = 3
+  }
 
   meta {
     description: "This  task will converts some of the outputs of Smart Seq 2 pipeline into a zarr file"
   }
 
   parameter_meta {
-    machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
-    cpu: "(optional) the number of cpus to provision for this task"
-    disk: "(optional) the amount of disk space (GiB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
   }
 
@@ -57,36 +57,35 @@ task SmartSeq2ZarrConversion {
 
 
 task OptimusZarrConversion {
-  #runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-zarr-output:0.0.3"
+  input {
+    #runtime values
+    String docker = "quay.io/humancellatlas/secondary-analysis-zarr-output:0.0.3"
 
-  # name of the sample
-  String sample_id
-  # gene annotation file in GTF format
-  File annotation_file
-  # the file "merged-cell-metrics.csv.gz" that contains the cellwise metrics
-  File cell_metrics
-  # the file "merged-gene-metrics.csv.gz" that contains the  genwise metrics
-  File gene_metrics
-  # file (.npz)  that contains the count matrix
-  File sparse_count_matrix
-  # file (.npy) that contains the array of cell barcodes
-  File cell_id
-  # file (.npy) that contains the array of gene names
-  File gene_id
-  # emptydrops output metadata
-  File empty_drops_result
+    # name of the sample
+    String sample_id
+    # gene annotation file in GTF format
+    File annotation_file
+    # the file "merged-cell-metrics.csv.gz" that contains the cellwise metrics
+    File cell_metrics
+    # the file "merged-gene-metrics.csv.gz" that contains the  genwise metrics
+    File gene_metrics
+    # file (.npz)  that contains the count matrix
+    File sparse_count_matrix
+    # file (.npy) that contains the array of cell barcodes
+    File cell_id
+    # file (.npy) that contains the array of gene names
+    File gene_id
+    # emptydrops output metadata
+    File empty_drops_result
 
-  Int preemptible = 3
-
+    Int preemptible = 3
+  }
+  
   meta {
     description: "This task will converts some of the outputs of Optimus pipeline into a zarr file"
   }
 
   parameter_meta {
-    machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
-    cpu: "(optional) the number of cpus to provision for this task"
-    disk: "(optional) the amount of disk space (GiB) to provision for this task"
     preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non preemptible machine"
   }
 
@@ -129,14 +128,16 @@ task OptimusZarrConversion {
 }
 
 task SmartSeq2PlateToLoom {
-    String batch_id
-    Array[File] zarr_files
+    input {
+        String batch_id
+        Array[File] zarr_files
 
-    # runtime values
-    String docker = "quay.io/humancellatlas/zarr-to-loom:0.0.2"
+        # runtime values
+        String docker = "quay.io/humancellatlas/zarr-to-loom:0.0.2"
 
-    Int preemptible = 3
-    Int cpu = 1
+        Int preemptible = 3
+        Int cpu = 1
+    }
 
     command {
         set -euo pipefail
@@ -166,21 +167,22 @@ task SmartSeq2PlateToLoom {
 
 
 task OptimusZarrToLoom {
-    String sample_id
-    Array[File] zarr_files
+    input {
+        String sample_id
+        Array[File] zarr_files
 
-    # runtime values
-    String docker = "quay.io/humancellatlas/zarr-to-loom:0.0.1"
+        # runtime values
+        String docker = "quay.io/humancellatlas/zarr-to-loom:0.0.1"
 
-    Int preemptible = 3
-    Int cpu = 1
-
+        Int preemptible = 3
+        Int cpu = 1
+    }
+    
     meta {
          description: "This task converts the Optimus Zarr output into a loom file"
     }
 
     parameter_meta {
-        machine_mem_mb: "(optional) the amount of memory in (MiB) to provision for this task"
         cpu: "(optional) the number of cpus to provision for this task"
         preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non-preemptible machine"
     }

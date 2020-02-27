@@ -1,23 +1,27 @@
+version 1.0
+
 workflow ValidateOptimus {
      meta {
          description: "Validate Optimus Outputs"
      }
 
-     # Optimus output files to be checked
-     File bam
-     File matrix
-     File matrix_row_index
-     File matrix_col_index
-     File cell_metrics
-     File gene_metrics
-     File loom_file
+     input {
+         # Optimus output files to be checked
+         File bam
+         File matrix
+         File matrix_row_index
+         File matrix_col_index
+         File cell_metrics
+         File gene_metrics
+         File? loom_file
 
-     # Reference data and checksums
-     File reference_matrix
-     String expected_bam_hash
-     String expected_cell_metric_hash
-     String expected_gene_metric_hash
-     String expected_loom_file_checksum
+         # Reference data and checksums
+         File reference_matrix
+         String expected_bam_hash
+         String expected_cell_metric_hash
+         String expected_gene_metric_hash
+         String expected_loom_file_checksum
+     }
 
      call ValidateBam as ValidateBam {
          input:
@@ -57,22 +61,24 @@ workflow ValidateOptimus {
 }
 
 task ValidateBam {
-    File bam
-    String expected_checksum
-    Int required_disk = ceil(size(bam, "G") * 1.1)
+    input {
+        File bam
+        String expected_checksum
+        Int required_disk = ceil(size(bam, "G") * 1.1)
+     }
 
     command <<<
         echo Starting checksum generation...
         # calculate hash for alignment positions only (a reduced bam hash)
-        calculated_checksum=$( samtools view -F 256 "${bam}" | cut -f 1-11 | md5sum | awk '{print $1}' )
+        calculated_checksum=$( samtools view -F 256 "~{bam}" | cut -f 1-11 | md5sum | awk '{print $1}' )
         echo Reduced checksum generation complete
 
-        if [ "$calculated_checksum" == "${expected_checksum}" ]
+        if [ "$calculated_checksum" == "~{expected_checksum}" ]
         then
              echo Computed and expected bam hashes match \( "$calculated_checksum" \)
              printf PASS > result.txt
         else 
-             echo Computed \( "$calculated_checksum" \) and expected \( "${expected_checksum}" \) bam file hashes do not match
+             echo Computed \( "$calculated_checksum" \) and expected \( "~{expected_checksum}" \) bam file hashes do not match
              printf FAIL > result.txt
         fi
     >>>
@@ -90,10 +96,11 @@ task ValidateBam {
 }
 
 task ValidateLoom {
-    File loom_file
-    String expected_loom_file_checksum
-
-    Int required_disk = ceil( size(loom_file, "G") * 1.1)
+    input {
+        File? loom_file
+        String expected_loom_file_checksum
+        Int required_disk = ceil( size(loom_file, "G") * 1.1)
+    }
 
     command <<<
         echo Starting checksum generation...
@@ -124,10 +131,12 @@ task ValidateLoom {
 }
 
 task ValidateMatrix {
-    File matrix
-    File matrix_row_index
-    File matrix_col_index
-    File reference_matrix
+    input {
+        File matrix
+        File matrix_row_index
+        File matrix_col_index
+        File reference_matrix
+    }
 
     Int required_disk = ceil( size(matrix, "G") * 1.1 )
 
@@ -135,8 +144,8 @@ task ValidateMatrix {
        set -eo pipefail
 
        ## Convert matrix to format that can be read by R
-       npz2rds.sh -c ${matrix_col_index} -r ${matrix_row_index} \
-           -d ${matrix} -o matrix.rds
+       npz2rds.sh -c ~{matrix_col_index} -r ~{matrix_row_index} \
+           -d ~{matrix} -o matrix.rds
 
        cp ${reference_matrix} referenceMatrix.rds
 
@@ -170,11 +179,13 @@ task ValidateMatrix {
 }
 
 task ValidateMetrics {
-    File cell_metrics
-    File gene_metrics
+    input {
+        File cell_metrics
+        File gene_metrics
 
-    String expected_cell_metric_hash
-    String expected_gene_metric_hash
+        String expected_cell_metric_hash
+        String expected_gene_metric_hash
+    }
 
     Int required_disk = ceil( (size(cell_metrics, "G") + size(gene_metrics, "G") )* 1.1)
 
@@ -223,10 +234,12 @@ task ValidateMetrics {
 }
 
 task GenerateReport {
+      input {
       String bam_validation_result
       String metric_and_index_validation_result
       String matrix_validation_result
       String loom_validation_result
+     }
 
       Int required_disk = 1
 

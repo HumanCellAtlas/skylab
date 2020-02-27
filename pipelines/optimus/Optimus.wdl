@@ -1,3 +1,5 @@
+version 1.0
+
 import "FastqToUBam.wdl" as FastqToUBam
 import "Attach10xBarcodes.wdl" as Attach
 import "SplitBamByCellBarcode.wdl" as Split
@@ -19,43 +21,50 @@ workflow Optimus {
   meta {
     description: "The optimus 3' pipeline processes 10x genomics sequencing data based on the v2 chemistry. It corrects cell barcodes and UMIs, aligns reads, marks duplicates, and returns data as alignments in BAM format and as counts in sparse matrix exchange format."
   }
-  # version of this pipeline
-  String version = "optimus_v1.4.0"
+  
+  input {
+    # version of this pipeline
+    String version = "optimus_v1.4.0"
 
-  # Sequencing data inputs
-  Array[File] r1_fastq
-  Array[File] r2_fastq
-  Array[File]? i1_fastq
-  String sample_id
+    # Sequencing data inputs
+    Array[File] r1_fastq
+    Array[File] r2_fastq
+    Array[File]? i1_fastq
+    String sample_id
 
-  # organism reference parameters
-  File tar_star_reference
-  File annotations_gtf
-  File ref_genome_fasta
+    # organism reference parameters
+    File tar_star_reference
+    File annotations_gtf
+    File ref_genome_fasta
 
-  # 10x parameters
-  File whitelist
-  # tenX_v2, tenX_v3
-  String chemistry = "tenX_v2"
+    # 10x parameters
+    File whitelist
+    # tenX_v2, tenX_v3
+    String chemistry = "tenX_v2" 
 
-  # environment-specific parameters
-  String fastq_suffix = ""
+    # environment-specific parameters
+    String fastq_suffix = ""
+    
+    # Emptydrops lower cutoff
+    Int emptydrops_lower = 100
+    
+    # Set to true to override input checks and allow pipeline to proceed with invalid input
+    Boolean force_no_check = false
+
+    # If true produce the optional loom output
+    Boolean output_loom = false
+
+    # Set to true to override input checks and allow pipeline to proceed with invalid input
+    Boolean force_no_check = false
+
+    # this pipeline does not set any preemptible varibles and only relies on the task-level preemptible settings
+    # you could override the tasklevel preemptible settings by passing it as one of the workflows inputs
+    # for example: `"Optimus.StarAlign.preemptible": 3` will let the StarAlign task, which by default disables the
+    # usage of preemptible machines, attempt to request for preemptible instance up to 3 times. 
+  }
+
   # this is used to scatter matched [r1_fastq, r2_fastq, i1_fastq] arrays
   Array[Int] indices = range(length(r1_fastq))
-
-  # If true produce the optional loom output
-  Boolean output_loom = false
-
-  # Emptydrops lower cutoff
-  Int emptydrops_lower = 100
-
-  # Set to true to override input checks and allow pipeline to proceed with invalid input
-  Boolean force_no_check = false
-
-  # this pipeline does not set any preemptible varibles and only relies on the task-level preemptible settings
-  # you could override the tasklevel preemptible settings by passing it as one of the workflows inputs
-  # for example: `"Optimus.StarAlign.preemptible": 3` will let the StarAlign task, which by default disables the
-  # usage of preemptible machines, attempt to request for preemptible instance up to 3 times. 
 
   parameter_meta {
     r1_fastq: "forward read, contains cell barcodes and molecule barcodes"

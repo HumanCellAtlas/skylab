@@ -4,6 +4,7 @@ import sys
 import argparse
 import loompy
 import numpy as np
+import pandas as pd
 
 
 def main():
@@ -16,10 +17,11 @@ def main():
     truth_loom = loompy.connect(args.truth_loom_path)
     check_loom = loompy.connect(args.check_loom_path)
 
-    truth_loom_array = truth_loom[:, :]
-    check_loom_array = check_loom[:, :]
+    truth_loom_array = pd.DataFrame(data=truth_loom[:, :], index=truth_loom.row_attrs['Gene'], columns=truth_loom.col_attrs['CellID'])
+    check_loom_array = pd.DataFrame(data=check_loom[:,:], index=check_loom.row_attrs['Gene'], columns=check_loom.col_attrs['CellID'])
+    check_loom_array = check_loom_array[truth_loom_array.columns]
 
-    delta = np.sum(np.absolute(np.subtract(truth_loom_array, check_loom_array)))
+    delta = (check_loom_array - truth_loom_array).abs().sum().sum()
 
     if delta < args.delta_cutoff:
         print(f"Matrices are identical: delta: {delta} delta_cutoff: {args.delta_cutoff}")
