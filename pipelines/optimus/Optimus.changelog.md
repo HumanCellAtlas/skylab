@@ -1,6 +1,6 @@
 # optimus_v2.0.0
 
-* Fixed bug that resulted in wrong emptyDrops output being incorrect
+* Fixed bug that resulted in emptyDrops output being incorrect
 
 * Updated workflow to WDL 1.0
 
