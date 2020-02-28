@@ -1,6 +1,6 @@
 | Pipeline Version | Date Updated | Documentation Author | Questions or Feedback |
 | :----: | :---: | :----: | :--------------: |
-| [optimus_v2.0.0](https://github.com/HumanCellAtlas/skylab/releases/tag/optimus_v2.0.0) | November 08, 2019 | [Elizabeth Kiernan](mailto:ekiernan@broadinstitute.org) | Please file GitHub issues in skylab or contact [Kylee Degatano](mailto:kdegatano@broadinstitute.org) |
+| [optimus_v2.0.0](https://github.com/HumanCellAtlas/skylab/releases/tag/optimus_v2.0.0) | February 28, 2020 | [Elizabeth Kiernan](mailto:ekiernan@broadinstitute.org) | Please file GitHub issues in skylab or contact [Kylee Degatano](mailto:kdegatano@broadinstitute.org) |
 
 # Table of Contents
 - [Optimus Pipeline Overview](#optimus-pipeline-overview)
