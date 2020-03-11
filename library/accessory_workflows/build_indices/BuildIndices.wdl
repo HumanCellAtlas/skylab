@@ -173,7 +173,7 @@ task BuildHisat2 {
 
   runtime {
     docker: "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
-    memory: "8 GiB"
+    memory: "64 GiB"
     disks: "local-disk 100 HDD"
     cpu: "8"
   }
