@@ -26,7 +26,7 @@ workflow Optimus {
     # Mode for counting either "sc_rna" or "sn_rna"
     String counting_mode = "sc_rna"
     # version of this pipeline
-    String version = "optimus_v1.4.0"
+    String version = "optimus_v2.0.0"
 
     # Sequencing data inputs
     Array[File] r1_fastq
