@@ -87,10 +87,11 @@ task CreateSparseCountMatrix {
   command {
     set -e
 
-    if [[ ${counting_mode} -eq "sn_rna" ]]
-    then
-      counting_mode_arg=" --sn-rna-seq-mode "
-    fi
+
+    #if [[ ${counting_mode} -eq "sn_rna" ]]
+    #then
+    #  counting_mode_arg=" --sn-rna-seq-mode "
+    #fi
 
     CreateCountMatrix \
       --bam-file ${bam_input} \
