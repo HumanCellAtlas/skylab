@@ -118,24 +118,12 @@ task CreateSparseCountMatrix {
 }
 
 task MergeCountFiles {
-<<<<<<< HEAD
-  Array[File] sparse_count_matrices
-  Array[File] row_indices
-  Array[File] col_indices
-  String counting_mode = "sc_rna"
-
-  # runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.2"
-  Int machine_mem_mb = 8250
-  Int cpu = 1
-  Int disk = 20  # todo find out how to make this adaptive with Array[file] input
-  Int preemptible = 3
-=======
   input {
     Array[File] sparse_count_matrices
     Array[File] row_indices
     Array[File] col_indices
-
+    String counting_mode = "sc_rna"
+  
     # runtime values
     String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.2"
     Int machine_mem_mb = 8250
@@ -144,8 +132,6 @@ task MergeCountFiles {
     Int preemptible = 3
   }
   
->>>>>>> master
-
   meta {
     description: "Constructs a compressed sparse row matrix by concatenating multiple input matrices"
   }
