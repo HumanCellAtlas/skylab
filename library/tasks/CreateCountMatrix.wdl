@@ -87,7 +87,7 @@ task CreateSparseCountMatrix {
   command {
     set -e
 
-    if [[ ${counting_mode} -eq "sc_rna" ]]
+    if [[ ${counting_mode} -eq "sn_rna" ]]
     then
       counting_mode_arg=" --sn-rna-seq-mode "
     fi
