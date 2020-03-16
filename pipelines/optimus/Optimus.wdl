@@ -49,9 +49,6 @@ workflow Optimus {
     
     # Emptydrops lower cutoff
     Int emptydrops_lower = 100
-    
-    # Set to true to override input checks and allow pipeline to proceed with invalid input
-    Boolean force_no_check = false
 
     # If true produce the optional loom output
     Boolean output_loom = false
@@ -153,15 +150,25 @@ workflow Optimus {
         bam_input = bam,
         tar_star_reference = tar_star_reference
     }
-    call TagGeneExon.TagGeneExon as TagGenes {
-      input:
-        bam_input = StarAlign.bam_output,
-        annotations_gtf = ModifyGtf.modified_gtf
+
+    if ( counting_mode == "sc_rna" ) {
+      call TagGeneExon.TagGeneExon as TagGenes {
+        input:
+          bam_input = StarAlign.bam_output,
+          annotations_gtf = ModifyGtf.modified_gtf
+      }
+    }
+    if ( counting_mode == "sn_rna" ) {
+      call TagGeneExon.TagReadWithGeneFunction as TagGeneFunction {
+        input:
+	  bam_input = StarAlign.bam_output,
+	  annotations_gtf = ModifyGtf.modified_gtf
+      }
     }
 
     call Picard.SortBamAndIndex as PreUMISort {
       input:
-        bam_input = TagGenes.bam_output
+        bam_input = select_first([TagGenes.bam_output, TagGeneFunction.bam_output])
     }
 
     call UmiCorrection.CorrectUMItools as CorrectUMItools {
