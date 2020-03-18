@@ -59,6 +59,10 @@ task TagReadWithGeneFunction {
     File annotations_gtf
     File bam_input
 
+    String gene_name_tag = "gn"
+    String gene_strand_tag = "gs"
+    String gene_function_tag = "gf"
+
     # runtime values
     String docker = "quay.io/humancellatlas/secondary-analysis-dropseqtools_v2:0.0.1"
     Int machine_mem_mb = 8250
@@ -87,6 +91,9 @@ task TagReadWithGeneFunction {
     TagReadWithGeneFunction \
       INPUT=${bam_input} \
       OUTPUT=bam_with_gene_exon.bam \
+      GENE_NAME_TAG=${gene_name_tag} \
+      GENE_STRAND_TAG=${gene_strand_tag} \
+      GENE_FUNCTION_TAG=${gene_function_tag} \
       SUMMARY=gene_exon_tag_summary.log \
       ANNOTATIONS_FILE=${annotations_gtf}
   }

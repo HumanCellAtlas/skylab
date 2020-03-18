@@ -25,6 +25,7 @@ workflow Optimus {
   input {
     # Mode for counting either "sc_rna" or "sn_rna"
     String counting_mode = "sc_rna"
+
     # version of this pipeline
     String version = "optimus_v2.0.0"
 
@@ -162,7 +163,8 @@ workflow Optimus {
       call TagGeneExon.TagReadWithGeneFunction as TagGeneFunction {
         input:
 	  bam_input = StarAlign.bam_output,
-	  annotations_gtf = ModifyGtf.modified_gtf
+	  annotations_gtf = ModifyGtf.modified_gtf,
+	  gene_name_tag = "GN"
       }
     }
 
