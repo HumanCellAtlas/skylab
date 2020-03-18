@@ -1,3 +1,4 @@
+version 1.0
 
 import "Optimus.wdl" as target
 import "ValidateOptimus.wdl" as checker
@@ -5,27 +6,28 @@ import "ValidateOptimus.wdl" as checker
 
 # this workflow will be run by the jenkins script that gets executed by PRs.
 workflow TestOptimusPR {
+  input {
+    # output hashes
+    String expected_bam_hash
+    String expected_gene_metric_hash
+    String expected_cell_metric_hash
+    String expected_loom_file_checksum
+    File reference_matrix
 
-  # output hashes
-  String expected_bam_hash
-  String expected_gene_metric_hash
-  String expected_cell_metric_hash
-  String expected_loom_file_checksum
-  File reference_matrix
+    # Optimus inputs
+    Array[File] r1_fastq
+    Array[File] r2_fastq
+    Array[File]? i1_fastq
 
-  # Optimus inputs
-  Array[File] r1_fastq
-  Array[File] r2_fastq
-  Array[File]? i1_fastq
+    File whitelist  # 10x genomics cell barcode whitelist for 10x V2
+    File tar_star_reference  # star reference
+    File annotations_gtf  # gtf containing annotations for gene tagging
+    File ref_genome_fasta  # genome fasta file
+    String sample_id  # name of sample matching this file, inserted into read group header
+    String chemistry # chemistry identifier
 
-  File whitelist  # 10x genomics cell barcode whitelist for 10x V2
-  File tar_star_reference  # star reference
-  File annotations_gtf  # gtf containing annotations for gene tagging
-  File ref_genome_fasta  # genome fasta file
-  String sample_id  # name of sample matching this file, inserted into read group header
-  String chemistry # chemistry identifier
-
-  Boolean force_no_check
+    Boolean force_no_check
+  }
 
   call target.Optimus as target {
     input:
