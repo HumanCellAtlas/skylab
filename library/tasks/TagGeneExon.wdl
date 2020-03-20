@@ -59,12 +59,12 @@ task TagReadWithGeneFunction {
     File annotations_gtf
     File bam_input
 
-    String gene_name_tag = "gn"
-    String gene_strand_tag = "gs"
-    String gene_function_tag = "gf"
+    String gene_name_tag = "GE"
+    String gene_strand_tag = "GS"
+    String gene_function_tag = "XF"
 
     # runtime values
-    String docker = "quay.io/humancellatlas/secondary-analysis-dropseqtools_v2:0.0.1"
+    String docker = "quay.io/humancellatlas/secondary-analysis-dropseqtools_v1:2.3.0"
     Int machine_mem_mb = 8250
     Int cpu = 1
     Int disk = ceil((size(bam_input, "Gi") + size(annotations_gtf, "Gi")) * 3) + 20

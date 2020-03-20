@@ -62,7 +62,7 @@ task CreateSparseCountMatrix {
     File gtf_file
 
     # runtime values
-    String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.2"
+    String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.6"
     Int machine_mem_mb = 8250
     Int cpu = 1
     Int disk = ceil(size(bam_input, "Gi") + size(gtf_file, "Gi")) * 4 + 10
