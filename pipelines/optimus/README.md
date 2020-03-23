@@ -117,7 +117,7 @@ The tools each Optimus task employs are detailed in the following table:
 | [UmiCorrection](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/UmiCorrection.wdl) |	[Umi-tools](https://github.com/CGATOxford/UMI-tools) |
 | [SequenceDataWithMoleculeTagMetrics](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/SequenceDataWithMoleculeTagMetrics.wdl) |	[sctools](https://sctools.readthedocs.io/en/latest/sctools.html) |
 | [RunEmptyDrops](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/RunEmptyDrops.wdl) |	[dropletUtils](https://bioconductor.org/packages/release/bioc/html/DropletUtils.html) |
-| [CreateCountMatrix](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/CreateCountMatrix.wdl) |	[Drop-seq](https://github.com/broadinstitute/Drop-seq) |
+| [CreateCountMatrix](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/CreateCountMatrix.wdl) |	[Drop-seq](https://github.com/broadinstitute/Drop-seq) and [sctools](https://sctools.readthedocs.io/en/latest/sctools.html)|
 | [FastqToUBAM](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/FastqToUBam.wdl)	| [picard](https://github.com/broadinstitute/picard) |
 | [SplitBamByCellBarcode](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/SplitBamByCellBarcode.wdl) |	[sctools](https://sctools.readthedocs.io/en/latest/sctools.html) |
 | [TagSortBam](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/TagSortBam.wdl) |	[sctools](https://sctools.readthedocs.io/en/latest/sctools.html) |
