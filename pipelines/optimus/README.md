@@ -14,7 +14,7 @@
     + [Sample Inputs for Analyses in a Terra Workspace](#sample-inputs-for-analyses-in-a-terra-workspace)
 - [Running Optimus](#running-optimus)
   * [Optimus Task Summary](#optimus-task-summary)
-    + [1. Converting R2 Fastq File to UBAM](#1-converting-r2-fastq-file-to-ubam)
+    + [1. Converting R2 FASTQ File to UBAM](#1-converting-r2-fastq-file-to-ubam)
     + [2. Correcting and Attaching Cell Barcodes](#2-correcting-and-attaching-cell-barcodes)
     + [3. Alignment](#3-alignment)
     + [4. Gene Annotation](#4-gene-annotation)
@@ -59,29 +59,29 @@ Optimus can be deployed using [Cromwell](https://software.broadinstitute.org/wdl
 
 ## Inputs
 
-Optimus pipeline inputs are detailed in a json file, such as in this [example](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/example_test_inputs.json). 
+Optimus pipeline inputs are detailed in a JSON file, such as in this [example](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/example_test_inputs.json). 
 
 ### Sample Data Input
 
-Each 10x v2 and v3 3’ sequencing experiment generates triplets of fastq files for any given sample:  
+Each 10x v2 and v3 3’ sequencing experiment generates triplets of FASTQ files for any given sample:  
 
 1. A forward reads (r1_fastq), containing the unique molecular identifier (UMI) and cell barcode sequences
 2. A reverse reads (r2_fastq), which contain the alignable genomic information from the mRNA transcript 
-3. An index fastq (i1_fastq) that contains the sample barcodes, when provided by the sequencing facility
+3. An index FASTQ (i1_fastq) that contains the sample barcodes, when provided by the sequencing facility
 
-Note: Optimus is currently a single sample pipeline, but can take in multiple sets of fastqs for a sample that has been split over multiple lanes of sequencing. Additionally, Optimus does not support demultiplexing even though it accepts index fastq files. 
+Note: Optimus is currently a single sample pipeline, but can take in multiple sets of FASTQs for a sample that has been split over multiple lanes of sequencing. Additionally, Optimus does not support demultiplexing even though it accepts index FASTQ files. 
 
 ### Additional Reference Inputs
 
-The json file also contains metadata for the following reference information:
+The JSON file also contains metadata for the following reference information:
 
 * Whitelist: a list of known cell barcodes from [10x genomics](https://www.10xgenomics.com/) that corresponds to the V2 or V3 chemistry.
 * Tar_star_reference: TAR file containing a species-specific reference genome and gtf; it is generated using the [StarMkRef.wdl](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/StarMkref.wdl)
-* Sample_id: a unique name describing the biological sample or replicate that corresponds with the original fastq files
+* Sample_id: a unique name describing the biological sample or replicate that corresponds with the original FASTQ files
 * Annotations_gtf: a GTF containing gene annotations used for gene tagging (must match GTF in STAR reference)
 * Chemistry: an optional string description of whether data was generated with 10x V2 or V3 chemistry
   * Optional string: "tenX_v2" (default) or "tenX_v3"
-   * Note: Optimus validates this string. If the string does not match these options, the pipeline will fail. You can remove the checks by setting "force_no_check = true" in the input json.
+   * Note: Optimus validates this string. If the string does not match these options, the pipeline will fail. You can remove the checks by setting "force_no_check = true" in the input JSON.
 *  counting_mode: a string description of whether data is single-cell or single-nuclei. Options include ""sc_rna" or "sn_rna"
 
 ### Sample Inputs for Analyses in a Terra Workspace
@@ -97,8 +97,8 @@ The Optimus pipeline is currently available on the cloud-based platform Terra. I
 Here we describe the tasks of the Optimus pipeline; [the code](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Optimus.wdl) and [library of tasks](https://github.com/HumanCellAtlas/skylab/tree/master/library/tasks) are available through GitHub.
 
 Overall, the workflow:
-1. Converts R2 fastq file (containing alignable genomic information) to an unaligned BAM (UBAM)
-2. Corrects and attaches 10x Barcodes using the R1 Fastq file 
+1. Converts R2 FASTQ file (containing alignable genomic information) to an unaligned BAM (UBAM)
+2. Corrects and attaches 10x Barcodes using the R1 FASTQ file 
 3. Aligns reads to the genome with STAR v.2.5.3a
 4. Annotates genes with aligned reads
 5. Corrects UMIs
@@ -125,13 +125,13 @@ The tools each Optimus task employs are detailed in the following table:
 
 The Optimus pipeline takes special care to flag but avoid the removal of reads that are not aligned or that do not contain recognizable barcodes. This design (which differs from many pipelines currently available) allows the use of the entire dataset by those who may want to use alternative filtering or leverage the data for methodological development associated with the data processing. More information about the different tags used to flag the data can be found in the [Bam_tags documentation](Bam_tags.md).
 
-### 1. Converting R2 Fastq File to UBAM
+### 1. Converting R2 FASTQ File to UBAM
 
-Unlike fastq files, BAM files enable researchers to keep track of important metadata throughout all data processing steps. The first step of Optimus is to [convert](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/FastqToUBam.wdl) the R2 fastq file, containing the alignable genomic information, to an unaligned BAM (UBAM) file.
+Unlike FASTQ files, BAM files enable researchers to keep track of important metadata throughout all data processing steps. The first step of Optimus is to [convert](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/FastqToUBam.wdl) the R2 FASTQ file, containing the alignable genomic information, to an unaligned BAM (UBAM) file.
 
 ### 2. Correcting and Attaching Cell Barcodes
 
-Although the function of the cell barcodes is to identify unique cells, barcode errors can arise during sequencing (such as incorporation of the barcode into contaminating DNA or sequencing and PCR errors), making it difficult to distinguish unique cells from artifactual appearances of the barcode. The [Attach10xBarcodes](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/Attach10xBarcodes.wdl) task uses [sctools](https://github.com/HumanCellAtlas/sctools) to evaluate barcode errors by comparing the R1 fastq sequences against a whitelist of known barcode sequences. The task then appends the UMI and Cell Barcode sequences from the R1 fastq to the UBAM sequence as tags [(see the Bam_tags documentation for details](Bam_tags.md)). 
+Although the function of the cell barcodes is to identify unique cells, barcode errors can arise during sequencing (such as incorporation of the barcode into contaminating DNA or sequencing and PCR errors), making it difficult to distinguish unique cells from artifactual appearances of the barcode. The [Attach10xBarcodes](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/Attach10xBarcodes.wdl) task uses [sctools](https://github.com/HumanCellAtlas/sctools) to evaluate barcode errors by comparing the R1 FASTQ sequences against a whitelist of known barcode sequences. The task then appends the UMI and Cell Barcode sequences from the R1 FASTQ to the UBAM sequence as tags [(see the Bam_tags documentation for details](Bam_tags.md)). 
 
 The output is a UBAM file containing the reads with corrected barcodes, including barcodes that came within one edit distance ([Levenshtein distance](http://www.levenshtein.net/)) of matching the whitelist of barcode sequences and were corrected by this tool. Correct barcodes are assigned a “CB” tag. Uncorrectable barcodes (with more than one error) are preserved and given a “CR” (Cell barcode Raw) tag. Cell barcode quality scores are also preserved in the file under the “CY” tag.
 
@@ -222,5 +222,6 @@ Three Optimus tasks are affected by the counting_mode parameter: TagGeneExon, UM
 # Have Suggestions? 
 
 Coming soon, we will have a GitHub document dedicated to open issues! In the meantime, please help us make our tools better by contacting [Kylee Degatano](mailto:kdegatano@broadinstitute.org) for pipeline-related suggestions or questions.
+
 
 
