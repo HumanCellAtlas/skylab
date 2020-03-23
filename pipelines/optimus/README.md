@@ -147,7 +147,7 @@ The TagGeneExon task calls Drop-seq tools v2.3.0 to make annotations. These anno
 
 ### 5. UMI Correction
 
-UMIs are designed to distinguish unique transcripts present in the cell at lysis from those arising from PCR amplification of these same transcripts. But, like cell barcodes, UMIs can also be incorrectly sequenced or amplified. The [UmiCorrection](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/UmiCorrection.wdl) task uses [Umi-tools v.0.0.1](https://pypi.org/project/umi-tools/0.0.1/) to apply a network-based, "directional" correction method ([Smith, et al., 2017](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5340976/)) to account for such errors. This task will makes UMI corrections to alignments made with the 'GE' tag (counting_mode = 'sc_rna') or the 'gn' tag (counting_mode = 'sn_rna').
+UMIs are designed to distinguish unique transcripts present in the cell at lysis from those arising from PCR amplification of these same transcripts. But, like cell barcodes, UMIs can also be incorrectly sequenced or amplified. The [UmiCorrection](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/UmiCorrection.wdl) task uses [Umi-tools v.0.0.1](https://pypi.org/project/umi-tools/0.0.1/) to apply a network-based, "directional" correction method ([Smith, et al., 2017](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5340976/)) to account for such errors. This task makes UMI corrections to alignments made with the 'GE' tag (counting_mode = 'sc_rna') or the 'gn' tag (counting_mode = 'sn_rna').
 
 ### 6. Summary Metric Calculation
 
@@ -155,7 +155,7 @@ The [Metrics](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks
 
 ### 7. Expression Matrix Construction
 
-The Optimus [Count](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/CreateCountMatrix.wdl) task evaluates every read in the BAM file and creates a UMI-aware expression matrix using [Drop-seq tools](https://github.com/broadinstitute/Drop-seq). This matrix contains the number of molecules that were observed for each cell barcode and for each gene. The task discards any read that maps to more than one gene, and counts any remaining reads provided the triplet of cell barcode, molecule barcode, and gene name is unique, indicating the read originates from a single transcript present at the time of cell lysis.
+The Optimus [Count](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/CreateCountMatrix.wdl) task evaluates every read in the BAM file and creates a UMI-aware expression matrix using [Drop-seq tools](https://github.com/broadinstitute/Drop-seq). This matrix contains the number of molecules that were observed for each cell barcode and for each gene. The task discards any read that maps to more than one gene, and counts any remaining reads provided the triplet of cell barcode, molecule barcode, and gene name is unique, indicating the read originates from a single transcript present at the time of cell lysis. To correctly specific the gene name tag, this task will look for the 'GE' tag (counting_mode = 'sc_rna') or 'gn' tag (counting_mode = 'sn_rna').
 
 ### 8. Identification of Empty Droplets
 
