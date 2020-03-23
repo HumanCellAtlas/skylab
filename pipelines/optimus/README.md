@@ -215,6 +215,9 @@ Yes! We have Terra workspace that is preconfigured with the latest Optimus workf
 ## Is the output count matrix filtered or normalized?
 No, we do not filter. We keep as much data as possible so that the researcher can make their own filtering and normalization choices. We do, however, output some information that may be helpful for filtering, like UMI counts per cell and calls on whether or not a cell is empty from EmptyDrops software. For the EmptyDrops call, a cell will be flagged as possibly empty if it contains fewer than 100 molecules.
 
+## How does the workflow change when using the single-cell RNA-seq (counting_mode = 'sc_rna') vs. the single-nuclei (counting_mode = 'sn_rna') parameters? 
+Three Optimus tasks are affected by the counting_mode parameter: TagGeneExon, UMICorrection and CreateCountMatrix. 
+
 
 # Have Suggestions? 
 
