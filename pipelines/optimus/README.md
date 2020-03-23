@@ -84,13 +84,17 @@ The json file also contains metadata for the following reference information:
    * Note: Optimus validates this string. If the string does not match these options, the pipeline will fail. You can remove the checks by setting "force_no_check = true" in the input json.
 *  counting_mode: a string description of whether data is single-cell or single-nuclei. Options include ""sc_rna" or "sn_rna"
 
+### Sample Inputs for Analyses in a Terra Workspace
+
+The Optimus pipeline is currently available on the cloud-based platform Terra. If you have a Terra account, you can access the Featured Workspace using this address: [https://app.terra.bio/#workspaces/featured-workspaces-hca/HCA_Optimus_Pipeline](https://app.terra.bio/#workspaces/featured-workspaces-hca/HCA_Optimus_Pipeline). The workspace is preloaded with instructions and sample data. For more information on using the Terra platform, please view the [Support Center](https://support.terra.bio/hc/en-us).  
+
 # Running Optimus
 
 * The [Optimus.wdl](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Optimus.wdl) in the pipelines/optimus folder of the HCA skylab repository implements the workflow by importing individual modules ("tasks" written in  WDL script) from the skylab [Library](https://github.com/HumanCellAtlas/skylab/tree/master/library) folder.
 
-## Optimus Modules Summary
+## Optimus Task Summary
 
-Here we describe the modules ("tasks") of the Optimus pipeline; [the code](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Optimus.wdl) and [library of tasks](https://github.com/HumanCellAtlas/skylab/tree/master/library/tasks) are available through GitHub.
+Here we describe the tasks of the Optimus pipeline; [the code](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Optimus.wdl) and [library of tasks](https://github.com/HumanCellAtlas/skylab/tree/master/library/tasks) are available through GitHub.
 
 Overall, the workflow:
 1. Converts R2 fastq file (containing alignable genomic information) to an unaligned BAM (UBAM)
@@ -162,6 +166,10 @@ The Optimus [Count](https://github.com/HumanCellAtlas/skylab/blob/master/library
 ### 8. Identification of Empty Droplets
 
 Empty droplets are lipid droplets that did not encapsulate a cell during 10x sequencing, but instead acquired cell-free RNA (secreted RNA or RNA released during cell lysis) from the solution in which the cells resided ([Lun, et al., 2018](https://www.ncbi.nlm.nih.gov/pubmed/?term=30902100). This ambient RNA can serve as a substrate for reverse transcription, leading to a small number of background reads. The Optimus pipeline calls the [RunEmptyDrops](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/RunEmptyDrops.wdl) task which uses the [dropletUtils v.0.1.1](http://bioconductor.org/packages/release/bioc/html/DropletUtils.html) R package to flag cell barcodes that represent empty droplets rather than cells. A cell will be flagged if it contains fewer than 100 molecules. These metrics are stored in the output Zarr and Loom files. Details of all the metrics included in the final output files can be found in the [Loom_schema documentation](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Loom_schema.md). 
+
+| Warning: Use caution when interpreting RunEmptyDrops output for single-nuclei data |
+| --- |
+| EmptyDrops relies on a visual knee point inflection (described in [Lun et al. (2019)](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-019-1662-y)) to differentiate ambient-like cells from empty dropletss. If snRNAseq data does not produce a visual knee point inflection, EmptyDrops drops may not accurately distinguish ambient-like cells. | 
 
 ### 9. Outputs
 
