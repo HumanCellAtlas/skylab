@@ -162,9 +162,11 @@ workflow Optimus {
     if ( counting_mode == "sn_rna" ) {
       call TagGeneExon.TagReadWithGeneFunction as TagGeneFunction {
         input:
-	  bam_input = StarAlign.bam_output,
-	  annotations_gtf = ModifyGtf.modified_gtf,
-	  gene_name_tag = "GN"
+	      bam_input = StarAlign.bam_output,
+	      annotations_gtf = ModifyGtf.modified_gtf,
+	      gene_name_tag = "GE",
+	      gene_strand_tag = "GS",
+	      gene_function_tag = "XF"
       }
     }
 
