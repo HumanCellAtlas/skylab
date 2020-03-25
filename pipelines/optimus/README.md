@@ -149,7 +149,7 @@ The [TagGeneExon](https://github.com/HumanCellAtlas/skylab/blob/master/library/t
 The TagGeneExon task calls Drop-seq tools v1.12 to make annotations. These annotations include INTERGENIC, INTRONIC, UTR and CODING (EXONIC), and are stored using the 'XF' BAM [tag](Bam_tags.md). In cases where the gene corresponds to an exon or UTR, the name of the gene that overlaps the alignment is associated with the read and stored using the GE BAM tag. All tags are detailed in the pipeline's [BAM_tag documentation](Bam_tags.md).
 
 **Single-nuclei RNA-seq:**
-The TagGeneExon task calls Drop-seq tools v2.3.0 to make annotations. hese annotations include INTERGENIC, INTRONIC, UTR and CODING (EXONIC), and are stored using the 'gf' BAM tag (see the [Bam_tags documentation](Bam_tags.md)). In cases where the gene corresponds to an exon, UTR, or intron, the name of the gene that overlaps the alignment is associated with the read and stored using the 'gn' BAM tag. All tags are detailed in the pipeline's [BAM_tag documentation](Bam_tags.md).
+The TagGeneExon task calls Drop-seq tools v2.3.0 to make annotations. These annotations include INTERGENIC, INTRONIC, UTR and CODING (EXONIC), and are stored using the 'gf' BAM tag (see the [Bam_tags documentation](Bam_tags.md)). In cases where the gene corresponds to an exon, UTR, or intron, the name of the gene that overlaps the alignment is associated with the read and stored using the 'gn' BAM tag. All tags are detailed in the pipeline's [BAM_tag documentation](Bam_tags.md).
 
 ### 5. UMI Correction
 
