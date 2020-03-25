@@ -117,7 +117,7 @@ task MergeCountFiles {
     Array[File] sparse_count_matrices
     Array[File] row_indices
     Array[File] col_indices
-  
+
     # runtime values
     String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.7"
     Int machine_mem_mb = 8250
