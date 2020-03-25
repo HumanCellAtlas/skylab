@@ -87,19 +87,13 @@ task CreateSparseCountMatrix {
   command {
     set -e
 
-
-    #if [[ ${counting_mode} -eq "sn_rna" ]]
-    #then
-    #  counting_mode_arg=" --sn-rna-seq-mode "
-    #fi
-
     CreateCountMatrix \
       --bam-file ${bam_input} \
       --output-prefix sparse_counts \
       --gtf-annotation-file ${gtf_file} \
       --cell-barcode-tag CB \
       --molecule-barcode-tag UB \
-      --gene-id-tag GE $counting_mode_arg
+      --gene-id-tag GE
 
   }
 
@@ -123,7 +117,6 @@ task MergeCountFiles {
     Array[File] sparse_count_matrices
     Array[File] row_indices
     Array[File] col_indices
-    String counting_mode = "sc_rna"
   
     # runtime values
     String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.7"
