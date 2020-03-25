@@ -81,7 +81,7 @@ The JSON file also contains metadata for the following reference information:
 * Annotations_gtf: a GTF containing gene annotations used for gene tagging (must match GTF in STAR reference)
 * Chemistry: an optional string description of whether data was generated with 10x V2 or V3 chemistry
   * Optional string: "tenX_v2" (default) or "tenX_v3"
-   * Note: Optimus validates this string. If the string does not match these options, the pipeline will fail. You can remove the checks by setting "force_no_check = true" in the input JSON.
+   * Note: Optimus validates this string. If the string does not match these options, the pipeline will fail. You can remove the checks by setting "force_no_check = true" in the input JSON
 *  counting_mode: a string description of whether data is single-cell or single-nuclei. Options include ""sc_rna" or "sn_rna"
 
 ### Sample Inputs for Analyses in a Terra Workspace
@@ -139,17 +139,17 @@ To enable parallelization, the pipeline then [scatters](https://github.com/Human
 
 ### 3. Alignment
 
-Optimus uses the [STAR alignment](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/StarAlignBamSingleEnd.wdl) task to map barcoded reads in the UBAM file to the genome primary assembly reference (see table above for version information). This task uses STAR (Spliced Transcripts Alignment to a Reference) a standard, splice-aware, RNA-seq alignment tool [(Dobin, et al., 2013)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3530905/).
+Optimus uses the [STAR alignment](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/StarAlignBamSingleEnd.wdl) task to map barcoded reads in the UBAM file to the genome primary assembly reference (see table above for version information). This task uses STAR (Spliced Transcripts Alignment to a Reference) a standard, splice-aware, RNA-seq alignment tool [(Dobin, et al., 2013)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3530905/). 
 
 ### 4. Gene Annotation
 
 The [TagGeneExon](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/TagGeneExon.wdl) task uses [Drop-seq tools](https://github.com/broadinstitute/Drop-seq) to [annotate each read](https://github.com/HumanCellAtlas/skylab/blob/LK_BAM_TAGS/pipelines/optimus/Optimus_BAM_tags.md) with the type of sequence to which it aligns. These annotations vary depending on the counting_mode ("sc_rna" or "sn_rna") specified in the workflow.
 
 **Single-cell RNA-seq:**
-The TagGeneExon task calls Drop-seq tools v1.12 to make annotations. These annotations include INTERGENIC, INTRONIC, and EXONIC, and are stored using the 'XF' BAM [tag](Bam_tags.md). In cases where the gene corresponds to an exon or UTR, the name of the gene that overlaps the alignment is associated with the read and stored using the GE BAM tag. All tags are detailed in the pipeline's [Bam_tag documentation](Bam_tags.md).
+The TagGeneExon task calls Drop-seq tools v1.12 to make annotations. These annotations include INTERGENIC, INTRONIC, and EXONIC, and are stored using the 'XF' BAM [tag](Bam_tags.md). In cases where the gene corresponds to an exon or UTR, the name of the gene that overlaps the alignment is associated with the read and stored using the GE BAM tag. All tags are detailed in the pipeline's [BAM_tag documentation](Bam_tags.md).
 
 **Single-nuclei RNA-seq:**
-The TagGeneExon task calls Drop-seq tools v2.3.0 to make annotations. These annotations include INTERGENIC, INTRONIC, and EXONIC, and are stored using the 'gf' BAM tag (see the [Bam_tags documentation](Bam_tags.md). In cases where the gene corresponds to an exon, UTR, or intron, the name of the gene that overlaps the alignment is associated with the read and stored using the 'gn' BAM tag. All tags are detailed in the pipeline's [Bam_tag documentation](Bam_tags.md).
+The TagGeneExon task calls Drop-seq tools v2.3.0 to make annotations. These annotations include INTERGENIC, INTRONIC, and EXONIC, and are stored using the 'gf' BAM tag (see the [Bam_tags documentation](Bam_tags.md)). In cases where the gene corresponds to an exon, UTR, or intron, the name of the gene that overlaps the alignment is associated with the read and stored using the 'gn' BAM tag. All tags are detailed in the pipeline's [BAM_tag documentation](Bam_tags.md).
 
 ### 5. UMI Correction
 
