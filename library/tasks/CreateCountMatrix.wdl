@@ -67,7 +67,6 @@ task CreateSparseCountMatrix {
     Int cpu = 1
     Int disk = ceil(size(bam_input, "Gi") + size(gtf_file, "Gi")) * 4 + 10
     Int preemptible = 3
-    String counting_mode = "sc_rna"
   }
 
   meta {

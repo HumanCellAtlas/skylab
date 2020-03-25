@@ -215,8 +215,7 @@ workflow Optimus {
     call Count.CreateSparseCountMatrix {
       input:
         bam_input = PreCountSort.bam_output,
-        gtf_file = ModifyGtf.modified_gtf,
-	  counting_mode = counting_mode
+        gtf_file = ModifyGtf.modified_gtf
     }
   }
 
