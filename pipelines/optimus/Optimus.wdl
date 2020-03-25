@@ -239,8 +239,7 @@ workflow Optimus {
     input:
       sparse_count_matrices = CreateSparseCountMatrix.sparse_count_matrix,
       row_indices = CreateSparseCountMatrix.row_index,
-      col_indices = CreateSparseCountMatrix.col_index,
-      counting_mode = counting_mode
+      col_indices = CreateSparseCountMatrix.col_index
   }
 
   call RunEmptyDrops.RunEmptyDrops {
