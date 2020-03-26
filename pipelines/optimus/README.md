@@ -12,7 +12,7 @@
     + [Sample Data Input](#sample-data-input)
     + [Additional Reference Inputs](#additional-reference-inputs)
     + [Sample Inputs for Analyses in a Terra Workspace](#sample-inputs-for-analyses-in-a-terra-workspace)
-- [Running Optimus](#running-optimus)
+- [Optimus Tasks and Tools](#optimus-tasks-and-tools)
   * [Optimus Task Summary](#optimus-task-summary)
     + [1. Converting R2 FASTQ File to UBAM](#1-converting-r2-fastq-file-to-ubam)
     + [2. Correcting and Attaching Cell Barcodes](#2-correcting-and-attaching-cell-barcodes)
