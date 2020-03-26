@@ -146,10 +146,12 @@ Optimus uses the [STAR alignment](https://github.com/HumanCellAtlas/skylab/blob/
 The [TagGeneExon](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/TagGeneExon.wdl) task uses [Drop-seq tools](https://github.com/broadinstitute/Drop-seq) to [annotate each read](https://github.com/HumanCellAtlas/skylab/blob/LK_BAM_TAGS/pipelines/optimus/Optimus_BAM_tags.md) with the type of sequence to which it aligns. These annotations vary depending on the counting_mode ("sc_rna" or "sn_rna") specified in the workflow.
 
 **Single-cell RNA-seq:**
-The TagGeneExon task calls Drop-seq tools v1.12 to make annotations. These annotations include INTERGENIC, INTRONIC, UTR and CODING (EXONIC), and are stored using the 'XF' BAM [tag](Bam_tags.md). In cases where the gene corresponds to an exon or UTR, the name of the gene that overlaps the alignment is associated with the read and stored using the GE BAM tag. All tags are detailed in the pipeline's [BAM_tag documentation](Bam_tags.md).
+The TagGeneExon task calls Drop-seq tools v1.12 to make annotations. These annotations include INTERGENIC, INTRONIC, UTR and CODING (EXONIC), and are stored using the 'XF' BAM tag. In cases where the gene corresponds to an exon or UTR, the name of the gene that overlaps the alignment is associated with the read and stored using the GE BAM tag. 
 
 **Single-nuclei RNA-seq:**
-The TagGeneExon task calls Drop-seq tools v2.3.0 to make annotations. These annotations include INTERGENIC, INTRONIC, UTR and CODING (EXONIC), and are stored using the 'gf' BAM tag (see the [Bam_tags documentation](Bam_tags.md)). In cases where the gene corresponds to an exon, UTR, or intron, the name of the gene that overlaps the alignment is associated with the read and stored using the 'gn' BAM tag. All tags are detailed in the pipeline's [BAM_tag documentation](Bam_tags.md).
+The TagGeneExon task calls Drop-seq tools v2.3.0 to make annotations. These annotations include INTERGENIC, INTRONIC, UTR and CODING (EXONIC), and are stored using the 'XF' BAM tag (see the [Bam_tags documentation](Bam_tags.md)). In cases where the gene corresponds to an exon, UTR, or intron, the name of the gene that overlaps the alignment is associated with the read and stored using the 'GE' BAM tag. 
+
+All tags are detailed in the pipeline's [BAM_tag documentation](Bam_tags.md).
 
 ### 5. UMI Correction
 
