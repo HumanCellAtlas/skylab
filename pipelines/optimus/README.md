@@ -73,17 +73,17 @@ Note: Optimus is currently a single sample pipeline, but can take in multiple se
 
 ### Additional Reference Inputs
 
-The JSON file also contains metadata for the following reference information:
+The JSON file also contains metadata for the reference information in the following table:
 
-* Whitelist: a list of known cell barcodes from [10x genomics](https://www.10xgenomics.com/) that corresponds to the v2 or v3 chemistry.
-* Tar_star_reference: TAR file containing a species-specific reference genome and gtf; it is generated using the [StarMkRef.wdl](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/StarMkref.wdl)
-* Sample_id: a unique name describing the biological sample or replicate that corresponds with the original FASTQ files
-* Annotations_gtf: a GTF containing gene annotations used for gene tagging (must match GTF in STAR reference)
-* Chemistry: an optional string description of whether data was generated with 10x v2 or v3 chemistry
-  * Optional string: "tenX_v2" (default) or "tenX_v3"
-   * Note: Optimus validates this string. If the string does not match these options, the pipeline will fail. You can remove the checks by setting "force_no_check = true" in the input JSON
-*  Counting_mode: a string description of whether data is single-cell or single-nuclei 
-   * Optional string: "sc_rna" or "sn_rna"
+| Parameter Name | Description | Optional Strings (when applicable) |
+| --- | --- | --- |
+| Whitelist | Cloud path to list of known cell barcodes from [10x genomics](https://www.10xgenomics.com/) that corresponds to the v2 or v3 chemistry | NA |
+| Tar_star_reference | Cloud path to TAR file containing a species-specific reference genome and gtf; it is generated using the [StarMkRef.wdl](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/StarMkref.wdl) | NA |
+| Sample_id | a unique name describing the biological sample or replicate that corresponds with the original FASTQ files | NA | 
+| Annotations_gtf | Cloud path to GTF containing gene annotations used for gene tagging (must match GTF in STAR reference) | NA | 
+| Chemistry | Optional string description of whether data was generated with 10x v2 or v3 chemistry. Optimus validates this string. If the string does not match one of the optional strings, the pipeline will fail. You can remove the checks by setting "force_no_check = true" in the input JSON | "tenX_v2" (default) or "tenX_v3" |
+| Counting_mode | String description of whether data is single-cell or single-nuclei | "sc_rna" or "sn_rna" |
+
 
 ### Sample Inputs for Analyses in a Terra Workspace
 
