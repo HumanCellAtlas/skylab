@@ -213,13 +213,13 @@ All Optimus pipeline releases are documented in the [Optimus changelog](Optimus.
 
 # FAQs
 ## Can I run Optimus in Terra?
-Yes! We have Terra workspace that is preconfigured with the latest Optimus workflow and is preloaded with human and mouse sample data. You can access the workspace at [https://app.terra.bio/#workspaces/featured-workspaces-hca/HCA_Optimus_Pipeline](https://app.terra.bio/#workspaces/featured-workspaces-hca/HCA_Optimus_Pipeline). You will need a Google Account to set up Terra. Please see [Terra Support](https://support.terra.bio/hc/en-us) for documents on getting start.
+Yes! We have a Terra workspace that is preconfigured with the latest Optimus workflow and is preloaded with human and mouse sample data. You can access the workspace at [https://app.terra.bio/#workspaces/featured-workspaces-hca/HCA_Optimus_Pipeline](https://app.terra.bio/#workspaces/featured-workspaces-hca/HCA_Optimus_Pipeline). You will need a Google account to set up Terra. Please see [Terra Support](https://support.terra.bio/hc/en-us) for documents on getting started.
 
 ## Is the output count matrix filtered or normalized?
 No, we do not filter. We keep as much data as possible so that the researcher can make their own filtering and normalization choices. We do, however, output some information that may be helpful for filtering, like UMI counts per cell and calls on whether or not a cell is empty from EmptyDrops software. For the EmptyDrops call, a cell will be flagged as possibly empty if it contains fewer than 100 molecules.
 
 ## How does the workflow change when using the single-cell RNA-seq (counting_mode = 'sc_rna') vs. the single-nuclei (counting_mode = 'sn_rna') parameters? 
-Three Optimus tasks are affected by the counting_mode parameter: TagGeneExon, UMICorrection and CreateCountMatrix. The TagGeneExon tasks uses different versions of Drop-seq tools depending on the counting_mode parameter. The sc_rna parameter uses v1.12 whereas the sn_rna uses v2.3.0. For the sn_rna parameter, this adds a GE tag to intronic reads. For the UMICorrection and CreateCountMatrix tasks, the only difference related to the counting_mode parameters is that the sn_RNA parameter will have a GE tag on intronic reads, which the UMICorrection and CreateCountMatrix will recognize.
+Three Optimus tasks are affected by the counting_mode parameter: TagGeneExon, UMICorrection and CreateCountMatrix. The TagGeneExon tasks uses different versions of Drop-seq tools depending on the counting_mode parameter. The sc_rna parameter uses v1.12 whereas the sn_rna uses v2.3.0. For the sn_rna parameter, a GE tag is added to intronic reads. For the UMICorrection and CreateCountMatrix tasks, the only difference related to the counting_mode parameters is that the sn_RNA parameter will have a GE tag on intronic reads, which the UMICorrection and CreateCountMatrix will recognize.
 
 # Have Suggestions? 
 
