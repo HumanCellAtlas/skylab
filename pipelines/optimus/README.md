@@ -139,7 +139,8 @@ To enable parallelization, the pipeline then [scatters](https://github.com/Human
 
 ### 3. Alignment
 
-Optimus uses the [STAR alignment](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/StarAlignBamSingleEnd.wdl) task to map barcoded reads in the UBAM file to the genome primary assembly reference (see table above for version information). This task uses STAR (Spliced Transcripts Alignment to a Reference) a standard, splice-aware, RNA-seq alignment tool [(Dobin, et al., 2013)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3530905/). 
+Optimus uses the [STAR alignment](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/StarAlignBamSingleEnd.wdl) task to map barcoded reads in the UBAM file to the genome primary assembly reference (see table above for version information). This task uses STAR (Spliced Transcripts Alignment to a Reference) a standard, splice-aware, RNA-seq alignment tool [(Dobin, et al., 2013)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3530905/). The default soft-clipping is turned on for this alignment. 
+
 
 ### 4. Gene Annotation
 
@@ -155,7 +156,7 @@ All tags are detailed in the pipeline's [BAM_tag documentation](Bam_tags.md).
 
 ### 5. UMI Correction
 
-UMIs are designed to distinguish unique transcripts present in the cell at lysis from those arising from PCR amplification of these same transcripts. But, like cell barcodes, UMIs can also be incorrectly sequenced or amplified. The [UmiCorrection](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/UmiCorrection.wdl) task uses [Umi-tools v.0.0.1](https://pypi.org/project/umi-tools/0.0.1/) to apply a network-based, "directional" correction method ([Smith, et al., 2017](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5340976/)) to account for such errors. This task makes UMI corrections to alignments made with the 'GE' tag (counting_mode = 'sc_rna') or the 'gn' tag (counting_mode = 'sn_rna').
+UMIs are designed to distinguish unique transcripts present in the cell at lysis from those arising from PCR amplification of these same transcripts. But, like cell barcodes, UMIs can also be incorrectly sequenced or amplified. The [UmiCorrection](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/UmiCorrection.wdl) task uses [Umi-tools v.0.0.1](https://pypi.org/project/umi-tools/0.0.1/) to apply a network-based, "directional" correction method ([Smith, et al., 2017](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5340976/)) to account for such errors. This task makes UMI corrections to alignments made with the 'GE' tag. This step will add a 'UB' tag for UMI-corrected barcodes. 
 
 ### 6. Summary Metric Calculation
 
@@ -218,8 +219,7 @@ Yes! We have Terra workspace that is preconfigured with the latest Optimus workf
 No, we do not filter. We keep as much data as possible so that the researcher can make their own filtering and normalization choices. We do, however, output some information that may be helpful for filtering, like UMI counts per cell and calls on whether or not a cell is empty from EmptyDrops software. For the EmptyDrops call, a cell will be flagged as possibly empty if it contains fewer than 100 molecules.
 
 ## How does the workflow change when using the single-cell RNA-seq (counting_mode = 'sc_rna') vs. the single-nuclei (counting_mode = 'sn_rna') parameters? 
-Three Optimus tasks are affected by the counting_mode parameter: TagGeneExon, UMICorrection and CreateCountMatrix. The TagGeneExon tasks uses different versions of Drop-seq tools depending on the counting_mode parameter. The sc_rna parameter uses v1.12 whereas the sn_rna uses v2.3.0, resulting in the use of 'GE' or 'gn' tags, respectively, to mark alignments. Additionally, the 'gn' tag used for single-nuclei RNA-seq will mark intronic reads. For the UMICorrection and CreateCountMatrix tasks, the only difference related to the counting_mode parameters is that each task will look for the parameter-specific gene name tag ('GE' or 'gn').
-
+Three Optimus tasks are affected by the counting_mode parameter: TagGeneExon, UMICorrection and CreateCountMatrix. The TagGeneExon tasks uses different versions of Drop-seq tools depending on the counting_mode parameter. The sc_rna parameter uses v1.12 whereas the sn_rna uses v2.3.0. For the sn_rna parameter, this adds a GE tag to intronic reads. For the UMICorrection and CreateCountMatrix tasks, the only difference related to the counting_mode parameters is that the sn_RNA parameter will have a GE tag on intronic reads, which the UMICorrection and CreateCountMatrix will recognize.
 
 # Have Suggestions? 
 
