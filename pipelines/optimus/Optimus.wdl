@@ -166,7 +166,8 @@ workflow Optimus {
 	      annotations_gtf = ModifyGtf.modified_gtf,
 	      gene_name_tag = "GE",
 	      gene_strand_tag = "GS",
-	      gene_function_tag = "XF"
+	      gene_function_tag = "XF",
+	      use_strand_info = "false"
       }
     }
 

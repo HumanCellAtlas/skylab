@@ -63,6 +63,8 @@ task TagReadWithGeneFunction {
     String gene_strand_tag = "gs"
     String gene_function_tag = "gf"
 
+    String use_strand_info = "true"
+
     # runtime values
     String docker = "quay.io/humancellatlas/secondary-analysis-dropseqtools_v1:2.3.0"
     Int machine_mem_mb = 8250
@@ -95,7 +97,8 @@ task TagReadWithGeneFunction {
       GENE_STRAND_TAG=${gene_strand_tag} \
       GENE_FUNCTION_TAG=${gene_function_tag} \
       SUMMARY=gene_exon_tag_summary.log \
-      ANNOTATIONS_FILE=${annotations_gtf}
+      ANNOTATIONS_FILE=${annotations_gtf} \
+      USE_STRAND_INFO=${use_strand_info}
   }
 
   # Larger genomes (mouse-human) require a 7.5gb instance; single-organism genomes work with 3.75gb
