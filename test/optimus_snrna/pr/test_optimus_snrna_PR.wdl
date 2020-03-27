@@ -26,6 +26,8 @@ workflow TestOptimusPR {
     String sample_id  # name of sample matching this file, inserted into read group header
     String chemistry # chemistry identifier
 
+    String counting_mode
+
     Boolean force_no_check
   }
 
@@ -41,7 +43,8 @@ workflow TestOptimusPR {
       sample_id = sample_id,
       output_loom = true,
       chemistry = chemistry,
-      force_no_check = force_no_check
+      force_no_check = force_no_check,
+      counting_mode = counting_mode
   }
 
   call checker.ValidateOptimus as checker {
