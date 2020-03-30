@@ -24,8 +24,9 @@
     + [8. Identification of Empty Droplets](#8-identification-of-empty-droplets)
     + [9. Outputs](#9-outputs)
 - [Versioning](#versioning)
-- [FAQs](#faqs)
 - [Pipeline Improvements](#have-suggestions)
+- [FAQs](#faqs)
+
 
 # Optimus Pipeline Overview
 ![Diagram](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Optimus_diagram.png)
@@ -148,9 +149,11 @@ Optimus uses the [STAR alignment](https://github.com/HumanCellAtlas/skylab/blob/
 The [TagGeneExon](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/TagGeneExon.wdl) task uses [Drop-seq tools](https://github.com/broadinstitute/Drop-seq) to [annotate each read](https://github.com/HumanCellAtlas/skylab/blob/LK_BAM_TAGS/pipelines/optimus/Optimus_BAM_tags.md) with the type of sequence to which it aligns. These annotations vary depending on the counting_mode ("sc_rna" or "sn_rna") specified in the workflow.
 
 **Single-cell RNA-seq:**
+
 The TagGeneExon task calls Drop-seq tools v1.12 to make annotations. These annotations include INTERGENIC, INTRONIC, UTR and CODING (EXONIC), and are stored using the 'XF' BAM tag. In cases where the gene corresponds to an exon or UTR, the name of the gene that overlaps the alignment is associated with the read and stored using the GE BAM tag. 
 
 **Single-nuclei RNA-seq:**
+
 The TagGeneExon task calls Drop-seq tools v2.3.0 to make annotations. These annotations include INTERGENIC, INTRONIC, UTR and CODING (EXONIC), and are stored using the 'XF' BAM tag (see the [Bam_tags documentation](Bam_tags.md)). In cases where the gene corresponds to an exon, UTR, or intron, the name of the gene that overlaps the alignment is associated with the read and stored using the 'GE' BAM tag. 
 
 All tags are detailed in the pipeline's [BAM_tag documentation](Bam_tags.md).
@@ -202,7 +205,7 @@ The Zarr array is the default output. The Zarr schema version is detailed in the
 
 The Loom file is an optional output that is specified in the "meta" section of the [Optimus workflow](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Optimus.wdl) with the following boolean command:
 
-> "Boolean output_loom = false"
+`Boolean output_loom = false`
 
 To obtain a Loom file, the boolean parameter "false" must be changed to "true". 
 
@@ -212,19 +215,30 @@ All final Zarr and Loom outputs contain the unnormalized (unfiltered), UMI-corre
 
 All Optimus pipeline releases are documented in the [Optimus changelog](Optimus.changelog.md). 
 
-# FAQs
-## Can I run Optimus in Terra?
-Yes! We have a Terra workspace that is preconfigured with the latest Optimus workflow and is preloaded with human and mouse sample data. You can access the workspace at [https://app.terra.bio/#workspaces/featured-workspaces-hca/HCA_Optimus_Pipeline](https://app.terra.bio/#workspaces/featured-workspaces-hca/HCA_Optimus_Pipeline). You will need a Google account to set up Terra. Please see [Terra Support](https://support.terra.bio/hc/en-us) for documents on getting started.
-
-## Is the output count matrix filtered or normalized?
-No, we do not filter. We keep as much data as possible so that the researcher can make their own filtering and normalization choices. We do, however, output some information that may be helpful for filtering, like UMI counts per cell and calls on whether or not a cell is empty from EmptyDrops software. For the EmptyDrops call, a cell will be flagged as possibly empty if it contains fewer than 100 molecules.
-
-## How does the workflow change when using the single-cell RNA-seq (counting_mode = 'sc_rna') vs. the single-nuclei (counting_mode = 'sn_rna') parameters? 
-Three Optimus tasks are affected by the counting_mode parameter: TagGeneExon, UMICorrection and CreateCountMatrix. The TagGeneExon tasks uses different versions of Drop-seq tools depending on the counting_mode parameter. The sc_rna parameter uses v1.12 whereas the sn_rna uses v2.3.0. For the sn_rna parameter, a GE tag is added to intronic reads. For the UMICorrection and CreateCountMatrix tasks, the only difference related to the counting_mode parameters is that the sn_RNA parameter will have a GE tag on intronic reads, which the UMICorrection and CreateCountMatrix will recognize.
-
 # Have Suggestions? 
 
 Coming soon, we will have a GitHub document dedicated to open issues! In the meantime, please help us make our tools better by contacting [Kylee Degatano](mailto:kdegatano@broadinstitute.org) for pipeline-related suggestions or questions.
+
+
+# FAQs
+<details>
+<summary>Can I run Optimus in Terra?</summary>
+<br>
+Yes! We have a Terra workspace that is preconfigured with the latest Optimus workflow and is preloaded with human and mouse sample data. You can access the workspace at [https://app.terra.bio/#workspaces/featured-workspaces-hca/HCA_Optimus_Pipeline](https://app.terra.bio/#workspaces/featured-workspaces-hca/HCA_Optimus_Pipeline). You will need a Google account to set up Terra. Please see [Terra Support](https://support.terra.bio/hc/en-us) for documents on getting started.
+</details>
+
+<details>
+<summary>Is the output count matrix filtered or normalized?</summary>
+<br>
+No, we do not filter. We keep as much data as possible so that the researcher can make their own filtering and normalization choices. We do, however, output some information that may be helpful for filtering, like UMI counts per cell and calls on whether or not a cell is empty from EmptyDrops software. For the EmptyDrops call, a cell will be flagged as possibly empty if it contains fewer than 100 molecules.
+</details>
+
+<details>
+<summary>How does the workflow change when using the single-cell RNA-seq (counting_mode = 'sc_rna') vs. the single-nuclei (counting_mode = 'sn_rna') parameters? </summary>
+<br>
+Three Optimus tasks are affected by the counting_mode parameter: TagGeneExon, UMICorrection and CreateCountMatrix. The TagGeneExon tasks uses different versions of Drop-seq tools depending on the counting_mode parameter. The sc_rna parameter uses v1.12 whereas the sn_rna uses v2.3.0. For the sn_rna parameter, a GE tag is added to intronic reads. For the UMICorrection and CreateCountMatrix tasks, the only difference related to the counting_mode parameters is that the sn_RNA parameter will have a GE tag on intronic reads, which the UMICorrection and CreateCountMatrix will recognize.
+ <details>\
+
 
 
 
