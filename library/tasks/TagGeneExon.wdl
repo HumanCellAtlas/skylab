@@ -80,6 +80,10 @@ task TagReadWithGeneFunction {
   parameter_meta {
     annotations_gtf: "GTF annotation file for the species that bam input is derived from. Each record must have a gene_name and transcript_name in addition to a gene_id and transcript_id, no white space at the end of any record and must be in gtf format."
     bam_input: "Aligned bam file."
+    gene_name_tag: "the tag used to denote gene name in the bam (default: gn)"
+    gene_strand_tag: "the tag used to denote gene strand in the bam (default: gs)"
+    gene_function_tag: "the tag used to denote gene function (INTRONIC, EXONIC, ...) in the output bam (default: gf)"
+
     docker: "(optional) the docker image containing the runtime environment for this task"
     machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
