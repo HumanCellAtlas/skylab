@@ -55,7 +55,7 @@ workflow TestOptimusPR {
       matrix_col_index = target.matrix_col_index,
       gene_metrics = target.gene_metrics,
       cell_metrics = target.cell_metrics,
-      loom_file = target.loom_output_file,
+      loom_file = select_first([target.loom_output_file]),
       
       reference_matrix = reference_matrix,
       expected_bam_hash = expected_bam_hash,

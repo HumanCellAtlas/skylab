@@ -58,6 +58,8 @@ workflow ValidateOptimus {
              metric_and_index_validation_result = ValidateMetrics.result,
              loom_validation_result = ValidateLoom.result
     }
+
+    output {}
 }
 
 task ValidateBam {
