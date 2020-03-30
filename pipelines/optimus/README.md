@@ -24,8 +24,9 @@
     + [8. Identification of Empty Droplets](#8-identification-of-empty-droplets)
     + [9. Outputs](#9-outputs)
 - [Versioning](#versioning)
-- [FAQs](#faqs)
 - [Pipeline Improvements](#have-suggestions)
+- [FAQs](#faqs)
+
 
 # Optimus Pipeline Overview
 ![Diagram](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Optimus_diagram.png)
@@ -214,6 +215,11 @@ All final Zarr and Loom outputs contain the unnormalized (unfiltered), UMI-corre
 
 All Optimus pipeline releases are documented in the [Optimus changelog](Optimus.changelog.md). 
 
+# Have Suggestions? 
+
+Coming soon, we will have a GitHub document dedicated to open issues! In the meantime, please help us make our tools better by contacting [Kylee Degatano](mailto:kdegatano@broadinstitute.org) for pipeline-related suggestions or questions.
+
+
 # FAQs
 <details>
 <summary>Can I run Optimus in Terra?</summary>
@@ -231,11 +237,8 @@ No, we do not filter. We keep as much data as possible so that the researcher ca
 <summary>How does the workflow change when using the single-cell RNA-seq (counting_mode = 'sc_rna') vs. the single-nuclei (counting_mode = 'sn_rna') parameters? </summary>
 <br>
 Three Optimus tasks are affected by the counting_mode parameter: TagGeneExon, UMICorrection and CreateCountMatrix. The TagGeneExon tasks uses different versions of Drop-seq tools depending on the counting_mode parameter. The sc_rna parameter uses v1.12 whereas the sn_rna uses v2.3.0. For the sn_rna parameter, a GE tag is added to intronic reads. For the UMICorrection and CreateCountMatrix tasks, the only difference related to the counting_mode parameters is that the sn_RNA parameter will have a GE tag on intronic reads, which the UMICorrection and CreateCountMatrix will recognize.
-<details>
+ <details>\
 
-# Have Suggestions? 
-
-Coming soon, we will have a GitHub document dedicated to open issues! In the meantime, please help us make our tools better by contacting [Kylee Degatano](mailto:kdegatano@broadinstitute.org) for pipeline-related suggestions or questions.
 
 
 
