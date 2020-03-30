@@ -204,7 +204,7 @@ The Zarr array is the default output. The Zarr schema version is detailed in the
 
 The Loom file is an optional output that is specified in the "meta" section of the [Optimus workflow](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Optimus.wdl) with the following boolean command:
 
-> "Boolean output_loom = false"
+`Boolean output_loom = false`
 
 To obtain a Loom file, the boolean parameter "false" must be changed to "true". 
 
