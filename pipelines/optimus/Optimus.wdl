@@ -26,9 +26,6 @@ workflow Optimus {
     # Mode for counting either "sc_rna" or "sn_rna"
     String counting_mode = "sc_rna"
 
-    # version of this pipeline
-
-
     # Sequencing data inputs
     Array[File] r1_fastq
     Array[File] r2_fastq
@@ -63,6 +60,7 @@ workflow Optimus {
     # usage of preemptible machines, attempt to request for preemptible instance up to 3 times. 
   }
 
+  # version of this pipeline
   String version = "optimus_v2.0.0"
 
   # this is used to scatter matched [r1_fastq, r2_fastq, i1_fastq] arrays
@@ -86,7 +84,8 @@ workflow Optimus {
   call OptimusInputChecks.checkOptimusInput {
     input:
       force_no_check = force_no_check,
-      chemistry = chemistry
+      chemistry = chemistry,
+      counting_mode = counting_mode
   }
 
   scatter (index in indices) {
