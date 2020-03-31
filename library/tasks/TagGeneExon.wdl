@@ -66,7 +66,7 @@ task TagReadWithGeneFunction {
     String use_strand_info = "true"
 
     # runtime values
-    String docker = "quay.io/humancellatlas/secondary-analysis-dropseqtools_v1:2.3.0"
+    String docker = "quay.io/humancellatlas/secondary-analysis-dropseqtools:2.3.0"
     Int machine_mem_mb = 8250
     Int cpu = 1
     Int disk = ceil((size(bam_input, "Gi") + size(annotations_gtf, "Gi")) * 3) + 20
