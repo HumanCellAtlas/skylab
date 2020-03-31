@@ -27,7 +27,7 @@ workflow Optimus {
     String counting_mode = "sc_rna"
 
     # version of this pipeline
-    String version = "optimus_v2.0.0"
+
 
     # Sequencing data inputs
     Array[File] r1_fastq
@@ -62,6 +62,8 @@ workflow Optimus {
     # for example: `"Optimus.StarAlign.preemptible": 3` will let the StarAlign task, which by default disables the
     # usage of preemptible machines, attempt to request for preemptible instance up to 3 times. 
   }
+
+  String version = "optimus_v2.0.0"
 
   # this is used to scatter matched [r1_fastq, r2_fastq, i1_fastq] arrays
   Array[Int] indices = range(length(r1_fastq))
