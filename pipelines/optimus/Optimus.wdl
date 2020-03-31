@@ -154,14 +154,14 @@ workflow Optimus {
         tar_star_reference = tar_star_reference
     }
 
-    if ( counting_mode == "sc_rna" ) {
+    if (counting_mode == "sc_rna") {
       call TagGeneExon.TagGeneExon as TagGenes {
         input:
           bam_input = StarAlign.bam_output,
           annotations_gtf = ModifyGtf.modified_gtf
       }
     }
-    if ( counting_mode == "sn_rna" ) {
+    if (counting_mode == "sn_rna") {
       call TagGeneExon.TagReadWithGeneFunction as TagGeneFunction {
         input:
 	      bam_input = StarAlign.bam_output,
