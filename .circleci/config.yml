@@ -190,7 +190,6 @@ workflows:
         jobs:
           - test_optimus
           - test_optimus_snrna
-          - test_optimus_snrna_v3
 #          - test_emptyDropsWrapper
           - test_optimus_mouse
           - test_smartseq2
