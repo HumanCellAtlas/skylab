@@ -13,7 +13,7 @@
     "gs://hca-dcp-mint-test-data/10x//mouse/2k_brain_nuclei_adult_mouse/nuclei_2k_S1_L006_R1_001.fastq.gz",
     "gs://hca-dcp-mint-test-data/10x//mouse/2k_brain_nuclei_adult_mouse/nuclei_2k_S1_L007_R1_001.fastq.gz",
     "gs://hca-dcp-mint-test-data/10x//mouse/2k_brain_nuclei_adult_mouse/nuclei_2k_S1_L008_R1_001.fastq.gz"
-nn  ],
+  ],
   "TestOptimusPR.r2_fastq": [
     "gs://hca-dcp-mint-test-data/10x//mouse/2k_brain_nuclei_adult_mouse/nuclei_2k_S1_L001_R2_001.fastq.gz",
     "gs://hca-dcp-mint-test-data/10x//mouse/2k_brain_nuclei_adult_mouse/nuclei_2k_S1_L002_R2_001.fastq.gz",
