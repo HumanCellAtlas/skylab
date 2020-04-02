@@ -78,12 +78,12 @@ task ValidateBam {
         calculated_checksum=$( samtools view -F 256 "${bam}" | cut -f 1-11 | md5sum | awk '{print $1}' )
         echo Reduced checksum generation complete
 
-        if [ "$calculated_checksum" == "${expected_checksum}" ]
+        if [ "$calculated_checksum" == "~{expected_checksum}" ]
         then
              echo Computed and expected bam hashes match \( "$calculated_checksum" \)
              printf PASS > result.txt
         else 
-             echo Computed \( "$calculated_checksum" \) and expected \( "${expected_checksum}" \) bam file hashes do not match
+             echo Computed \( "$calculated_checksum" \) and expected \( "~{expected_checksum}" \) bam file hashes do not match
              printf FAIL > result.txt
         fi
     >>>
@@ -113,12 +113,12 @@ task ValidateLoom {
         calculated_loom_file_checksum=$( md5sum < ${loom_file} | awk '{print $1}' )
         echo Checksum generation complete
 
-        if [ "$calculated_loom_file_checksum" == ${expected_loom_file_checksum} ]
+        if [ "$calculated_loom_file_checksum" == ~{expected_loom_file_checksum} ]
         then
             echo Computed and expected loom file hashes match \( "$calculated_loom_file_checksum" \)
         printf PASS > result.txt
         else
-            echo Computed \( "$calculated_loom_file_checksum" \) and expected \( ${expected_loom_file_checksum} \) loom file hashes match
+            echo Computed \( "$calculated_loom_file_checksum" \) and expected \( ~{expected_loom_file_checksum} \) loom file hashes match
            printf FAIL > result.txt
         fi
    >>>
@@ -207,14 +207,14 @@ task ValidateMetrics {
         if [ "$gene_metric_hash" == "${expected_gene_metric_hash}" ]; then
             echo Computed and expected gene metrics match \( "$gene_metric_hash" \)
         else
-            echo Computed \( "$gene_metric_hash" \) and expected \( "${expected_gene_metric_hash}" \) gene checksums do not match
+            echo Computed \( "$gene_metric_hash" \) and expected \( "~{expected_gene_metric_hash}" \) gene checksums do not match
             fail=true
         fi
 
         if [ "$cell_metric_hash" == "${expected_cell_metric_hash}" ]; then
             echo Computed and expected cell metrics match \( "$cell_metric_hash" \)
         else
-            echo Computed \( "$cell_metric_hash" \) and expected \( "${expected_cell_metric_hash}" \) cell metrics hashes do not match
+            echo Computed \( "$cell_metric_hash" \) and expected \( "~{expected_cell_metric_hash}" \) cell metrics hashes do not match
             fail=true
         fi
 
@@ -256,25 +256,25 @@ task GenerateReport {
     # test each output for equality, echoing any failure states to stdout
     fail=false
 
-    echo Bam Validation: ${bam_validation_result}
-    if [ ${bam_validation_result} == "FAIL" ]; then
+    echo Bam Validation: ~{bam_validation_result}
+    if [ -z "~{bam_validation_result}" ] || [ ~{bam_validation_result} == "FAIL"]; then
         fail=true
     fi
 
-    echo Metrics Validation: ${metric_and_index_validation_result}
-    if [ ${metric_and_index_validation_result} == "FAIL" ]; then
+    echo Metrics Validation: ~{metric_and_index_validation_result}
+    if [ -z "~{metric_and_index_validation_result}" ] || [ ~{metric_and_index_validation_result} == "FAIL" ]; then
         echo --- Ignoring failed test ---
         # Do not fail tests for this
         # fail=true
     fi
     
-    echo Matrix Validation: ${matrix_validation_result}
-    if [ ${matrix_validation_result} == "FAIL" ]; then
+    echo Matrix Validation: ~{matrix_validation_result}
+    if [ -z "~{matrix_validation_result}" ] || [ ~{matrix_validation_result} == "FAIL" ]; then
         fail=true
     fi
 
-    echo Loom Validation: ${loom_validation_result}
-    if [ ${loom_validation_result} == "FAIL" ]; then
+    echo Loom Validation: ~{loom_validation_result}
+    if [ -z ~{loom_validation_result} ] || [ ~{loom_validation_result} == "FAIL" ]; then
         fail=true
     fi
 
@@ -288,4 +288,6 @@ task GenerateReport {
     memory: "1.0 GB"
     disks: "local-disk ${required_disk} HDD"
   }
+
+  output {}
 }
