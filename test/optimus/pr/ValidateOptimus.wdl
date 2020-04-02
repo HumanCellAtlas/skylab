@@ -69,20 +69,23 @@ task ValidateBam {
         File bam
         String expected_checksum
     }
-    
-    Int required_disk = ceil(size(bam, "G") * 1.1)
+
+Int required_disk = ceil(size(bam, "G") * 1.1)
 
     command <<<
+        cacheInvalidationRandomString=1
+
         echo Starting checksum generation...
-        # calculate hash for alignment positions only (a reduced bam hash)
-        calculated_checksum=$( samtools view -F 256 "${bam}" | cut -f 1-11 | md5sum | awk '{print $1}' )
+
+# calculate hash for alignment positions only (a reduced bam hash)
+        calculated_checksum=$( samtools view -F 256 "~{bam}" | cut -f 1-11 | md5sum | awk '{print $1}' )
         echo Reduced checksum generation complete
 
         if [ "$calculated_checksum" == "~{expected_checksum}" ]
         then
              echo Computed and expected bam hashes match \( "$calculated_checksum" \)
              printf PASS > result.txt
-        else 
+        else
              echo Computed \( "$calculated_checksum" \) and expected \( "~{expected_checksum}" \) bam file hashes do not match
              printf FAIL > result.txt
         fi
@@ -109,16 +112,18 @@ task ValidateLoom {
     Int required_disk = ceil( size(loom_file, "G") * 1.1)
 
     command <<<
+        cacheInvalidationRandomString=1
+
         echo Starting checksum generation...
-        calculated_loom_file_checksum=$( md5sum < ${loom_file} | awk '{print $1}' )
+        calculated_loom_file_checksum=$( md5sum < ~{loom_file} | awk '{print $1}' )
         echo Checksum generation complete
 
-        if [ "$calculated_loom_file_checksum" == ~{expected_loom_file_checksum} ]
+        if [ "$calculated_loom_file_checksum" == "~{expected_loom_file_checksum}" ]
         then
             echo Computed and expected loom file hashes match \( "$calculated_loom_file_checksum" \)
         printf PASS > result.txt
         else
-            echo Computed \( "$calculated_loom_file_checksum" \) and expected \( ~{expected_loom_file_checksum} \) loom file hashes match
+            echo Computed \( $calculated_loom_file_checksum \) and expected \( ~{expected_loom_file_checksum} \) loom file hashes do not match
            printf FAIL > result.txt
         fi
    >>>
@@ -147,6 +152,8 @@ task ValidateMatrix {
     Int required_disk = ceil( size(matrix, "G") * 1.1 )
 
     command <<<
+        cacheInvalidationRandomString=1
+
        set -eo pipefail
 
        ## Convert matrix to format that can be read by R
@@ -196,7 +203,9 @@ task ValidateMetrics {
     Int required_disk = ceil( (size(cell_metrics, "G") + size(gene_metrics, "G") )* 1.1)
 
     command <<<
-       set -eo pipefail
+        set -eo pipefail
+
+        cacheInvalidationRandomString=2
 
         # check matrix row and column indexes files hash
         gene_metric_hash=$(zcat "~{gene_metrics}" | md5sum | awk '{print $1}')
@@ -204,14 +213,14 @@ task ValidateMetrics {
 
         fail=false
 
-        if [ "$gene_metric_hash" == "${expected_gene_metric_hash}" ]; then
+        if [ "$gene_metric_hash" == "~{expected_gene_metric_hash}" ]; then
             echo Computed and expected gene metrics match \( "$gene_metric_hash" \)
         else
             echo Computed \( "$gene_metric_hash" \) and expected \( "~{expected_gene_metric_hash}" \) gene checksums do not match
             fail=true
         fi
 
-        if [ "$cell_metric_hash" == "${expected_cell_metric_hash}" ]; then
+        if [ "$cell_metric_hash" == "~{expected_cell_metric_hash}" ]; then
             echo Computed and expected cell metrics match \( "$cell_metric_hash" \)
         else
             echo Computed \( "$cell_metric_hash" \) and expected \( "~{expected_cell_metric_hash}" \) cell metrics hashes do not match
@@ -220,10 +229,9 @@ task ValidateMetrics {
 
         if [ $fail == "true" ]; then
             printf FAIL > result.txt
-        else 
+        else
             printf PASS > result.txt
         fi
-
     >>>
 
     runtime {
@@ -253,6 +261,8 @@ task GenerateReport {
 
     set -eo pipefail
 
+    cacheInvalidationRandomString=1
+
     # test each output for equality, echoing any failure states to stdout
     fail=false
 
@@ -267,8 +277,8 @@ task GenerateReport {
         # Do not fail tests for this
         # fail=true
     fi
-    
-    echo Matrix Validation: ~{matrix_validation_result}
+
+echo Matrix Validation: ~{matrix_validation_result}
     if [ -z "~{matrix_validation_result}" ] || [ ~{matrix_validation_result} == "FAIL" ]; then
         fail=true
     fi
@@ -281,7 +291,7 @@ task GenerateReport {
     if [ $fail == "true" ]; then exit 1; fi
 
   >>>
-  
+
   runtime {
     docker: "ubuntu:18.04"
     cpu: 1
