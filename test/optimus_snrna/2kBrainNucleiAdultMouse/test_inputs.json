@@ -1,6 +1,6 @@
 {
   "TestOptimusPR.expected_bam_hash": "d41d8cd98f00b204e9800998ecf8427e",
-  "TestOptimusPR.reference_matrix": "gs://hca-dcp-sc-pipelines-test-data/optimus-test-data/referenceMatrix.rds",
+  "TestOptimusPR.reference_matrix": "gs://hca-dcp-sc-pipelines-test-data/optimus-test-data/referenceMatrix_snrna_2kBrainNucleiAdultMouse.rds",
   "TestOptimusPR.expected_cell_metric_hash": "3813dfb43c1fd311a6bf1f2691d45df6",
   "TestOptimusPR.expected_gene_metric_hash": "bd1a56b7f28d15c9258ff481a47b38b3",
   "TestOptimusPR.expected_loom_file_checksum": "",
