@@ -21,7 +21,6 @@ cat('done\n')
 ## We generate a new reference matrix here in case we want to replace
 cat('Generating new reference matrix...')
 saveRDS(matrix,'newReferenceMatrix.rds')
-rm(newReferenceMatrix)
 gc()
 cat('done\n')
 
