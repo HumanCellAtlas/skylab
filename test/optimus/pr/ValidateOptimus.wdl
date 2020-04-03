@@ -181,7 +181,7 @@ task ValidateMatrix {
 
     output {
         String result = read_string('result.txt')
-        File new_reference_matrix = "referenceMatrix.rds"
+        File new_reference_matrix = "newReferenceMatrix.rds"
         File reads_per_cell_histogram = "reads_per_cell_histogram.png"
         File reads_per_gene_histogram = "reads_per_gene_histogram.png"
         File number_of_genes_per_cell = "number_of_genes_per_cell.png"
