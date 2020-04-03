@@ -153,9 +153,7 @@ task ValidateMatrix {
 
     command <<<
         cacheInvalidationRandomString=1
-
-       set -eo pipefail
-
+       
        ## Convert matrix to format that can be read by R
        npz2rds.sh -c ~{matrix_col_index} -r ~{matrix_row_index} \
            -d ~{matrix} -o matrix.rds
