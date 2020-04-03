@@ -15,7 +15,7 @@ matrix <- matrix[ sort(rownames(matrix)), sort(colnames(matrix)) ]
 
 ## We generate a new reference matrix here in case we want to replace
 newReferenceMatrix <- drop0(matrix)
-saveRDS(newReferenceMatrix,'referenceMatrix.rds')
+saveRDS(newReferenceMatrix,'newReferenceMatrix.rds')
 rm(newReferenceMatrix)
 
 ## Generate simple diagnostic plots
@@ -41,9 +41,9 @@ str(matrix)
 ## Here we are checking the matrices for equality by looking at the
 ## element contents which will be identical after drop0() has been run for
 ## identical matrices
-if(all(matrix@i == referenceMatrix@i) & all(matrix@p == referenceMatrix@p) &
-    all(matrix@Dimnames[[1]] == referenceMatrix@Dimnames[[1]]) &
-    all(matrix@Dimnames[[2]] == referenceMatrix@Dimnames[[2]]) &
+if(all(matrix@i == referenceMatrix@i) && all(matrix@p == referenceMatrix@p) &&
+    all(matrix@Dimnames[[1]] == referenceMatrix@Dimnames[[1]]) &&
+    all(matrix@Dimnames[[2]] == referenceMatrix@Dimnames[[2]]) &&
    all(matrix@x == referenceMatrix@x)) {
     print('PASS: Matrices are identical')
     quit(status=0)
