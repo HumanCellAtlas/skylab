@@ -70,14 +70,14 @@ task ValidateBam {
         String expected_checksum
     }
 
-Int required_disk = ceil(size(bam, "G") * 1.1)
+    Int required_disk = ceil(size(bam, "G") * 1.1)
 
     command <<<
         cacheInvalidationRandomString=4
 
         echo Starting checksum generation...
 
-# calculate hash for alignment positions only (a reduced bam hash)
+        # calculate hash for alignment positions only (a reduced bam hash)
         calculated_checksum=$( samtools view -F 256 "~{bam}" | cut -f 1-11 | md5sum | awk '{print $1}' )
         echo Reduced checksum generation complete
 
