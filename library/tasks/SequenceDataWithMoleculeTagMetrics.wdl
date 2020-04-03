@@ -5,7 +5,7 @@ task CalculateGeneMetrics {
     File bam_input
 
     # runtime values
-    String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.3"
+    String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.7"
     Int machine_mem_mb = 22000
     Int cpu = 1
     Int disk = ceil(size(bam_input, "Gi") * 4)
@@ -17,7 +17,7 @@ task CalculateGeneMetrics {
   }
 
   parameter_meta {
-    bam_input: "An aligned bam file augmented with CB, UB, GE, CY, UY, and XF tags."
+    bam_input: "an aligned bam file augmented with CB, UB, GE, CY, UY, and XF tags."
     docker: "(optional) the docker image containing the runtime environment for this task"
     machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
@@ -49,7 +49,7 @@ task CalculateCellMetrics {
     File bam_input
 
     # runtime values
-    String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.3"
+    String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.7"
     Int machine_mem_mb = 45000
     Int cpu = 1
     Int disk = ceil(size(bam_input, "Gi") * 2)
@@ -94,7 +94,7 @@ task MergeGeneMetrics {
     Array[File] metric_files
 
     # runtime values
-    String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.3"
+    String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.7"
     Int machine_mem_mb = 3850
     Int cpu = 1
     Int disk = 20
@@ -138,7 +138,7 @@ task MergeCellMetrics {
     Array[File] metric_files
 
     # runtime values
-    String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.3"
+    String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.7"
     Int machine_mem_mb = 3850
     Int cpu = 1
     Int disk = 20

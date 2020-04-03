@@ -21,10 +21,10 @@ workflow Optimus {
   meta {
     description: "The optimus 3' pipeline processes 10x genomics sequencing data based on the v2 chemistry. It corrects cell barcodes and UMIs, aligns reads, marks duplicates, and returns data as alignments in BAM format and as counts in sparse matrix exchange format."
   }
-  
+
   input {
-    # version of this pipeline
-    String version = "optimus_v2.0.0"
+    # Mode for counting either "sc_rna" or "sn_rna"
+    String counting_mode = "sc_rna"
 
     # Sequencing data inputs
     Array[File] r1_fastq
@@ -47,9 +47,6 @@ workflow Optimus {
     
     # Emptydrops lower cutoff
     Int emptydrops_lower = 100
-    
-    # Set to true to override input checks and allow pipeline to proceed with invalid input
-    Boolean force_no_check = false
 
     # If true produce the optional loom output
     Boolean output_loom = false
@@ -62,6 +59,9 @@ workflow Optimus {
     # for example: `"Optimus.StarAlign.preemptible": 3` will let the StarAlign task, which by default disables the
     # usage of preemptible machines, attempt to request for preemptible instance up to 3 times. 
   }
+
+  # version of this pipeline
+  String version = "optimus_v2.0.0"
 
   # this is used to scatter matched [r1_fastq, r2_fastq, i1_fastq] arrays
   Array[Int] indices = range(length(r1_fastq))
@@ -84,7 +84,8 @@ workflow Optimus {
   call OptimusInputChecks.checkOptimusInput {
     input:
       force_no_check = force_no_check,
-      chemistry = chemistry
+      chemistry = chemistry,
+      counting_mode = counting_mode
   }
 
   scatter (index in indices) {
@@ -151,15 +152,29 @@ workflow Optimus {
         bam_input = bam,
         tar_star_reference = tar_star_reference
     }
-    call TagGeneExon.TagGeneExon as TagGenes {
-      input:
-        bam_input = StarAlign.bam_output,
-        annotations_gtf = ModifyGtf.modified_gtf
+
+    if (counting_mode == "sc_rna") {
+      call TagGeneExon.TagGeneExon as TagGenes {
+        input:
+          bam_input = StarAlign.bam_output,
+          annotations_gtf = ModifyGtf.modified_gtf
+      }
+    }
+    if (counting_mode == "sn_rna") {
+      call TagGeneExon.TagReadWithGeneFunction as TagGeneFunction {
+        input:
+	      bam_input = StarAlign.bam_output,
+	      annotations_gtf = ModifyGtf.modified_gtf,
+	      gene_name_tag = "GE",
+	      gene_strand_tag = "GS",
+	      gene_function_tag = "XF",
+	      use_strand_info = "false"
+      }
     }
 
     call Picard.SortBamAndIndex as PreUMISort {
       input:
-        bam_input = TagGenes.bam_output
+        bam_input = select_first([TagGenes.bam_output, TagGeneFunction.bam_output])
     }
 
     call UmiCorrection.CorrectUMItools as CorrectUMItools {
@@ -246,14 +261,16 @@ workflow Optimus {
       sparse_count_matrix = MergeCountFiles.sparse_count_matrix,
       cell_id = MergeCountFiles.row_index,
       gene_id = MergeCountFiles.col_index,
-      empty_drops_result = RunEmptyDrops.empty_drops_result
+      empty_drops_result = RunEmptyDrops.empty_drops_result,
+      counting_mode = counting_mode
   }
 
   if (output_loom) {
     call ZarrUtils.OptimusZarrToLoom {
       input:
         sample_id = sample_id,
-        zarr_files = OptimusZarrConversion.zarr_output_files
+        zarr_files = OptimusZarrConversion.zarr_output_files,
+	  counting_mode = counting_mode
     }
   }
 

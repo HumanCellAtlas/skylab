@@ -72,6 +72,16 @@ jobs:
                     ./test/trigger_test.sh optimus
                 no_output_timeout: 1.5h
 
+
+    test_optimus_snrna:
+        machine: true
+        steps:
+            - checkout
+            - run:
+                command: |
+                    ./test/trigger_test.sh optimus_snrna
+                no_output_timeout: 1.5h
+
     test_optimus_v3:
         machine: true
         steps:
@@ -179,6 +189,8 @@ workflows:
     test_all:
         jobs:
           - test_optimus
+          - test_optimus_snrna
+#          - test_emptyDropsWrapper
           - test_optimus_mouse
           - test_smartseq2
           - test_smartseq2_single_end
@@ -189,3 +201,4 @@ workflows:
           - test_optimus_v3
           - test_smartseq2_multisample
           - test_smartseq2_multisample_single_end
+

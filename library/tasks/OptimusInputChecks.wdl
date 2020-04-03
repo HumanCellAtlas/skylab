@@ -3,6 +3,7 @@ version 1.0
 task checkOptimusInput {
   input {
     String chemistry
+    String counting_mode
     Boolean force_no_check
   }  
 
@@ -21,6 +22,12 @@ task checkOptimusInput {
     then
       pass="false"
       echo "ERROR: Invalid value \"${chemistry}\" for input \"chemistry\""
+    fi
+
+    if [[ ! ("${counting_mode}" == "sc_rna" || "${counting_mode}" == "sn_rna") ]]
+    then
+      pass="false"
+      echo "ERROR: Invalid value \"${counting_mode}\" for input \"counting_mode\""
     fi
 
     if [[ ${force_no_check} == "true" ]]

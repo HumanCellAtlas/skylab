@@ -57,10 +57,10 @@ task SmartSeq2ZarrConversion {
 
 
 task OptimusZarrConversion {
+
   input {
     #runtime values
     String docker = "quay.io/humancellatlas/secondary-analysis-zarr-output:0.0.3"
-
     # name of the sample
     String sample_id
     # gene annotation file in GTF format
@@ -77,6 +77,7 @@ task OptimusZarrConversion {
     File gene_id
     # emptydrops output metadata
     File empty_drops_result
+    String counting_mode = "sc_rna"
 
     Int preemptible = 3
   }
@@ -167,9 +168,11 @@ task SmartSeq2PlateToLoom {
 
 
 task OptimusZarrToLoom {
+
     input {
         String sample_id
         Array[File] zarr_files
+        String counting_mode = "sc_rna"
 
         # runtime values
         String docker = "quay.io/humancellatlas/zarr-to-loom:0.0.1"
