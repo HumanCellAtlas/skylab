@@ -73,7 +73,7 @@ task ValidateBam {
 Int required_disk = ceil(size(bam, "G") * 1.1)
 
     command <<<
-        cacheInvalidationRandomString=1
+        cacheInvalidationRandomString=4
 
         echo Starting checksum generation...
 
@@ -112,7 +112,7 @@ task ValidateLoom {
     Int required_disk = ceil( size(loom_file, "G") * 1.1)
 
     command <<<
-        cacheInvalidationRandomString=1
+        cacheInvalidationRandomString=4
 
         echo Starting checksum generation...
         calculated_loom_file_checksum=$( md5sum < ~{loom_file} | awk '{print $1}' )
@@ -152,7 +152,7 @@ task ValidateMatrix {
     Int required_disk = ceil( size(matrix, "G") * 1.1 )
 
     command <<<
-        cacheInvalidationRandomString=1
+        cacheInvalidationRandomString=4
        
        ## Convert matrix to format that can be read by R
        npz2rds.sh -c ~{matrix_col_index} -r ~{matrix_row_index} \
@@ -203,7 +203,7 @@ task ValidateMetrics {
     command <<<
         set -eo pipefail
 
-        cacheInvalidationRandomString=2
+        cacheInvalidationRandomString=4
 
         # check matrix row and column indexes files hash
         gene_metric_hash=$(zcat "~{gene_metrics}" | md5sum | awk '{print $1}')
@@ -259,34 +259,34 @@ task GenerateReport {
 
     set -eo pipefail
 
-    cacheInvalidationRandomString=1
+    cacheInvalidationRandomString=4
 
     # test each output for equality, echoing any failure states to stdout
     fail=false
 
     echo Bam Validation: ~{bam_validation_result}
-    if [ -z "~{bam_validation_result}" ] || [ ~{bam_validation_result} == "FAIL"]; then
+    if [ "~{bam_validation_result}" == "FAIL"]; then
         fail=true
     fi
 
     echo Metrics Validation: ~{metric_and_index_validation_result}
-    if [ -z "~{metric_and_index_validation_result}" ] || [ ~{metric_and_index_validation_result} == "FAIL" ]; then
+    if [ ~{metric_and_index_validation_result} == "FAIL" ]; then
         echo --- Ignoring failed test ---
         # Do not fail tests for this
         # fail=true
     fi
 
-echo Matrix Validation: ~{matrix_validation_result}
-    if [ -z "~{matrix_validation_result}" ] || [ ~{matrix_validation_result} == "FAIL" ]; then
+    echo Matrix Validation: ~{matrix_validation_result}
+    if [ "~{matrix_validation_result}" == "FAIL" ]; then
         fail=true
     fi
 
     echo Loom Validation: ~{loom_validation_result}
-    if [ -z ~{loom_validation_result} ] || [ ~{loom_validation_result} == "FAIL" ]; then
+    if [ "~{loom_validation_result}" == "FAIL" ]; then
         fail=true
     fi
 
-    if [ $fail == "true" ]; then exit 1; fi
+    if [ "$fail" == "true" ]; then exit 1; fi
 
   >>>
 
