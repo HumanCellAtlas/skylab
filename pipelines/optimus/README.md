@@ -29,7 +29,7 @@
 
 
 # Optimus Pipeline Overview
-![Diagram](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Optimus_diagram2.png)
+![Diagram](Optimus_diagram2.png)
 
 ## Introduction to the Optimus Workflow
 
