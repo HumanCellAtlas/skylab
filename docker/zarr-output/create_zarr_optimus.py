@@ -18,7 +18,7 @@ CHUNK_COL_SIZE = 10000
 logging.basicConfig(level=logging.INFO)
 
 
-def init_zarr(sample_id, path, file_format, schema_version):
+def init_zarr(sample_id, path, file_format, schema_version, expression_data_type):
     """Initializes the zarr output.
 
     Args:
@@ -44,7 +44,7 @@ def init_zarr(sample_id, path, file_format, schema_version):
     # root.attrs['README'] = "The schema adopted in this zarr store may undergo changes in the future"
     root.attrs["sample_id"] = sample_id
     root.attrs["optimus_output_schema_version"] = schema_version
-
+    root.attrs["expression_data_type"] = expression_data_type
     # Create the expression_matrix group
     # root.create_group("expression_matrix", overwrite=True);
 
@@ -463,7 +463,7 @@ def create_zarr_files(args):
     Args:
         args (argparse.Namespace): input arguments for the run
     """
-    version = "1.0.0"
+    version = "1.0.1"
 
     # initiate the zarr file
     root_group = init_zarr(
@@ -471,6 +471,7 @@ def create_zarr_files(args):
         args.output_zarr_path,
         args.zarr_format,
         schema_version=version,
+        args.expression_data_type
     )
 
     # add the expression count matrix data
@@ -573,6 +574,14 @@ def main():
         dest="verbose",
         action="store_true",
         help="whether to output verbose debugging messages",
+    )
+    
+    parser.add_argument(
+        "--expression_data_type",
+        dest="expression_data_type",
+        default="exonic",
+        choices=["exonic", "whole_transcript"],
+        help="The expression data type",
     )
 
     args = parser.parse_args()
