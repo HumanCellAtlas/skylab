@@ -29,7 +29,7 @@
 
 
 # Optimus Pipeline Overview
-![Diagram](Optimus_diagram2.png)
+![Diagram](Optimus_diagram.png)
 
 ## Introduction to the Optimus Workflow
 
