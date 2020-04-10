@@ -58,7 +58,7 @@ The Smart-seq2 workflow code can be downloaded by cloning the GitHub [skylab rep
 
 The workflow is deployed using [Cromwell](https://github.com/broadinstitute/cromwell), a GA4GH compliant, flexible workflow management system that supports multiple computing platforms. 
 
-The Multi-sample Smart-seq2 workflow (which runs off the Single Sample workflow) can also be run in [Terra](https://app.terra.bio), a cloud-based analysis platform. The Terra [Smart-seq2 Public Workspace](https://app.terra.bio/#workspaces/featured-workspaces-hca/HCA%20Smart-seq2%20Multi%20Sample%20Pipeline) contains the Smart-seq2 workflow, workflow configurations, required reference data and other inputs, and example testing data.
+The Multi-sample Smart-seq2 workflow (which wraps the Single Sample workflow described in this document) can also be run in [Terra](https://app.terra.bio), a cloud-based analysis platform. The Terra [Smart-seq2 Public Workspace](https://app.terra.bio/#workspaces/featured-workspaces-hca/HCA%20Smart-seq2%20Multi%20Sample%20Pipeline) contains the Smart-seq2 workflow, workflow configurations, required reference data and other inputs, and example testing data.
 
 ## Inputs
 
