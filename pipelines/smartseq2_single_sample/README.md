@@ -10,7 +10,7 @@
   * [Smart-seq2 Installation and Requirements](#smart-seq2-installation-and-requirements)
   * [Inputs](#inputs)
     + [Sample data input](#sample-data-input)
-    + [Additional Reference Inputs:](#additional-reference-inputs-)
+    + [Additional Reference Inputs](#additional-reference-inputs)
 - [Running Smart-seq2](#running-smart-seq2)
   * [Smart-seq2 Task Summary](#smart-seq2-task-summary)
     + [Part 1: Quality Control Tasks](#part-1-quality-control-tasks)
@@ -40,7 +40,7 @@ This pipeline has been validated to support both [human](https://docs.google.com
 | Pipeline Features | Description | Source |
 |-------------------|---------------------------------------------------------------|-----------------------|
 | Assay Type | Smart-seq2 Single Sample | [Smart-seq2](https://www.nature.com/articles/nprot.2014.006)
-| Overall Workflow  | Quality control and transcriptome quantification | Code available from [Github](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/smartseq2_single_sample/SmartSeq2SingleSample.wdl) |
+| Overall Workflow  | Quality control and transcriptome quantification | Code available from [GitHub](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/smartseq2_single_sample/SmartSeq2SingleSample.wdl) |
 | Workflow Language | WDL | [openWDL](https://github.com/openwdl/wdl) |
 | Genomic Reference Sequence (for validation)| GRCh38 human genome primary sequence and M21 (GRCm38.p6) mouse genome primary sequence | GENCODE [Human](https://www.gencodegenes.org/human/release_27.html) and [Mouse](https://www.gencodegenes.org/mouse/release_M21.html) 
 | Transcriptomic Reference Annotation (for validation) | V27 GENCODE human transcriptome and M21 mouse transcriptome | GENCODE [Human](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_27/gencode.v27.annotation.gtf.gz) and [Mouse](ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M21/gencode.vM21.annotation.gff3.gz) |
@@ -48,7 +48,7 @@ This pipeline has been validated to support both [human](https://docs.google.com
 | QC Metrics | Picard (v.2.10.10) | [Broad Institute](https://broadinstitute.github.io/picard/)   |
 | Transcript Quantification | Utilities for processing large-scale single cell datasets | [RSEM v.1.3.0](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-12-323)                          
 | Data Input File Format | File format in which sequencing data is provided | [FASTQ](https://academic.oup.com/nar/article/38/6/1767/3112533) |                     
-| Data Output File Formats | File formats in which Smart-seq2 output is provided | [BAM](http://samtools.github.io/hts-specs/), [Zarr version 2](https://zarr.readthedocs.io/en/stable/spec/v2.html) (optional output), CSV (QC Metrics and Counts) |
+| Data Output File Formats | File formats in which Smart-seq2 output is provided | [BAM](http://samtools.github.io/hts-specs/), [Zarr version 2](https://zarr.readthedocs.io/en/stable/spec/v2.html) (optional output), CSV (QC metrics and counts) |
 
 # Set-Up
 
@@ -71,7 +71,7 @@ The pipeline is designed for both single- and paired-end reads in the form of fa
 
 The workflow will use modified tasks depending if a sample is paired-end or single-end. This is designated with a boolean, as detailed in the following Reference Inputs section.
 
-### Additional Reference Inputs:
+### Additional reference inputs
 The Smart-seq2 Single Sample workflow requires multiple reference indexes. Information on how these indexes are created is found in the [Creating_Smartseq2_References](Creating_Smartseq2_References.md) documentation. The table below describes the references and each tool that uses the reference as input. 
 
 | Workflow Step | Reference name | Reference Description | Tool |
@@ -81,13 +81,13 @@ The Smart-seq2 Single Sample workflow requires multiple reference indexes. Infor
 | All | paired_end | A boolean describing if sample is paired-end | NA |
 | **Genomic alignment with HISAT2** | hisat2_ref_index | HISAT2 reference index file in tarball | HISAT2 |
 |     | hisat2_ref_name | HISAT2 reference index name | HISAT2 |
-| **Picard-generated Quality Control Metrics** | genome_ref_fasta | Genome reference in fasta format | Picard |
+| **Picard-generated quality control metrics** | genome_ref_fasta | Genome reference in fasta format | Picard |
 |     | gene_ref_flat | [RefFlat](https://software.broadinstitute.org/software/igv/genePred) file containing the location of RNA transcripts, exon start sites, etc.  | Picard |
 |     | rrna_intervals | Ribosomal RNA intervals file | Picard |
 |     | stranded | Library strand information for HISAT2; example values include FR (read corresponds to transcript), RF(read corresponds to reverse complement of transcript), or NONE | Picard |
-| **Transcriptomic Alignment with HISAT2** | hisat2_ref_trans_index | HISAT2 transcriptome index file in tarball | HISAT2 |
+| **Transcriptomic alignment with HISAT2** | hisat2_ref_trans_index | HISAT2 transcriptome index file in tarball | HISAT2 |
 |     | hisat2_ref_trans_name | HISAT2 transcriptome index file name | HISAT2 |
-| **Gene Expression Quantification with RSEM** | rsem_ref_index | RSEM reference index file in tarball | RSEM |
+| **Gene expression quantification with RSEM** | rsem_ref_index | RSEM reference index file in tarball | RSEM |
 
 # Running Smart-seq2
 
@@ -110,7 +110,7 @@ Overall, the workflow is divided into two parts that are completed after an init
 
 ### Part 1: Quality Control Tasks
 #### 1.1 Align reads to the genome using HISAT2
-HISAT2 is a fast, cost-efficient alignment tool that can determine the presence of non-transcript sequences and true transcript sequences, taking into account the presence of single-nucleotide polymorphisms ([Kim et al.,2019](https://www.nature.com/articles/s41587-019-0201-4)). The Smart-seq2 Single Sample workflow uses the [HISAT2 task](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/HISAT2.wdl) to call HISAT2 and perform graph-based alignment of paired- or single-end reads (in the form of fastq files) to a reference genome. This task  requires a reference index which can be built following the [HCA's build_indices documentation](https://github.com/HumanCellAtlas/skylab/tree/master/library/accessory_workflows/build_indices). The outputs of the task include a genome-aligned BAM file, a BAM index, and an alignment log file. 
+HISAT2 is a fast, cost-efficient alignment tool that can determine the presence of non-transcript sequences and true transcript sequences, taking into account the presence of single-nucleotide polymorphisms ([Kim et al.,2019](https://www.nature.com/articles/s41587-019-0201-4)). The Smart-seq2 Single Sample workflow uses the [HISAT2 task](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/HISAT2.wdl) to call HISAT2 and perform graph-based alignment of paired- or single-end reads (in the form of fastq files) to a reference genome. This task  requires a reference index which can be built following the [HCA's build_indices](https://github.com/HumanCellAtlas/skylab/tree/master/library/accessory_workflows/build_indices) documentation. The outputs of the task include a genome-aligned BAM file, a BAM index, and an alignment log file. 
 
 #### 1.2 Calculate summary metrics using Picard
 [Picard](https://broadinstitute.github.io/picard/) is a suite of command line tools used for manipulating high-throughput sequencing data. The [Picard task](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/Picard.wdl) uses Picard tools to calculate quality control measurements on the HISAT2 genome-aligned BAM file. The task requires a reference genome fasta, a RefFlat gene annotation file, and an RNA intervals file (see the [Creating_Smartseq2_References](Creating_Smartseq2_References.md) documentation). The outputs of the task are text and PDF files for each metric.
