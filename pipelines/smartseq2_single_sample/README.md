@@ -10,7 +10,7 @@
   * [Smart-seq2 Installation and Requirements](#smart-seq2-installation-and-requirements)
   * [Inputs](#inputs)
     + [Sample data input](#sample-data-input)
-    + [Additional Reference Inputs](#additional-reference-inputs)
+    + [Additional reference inputs](#additional-reference-inputs)
 - [Running Smart-seq2](#running-smart-seq2)
   * [Smart-seq2 Task Summary](#smart-seq2-task-summary)
     + [Part 1: Quality Control Tasks](#part-1-quality-control-tasks)
@@ -58,7 +58,7 @@ The Smart-seq2 workflow code can be downloaded by cloning the GitHub [skylab rep
 
 The workflow is deployed using [Cromwell](https://github.com/broadinstitute/cromwell), a GA4GH compliant, flexible workflow management system that supports multiple computing platforms. 
 
-The Multi-sample Smart-seq2 workflow (which wraps the Single Sample workflow described in this document) can also be run in [Terra](https://app.terra.bio), a cloud-based analysis platform. The Terra [Smart-seq2 Public Workspace](https://app.terra.bio/#workspaces/featured-workspaces-hca/HCA%20Smart-seq2%20Multi%20Sample%20Pipeline) contains the Smart-seq2 workflow, workflow configurations, required reference data and other inputs, and example testing data.
+The [Multi Sample Smart-seq2 workflow](/pipelines/smartseq2_multisample/)(which wraps the Single Sample workflow described in this document) can also be run in [Terra](https://app.terra.bio), a cloud-based analysis platform. The Terra [Smart-seq2 Public Workspace](https://app.terra.bio/#workspaces/featured-workspaces-hca/HCA%20Smart-seq2%20Multi%20Sample%20Pipeline) contains the Smart-seq2 workflow, workflow configurations, required reference data and other inputs, and example testing data.
 
 ## Inputs
 
@@ -66,7 +66,7 @@ Example Smart-seq2 Single Sample inputs are found in the [SmartSeq2SingleSampleE
 
 ### Sample data input
 
-The pipeline is designed for both single- and paired-end reads in the form of fastq files. The workflow accepts two fastq files for paired-end experiments and one fastq file single-end experiments. It processes one sample (cell).  
+The pipeline is designed for both single- and paired-end reads in the form of FASTQ files. The workflow accepts two FASTQ files for paired-end experiments and one FASTQ file single-end experiments. It processes one sample (cell).  
 
 *  fastq1: forward reads for sample with paired-end sequencing (or reads for sample with single-end sequencing)
 *  fastq2: reverse reads for sample with paired-end sequencing (not applicable for samples with single-end sequencing)
@@ -112,7 +112,7 @@ Overall, the workflow is divided into two parts that are completed after an init
 
 ### Part 1: Quality Control Tasks
 #### 1.1 Align reads to the genome using HISAT2
-HISAT2 is a fast, cost-efficient alignment tool that can determine the presence of non-transcript sequences and true transcript sequences, taking into account the presence of single-nucleotide polymorphisms ([Kim et al.,2019](https://www.nature.com/articles/s41587-019-0201-4)). The Smart-seq2 Single Sample workflow uses the [HISAT2 task](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/HISAT2.wdl) to call HISAT2 and perform graph-based alignment of paired- or single-end reads (in the form of fastq files) to a reference genome. This task  requires a reference index which can be built following the [HCA's build_indices](https://github.com/HumanCellAtlas/skylab/tree/master/library/accessory_workflows/build_indices) documentation. The outputs of the task include a genome-aligned BAM file, a BAM index, and an alignment log file. 
+HISAT2 is a fast, cost-efficient alignment tool that can determine the presence of non-transcript sequences and true transcript sequences, taking into account the presence of single-nucleotide polymorphisms ([Kim et al.,2019](https://www.nature.com/articles/s41587-019-0201-4)). The Smart-seq2 Single Sample workflow uses the [HISAT2 task](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/HISAT2.wdl) to call HISAT2 and perform graph-based alignment of paired- or single-end reads (in the form of FASTQ files) to a reference genome. This task  requires a reference index which can be built following the [HCA's build_indices](https://github.com/HumanCellAtlas/skylab/tree/master/library/accessory_workflows/build_indices) documentation. The outputs of the task include a genome-aligned BAM file, a BAM index, and an alignment log file. 
 
 #### 1.2 Calculate summary metrics using Picard
 [Picard](https://broadinstitute.github.io/picard/) is a suite of command line tools used for manipulating high-throughput sequencing data. The [Picard task](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/Picard.wdl) uses Picard tools to calculate quality control measurements on the HISAT2 genome-aligned BAM file. The task requires a reference genome fasta, a RefFlat gene annotation file, and an RNA intervals file (see the [Creating_Smartseq2_References](Creating_Smartseq2_References.md) documentation). The outputs of the task are text and PDF files for each metric.
@@ -128,7 +128,7 @@ The [Picard task](https://github.com/HumanCellAtlas/skylab/blob/master/library/t
 
 ### Part 2: Transcriptome Quantification Tasks
 #### 2.1 Align reads to the transcriptome using HISAT2
-The [HISAT2RSEM task](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/HISAT2.wdl) uses HISAT2 to align reads to the reference transcriptome. The task requires the hisat2_ref_trans_index file and the sample fastq files as input. The output of this task is a transcriptome-aligned BAM file and an alignment log file.
+The [HISAT2RSEM task](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/HISAT2.wdl) uses HISAT2 to align reads to the reference transcriptome. The task requires the hisat2_ref_trans_index file and the sample FASTQ files as input. The output of this task is a transcriptome-aligned BAM file and an alignment log file.
 
 #### 2.2 Quantify gene expression using RSEM
 [RSEM](https://deweylab.github.io/RSEM/README.html#de) is a software package for quantifying transcript abundances ([Li and Dewey, 2011](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-12-323)). The Smart-seq2 Single Sample workflow uses the [RSEM task](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/RSEM.wdl) to calculate expression estimates from a transcriptome-aligned BAM file using the rsem_ref_index file for reference input. The RSEM tool [rsem-calculate-expression](http://deweylab.biostat.wisc.edu/rsem/rsem-calculate-expression.html) is used to estimate gene/isoform expression. 
@@ -185,6 +185,7 @@ All Smart-seq2 Single Sample release notes are documented in the [Smartseq2 Sing
 
 # Have Suggestions?
 Coming soon, we will have a GitHub document dedicated to open issues! In the meantime, please help us make our tools better by contacting [Kylee Degatano](mailto:kdegatano@broadinstitute.org) for pipeline-related suggestions or questions.
+
 
 
 
