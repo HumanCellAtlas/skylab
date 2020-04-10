@@ -18,13 +18,14 @@ CHUNK_COL_SIZE = 10000
 logging.basicConfig(level=logging.INFO)
 
 
-def init_zarr(sample_id, path, file_format, schema_version, expression_data_type):
+def init_zarr(sample_id, path, file_format, expression_data_type, schema_version):
     """Initializes the zarr output.
 
     Args:
         sample_id (str): sample or cell id
         path (str): path to the zarr output
         file_format (str): zarr file format [DirectoryStore, ZipStore]
+        expression_data_type (str): type of expression data [exonic, whole_trascript]
         schema_version (str): version string of this output to allow for parsing of future changes
 
     Returns:
@@ -470,8 +471,8 @@ def create_zarr_files(args):
         args.sample_id,
         args.output_zarr_path,
         args.zarr_format,
-        schema_version=version,
-        args.expression_data_type
+        args.expression_data_type,
+        version
     )
 
     # add the expression count matrix data
