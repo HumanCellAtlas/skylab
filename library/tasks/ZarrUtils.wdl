@@ -93,7 +93,7 @@ task OptimusZarrConversion {
   command {
     set -euo pipefail
 
-    [[ ~{counting_mode} == "sc_rna" ]] && expression_data_type_param="exonic"  || expression_data_type_param="whole_transcript"
+    [[ ~{counting_mode} == "sc_rna" ]] && EXPRESSION_DATA_TYPE_PARAM="exonic"  || EXPRESSION_DATA_TYPE_PARAM="whole_transcript"
 
     python3 /tools/create_zarr_optimus.py \
        --empty_drops_file ${empty_drops_result} \
@@ -106,7 +106,7 @@ task OptimusZarrConversion {
        --format DirectoryStore \
        --sample_id ${sample_id} \
        --count_matrix ${sparse_count_matrix} \
-       --expression_data_type $expression_data_type_param
+       --expression_data_type $EXPRESSION_DATA_TYPE_PARAM
 
     mkdir zarrout
     # get all the files in the zarr folder in  a list
