@@ -27,6 +27,7 @@ def main():
     input_zarr_path = args.input_zarr_path
     output_loom_path = args.output_loom_path
     sample_id = args.sample_id
+    expression_data_type = args.expression_data_type
 
     # Checks on inputs
     if not os.path.isdir(input_zarr_path):
@@ -37,13 +38,15 @@ def main():
     # Open the ZARR
     store = zarr.DirectoryStore(input_zarr_path)
     root = zarr.open(store)
-
+    
+    #Get expression data type: exonic or whole_transcript
+    expression_data_type = root[f"\{expression_data_type}"]
+    
     # Get the expression matrix
     # expression matrix in numpy ndarray format (dense)
     # NOTE: If memory is limiting this could be done by chunk
     nrows = root[f"/{sample_id}.zarr/expression"].shape[0]
     ncols = root[f"/{sample_id}.zarr/expression"].shape[1]
-
     expr_sp = sc.sparse.coo_matrix((nrows, ncols), np.float32)
 
     iter_row_count = 100;
@@ -119,7 +122,7 @@ def main():
     [add_to_cell_meta_float_by_index(i) for i in range(0, float_field_names.shape[0])]
 
     # Generate the loom file
-    loompy.create(output_loom_path, expr_sp_t, row_attrs, col_attrs)
+    loompy.create(output_loom_path, expr_sp_t, row_attrs, col_attrs, file_attrs={"expression_data_type":expression_data_type})
 
 
 if __name__ == '__main__':
