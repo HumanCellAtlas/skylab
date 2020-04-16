@@ -40,7 +40,7 @@ def main():
     root = zarr.open(store)
     
     #Get expression data type: exonic or whole_transcript
-    expression_data_type = root[f"\{expression_data_type}"]
+    expression_data_type = root.attrs['expression_data_type']
     
     # Get the expression matrix
     # expression matrix in numpy ndarray format (dense)
