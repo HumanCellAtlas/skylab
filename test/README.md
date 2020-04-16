@@ -1,7 +1,29 @@
+This folder contains testing infrastructure for the pipelines in the skylab repository.
+
+**Description of Tests**
+- optimus: Tests related to the single-cell RNA-seq version of Optimus
+  - 4kpbmc: Runs the full 4kpbmc dataset with the sc variant of Optimus. Checksums are not provided (manual)
+  - pr: Run a small dataset derived from the 4k PBMC dataset with Optimus. It performs delta testing on the output matrix
+  - prV3: Runs a small dataset derived from the 10k PBMC datasets with Optimus in V3 mode. Performs delta testing on the output matrix
+- optimus_mouse
+  - pr: Runs a small dataset derived from the 1k heart dataset with optimus V2 in single-cell mode. Checks output checksum
+- optimus_snrna
+  - pr: Runs a small dataset derived from the 1k heart dataset with optimus V2 in single-cell mode. Checks output checksum
+  - 2kBrainNucleiAdultMouse: Runs the snRNA-seq 2k AdultBrain Nuclei dataset with the snRNA-seq version of Optimus (manual)
+  - 4kpbmc_manual: Runs the *scRNA-seq* 4k PBMC dataset with the *snRNA-seq* version of Optimus (manual)
+- sc_atac
+  - pr: runs a small dataset with the sc atac-seq pipeline and verifies the output
+- smartseq2_multisample
+  - pr: Runs 22 cells throught the multi-sample SS2 pipeline in paired-end mode and checks the output files
+  - pr_single_end: Runs 22 cells throught the multi-sample SS2 pipeline in single-end mode and checks the output files
+- smartseq2_single_sample
+  - pr: Runs a single-cell throught the SS2 pipeline in paired-end mode and checks the output files
+  - pr_single_end: Runs a single-cell throught the SS2 pipeline in single-end mode and checks the output files
+
 **Running Tests Manually**
 1) Set the environment variable BROAD_CROMWELL_KEY to have the contents of the cromwell credentials key JSON file.
 2) cd to the top level directory of the repository
-3) run the following command ```./test/trigger_test.sh [name of workflow without trailing /pr/]```
+3) run the following command ```./test/trigger_test.sh test_name [test_variant]```, where test_name is a directory name (e.g. ```optimus```) and test_variant is a nested directory name (e.g. ```4kpbmc```). test_variant is optional, if not provided the ```pr``` test will be run.
 
 Example:
 ```
