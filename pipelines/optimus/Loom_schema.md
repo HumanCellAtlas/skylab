@@ -10,7 +10,7 @@ The global attributes in the loom apply to the whole file, not any specific part
 | Metric | Details |
 | :-- | :-- |
 | LOOM_SPEC_VERSION | String with the loom file spec version |
-| expression_layer_type | String indicating whether counts are generated using exonic only or exonic and intronic reads. The value will be either "exonic" for the sc_RNA parameter or "whole_transcript" for the sn_RNA parameter |
+| expression_data_type | String indicating whether counts are generated using exonic only or exonic and intronic reads. The value will be either "exonic" for the sc_RNA parameter or "whole_transcript" for the sn_RNA parameter |
  
 
 ## Table 2. Column Attributes (Cell Metrics) 
