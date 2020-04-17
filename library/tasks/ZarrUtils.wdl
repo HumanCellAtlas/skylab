@@ -177,7 +177,7 @@ task OptimusZarrToLoom {
         String counting_mode = "sc_rna"
 
         # runtime values
-        String docker = "quay.io/humancellatlas/zarr-to-loom:0.0.1"
+        String docker = "quay.io/humancellatlas/zarr-to-loom:0.0.3-alpha-3"
 
         Int preemptible = 3
         Int cpu = 1
