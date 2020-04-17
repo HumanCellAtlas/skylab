@@ -25,8 +25,6 @@ def main():
 
     input_zarr_path = args.input_zarr_path
     output_loom_path = args.output_loom_path
-    sample_id = args.sample_id
-    expression_data_type = args.expression_data_type
 
     # Checks on inputs
     if not os.path.isdir(input_zarr_path):
