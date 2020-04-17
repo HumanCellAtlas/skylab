@@ -173,7 +173,6 @@ task SmartSeq2PlateToLoom {
 task OptimusZarrToLoom {
 
     input {
-        String sample_id
         Array[File] zarr_files
         String counting_mode = "sc_rna"
 
@@ -200,7 +199,7 @@ task OptimusZarrToLoom {
         mv ${sep=' ' zarr_files} packed_zarr/
         mkdir unpacked_zarr
         unpackZARR.sh -i packed_zarr -o unpacked_zarr
-        optimus_zarr_to_loom.py --input-zarr unpacked_zarr --output-loom output.loom --sample-id ${sample_id}
+        optimus_zarr_to_loom.py --input-zarr unpacked_zarr --output-loom output.loom 
     }
 
     runtime {
