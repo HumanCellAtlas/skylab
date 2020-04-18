@@ -29,7 +29,7 @@ workflow MultiSampleSmartSeq2 {
       String stranded
       String file_prefix
       Array[File] read1
-      Array[File]? read2
+      Array[File?] read2
       String batch_id
       Boolean paired_end
 
