@@ -60,10 +60,12 @@ Optimus can be deployed using [Cromwell](https://software.broadinstitute.org/wdl
 
 ## Inputs
 
-Optimus pipeline inputs are detailed in a JSON file. There are three sample configuration files available if you are interested in running the pipeline. 
+Optimus pipeline inputs are detailed in JSON format configuration files. There are three sample configuration files available if you are interested in running the pipeline. 
 *  [human_v2_example](human_v2_example.json): A human 10x v2 single-cell dataset
 *  [human_v3_example](human_v3_example.json): A human 10x v3 single-cell dataset
 *  [mouse_v2_example](mouse_v2_example.json): A mouse 10x v2 single-cell dataset
+
+Additionally, there are multiple sample datasets available in the [/test_optimus_full_datasets](/test_optimus_full_datasets) folder. Please note that unlike the example configuration files above, the configuration files in this folder may not reflect updated Optimus parameters. However, you can still access the FASTQ files for each dataset at the Google bucket locations listed in the dataset configuration files. 
 
 ### Sample Data Input
 
@@ -227,7 +229,7 @@ Coming soon, we will have a GitHub document dedicated to open issues! In the mea
 <details>
 <summary>Can I run Optimus in Terra?</summary>
 <br>
-Yes! We have a Terra workspace that is preconfigured with the latest Optimus workflow and is preloaded with human and mouse sample data. You can access the workspace at [https://app.terra.bio/#workspaces/featured-workspaces-hca/HCA_Optimus_Pipeline](https://app.terra.bio/#workspaces/featured-workspaces-hca/HCA_Optimus_Pipeline). You will need a Google account to set up Terra. Please see [Terra Support](https://support.terra.bio/hc/en-us) for documents on getting started.
+Yes! We have a Terra workspace that is preconfigured with the latest Optimus workflow and is preloaded with human and mouse sample data. You can access the workspace at https://app.terra.bio/#workspaces/featured-workspaces-hca/HCA_Optimus_Pipeline. You will need a Google account to set up Terra. Please see Terra Support at https://support.terra.bio/hc/en-us for documents on getting started.
 </details>
 
 <details>
@@ -242,6 +244,10 @@ No, we do not filter. We keep as much data as possible so that the researcher ca
 Three Optimus tasks are affected by the counting_mode parameter: TagGeneExon, UMICorrection and CreateCountMatrix. The TagGeneExon tasks uses different versions of Drop-seq tools depending on the counting_mode parameter. The sc_rna parameter uses v1.12 whereas the sn_rna uses v2.3.0. For the sn_rna parameter, a GE tag is added to intronic reads. For the UMICorrection and CreateCountMatrix tasks, the only difference related to the counting_mode parameters is that the sn_RNA parameter will have a GE tag on intronic reads, which the UMICorrection and CreateCountMatrix will recognize.
  </details>
 
-
+<details>
+<summary>Where can I find example Optimus datasets and parameters to test the pipeline? </summary>
+<br>
+There are three example configuration JSON files available for you to test the pipeline- the human_v2_example.json, the human_v3_example.json, and the mouse_v2_example.json. Each of these configuration files can also be run in the Optimus Featured Workspace in Terra. 
+ </details>
 
 
