@@ -60,7 +60,10 @@ Optimus can be deployed using [Cromwell](https://software.broadinstitute.org/wdl
 
 ## Inputs
 
-Optimus pipeline inputs are detailed in a JSON file, such as in this [example](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/example_test_inputs.json). 
+Optimus pipeline inputs are detailed in a JSON file. There are three sample configuration files available if you are interested in running the pipeline. 
+*  [human_v2_example](human_v2_example.json): A human 10x v2 single-cell dataset
+*  [human_v3_example](human_v3_example.json): A human 10x v3 single-cell dataset
+*  [mouse_v2_example](mouse_v2_example.json): A mouse 10x v2 single-cell dataset
 
 ### Sample Data Input
 
