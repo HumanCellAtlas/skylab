@@ -1,6 +1,6 @@
 This folder contains testing infrastructure for the pipelines in the skylab repository. The infrastructure allows for test execution via circleci on a cromwell server for multiple pipelines present in this repository. The tests in this directory can be run manually by anyone with an access to a cromwell server. Futhermore, the tests tests not marked as manual are  executed upon creation of a pull request (PR) to the repository. The majority of the datasets shown below are obtained by subsetting of full experimental datasets in order to reduce run time. Manual tests utilize full datasets and can be used to verify the output of the pipelines on well described experimental datasets. Some of these datasets have been used on validation reports of the respective pipelines.
 
-**Description of Tests**
+**Description of tests and optional test variants**
 - optimus: Tests related to the single-cell RNA-seq version of Optimus
   - 4kpbmc: Runs the full 4kpbmc dataset with the sc variant of Optimus. Checksums are not provided (manual)
   - pr: Run a small dataset derived from the 4k PBMC dataset with Optimus. It performs delta testing on the output matrix
