@@ -65,7 +65,7 @@ Optimus pipeline inputs are detailed in JSON format configuration files. There a
 *  [human_v3_example](human_v3_example.json): A human 10x v3 single-cell dataset
 *  [mouse_v2_example](mouse_v2_example.json): A mouse 10x v2 single-cell dataset
 
-Additionally, there are multiple sample datasets available in the [/test_optimus_full_datasets](/test_optimus_full_datasets) folder. Please note that unlike the example configuration files above, the configuration files in this folder may not reflect updated Optimus parameters. However, you can still access the FASTQ files for each dataset at the Google bucket locations listed in the dataset configuration files. 
+Additionally, there are multiple sample datasets available in the [test_optimus_full_datasets](test_optimus_full_datasets/) folder. Please note that unlike the example configuration files above, the configuration files in this folder may not reflect updated Optimus parameters. However, you can still access the FASTQ files for each dataset at the Google bucket locations listed in the dataset configuration files. 
 
 ### Sample Data Input
 
@@ -247,7 +247,7 @@ Three Optimus tasks are affected by the counting_mode parameter: TagGeneExon, UM
 <details>
 <summary>Where can I find example Optimus datasets and parameters to test the pipeline? </summary>
 <br>
-There are three example configuration JSON files available for you to test the pipeline- the human_v2_example.json, the human_v3_example.json, and the mouse_v2_example.json. Each of these configuration files can also be run in the Optimus Featured Workspace in Terra. 
+There are three example configuration JSON files available for you to test the pipeline- the human_v2_example.json, the human_v3_example.json, and the mouse_v2_example.json (see the Inputs section). Each of these configuration files can also be run in the Optimus Featured Workspace in Terra at https://app.terra.bio/#workspaces/featured-workspaces-hca/HCA_Optimus_Pipeline. We also have multiple example datasets available in the test_optimus_full_datasets folder in this repo. Please note that the configuration files in this folder contain the location of example dataset FASTQ files, but the reference parameters may not be up to date. 
  </details>
 
 
