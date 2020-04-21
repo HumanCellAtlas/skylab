@@ -247,7 +247,7 @@ Three Optimus tasks are affected by the counting_mode parameter: TagGeneExon, UM
 <details>
 <summary>Where can I find example Optimus datasets and parameters to test the pipeline? </summary>
 <br>
-There are three example configuration JSON files available for you to test the pipeline- the human_v2_example.json, the human_v3_example.json, and the mouse_v2_example.json (see the Inputs section). Each of these configuration files can also be run in the Optimus Featured Workspace in Terra at https://app.terra.bio/#workspaces/featured-workspaces-hca/HCA_Optimus_Pipeline. We also have multiple example datasets available in the test_optimus_full_datasets folder in this repo. Please note that the configuration files in this folder contain the location of example dataset FASTQ files, but the reference parameters may not be up to date. 
+There are three example configuration JSON files available for you to test the pipeline- the human_v2_example.json, the human_v3_example.json, and the mouse_v2_example.json (see the Inputs section). Each of these configuration files can be run in the Optimus Featured Workspace in Terra at https://app.terra.bio/#workspaces/featured-workspaces-hca/HCA_Optimus_Pipeline, but you should note that the workspace comes preloaded with the same data and configurations. We also have multiple example datasets available in the test_optimus_full_datasets folder in this repo. Please note that the configuration files in this folder contain the accruate location of example dataset FASTQ files, but the pipeline parameters in the configuration files of this fodler may not be up to date.
  </details>
 
 
