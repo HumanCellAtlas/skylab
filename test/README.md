@@ -1,4 +1,4 @@
-This folder contains testing infrastructure for the pipelines in the skylab repository.
+This folder contains testing infrastructure for the pipelines in the skylab repository. The infrastructure allows for test execution via circleci on a cromwell server for multiple pipelines present in this repository. The tests in this directory can be run manually by anyone with an access to a cromwell server. Futhermore, the tests tests not marked as manual are  executed upon creation of a pull request (PR) to the repository. The majority of the datasets shown below are obtained by subsetting of full experimental datasets in order to reduce run time. Manual tests utilize full datasets and can be used to verify the output of the pipelines on well described experimental datasets. Some of these datasets have been used on validation reports of the respective pipelines.
 
 **Description of Tests**
 - optimus: Tests related to the single-cell RNA-seq version of Optimus
@@ -29,7 +29,7 @@ Example:
 ```
 export BROAD_CROMWELL_KEY=`cat ~/identities/credentials.json`
 cd ~/skylab/
-./test/trigger_test.sh optimus
+./test/trigger_test.sh optimus 4kpmc
 ```
 
 **PR testing infrastructure in Skylab.**
