@@ -18,11 +18,10 @@ CHUNK_COL_SIZE = 10000
 logging.basicConfig(level=logging.INFO)
 
 
-def init_zarr(sample_id, path, file_format, expression_data_type, schema_version):
+def init_zarr(path, file_format, expression_data_type, schema_version):
     """Initializes the zarr output.
 
     Args:
-        sample_id (str): sample or cell id
         path (str): path to the zarr output
         file_format (str): zarr file format [DirectoryStore, ZipStore]
         expression_data_type (str): type of expression data [exonic, whole_trascript]
@@ -43,7 +42,6 @@ def init_zarr(sample_id, path, file_format, expression_data_type, schema_version
     root = zarr.group(store, overwrite=True)
 
     # root.attrs['README'] = "The schema adopted in this zarr store may undergo changes in the future"
-    root.attrs["sample_id"] = sample_id
     root.attrs["optimus_output_schema_version"] = schema_version
     root.attrs["expression_data_type"] = expression_data_type
     # Create the expression_matrix group
@@ -459,7 +457,6 @@ def add_expression_counts(data_group, args):
 
 def create_zarr_files(args):
     """This function creates the zarr file or folder structure in output_zarr_path in format file_format,
-        with sample_id from the input folder analysis_output_path
 
     Args:
         args (argparse.Namespace): input arguments for the run
@@ -468,7 +465,6 @@ def create_zarr_files(args):
 
     # initiate the zarr file
     root_group = init_zarr(
-        args.sample_id,
         args.output_zarr_path,
         args.zarr_format,
         args.expression_data_type,
@@ -553,13 +549,6 @@ def main():
         dest="output_zarr_path",
         required=True,
         help="path to .zarr file is to be created",
-    )
-
-    parser.add_argument(
-        "--sample_id",
-        dest="sample_id",
-        default="Unknown sample",
-        help="the sample name in the bundle",
     )
 
     parser.add_argument(
