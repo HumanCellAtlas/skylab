@@ -60,10 +60,10 @@ Optimus can be deployed using [Cromwell](https://software.broadinstitute.org/wdl
 
 ## Inputs
 
-Optimus pipeline inputs are detailed in JSON format configuration files. There are three sample configuration files available if you are interested in running the pipeline. 
-*  [human_v2_example](human_v2_example.json): A human 10x v2 single-cell dataset
-*  [human_v3_example](human_v3_example.json): A human 10x v3 single-cell dataset
-*  [mouse_v2_example](mouse_v2_example.json): A mouse 10x v2 single-cell dataset
+Optimus pipeline inputs are detailed in JSON format configuration files. There are three example configuration files available if you are interested in running the pipeline: 
+*  [human_v2_example](human_v2_example.json): An example human 10x v2 single-cell dataset
+*  [human_v3_example](human_v3_example.json): An example human 10x v3 single-cell dataset
+*  [mouse_v2_example](mouse_v2_example.json): An example mouse 10x v2 single-cell dataset
 
 Additionally, there are multiple sample datasets available in the [test_optimus_full_datasets](test_optimus_full_datasets/) folder. Please note that unlike the example configuration files above, the configuration files in this folder may not reflect updated Optimus parameters. However, you can still access the FASTQ files for each dataset at the Google bucket locations listed in the dataset configuration files. 
 
