@@ -15,7 +15,6 @@
 2020-02-28 (Date of Last Commit)
 
 * Fixed bug that resulted in emptyDrops output being incorrect
-
 * Updated workflow to WDL 1.0
 
 # optimus_v1.4.0
