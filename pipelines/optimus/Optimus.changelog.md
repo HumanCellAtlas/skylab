@@ -1,15 +1,17 @@
 # (next version)
 2020-04-24 (Date of Last Commit)
 
-* Added new snRNAseq counting_mode parameter
-  * For the sn_rna couting mode only, updated dropseq tools to version #
-  * Updated sctools to version # to support new counting 
+* Added a new counting_mode parameter to run the workflow for single-nuclei datasets
+  * Updated Drop-seq tools to v2.3.0; this update is the single-nuclei parameter (counting_mode = sn_rna) 
+  * Updated sctools to support the single-nuclei parameter (counting_mode = sn_rna) 
 
-* Added tests for sn_rna counting mode 
+* Added tests for running the workflow when counting_mode = sn_rna 
 
-* Updated Zarr and Loom output to include global attribute for counting mode
+* Updated the Zarr and Loom output to include a global attribute describing the counting mode
 
-* Updated documentation to detail new counting_mode parameter and to include new FAQ section
+* Added new example datasets that can be used with the Optimus workflow
+
+* Updated the README documentation to detail the new counting_mode parameter, describe example datasets, and to include a new FAQ section
 
   
 
