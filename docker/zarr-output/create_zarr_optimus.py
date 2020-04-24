@@ -18,13 +18,13 @@ CHUNK_COL_SIZE = 10000
 logging.basicConfig(level=logging.INFO)
 
 
-def init_zarr(path, file_format, expression_data_type, schema_version):
+def init_zarr(sample_id, path, file_format, expression_data_type, schema_version):
     """Initializes the zarr output.
 
     Args:
         path (str): path to the zarr output
         file_format (str): zarr file format [DirectoryStore, ZipStore]
-        expression_data_type (str): type of expression data [exonic, whole_trascript]
+        expression_data_type (str): type of expression data [exonic, whole_transcript]
         schema_version (str): version string of this output to allow for parsing of future changes
 
     Returns:
