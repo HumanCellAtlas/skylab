@@ -1,4 +1,20 @@
+# (next version)
+2020-04-24 (Date of Last Commit)
+
+* Added new snRNAseq counting_mode parameter
+  * For the sn_rna couting mode only, updated dropseq tools to version #
+  * Updated sctools to version # to support new counting 
+
+* Added tests for sn_rna counting mode 
+
+* Updated Zarr and Loom output to include global attribute for counting mode
+
+* Updated documentation to detail new counting_mode parameter and to include new FAQ section
+
+  
+
 # optimus_v2.0.0
+2020-02-28 (Date of Last Commit)
 
 * Fixed bug that resulted in emptyDrops output being incorrect
 
