@@ -1,9 +1,11 @@
 # (next version)
 2020-04-24 (Date of Last Commit)
 
-* Added a new counting_mode parameter to run the workflow for single-nuclei datasets
-  * Updated Drop-seq tools to v2.3.0; this update is only used when the workflow is set to the single-nuclei mode (counting_mode = sn_rna) 
-  * Updated sctools to support the single-nuclei parameter (counting_mode = sn_rna) 
+* Added a new counting_mode parameter to Optimus workflow which enables processing of single-nuclei datasets
+
+* Updated Drop-seq tools to v2.3.0; this update is only used when the workflow is set to the single-nuclei mode (counting_mode = sn_rna) 
+
+* Updated sctools to support the single-nuclei parameter (counting_mode = sn_rna) 
 
 * Added tests for running the workflow when counting_mode = sn_rna 
 
