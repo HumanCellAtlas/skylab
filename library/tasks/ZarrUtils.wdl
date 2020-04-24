@@ -93,13 +93,13 @@ task OptimusZarrConversion {
   command {
     set -euo pipefail
 
+
     if ~{counting_mode} == "sc_rna"
     then
     	EXPRESSION_DATA_TYPE_PARAM="exonic" 
     else
-  	EXPRESSION_DATA_TYPE_PARAM="whole_transcript"
+  	  EXPRESSION_DATA_TYPE_PARAM="whole_transcript"
     fi
-  # [[ ~{counting_mode} == "sc_rna" ]] && EXPRESSION_DATA_TYPE_PARAM="exonic"  || EXPRESSION_DATA_TYPE_PARAM="whole_transcript"
 
     python3 /tools/create_zarr_optimus.py \
        --empty_drops_file ${empty_drops_result} \
