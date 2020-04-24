@@ -60,7 +60,7 @@ task OptimusZarrConversion {
 
   input {
     #runtime values
-    String docker = "quay.io/humancellatlas/secondary-analysis-zarr-output:0.0.3"
+    String docker = "quay.io/humancellatlas/secondary-analysis-zarr-output:0.0.4"
     # name of the sample
     String sample_id
     # gene annotation file in GTF format
@@ -93,6 +93,8 @@ task OptimusZarrConversion {
   command {
     set -euo pipefail
 
+    [[ ~{counting_mode} == "sc_rna" ]] && EXPRESSION_DATA_TYPE_PARAM="exonic"  || EXPRESSION_DATA_TYPE_PARAM="whole_transcript"
+
     python3 /tools/create_zarr_optimus.py \
        --empty_drops_file ${empty_drops_result} \
        --annotation_file ${annotation_file}\
@@ -103,7 +105,8 @@ task OptimusZarrConversion {
        --output_path_for_zarr "${sample_id}.zarr" \
        --format DirectoryStore \
        --sample_id ${sample_id} \
-       --count_matrix ${sparse_count_matrix}
+       --count_matrix ${sparse_count_matrix} \
+       --expression_data_type $EXPRESSION_DATA_TYPE_PARAM
 
     mkdir zarrout
     # get all the files in the zarr folder in  a list
