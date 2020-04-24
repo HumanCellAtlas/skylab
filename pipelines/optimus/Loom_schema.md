@@ -10,7 +10,7 @@ The global attributes in the Loom apply to the whole file, not any specific part
 | Attribute | Details |
 | :-- | :-- |
 | LOOM_SPEC_VERSION | String with the loom file spec version |
-| expression_data_type | String describing if the pipeline count exonic or whole transcript reads. For the single-cell mode (counting_mode = sc_rna), the value will be "exonic"; for the single-nuclei mode (counting_mode = sn_rna), the value will be "whole_transcript" |
+| expression_data_type | String describing if the pipeline counts exonic or whole transcript (exonic and intronic) reads. For the single-cell mode (counting_mode = sc_rna), the value will be "exonic"; for the single-nuclei mode (counting_mode = sn_rna), the value will be "whole_transcript" |
  
 
 ## Table 2. Column Attributes (Cell Metrics) 
