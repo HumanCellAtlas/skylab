@@ -25,7 +25,7 @@ def init_zarr(sample_id, path, file_format, expression_data_type, schema_version
         sample_id (str): sample or cell id
         path (str): path to the zarr output
         file_format (str): zarr file format [DirectoryStore, ZipStore]
-        expression_data_type (str): type of expression data [exonic, whole_trascript]
+        expression_data_type (str): type of expression data [exonic, whole_transcript]
         schema_version (str): version string of this output to allow for parsing of future changes
 
     Returns:
