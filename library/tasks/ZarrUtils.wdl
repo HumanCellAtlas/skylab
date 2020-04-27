@@ -98,7 +98,7 @@ task OptimusZarrConversion {
     then
     	EXPRESSION_DATA_TYPE_PARAM="exonic" 
     else
-  	  EXPRESSION_DATA_TYPE_PARAM="whole_transcript"
+  	EXPRESSION_DATA_TYPE_PARAM="whole_transcript"
     fi
 
     python3 /tools/create_zarr_optimus.py \
