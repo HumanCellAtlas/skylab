@@ -179,6 +179,7 @@ task SmartSeq2PlateToLoom {
 task OptimusZarrToLoom {
 
     input {
+        String sample_id
         Array[File] zarr_files
         String counting_mode = "sc_rna"
 
