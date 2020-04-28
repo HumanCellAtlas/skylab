@@ -37,7 +37,11 @@ def main():
     root = zarr.open(store)
     
     #Get expression data type: exonic or whole_transcript
-    expression_data_type = root.attrs['expression_data_type']
+    try:
+        expression_data_type = root.attrs['expression_data_type']
+    except KeyError as error:
+        expression_data_type = "unknown"
+        print("Expression data type not found")
     
     # Get the expression matrix
     # expression matrix in numpy ndarray format (dense)
