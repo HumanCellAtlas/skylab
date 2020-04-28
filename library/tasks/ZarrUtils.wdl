@@ -96,9 +96,9 @@ task OptimusZarrConversion {
 
     if ~{counting_mode} == "sc_rna"
     then
-    	EXPRESSION_DATA_TYPE_PARAM="exonic" 
+        EXPRESSION_DATA_TYPE_PARAM="exonic" 
     else
-  	EXPRESSION_DATA_TYPE_PARAM="whole_transcript"
+        EXPRESSION_DATA_TYPE_PARAM="whole_transcript"
     fi
 
     python3 /tools/create_zarr_optimus.py \
@@ -183,7 +183,7 @@ task OptimusZarrToLoom {
         String counting_mode = "sc_rna"
 
         # runtime values
-        String docker = "quay.io/humancellatlas/zarr-to-loom:0.0.3-alpha-3"
+        String docker = "quay.io/humancellatlas/zarr-to-loom:0.0.3-alpha-5"
 
         Int preemptible = 3
         Int cpu = 1
