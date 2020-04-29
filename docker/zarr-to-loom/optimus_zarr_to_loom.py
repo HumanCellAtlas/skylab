@@ -21,10 +21,12 @@ def main():
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument('--input-zarr', dest="input_zarr_path", required=True, help="Path to input ZARR file", type=str)
     parser.add_argument('--output-loom', dest="output_loom_path", required=True, help="Path to output loom file", type=str)
+    parser.add_argument('--sample-id', dest="sample_id", required=True, help="Sample identifier", type=str)
     args = parser.parse_args()
 
     input_zarr_path = args.input_zarr_path
     output_loom_path = args.output_loom_path
+    sample_id = args.sample_id
 
     # Checks on inputs
     if not os.path.isdir(input_zarr_path):
@@ -35,10 +37,10 @@ def main():
     # Open the ZARR
     store = zarr.DirectoryStore(input_zarr_path)
     root = zarr.open(store)
-    
+
     #Get expression data type: exonic or whole_transcript
     try:
-        expression_data_type = root.attrs['expression_data_type']
+        expression_data_type = root[f"/{sample_id}.zarr"].attrs['expression_data_type']
     except KeyError as error:
         expression_data_type = "unknown"
         print("Expression data type not found")
@@ -46,9 +48,9 @@ def main():
     # Get the expression matrix
     # expression matrix in numpy ndarray format (dense)
     # NOTE: If memory is limiting this could be done by chunk
+    nrows = root[f"/{sample_id}.zarr/expression"].shape[0]
+    ncols = root[f"/{sample_id}.zarr/expression"].shape[1]
 
-    nrows = root.expression.shape[0] 
-    ncols = root.expression.shape[1] 
     expr_sp = sc.sparse.coo_matrix((nrows, ncols), np.float32)
 
     iter_row_count = 100;
@@ -68,7 +70,7 @@ def main():
             q = chunk_col_size
             if j + chunk_col_size > ncols:
                 q = ncols - j
-            expr_sub_row_coo = sc.sparse.coo_matrix(root.expression[i:(i+p), j:(j+q)])
+            expr_sub_row_coo = sc.sparse.coo_matrix(root[f"/{sample_id}.zarr/expression"][i:(i+p), j:(j+q)])
             for k in range(0, expr_sub_row_coo.data.shape[0]):
                 xcoord.append(expr_sub_row_coo.row[k] + i)
                 ycoord.append(expr_sub_row_coo.col[k] + j)
@@ -87,44 +89,47 @@ def main():
     # ROW/GENE Metadata
 
     # Check that the first gene metadata column is the gene name as expected
-    if not (root.gene_metadata_string_name[0] == 'gene_name'):
+    if not (root[f"/{sample_id}.zarr/gene_metadata_string_name"][:] == 'gene_name')[0]:
         raise UnexpectedInputFormat("The first gene metadata item is not the gene_name");
 
     # Prepare row attributes (gene attributes)
     # Follow loom file Conventions
     row_attrs = {
-        "Gene": root.gene_metadata_string[:][0,],
-        "Accession": root.gene_id[:]}
+        "Gene": root[f"/{sample_id}.zarr/gene_metadata_string"][:][0,],
+        "Accession": root[f"/{sample_id}.zarr/gene_id"][:]}
 
-    numeric_field_names = root.gene_metadata_numeric_name[:]
+    numeric_field_names = root[f"/{sample_id}.zarr/gene_metadata_numeric_name"][:]
 
     # Generate with a list
     for i in range(0, numeric_field_names.shape[0]):
         name = numeric_field_names[i]
-        data = root.gene_metadata_numeric[:][:, i]
+        data = root[f"/{sample_id}.zarr/gene_metadata_numeric"][:][:, i]
         row_attrs[name] = data
 
     # COLUMN/CELL Metadata
     col_attrs = dict()
-    col_attrs["CellID"] = root.cell_id[:]
-    bool_field_names = root.cell_metadata_bool_name[:]
+    col_attrs["CellID"] = root[f"/{sample_id}.zarr/cell_id"][:]
+    bool_field_names = root[f"/{sample_id}.zarr/cell_metadata_bool_name"][:]
 
     for i in range(0, bool_field_names.shape[0]):
         name = bool_field_names[i]
-        data = root.cell_metadata_bool[:][:, i]
+        data = root[f"/{sample_id}.zarr/cell_metadata_bool"][:][:, i]
         col_attrs[name] = data
 
-    float_field_names = root.cell_metadata_float_name[:]
+    float_field_names = root[f"/{sample_id}.zarr/cell_metadata_float_name"][:]
 
     def add_to_cell_meta_float_by_index(i):
         name = float_field_names[i]
-        data = root.cell_metadata_float[:][:, i]
+        data = root[f"/{sample_id}.zarr/cell_metadata_float"][:][:, i]
         col_attrs[name] = data
 
     [add_to_cell_meta_float_by_index(i) for i in range(0, float_field_names.shape[0])]
-
+    
+    #loom file attributes 
+    attrDict = root[f"/{sample_id}.zarr"].attrs.asdict()
+    
     # Generate the loom file
-    loompy.create(output_loom_path, expr_sp_t, row_attrs, col_attrs, file_attrs={"expression_data_type":expression_data_type})
+    loompy.create(output_loom_path, expr_sp_t, row_attrs, col_attrs, file_attrs=attrDict)
 
 
 if __name__ == '__main__':

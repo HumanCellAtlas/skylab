@@ -184,7 +184,7 @@ task OptimusZarrToLoom {
         String counting_mode = "sc_rna"
 
         # runtime values
-        String docker = "quay.io/humancellatlas/zarr-to-loom:0.0.3-alpha-5"
+        String docker = "quay.io/humancellatlas/zarr-to-loom:0.0.3-alpha-0"
 
         Int preemptible = 3
         Int cpu = 1
@@ -206,7 +206,7 @@ task OptimusZarrToLoom {
         mv ${sep=' ' zarr_files} packed_zarr/
         mkdir unpacked_zarr
         unpackZARR.sh -i packed_zarr -o unpacked_zarr
-        optimus_zarr_to_loom.py --input-zarr unpacked_zarr --output-loom output.loom 
+        optimus_zarr_to_loom.py --input-zarr unpacked_zarr --output-loom output.loom --sample-id ${sample_id}
     }
 
     runtime {
