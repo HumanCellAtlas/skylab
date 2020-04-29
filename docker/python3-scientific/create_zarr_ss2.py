@@ -133,9 +133,11 @@ def read_and_convert_expression(data_group, input_path):
     expression_values = {}
     for row in reader:
         expression_values[row["gene_id"]] = float(row["TPM"])
+        count_values[row["gene_id"]] = float(row["expected_count"])
 
     sorted_gene_ids = sorted(expression_values.keys())
     sorted_tpms = [expression_values[g] for g in sorted_gene_ids]
+    sorted_counts = [count_values[g] for g in sorted_gene_ids]
 
     # TPM
     data_group.create_dataset(
@@ -145,6 +147,16 @@ def read_and_convert_expression(data_group, input_path):
         dtype=numpy.float32,
         chunks=(1, len(expression_values)),
         data=[sorted_tpms]
+    )
+
+    # Estimated Counts
+    data_group.create_dataset(
+        "estimated_count",
+        shape=(1, len(count_values)),
+        compressor=COMPRESSOR,
+        dtype=numpy.float32,
+        chunks=(1, len(count_values)),
+        data=[sorted_counts]
     )
 
     # Gene IDs
