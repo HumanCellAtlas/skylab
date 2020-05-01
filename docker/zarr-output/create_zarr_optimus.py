@@ -459,8 +459,8 @@ def add_expression_counts(data_group, args):
 
 def create_zarr_files(args):
     """This function creates the zarr file or folder structure in output_zarr_path in format file_format,
-        with sample_id from the input folder analysis_output_path
-
+       with sample_id from the input folder analysis_output_path
+    
     Args:
         args (argparse.Namespace): input arguments for the run
     """
@@ -468,18 +468,18 @@ def create_zarr_files(args):
 
     # initiate the zarr file
     root_group = init_zarr(
-        args.sample_id,
-        args.output_zarr_path,
-        args.zarr_format,
-        args.expression_data_type,
-        version
+        sample_id=args.sample_id,
+        path=args.output_zarr_path,
+        file_format=args.zarr_format,
+        expression_data_type=args.expression_data_type,
+        schema_version=version
     )
 
     # add the expression count matrix data
-    cell_ids, gene_ids = add_expression_counts(root_group, args)
+    cell_ids, gene_ids = add_expression_counts(data_group=root_group, args=args)
 
     # add the the gene metrics
-    add_gene_metrics(root_group, args.gene_metrics, gene_ids, args.verbose)
+    add_gene_metrics(data_group=root_group,input_path= args.gene_metrics, gene_ids=gene_ids, verbose=args.verbose)
 
     # add the the cell metrics
     add_cell_metrics(
