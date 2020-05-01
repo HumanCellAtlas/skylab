@@ -62,7 +62,11 @@ The [Multi Sample Smart-seq2 workflow](/pipelines/smartseq2_multisample/)(which 
 
 ## Inputs
 
-Example Smart-seq2 Single Sample inputs are found in the [SmartSeq2SingleSampleExample.json](SmartSeq2SingleSampleExample.json) file. 
+There are two example configuration (JSON) files avaialble to test the Smart-seq2 Single Sample workflow. 
+
+* [human_single_example.json](human_single_example.json): Configurations for an example single-end human dataset
+* [mouse_paired_example.json](mouse_paired_example.json): Configurations for an example mouse paired-end dataset
+
 
 ### Sample data input
 
