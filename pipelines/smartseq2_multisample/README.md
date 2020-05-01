@@ -14,7 +14,7 @@ The Multi Sample Smart-seq2 workflow can also be run in [Terra](https://app.terr
 
 There are two example configuration (JSON) files available for testing the Multi Sample workflow. Both examples are also preloaded in the Terra Smart-seq2 public workspace. 
 * [human_single_example.json](human_single_example.json): Contains an example single-end human dataset
-* [mouse_paired_example.json](mouse_paired_example): Contains an example paired-end mouse dataset
+* [mouse_paired_example.json](mouse_paired_example.json): Contains an example paired-end mouse dataset
 
 
 ### Sample Data Input
