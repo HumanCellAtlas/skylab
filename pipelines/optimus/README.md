@@ -60,10 +60,11 @@ Optimus can be deployed using [Cromwell](https://software.broadinstitute.org/wdl
 
 ## Inputs
 
-Optimus pipeline inputs are detailed in JSON format configuration files. There are three example configuration files available if you are interested in running the pipeline: 
+Optimus pipeline inputs are detailed in JSON format configuration files. There are four example configuration files available if you are interested in running the pipeline: 
 *  [human_v2_example](human_v2_example.json): An example human 10x v2 single-cell dataset
 *  [human_v3_example](human_v3_example.json): An example human 10x v3 single-cell dataset
 *  [mouse_v2_example](mouse_v2_example.json): An example mouse 10x v2 single-cell dataset
+*  [mouse_v2_snRNA_example](mouse_v2_snRNA_example.json): An example mouse v2 single-nuclei dataset
 
 Additionally, there are multiple sample datasets available in the [test_optimus_full_datasets](test_optimus_full_datasets/) folder. Please note that unlike the example configuration files above, the configuration files in this folder may not reflect updated Optimus parameters. However, you can still access the FASTQ files for each dataset at the Google bucket locations listed in the dataset configuration files. 
 
@@ -247,7 +248,7 @@ Three Optimus tasks are affected by the counting_mode parameter: TagGeneExon, UM
 <details>
 <summary>Where can I find example Optimus datasets and parameters to test the pipeline? </summary>
 <br>
-There are three example configuration JSON files available for you to test the pipeline- the <a href="human_v2_example.json">human_v2_example.json </a>, the <a href="human_v3_example.json">human_v3_example.json </a>, and the <a href="mouse_v2_example.json">mouse_v2_example.json </a>(see the Inputs section). Each of these configuration files can be run in the Optimus Featured Workspace in Terra at https://app.terra.bio/#workspaces/featured-workspaces-hca/HCA_Optimus_Pipeline, but you should note that the workspace comes preloaded with the same data and configurations. We also have multiple example datasets available in the <a href="test_optimus_full_datasets/">test_optimus_full_datasets </a> folder. These datasets contain configuration files listing the cloud location of the dataset FASTQ files; however, the configuration files may not be updated with all the workflow parameters. For the most up-to-date configuration examples, see the three example files listed above. 
+There are four example configuration JSON files available for you to test the pipeline- the <a href="human_v2_example.json">human_v2_example.json </a>, the <a href="human_v3_example.json">human_v3_example.json </a>, the <a href="mouse_v2_example.json">mouse_v2_example.json </a>, and the <a href="mouse_v2_snRNA_example.json">mouse_v2_snRNA_example.json </a>(see the Inputs section). Each of these configuration files can be run in the Optimus Featured Workspace in Terra at https://app.terra.bio/#workspaces/featured-workspaces-hca/HCA_Optimus_Pipeline, but you should note that the workspace comes preloaded with the same data and configurations. We also have multiple example datasets available in the <a href="test_optimus_full_datasets/">test_optimus_full_datasets </a> folder. These datasets contain configuration files listing the cloud location of the dataset FASTQ files; however, the configuration files may not be updated with all the workflow parameters. For the most up-to-date configuration examples, see the four example files listed above. 
  </details>
 
 
