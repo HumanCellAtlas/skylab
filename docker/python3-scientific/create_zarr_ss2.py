@@ -131,6 +131,7 @@ def read_and_convert_expression(data_group, input_path):
     reader = csv.DictReader(open(input_path), delimiter="\t")
 
     expression_values = {}
+    count_values = {}
     for row in reader:
         expression_values[row["gene_id"]] = float(row["TPM"])
         count_values[row["gene_id"]] = float(row["expected_count"])
