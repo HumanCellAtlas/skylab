@@ -182,7 +182,7 @@ Empty droplets are lipid droplets that did not encapsulate a cell during 10x seq
 
 | Warning: Use caution when interpreting RunEmptyDrops output for single-nuclei data |
 | --- |
-| EmptyDrops relies on a visual knee point inflection (described in [Lun et al. (2019)](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-019-1662-y)) to differentiate ambient-like cells from empty dropletss. If snRNAseq data does not produce a visual knee point inflection, EmptyDrops drops may not accurately distinguish ambient-like cells. | 
+| EmptyDrops relies on a visual knee point inflection (described in [Lun et al. (2019)](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-019-1662-y)) to differentiate ambient-like cells from empty droplets. If snRNAseq data does not produce a visual knee point inflection, EmptyDrops drops may not accurately distinguish ambient-like cells. | 
 
 ### 9. Outputs
 
@@ -243,7 +243,7 @@ No, we do not filter. We keep as much data as possible so that the researcher ca
 <details>
 <summary>How does the workflow change when using the single-cell RNA-seq (counting_mode = 'sc_rna') vs. the single-nuclei (counting_mode = 'sn_rna') parameters? </summary>
 <br>
-Three Optimus tasks are affected by the counting_mode parameter: TagGeneExon, UMICorrection and CreateCountMatrix. The TagGeneExon tasks uses different versions of Drop-seq tools depending on the counting_mode parameter. The sc_rna parameter uses v1.12 whereas the sn_rna uses v2.3.0. For the sn_rna parameter, a GE tag is added to intronic reads. For the UMICorrection and CreateCountMatrix tasks, the only difference related to the counting_mode parameters is that the sn_RNA parameter will have a GE tag on intronic reads, which the UMICorrection and CreateCountMatrix will recognize.
+Three Optimus tasks are affected by the counting_mode parameter: TagGeneExon, UMICorrection and CreateCountMatrix. The TagGeneExon task uses different versions of Drop-seq tools depending on the counting_mode parameter. The sc_rna parameter uses v1.12 whereas the sn_rna uses v2.3.0. For the sn_rna parameter, a GE tag is added to intronic reads. For the UMICorrection and CreateCountMatrix tasks, the only difference related to the counting_mode parameters is that the sn_RNA parameter will have a GE tag on intronic reads, which the UMICorrection and CreateCountMatrix will recognize.
  </details>
 
 <details>
@@ -257,5 +257,6 @@ There are four example configuration JSON files available for you to test the pi
 <br>
 The Optimus pipeline is a single sample pipeline, but it can accept multiple fastqs if a sample is sequenced across lanes. In this case, the pipeline will merge the results from each lane into single output files. Therefore, there will only be one file for each type output (i.e one Zarr array, one Loom, etc.). If you would like to view an example configuration file for a multi-lane dataset, please see the <a href="mouse_v2_example.json">mouse_v2_example.json </a>.  
  </details>
+
 
 
