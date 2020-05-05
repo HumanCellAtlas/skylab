@@ -3,7 +3,7 @@
       "gs://hca-dcp-sc-pipelines-test-data/smallDatasets/chemistry_X10_V2/neuron6k_mouse_chr19_genic/neurons_2000_S1_L001_R1_001.filtered.fastq.gz",
       "gs://hca-dcp-sc-pipelines-test-data/smallDatasets/chemistry_X10_V2/neuron6k_mouse_chr19_genic/neurons_2000_S1_L002_R1_001.filtered.fastq.gz",
       "gs://hca-dcp-sc-pipelines-test-data/smallDatasets/chemistry_X10_V2/neuron6k_mouse_chr19_genic/neurons_2000_S1_L003_R1_001.filtered.fastq.gz",
-      "gs://hca-dcp-sc-pipelines-test-data/smallDatasets/chemistry_X10_V2/neuron6k_mouse_chr19_genic/neurons_2000_S1_L004_R1_001.filtered.fastq.gz".
+      "gs://hca-dcp-sc-pipelines-test-data/smallDatasets/chemistry_X10_V2/neuron6k_mouse_chr19_genic/neurons_2000_S1_L004_R1_001.filtered.fastq.gz",
       "gs://hca-dcp-sc-pipelines-test-data/smallDatasets/chemistry_X10_V2/neuron6k_mouse_chr19_genic/neurons_2000_S1_L005_R1_001.filtered.fastq.gz",
       "gs://hca-dcp-sc-pipelines-test-data/smallDatasets/chemistry_X10_V2/neuron6k_mouse_chr19_genic/neurons_2000_S1_L006_R1_001.filtered.fastq.gz"
   ],
@@ -21,7 +21,7 @@
       "gs://hca-dcp-sc-pipelines-test-data/smallDatasets/chemistry_X10_V2/neuron6k_mouse_chr19_genic/neurons_2000_S1_L003_I1_001.filtered.fastq.gz",
       "gs://hca-dcp-sc-pipelines-test-data/smallDatasets/chemistry_X10_V2/neuron6k_mouse_chr19_genic/neurons_2000_S1_L004_I1_001.filtered.fastq.gz",
       "gs://hca-dcp-sc-pipelines-test-data/smallDatasets/chemistry_X10_V2/neuron6k_mouse_chr19_genic/neurons_2000_S1_L005_I1_001.filtered.fastq.gz",
-      "gs://hca-dcp-sc-pipelines-test-data/smallDatasets/chemistry_X10_V2/neuron6k_mouse_chr19_genic/neurons_2000_S1_L006_I1_001.filtered.fastq.gz",
+      "gs://hca-dcp-sc-pipelines-test-data/smallDatasets/chemistry_X10_V2/neuron6k_mouse_chr19_genic/neurons_2000_S1_L006_I1_001.filtered.fastq.gz"
   ],
   "Optimus.whitelist": "gs://hca-dcp-sc-pipelines-test-data/whitelists/737K-august-2016.txt",
   "Optimus.tar_star_reference": "gs://hca-dcp-mint-test-data/20190507-PipelinesSurge/mouse_reference/star_primary_gencode_mouse_vM21.tar",
