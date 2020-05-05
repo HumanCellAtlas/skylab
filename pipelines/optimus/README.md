@@ -255,7 +255,7 @@ There are four example configuration JSON files available for you to test the pi
  <details>
 <summary>What outputs are expected if my sample has been sequenced over multiple lanes? </summary>
 <br>
-The Optimus pipeline is a single sample pipeline, but it can accept multiple fastqs if a sample is sequenced across lanes. In this case, the pipeline will merge the results from each lane into single output files. Therefore, there will only be one file for each type output (i.e one Zarr array, one Loom, etc.). If you would like to view an example configuration file for a multi-lane dataset, please see the <a href="mouse_v2_example.json">mouse_v2_example.json </a>.  
+The Optimus pipeline is a single sample pipeline, but it can accept multiple FASTQ files if a sample is sequenced across lanes. In this case, the pipeline will merge the results from each lane into single output files. There will only be one merged file for each output type (i.e one Zarr array, one Loom, etc.). If you would like to view an example configuration file for a multi-lane dataset, please see the <a href="mouse_v2_example.json">mouse_v2_example.json </a>.  Additionally, you can view sample outputs in the Optimus featured workspace on Terra: https://app.terra.bio/#workspaces/featured-workspaces-hca/HCA_Optimus_Pipeline. 
  </details>
 
 
