@@ -12,7 +12,10 @@ The Multi Sample Smart-seq2 workflow can also be run in [Terra](https://app.terr
  
 ## Inputs 
 
-The [Smartseq2PlateExample.json](SmartSeq2PlateExample.json) file provides example inputs for the Smart-seq2 Multi Sample workflow. 
+There are two example configuration (JSON) files available for testing the Multi Sample workflow. Both examples are also preloaded in the Terra [Smart-seq2 public workspace](https://app.terra.bio/#workspaces/featured-workspaces-hca/HCA%20Smart-seq2%20Multi%20Sample%20Pipeline). 
+* [human_single_example.json](human_single_example.json): Configurations for an example single-end human dataset consisting of two samples (cells)
+* [mouse_paired_example.json](mouse_paired_example.json): Configurations for an example paired-end mouse dataset consisting of two samples (cells)
+
 
 ### Sample Data Input
 The sample data inputs are similar to those specified in the [Smart-seq2 Single Sample README](/pipelines/smartseq2_single_sample/README.md). The Smart-seq2 Multi Sample workflow processes both single- and paired-end samples; however, these samples can not be mixed in the same run. 
