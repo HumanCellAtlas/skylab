@@ -76,7 +76,7 @@ Each 10x v2 and v3 3’ sequencing experiment generates triplets of FASTQ files 
 2. Reverse reads (r2_fastq) containing the alignable genomic information from the mRNA transcript 
 3. Index FASTQ (i1_fastq) containing the sample barcodes, when provided by the sequencing facility
 
-Note: Optimus is currently a single sample pipeline, but can take in multiple sets of FASTQs for a sample that has been split over multiple lanes of sequencing. Additionally, Optimus does not support demultiplexing even though it accepts index FASTQ files. 
+Note: Optimus is currently a single sample pipeline, but can take in multiple sets of FASTQs for a sample that has been split over multiple lanes of sequencing. For an example configuration file with multiple lanes, please see the [mouse_v2_example.json](mouse_v2_example.json). Additionally, Optimus does not support demultiplexing even though it accepts index FASTQ files. 
 
 ### Additional Reference Inputs
 
@@ -86,7 +86,7 @@ The JSON file also contains metadata for the reference information in the follow
 | --- | --- | --- |
 | Whitelist | Cloud path to list of known cell barcodes from [10x genomics](https://www.10xgenomics.com/) that corresponds to the v2 or v3 chemistry | NA |
 | Tar_star_reference | Cloud path to TAR file containing a species-specific reference genome and gtf; it is generated using the [StarMkRef.wdl](https://github.com/HumanCellAtlas/skylab/blob/master/library/tasks/StarMkref.wdl) | NA |
-| Sample_id | a unique name describing the biological sample or replicate that corresponds with the original FASTQ files | NA | 
+| Sample_id | a unique name describing the biological sample or replicate that corresponds with the original FASTQ files. This can be any string, but if possible, we recommend it matches the sample metadata | NA | 
 | Annotations_gtf | Cloud path to GTF containing gene annotations used for gene tagging (must match GTF in STAR reference) | NA | 
 | Chemistry | Optional string description of whether data was generated with 10x v2 or v3 chemistry. Optimus validates this string. If the string does not match one of the optional strings, the pipeline will fail. You can remove the checks by setting "force_no_check = true" in the input JSON | "tenX_v2" (default) or "tenX_v3" |
 | Counting_mode | String description of whether data is single-cell or single-nuclei | "sc_rna" or "sn_rna" |
@@ -193,7 +193,7 @@ Output files of the pipeline include:
 3. Cell metadata, including cell metrics
 4. Gene metadata, including gene metrics
 
-The following table lists the output files produced from the pipeline.
+The following table lists the output files produced from the pipeline. For samples that have sequenced over multiple lanes, the pipeline will output one merged version of each listed file.
 
 | Output Name | Filename, if applicable | Output Type |Output Format |
 | ------ |------ | ------ | ------ | 
@@ -216,6 +216,7 @@ The Loom file is an optional output that is specified in the "meta" section of t
 To obtain a Loom file, the boolean parameter "false" must be changed to "true". 
 
 All final Zarr and Loom outputs contain the unnormalized (unfiltered), UMI-corrected expression matrices, as well as the gene and cell metrics detailed in the [Loom_schema documentation](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Loom_schema.md). 
+
 
 # Versioning
 
@@ -249,6 +250,12 @@ Three Optimus tasks are affected by the counting_mode parameter: TagGeneExon, UM
 <summary>Where can I find example Optimus datasets and parameters to test the pipeline? </summary>
 <br>
 There are four example configuration JSON files available for you to test the pipeline- the <a href="human_v2_example.json">human_v2_example.json </a>, the <a href="human_v3_example.json">human_v3_example.json </a>, the <a href="mouse_v2_example.json">mouse_v2_example.json </a>, and the <a href="mouse_v2_snRNA_example.json">mouse_v2_snRNA_example.json </a>(see the Inputs section). Each of these configuration files can be run in the Optimus Featured Workspace in Terra at https://app.terra.bio/#workspaces/featured-workspaces-hca/HCA_Optimus_Pipeline, but you should note that the workspace comes preloaded with the same data and configurations. We also have multiple example datasets available in the <a href="test_optimus_full_datasets/">test_optimus_full_datasets </a> folder. These datasets contain configuration files listing the cloud location of the dataset FASTQ files; however, the configuration files may not be updated with all the workflow parameters. For the most up-to-date configuration examples, see the four example files listed above. 
+ </details>
+ 
+ <details>
+<summary>What outputs are expected if my sample has been sequenced over multiple lanes? </summary>
+<br>
+The Optimus pipeline is a single sample pipeline, but it can accept multiple fastqs if a sample is sequenced across lanes. In this case, the pipeline will merge the results from each lane into single output files. Therefore, there will only be one file for each type output (i.e one Zarr array, one Loom, etc.). If you would like to view an example configuration file for a multi-lane dataset, please see the <a href="mouse_v2_example.json">mouse_v2_example.json </a>.  
  </details>
 
 
