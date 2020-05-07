@@ -13,8 +13,6 @@ workflow SmartSeq2SingleCell {
   }
 
   input {
-    # version of this pipeline
-    String version = "smartseq2_v3.0.0"
     # load annotation
     File genome_ref_fasta
     File rrna_intervals
@@ -37,6 +35,8 @@ workflow SmartSeq2SingleCell {
     # whether to convert the outputs to Zarr format, by default it's set to true
     Boolean output_zarr = true
   }
+  # version of this pipeline
+  String version = "smartseq2_v3.0.0"
 
   parameter_meta {
     genome_ref_fasta: "Genome reference in fasta format"
