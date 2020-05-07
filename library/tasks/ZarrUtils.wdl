@@ -3,7 +3,7 @@ version 1.0
 task SmartSeq2ZarrConversion {
   input {
     #runtime values
-    String docker = "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.1.10"
+    String docker = "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.1.11"
     # the gene count file "<sample_id>_rsem.genes.results" in the task results folder call-RSEMExpression
     File rsem_gene_results
     # file named "<sample_id>_QCs.csv" in the folder  "call-GroupQCOutputs/glob-*" of the the SS2  output
@@ -93,7 +93,13 @@ task OptimusZarrConversion {
   command {
     set -euo pipefail
 
-    [[ ~{counting_mode} == "sc_rna" ]] && EXPRESSION_DATA_TYPE_PARAM="exonic"  || EXPRESSION_DATA_TYPE_PARAM="whole_transcript"
+
+    if ~{counting_mode} == "sc_rna"
+    then
+        EXPRESSION_DATA_TYPE_PARAM="exonic" 
+    else
+        EXPRESSION_DATA_TYPE_PARAM="whole_transcript"
+    fi
 
     python3 /tools/create_zarr_optimus.py \
        --empty_drops_file ${empty_drops_result} \
@@ -178,7 +184,7 @@ task OptimusZarrToLoom {
         String counting_mode = "sc_rna"
 
         # runtime values
-        String docker = "quay.io/humancellatlas/zarr-to-loom:0.0.1"
+        String docker = "quay.io/humancellatlas/zarr-to-loom:0.0.3-alpha-0"
 
         Int preemptible = 3
         Int cpu = 1
