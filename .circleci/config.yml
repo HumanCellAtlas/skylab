@@ -182,7 +182,7 @@ jobs:
            - run:
                command: |
                    ./test/trigger_test.sh sc_atac
-               no_output_timeout: 1.5h
+               no_output_timeout: 3.0h
                
 workflows:
     version: 2

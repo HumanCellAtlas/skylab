@@ -163,12 +163,12 @@ workflow Optimus {
     if (counting_mode == "sn_rna") {
       call TagGeneExon.TagReadWithGeneFunction as TagGeneFunction {
         input:
-	      bam_input = StarAlign.bam_output,
-	      annotations_gtf = ModifyGtf.modified_gtf,
-	      gene_name_tag = "GE",
-	      gene_strand_tag = "GS",
-	      gene_function_tag = "XF",
-	      use_strand_info = "false"
+          bam_input = StarAlign.bam_output,
+          annotations_gtf = ModifyGtf.modified_gtf,
+          gene_name_tag = "GE",
+          gene_strand_tag = "GS",
+          gene_function_tag = "XF",
+          use_strand_info = "false"
       }
     }
 
@@ -271,7 +271,7 @@ workflow Optimus {
       input:
         sample_id = sample_id,
         zarr_files = OptimusZarrConversion.zarr_output_files,
-	  counting_mode = counting_mode
+        counting_mode = counting_mode
     }
   }
 
