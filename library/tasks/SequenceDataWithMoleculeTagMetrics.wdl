@@ -47,9 +47,10 @@ task CalculateGeneMetrics {
 task CalculateCellMetrics {
   input {
     File bam_input
+    File original_gtf
 
     # runtime values
-    String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.7"
+    String docker = "quay.io/humancellatlas/secondary-analysis-sctools:kmk-mt-counts"
     Int machine_mem_mb = 45000
     Int cpu = 1
     Int disk = ceil(size(bam_input, "Gi") * 2)
@@ -72,7 +73,7 @@ task CalculateCellMetrics {
   command {
     set -e
 
-    CalculateCellMetrics -i "${bam_input}" -o cell-metrics.csv.gz
+    CalculateCellMetrics -i "${bam_input}" -o cell-metrics.csv.gz --gtf-annotation-file "${original_gtf}"
   }
 
   runtime {
