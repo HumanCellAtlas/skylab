@@ -1,11 +1,11 @@
 version 1.0
 
-import "HISAT2.wdl" as HISAT2
-import "Picard.wdl" as Picard
-import "RSEM.wdl" as RSEM
-import "GroupMetricsOutputs.wdl" as GroupQCs
-import "ZarrUtils.wdl" as ZarrUtils
-import "SS2InputChecks.wdl" as SS2InputChecks
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/jw_MultiSampleSmartSeq2_Terra_arrays/library/tasks/HISAT2.wdl" as HISAT2
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/jw_MultiSampleSmartSeq2_Terra_arrays/library/tasks/Picard.wdl" as Picard
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/jw_MultiSampleSmartSeq2_Terra_arrays/library/tasks/RSEM.wdl" as RSEM
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/jw_MultiSampleSmartSeq2_Terra_arrays/library/tasks/GroupMetricsOutputs.wdl" as GroupQCs
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/jw_MultiSampleSmartSeq2_Terra_arrays/library/tasks/ZarrUtils.wdl" as ZarrUtils
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/jw_MultiSampleSmartSeq2_Terra_arrays/library/tasks/SS2InputChecks.wdl" as SS2InputChecks
 
 workflow SmartSeq2SingleCell {
   meta {
