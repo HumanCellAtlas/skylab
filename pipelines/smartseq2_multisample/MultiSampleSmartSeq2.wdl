@@ -27,8 +27,7 @@ workflow MultiSampleSmartSeq2 {
 
       # Sample information
       String stranded
-      String file_prefix
-      Array[String] input_file_names
+      Array[SingleSampleInput] samples
       String batch_id
       Boolean paired_end
 
@@ -46,19 +45,18 @@ workflow MultiSampleSmartSeq2 {
     hisat2_ref_trans_index: "HISAT2 transcriptome index file in tarball"
     rsem_ref_index: "RSEM reference index file in tarball"
     stranded: "Library strand information example values: FR RF NONE"
-    file_prefix: "Prefix for the fastq files"
-    input_file_names: "Array of filename prefixes, will be appended with _1.fastq.gz and _2.fastq.gz"
+    samples: "Array of single sample inputs, each containing a sample name, fastq1 file (full path), and an optional fastq2 file"
     batch_id: " Identifier for the batch"
     paired_end: "Is the sample paired end or not"
   }
 
   ### Execution starts here ###
   if (paired_end) {
-      scatter(idx in range(length(input_file_names))) {
+      scatter(idx in range(length(samples))) {
         call single_cell_run.SmartSeq2SingleCell as sc_pe {
           input:
-            fastq1 = file_prefix + '/' + input_file_names[idx] + "_1.fastq.gz",
-            fastq2 = file_prefix + '/' + input_file_names[idx] + "_2.fastq.gz",
+            fastq1 = samples[idx].fastq1,
+            fastq2 = samples[idx].fastq2,
             stranded = stranded,
             genome_ref_fasta = genome_ref_fasta,
             rrna_intervals = rrna_intervals,
@@ -68,18 +66,18 @@ workflow MultiSampleSmartSeq2 {
             hisat2_ref_trans_index = hisat2_ref_trans_index,
             hisat2_ref_trans_name = hisat2_ref_trans_name,
             rsem_ref_index = rsem_ref_index,
-            sample_name = input_file_names[idx],
-            output_name = input_file_names[idx],
+            sample_name = samples[idx].sample_name,
+            output_name = samples[idx].sample_name,
             paired_end = paired_end,
             output_zarr = true
         }
       }
   }
   if (!paired_end) {
-        scatter(idx in range(length(input_file_names))) {
+        scatter(idx in range(length(samples))) {
           call single_cell_run.SmartSeq2SingleCell as sc_se {
             input:
-              fastq1 = file_prefix + '/' + input_file_names[idx] + "_1.fastq.gz",
+              fastq1 = samples[idx].fastq1,
               stranded = stranded,
               genome_ref_fasta = genome_ref_fasta,
               rrna_intervals = rrna_intervals,
@@ -89,8 +87,8 @@ workflow MultiSampleSmartSeq2 {
               hisat2_ref_trans_index = hisat2_ref_trans_index,
               hisat2_ref_trans_name = hisat2_ref_trans_name,
               rsem_ref_index = rsem_ref_index,
-              sample_name = input_file_names[idx],
-              output_name = input_file_names[idx],
+              sample_name = samples[idx].sample_name,
+              output_name = samples[idx].sample_name,
               paired_end = paired_end,
               output_zarr = true
           }
@@ -124,4 +122,10 @@ workflow MultiSampleSmartSeq2 {
     Array[File] zarrout = AggregateZarr.zarr_output_files
     File? loom_output = ZarrToLoom.loom_output
   }
+}
+
+struct SingleSampleInput {
+  String sample_name
+  File fastq1
+  File? fastq2
 }
