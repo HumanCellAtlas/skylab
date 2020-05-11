@@ -3,7 +3,7 @@ version 1.0
 task SmartSeq2ZarrConversion {
   input {
     #runtime values
-    String docker = "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.1.10"
+    String docker = "quay.io/humancellatlas/secondary-analysis-python3-scientific:0.1.11"
     # the gene count file "<sample_id>_rsem.genes.results" in the task results folder call-RSEMExpression
     File rsem_gene_results
     # file named "<sample_id>_QCs.csv" in the folder  "call-GroupQCOutputs/glob-*" of the the SS2  output
