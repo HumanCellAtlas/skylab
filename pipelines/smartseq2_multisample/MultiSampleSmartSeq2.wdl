@@ -27,8 +27,9 @@ workflow MultiSampleSmartSeq2 {
 
       # Sample information
       String stranded
-      String file_prefix
-      Array[String] input_file_names
+      Array[String] sample_names
+      Array[String] fastq1_input_files
+      Array[String] fastq2_input_files = []
       String batch_id
       Boolean paired_end
 
@@ -46,19 +47,28 @@ workflow MultiSampleSmartSeq2 {
     hisat2_ref_trans_index: "HISAT2 transcriptome index file in tarball"
     rsem_ref_index: "RSEM reference index file in tarball"
     stranded: "Library strand information example values: FR RF NONE"
-    file_prefix: "Prefix for the fastq files"
-    input_file_names: "Array of filename prefixes, will be appended with _1.fastq.gz and _2.fastq.gz"
+    sample_names: "Array of sample names"
+    fastq1_input_files: "Array of fastq1 files; order must match the order in sample_names."
+    fastq2_input_files: "Array of fastq2 files for paired end runs; order must match fastq1_input_files and sample_names."
     batch_id: " Identifier for the batch"
     paired_end: "Is the sample paired end or not"
   }
 
+  # Check that all input arrays are the same length
+  call checkInputArrays as checkArrays{
+      input:
+         sample_names = sample_names,
+         fastq1_input_files = fastq1_input_files,
+         fastq2_input_files = fastq2_input_files
+  }
+
   ### Execution starts here ###
   if (paired_end) {
-      scatter(idx in range(length(input_file_names))) {
+      scatter(idx in range(length(sample_names))) {
         call single_cell_run.SmartSeq2SingleCell as sc_pe {
           input:
-            fastq1 = file_prefix + '/' + input_file_names[idx] + "_1.fastq.gz",
-            fastq2 = file_prefix + '/' + input_file_names[idx] + "_2.fastq.gz",
+            fastq1 = fastq1_input_files[idx],
+            fastq2 = fastq2_input_files[idx],
             stranded = stranded,
             genome_ref_fasta = genome_ref_fasta,
             rrna_intervals = rrna_intervals,
@@ -68,18 +78,18 @@ workflow MultiSampleSmartSeq2 {
             hisat2_ref_trans_index = hisat2_ref_trans_index,
             hisat2_ref_trans_name = hisat2_ref_trans_name,
             rsem_ref_index = rsem_ref_index,
-            sample_name = input_file_names[idx],
-            output_name = input_file_names[idx],
+            sample_name = sample_names[idx],
+            output_name = sample_names[idx],
             paired_end = paired_end,
             output_zarr = true
         }
       }
   }
   if (!paired_end) {
-        scatter(idx in range(length(input_file_names))) {
+        scatter(idx in range(length(sample_names))) {
           call single_cell_run.SmartSeq2SingleCell as sc_se {
             input:
-              fastq1 = file_prefix + '/' + input_file_names[idx] + "_1.fastq.gz",
+              fastq1 = fastq1_input_files[idx],
               stranded = stranded,
               genome_ref_fasta = genome_ref_fasta,
               rrna_intervals = rrna_intervals,
@@ -89,8 +99,8 @@ workflow MultiSampleSmartSeq2 {
               hisat2_ref_trans_index = hisat2_ref_trans_index,
               hisat2_ref_trans_name = hisat2_ref_trans_name,
               rsem_ref_index = rsem_ref_index,
-              sample_name = input_file_names[idx],
-              output_name = input_file_names[idx],
+              sample_name = sample_names[idx],
+              output_name = sample_names[idx],
               paired_end = paired_end,
               output_zarr = true
           }
@@ -124,4 +134,44 @@ workflow MultiSampleSmartSeq2 {
     Array[File] zarrout = AggregateZarr.zarr_output_files
     File? loom_output = ZarrToLoom.loom_output
   }
+}
+
+task checkInputArrays {
+  input {
+    Array[String] sample_names
+    Array[String] fastq1_input_files
+    Array[String] fastq2_input_files
+  }
+  Int len_sample_names = length(sample_names)
+  Int len_fastq1_input_files = length(fastq1_input_files)
+  Int len_fastq2_input_files = length(fastq2_input_files)
+
+  meta {
+    description: "checks input arrays to ensure that all arrays are the same length"
+  }
+
+  command {
+    set -e
+
+    if [[ ~{len_sample_names} !=  ~{len_fastq1_input_files} ]]
+      then
+      echo "ERROR: Different number of arguments for sample names and fastq1 files"
+      exit 1;
+    fi
+
+    if [[ ~{len_fastq2_input_files} != 0 && ~{len_fastq2_input_files} != ~{len_sample_names} ]]
+      then
+      echo "ERROR: Different number of arguments for sample names and fastq1 files"
+      exit 1;
+    fi
+    exit 0;
+  }
+
+  runtime {
+    docker: "ubuntu:18.04"
+    cpu: 1
+    memory: "1 GiB"
+    disks: "local-disk 1 HDD"
+  }
+
 }
