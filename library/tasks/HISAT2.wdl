@@ -232,22 +232,30 @@ input {
 
   command {
     set -e
-    tar --no-same-owner -xvf "${hisat2_ref}"
+    tar --no-same-owner -xvf "~{hisat2_ref}"
+
+    # fix names if necessary.
+    if [ "~{fastq}" != *.fastq.gz ]; then
+        FQ=~{fastq}.fastq.gz
+        mv ~{fastq} ~{fastq}.fastq.gz
+    else
+        FQ=~{fastq}
+    fi
 
     # The parameters for this task are copied from the HISAT2PairedEnd task.
     hisat2 -t \
-      -x ${ref_name}/${ref_name} \
-      -U ${fastq} \
-      --rg-id=${sample_name} --rg SM:${sample_name} --rg LB:${sample_name} \
-      --rg PL:ILLUMINA --rg PU:${sample_name} \
-      --new-summary --summary-file "${output_basename}.log" \
-      --met-file ${output_basename}.hisat2.met.txt --met 5 \
+      -x ~{ref_name}/~{ref_name} \
+      -U $FQ \
+      --rg-id=~{sample_name} --rg SM:~{sample_name} --rg LB:~{sample_name} \
+      --rg PL:ILLUMINA --rg PU:~{sample_name} \
+      --new-summary --summary-file "~{output_basename}.log" \
+      --met-file ~{output_basename}.hisat2.met.txt --met 5 \
       --seed 12345 \
       -k 10 \
       --secondary \
-      -p ${cpu} -S >(samtools view -1 -h -o ${output_basename}_unsorted.bam)
-    samtools sort -@ ${cpu} -O bam -o "${output_basename}.bam" "${output_basename}_unsorted.bam"
-    samtools index "${output_basename}.bam"
+      -p ~{cpu} -S >(samtools view -1 -h -o ~{output_basename}_unsorted.bam)
+    samtools sort -@ ~{cpu} -O bam -o "~{output_basename}.bam" "~{output_basename}_unsorted.bam"
+    samtools index "~{output_basename}.bam"
   }
 
   runtime {
