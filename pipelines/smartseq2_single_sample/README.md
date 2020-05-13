@@ -139,8 +139,8 @@ The [HISAT2RSEM task](/library/tasks/HISAT2.wdl) uses HISAT2 to align reads to t
 
 
 The RSEM task returns the following output files:
-*  rsem_gene: gene level expression estimates in FPKM, TPM, and estimated (expected) counts
-*  rsem_isoform: isoform level expression estimates in FPKM, TPM, and estimated (expected) counts
+*  rsem_gene: gene level expression estimates in FPKM, TPM, and counts ("expected_count")
+*  rsem_isoform: isoform level expression estimates in FPKM, TPM, and counts ("expected_count")
 *  rsem_time: the time consumed by aligning reads 
 *  rsem_cnt: alignment statistics
 *  rsem_model: RNA-seq model parameters
@@ -182,7 +182,7 @@ The table below details the final outputs of the Smart-seq2 Single Sample workfl
 | rsem_isoform_results | RSEM file containing isoform-level expression estimates | tab delimited |
 | zarr_output_files | Optional array of output files | Zarr |
 
-The final optional Zarr array includes only the group_results CSV files and the rsem_gene_results (TPMs and estimated counts).
+The final optional Zarr array includes only the group_results CSV files and the rsem_gene_results (TPMs and expected_count).
 
 # Versioning
 All Smart-seq2 Single Sample release notes are documented in the [Smartseq2 Single Sample changelog](SmartSeq2SingleSample.changelog.md).
