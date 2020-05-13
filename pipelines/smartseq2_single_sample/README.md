@@ -146,7 +146,7 @@ The RSEM task returns the following output files:
 *  rsem_model: RNA-seq model parameters
 *  rsem_theta: fraction of reads resulting from background
 
-Only the rsem_gene (TPMs and estimated counts), rsem_isoform (TPMs and estimated counts), and rsem_cnt files are used for the final outputs of the Smart-seq2 Single Sample workflow.
+Only the rsem_gene (TPM and expected_count), rsem_isoform (TPM and expected_count), and rsem_cnt files are used for the final outputs of the Smart-seq2 Single Sample workflow.
 
 After the Smart-seq2 workflow generates HISAT2, Picard and RSEM metrics, the [GroupMetricsOutputs task](/library/tasks/GroupMetricsOutputs.wdl) combines most metrics into a "group_results" CSV file array. The workflow uses this array in downstream Zarr file conversion. The following HISAT2, [Picard](http://broadinstitute.github.io/picard/picard-metric-definitions.html#) and [RSEM](http://deweylab.biostat.wisc.edu/rsem/rsem-calculate-expression.html) outputs are inputs for this task:
 
