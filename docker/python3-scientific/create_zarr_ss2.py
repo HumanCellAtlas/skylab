@@ -150,9 +150,9 @@ def read_and_convert_expression(data_group, input_path):
         data=[sorted_tpms]
     )
 
-    # Estimated Counts
+    # Expected Counts
     data_group.create_dataset(
-        "estimated_count",
+        "expected_count",
         shape=(1, len(count_values)),
         compressor=COMPRESSOR,
         dtype=numpy.float32,
