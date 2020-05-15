@@ -139,14 +139,14 @@ The [HISAT2RSEM task](/library/tasks/HISAT2.wdl) uses HISAT2 to align reads to t
 
 
 The RSEM task returns the following output files:
-*  rsem_gene: gene level expression estimates in FPKM, TPM, and estimated (expected) counts
-*  rsem_isoform: isoform level expression estimates in FPKM, TPM, and estimated (expected) counts
+*  rsem_gene: gene level expression estimates in FPKM, TPM, and counts ("expected_count")
+*  rsem_isoform: isoform level expression estimates in FPKM, TPM, and counts ("expected_count")
 *  rsem_time: the time consumed by aligning reads 
 *  rsem_cnt: alignment statistics
 *  rsem_model: RNA-seq model parameters
 *  rsem_theta: fraction of reads resulting from background
 
-Only the rsem_gene (TPMs and estimated counts), rsem_isoform (TPMs and estimated counts), and rsem_cnt files are used for the final outputs of the Smart-seq2 Single Sample workflow.
+Only the rsem_gene (TPM and expected_count), rsem_isoform (TPM and expected_count), and rsem_cnt files are used for the final outputs of the Smart-seq2 Single Sample workflow.
 
 After the Smart-seq2 workflow generates HISAT2, Picard and RSEM metrics, the [GroupMetricsOutputs task](/library/tasks/GroupMetricsOutputs.wdl) combines most metrics into a "group_results" CSV file array. The workflow uses this array in downstream Zarr file conversion. The following HISAT2, [Picard](http://broadinstitute.github.io/picard/picard-metric-definitions.html#) and [RSEM](http://deweylab.biostat.wisc.edu/rsem/rsem-calculate-expression.html) outputs are inputs for this task:
 
@@ -182,7 +182,7 @@ The table below details the final outputs of the Smart-seq2 Single Sample workfl
 | rsem_isoform_results | RSEM file containing isoform-level expression estimates | tab delimited |
 | zarr_output_files | Optional array of output files | Zarr |
 
-The final optional Zarr array includes only the group_results CSV files and the rsem_gene_results (TPMs and estimated counts).
+The final optional Zarr array includes only the group_results CSV files and the rsem_gene_results (TPM and expected_count). Note that the TPMs are contained in the Zarr dataset labeled "expression".
 
 # Versioning
 All Smart-seq2 Single Sample release notes are documented in the [Smartseq2 Single Sample changelog](SmartSeq2SingleSample.changelog.md).
