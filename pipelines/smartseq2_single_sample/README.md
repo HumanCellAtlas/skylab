@@ -182,7 +182,7 @@ The table below details the final outputs of the Smart-seq2 Single Sample workfl
 | rsem_isoform_results | RSEM file containing isoform-level expression estimates | tab delimited |
 | zarr_output_files | Optional array of output files | Zarr |
 
-The final optional Zarr array includes only the group_results CSV files and the rsem_gene_results (TPMs and expected_count).
+The final optional Zarr array includes only the group_results CSV files and the rsem_gene_results (TPM and expected_count).
 
 # Versioning
 All Smart-seq2 Single Sample release notes are documented in the [Smartseq2 Single Sample changelog](SmartSeq2SingleSample.changelog.md).
