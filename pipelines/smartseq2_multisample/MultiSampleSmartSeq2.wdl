@@ -57,6 +57,7 @@ workflow MultiSampleSmartSeq2 {
   # Check that all input arrays are the same length
   call checkInputArrays as checkArrays{
       input:
+         paired_end = paired_end,
          sample_names = sample_names,
          fastq1_input_files = fastq1_input_files,
          fastq2_input_files = fastq2_input_files
@@ -138,6 +139,7 @@ workflow MultiSampleSmartSeq2 {
 
 task checkInputArrays {
   input {
+    Boolean paired_end
     Array[String] sample_names
     Array[String] fastq1_input_files
     Array[String] fastq2_input_files
@@ -159,7 +161,7 @@ task checkInputArrays {
       exit 1;
     fi
 
-    if [[ ~{len_fastq2_input_files} != 0 && ~{len_fastq2_input_files} != ~{len_sample_names} ]]
+    if [[ ~{paired_end} && ~{len_fastq2_input_files} != ~{len_sample_names} ]]
       then
       echo "ERROR: Different number of arguments for sample names and fastq1 files"
       exit 1;
