@@ -50,7 +50,7 @@ task CalculateCellMetrics {
     File original_gtf
 
     # runtime values
-    String docker = "quay.io/humancellatlas/secondary-analysis-sctools:kmk-mt-counts"
+    String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.8"
     Int machine_mem_mb = 45000
     Int cpu = 1
     Int disk = ceil(size(bam_input, "Gi") * 2)
