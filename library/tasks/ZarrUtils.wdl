@@ -60,7 +60,7 @@ task OptimusZarrConversion {
 
   input {
     #runtime values
-    String docker = "quay.io/humancellatlas/secondary-analysis-zarr-output:0.0.4"
+    String docker = "quay.io/humancellatlas/secondary-analysis-zarr-output:0.0.5"
     # name of the sample
     String sample_id
     # gene annotation file in GTF format
@@ -97,12 +97,15 @@ task OptimusZarrConversion {
     if ~{counting_mode} == "sc_rna"
     then
         EXPRESSION_DATA_TYPE_PARAM="exonic" 
+        ADD_EMPTYDROPS_DATA = 'yes' 
     else
         EXPRESSION_DATA_TYPE_PARAM="whole_transcript"
+        ADD_EMPTYDROPS_DATA = 'no' 
     fi
 
     python3 /tools/create_zarr_optimus.py \
        --empty_drops_file ${empty_drops_result} \
+       --add_emptydrops_results $ADD_EMPTYDROPS_DATA \
        --annotation_file ${annotation_file}\
        --cell_metrics ${cell_metrics}\
        --gene_metrics ${gene_metrics}\
@@ -206,7 +209,8 @@ task OptimusZarrToLoom {
         mv ${sep=' ' zarr_files} packed_zarr/
         mkdir unpacked_zarr
         unpackZARR.sh -i packed_zarr -o unpacked_zarr
-        optimus_zarr_to_loom.py --input-zarr unpacked_zarr --output-loom output.loom --sample-id ${sample_id}
+        optimus_zarr_to_loom.py --input-zarr unpacked_zarr --output-loom output.loom --sample-id ${sample_id} \
+            --counting-mode ${counting_mode}
     }
 
     runtime {
