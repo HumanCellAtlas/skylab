@@ -4,7 +4,7 @@ task AggregateSmartSeq2Zarr {
     input {
         Array[Array[File]?] zarr_input
         String output_file_name
-        String docker = "quay.io/humancellatlas/secondary-analysis-ss2-plate-aggregation:0.0.1"
+        String docker = "quay.io/humancellatlas/secondary-analysis-ss2-plate-aggregation:0.1.0"
         Int disk = 100
     }
 
