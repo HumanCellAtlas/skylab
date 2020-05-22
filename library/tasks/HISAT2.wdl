@@ -234,7 +234,7 @@ input {
     set -e
     tar --no-same-owner -xvf "~{hisat2_ref}"
 
-    # fix names if necessary.
+    # fix file names if necessary.
     if [ "~{fastq}" != *.fastq.gz ]; then
         FQ=~{fastq}.fastq.gz
         mv ~{fastq} ~{fastq}.fastq.gz

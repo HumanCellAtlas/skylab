@@ -87,6 +87,14 @@ def main():
                 dtype=np.float32,
                 chunks=(1, number_of_genes)
             )
+            # Create the expected counts store
+            group_expected_count = output_root.create_dataset(
+                "expected_count",
+                shape=(number_of_cells, number_of_genes),
+                compressor=COMPRESSOR,
+                dtype=np.float32,
+                chunks=(1, number_of_genes)
+            )
             group_numeric_metadata_name = output_root.create_dataset(
                 "cell_metadata_numeric_name",
                 shape=(number_of_numeric_metadata,),
@@ -129,6 +137,7 @@ def main():
         # Save the cell name
         group_cell_id[current_cell_count,] = root.cell_id[0]
         group_expression[current_cell_count, :] = root.expression[0, :]
+        group_expected_count[current_cell_count, :] = root.expression[0, :]
         group_numeric_metadata[current_cell_count, :] = root.cell_metadata_numeric[0, :]
         group_string_metadata[current_cell_count, :] = root.cell_metadata_string[0, :]
         # Increment cell count
