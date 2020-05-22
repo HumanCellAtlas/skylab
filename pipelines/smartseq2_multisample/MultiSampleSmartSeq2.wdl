@@ -10,9 +10,6 @@ workflow MultiSampleSmartSeq2 {
   }
 
   input {
-      # Version of this pipeline
-      String version = "MultiSampleSmartSeq2_v1.0.0"
-
       # Gene Annotation
       File genome_ref_fasta
       File rrna_intervals
@@ -33,6 +30,8 @@ workflow MultiSampleSmartSeq2 {
 
       Boolean output_loom
   }
+  # Version of this pipeline
+  String version = "MultiSampleSmartSeq2_v1.1.0"
 
   # Parameter metadata information
   parameter_meta {
