@@ -94,18 +94,17 @@ task OptimusZarrConversion {
     set -euo pipefail
 
 
-    if ~{counting_mode} == "sc_rna"
-    then
+    if [ "${counting_mode}" == "sc_rna" ]; then
         EXPRESSION_DATA_TYPE_PARAM="exonic" 
-        ADD_EMPTYDROPS_DATA = 'yes' 
+        ADD_EMPTYDROPS_DATA="yes"
     else
         EXPRESSION_DATA_TYPE_PARAM="whole_transcript"
-        ADD_EMPTYDROPS_DATA = 'no' 
+        ADD_EMPTYDROPS_DATA="no" 
     fi
 
     python3 /tools/create_zarr_optimus.py \
        --empty_drops_file ${empty_drops_result} \
-       --add_emptydrops_results $ADD_EMPTYDROPS_DATA \
+       --add_emptydrops_data $ADD_EMPTYDROPS_DATA \
        --annotation_file ${annotation_file}\
        --cell_metrics ${cell_metrics}\
        --gene_metrics ${gene_metrics}\
@@ -209,8 +208,7 @@ task OptimusZarrToLoom {
         mv ${sep=' ' zarr_files} packed_zarr/
         mkdir unpacked_zarr
         unpackZARR.sh -i packed_zarr -o unpacked_zarr
-        optimus_zarr_to_loom.py --input-zarr unpacked_zarr --output-loom output.loom --sample-id ${sample_id} \
-            --counting-mode ${counting_mode}
+        optimus_zarr_to_loom.py --input-zarr unpacked_zarr --output-loom output.loom --sample-id ${sample_id} 
     }
 
     runtime {
