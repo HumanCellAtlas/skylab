@@ -182,7 +182,7 @@ Empty droplets are lipid droplets that did not encapsulate a cell during 10x seq
 
 | Warning: RunEmptyDrops output not included for single-nuclei data |
 | --- |
-| EmptyDrops relies on a visual knee point inflection (described in [Lun et al. (2019)](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-019-1662-y)) to differentiate ambient-like cells from empty droplets. If snRNAseq data does not produce a visual knee point inflection, EmptyDrops drops may not accurately distinguish ambient-like cells. The Optimus workflow does not include the RunEmptyDrops output in the final Zarr or Loom | 
+| EmptyDrops relies on a visual knee point inflection (described in [Lun et al. (2019)](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-019-1662-y)) to differentiate ambient-like cells from empty droplets. If snRNAseq data does not produce a visual knee point inflection, EmptyDrops drops may not accurately distinguish ambient-like cells. When the Optimus workflow counting_mode = sn_rna, it does not include the RunEmptyDrops output in the final Zarr or Loom | 
 
 ### 9. Outputs
 
