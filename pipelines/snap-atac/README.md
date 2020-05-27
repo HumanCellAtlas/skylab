@@ -3,7 +3,9 @@
 | [SnapATAC 1.0 ](snap-atac.wdl) | May 18th 2020 | [Elizabeth Kiernan](mailto:ekiernan@broadinstitute.org) | Please file GitHub issues in skylab or contact [Kylee Degatano](mailto:kdegatano@broadinstitute.org) |
 
 
-# Overview (Diagram)
+# Overview
+
+![Diagram](SnapATAC_v1.0.png)
 
 # Introduction
 
