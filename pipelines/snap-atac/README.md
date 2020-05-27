@@ -69,12 +69,12 @@ The [SnapATAC workflow](snap-atac.wdl) is divided into multiple tasks which are 
 | MakeCompliantBAM | Generation of a GA4GH compliant BAM | [snaptools:0.0.1](https://github.com/HumanCellAtlas/skylab/blob/master/docker/snaptools/Dockerfile) | [Code](https://github.com/HumanCellAtlas/skylab/blob/master/docker/snaptools/makeCompliantBAM.py) |
 | BreakoutSnap | Extraction of tables from snap file into text format (for testing and user availability) | [snap-breakout:0.0.1](https://github.com/HumanCellAtlas/skylab/tree/master/docker/snap-breakout) | [Code](https://github.com/HumanCellAtlas/skylab/blob/master/docker/snap-breakout/breakoutSnap.py) |
 
-### Task Summary 
+## Task Summary 
 
-#### AlignPairedEnd
+### AlignPairedEnd
 The AlignPairedEnd task takes the barcode demultiplexed FASTQ files and aligns reads to the genome using the BWA aligner. It uses the SnapTools min_cov parameter to set the minimum number of barcodes a fragment requires to be included in the final output. This parameter is set to 0. The final task output is an aligned BAM file. 
 
-#### SnapPre
+### SnapPre
 
 The SnapPre task uses SnapTools to perform preprocessing and filtering on the aligned BAM. The task outputs are a Snap file and QC metrics. The tables below detail the filtering parameters for this task and the QC metrics.
 
@@ -104,15 +104,15 @@ The SnapPre task uses SnapTools to perform preprocessing and filtering on the al
 | Total number of chrM fragments | CM |
 
 
-#### SnapCellByBin
+### SnapCellByBin
 
 The SnapCellByBin task uses the Snap file to create cell-by-bin count matrices in which a “1” represents a bin with an accessible region of the genome and a “0” represents an inaccessible region. The bin_size_list is set to 10,000 bp. 
 
-#### MakeCompliantBAM
+### MakeCompliantBAM
 
 The MakeCompliantBAM task uses a [custom python script (here)](https://github.com/HumanCellAtlas/skylab/tree/master/docker/snaptools) to make a GA4GH compliant BAM by moving the cellular barcodes in the read names to the CB tag. 
 
-#### BreakoutSnap
+### BreakoutSnap
 The BreakoutSnap task extracts data from the Snap file and exports it to individual CSVs. These CSV outputs are listed in the table in the Outputs section below. The code is available [here](https://github.com/HumanCellAtlas/skylab/blob/master/docker/snap-breakout/breakoutSnap.py). 
 
 
