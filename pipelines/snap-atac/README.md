@@ -75,6 +75,7 @@ The AlignPairedEnd task takes the barcode demultiplexed FASTQ files and aligns r
 The SnapPre task uses SnapTools to perform preprocessing and filtering on the aligned BAM. The task outputs are a Snap file and QC metrics. The tables below detail the filtering parameters for this task and the QC metrics.
 
 | Parameter | Description | Value |
+| --- | --- | --- |
 | --min-mapq | Fragments with mappability less than value will be filtered | 30 |
 | --min-flen | Fragments of length shorter than min_flen will be filtered | 0 |
 | --max-flen | Fragments of length bigger than min_flen will be filtered | 1000 |
