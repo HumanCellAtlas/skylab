@@ -5,7 +5,9 @@
 
 # Overview
 
-![Diagram](SnapATAC_v1.0.png)
+<img src="SnapATAC_v1.0.png" width="1000">
+
+
 
 # Introduction
 
