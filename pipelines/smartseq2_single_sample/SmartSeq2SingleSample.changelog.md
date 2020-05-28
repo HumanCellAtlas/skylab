@@ -1,3 +1,9 @@
+# smartseq2_v3.1.0
+
+2020-05-07 (Date of Last Commit)
+
+* Added estimated count matrix to zarr output
+
 # smartseq2_v3.0.0
 
 2019-12-16 (Date of Last Commit)
