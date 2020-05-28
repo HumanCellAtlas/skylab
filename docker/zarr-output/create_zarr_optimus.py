@@ -221,7 +221,10 @@ def add_cell_metrics(
         "reads_per_fragment",
         "fragments_per_molecule",
         "cell_barcode_fraction_bases_above_30_mean",
-        "cell_barcode_fraction_bases_above_30_variance"
+        "cell_barcode_fraction_bases_above_30_variance",
+        "n_mitochondrial_genes",
+        "n_mitochondrial_molecules",
+        "pct_mitochondrial_molecules"
     ]
 
     # Prefix emptydrops column names (except the key cell_id)
@@ -271,8 +274,7 @@ def add_cell_metrics(
     final_df_bool = np.full(final_df[BoolColumnNames].shape, True)
 
     #if add_emptydrops_results == 'yes':
-    if "emptydrops_Limited" in final_df[BoolColumnNames].columns and
-       "emptydrops_IsCell" in final_df[BoolColumnNames].columns:
+    if "emptydrops_Limited" in final_df[BoolColumnNames].columns:
         for index, row in final_df[BoolColumnNames].iterrows():
             if row["emptydrops_Limited"] == "TRUE":
                 final_df_bool[index, 0] = True

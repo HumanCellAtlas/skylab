@@ -93,7 +93,6 @@ task OptimusZarrConversion {
   command {
     set -euo pipefail
 
-
     if [ "${counting_mode}" == "sc_rna" ]; then
         EXPRESSION_DATA_TYPE_PARAM="exonic" 
         ADD_EMPTYDROPS_DATA="yes"
