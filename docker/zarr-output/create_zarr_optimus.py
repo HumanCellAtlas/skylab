@@ -183,45 +183,11 @@ def add_cell_metrics(
     # Drop first row that contains non-cell information from metrics file, this contains aggregate information
     metrics_df = metrics_df.iloc[1:]
 
-    # Prefix emptydrops column names (except the key cell_id)
-    if add_emptydrops_results == 'yes':
-        colnames = list(emptydrops_df.columns)
-        newcolnames = ["emptydrops_" + s for s in colnames]
-    else:
-        newcolnames = []
-
-    if add_emptydrops_results == 'yes':
-        namemap = dict(zip(colnames, newcolnames))
-    # Do not map the cell_id as it will be used for the merge
-        del namemap["cell_id"]
-
-        emptydrops_df = emptydrops_df.rename(columns=namemap)
-
-    if add_emptydrops_results == 'yes':
-    # Confirm that the emptydrops table is a subset of the cell metadata table, fail if not
-        if not emptydrops_df.cell_id.isin(metrics_df.cell_id).all():
-            logging.error(
-                "Not all emptydrops cells can be found in the metrics table."
-            )
-            raise Exception(
-                "Not all emptydrops cells can be found in the metrics table."
-            )
-
-    # Merge the two tables
-    if add_emptydrops_results == 'yes':
-        merged_df = metrics_df.merge(emptydrops_df, on="cell_id", how="outer")
-
     # Order the cells by merging with cell_ids
     cellorder_df = pd.DataFrame(data={"cell_id": cell_ids})
 
-
-    if add_emptydrops_results == 'yes':
-        final_df = cellorder_df.merge(merged_df, on="cell_id", how="left")
-    else:
-        final_df = cellorder_df.merge(metrics_df, on="cell_id", how="left")
-
     # Split the pandas DataFrame into different data types for storing in the ZARR
-    FloatColumnNames = [  # UInt
+    IntColumnNames = [  # UInt
         "n_reads",
         "noise_reads",
         "perfect_molecule_barcodes",
@@ -245,10 +211,7 @@ def add_cell_metrics(
         "genes_detected_multiple_observations"
     ] 
 
-    if add_emptydrops_results == 'yes':
-        FloatColumnNames += ["emptydrops_Total"]
-
-    FloatColumnNames += [ # Float32
+    FloatColumnNames = [ # Float32
         "molecule_barcode_fraction_bases_above_30_mean",
         "molecule_barcode_fraction_bases_above_30_variance",
         "genomic_reads_fraction_bases_quality_above_30_mean",
@@ -261,19 +224,41 @@ def add_cell_metrics(
         "cell_barcode_fraction_bases_above_30_variance"
     ]
 
+    # Prefix emptydrops column names (except the key cell_id)
+    newcolnames = []
     if add_emptydrops_results == 'yes':
-        FloatColumnNames +=  [
-            "emptydrops_LogProb",
-            "emptydrops_PValue",
-            "emptydrops_FDR",
-        ]
+        colnames = list(emptydrops_df.columns)
+        newcolnames = ["emptydrops_" + s for s in colnames]
 
-    BoolColumnNames = []
-    if add_emptydrops_results == 'yes':
-       BoolColumnNames = ["emptydrops_Limited", "emptydrops_IsCell"]
+        namemap = dict(zip(colnames, newcolnames))
+        # Do not map the cell_id as it will be used for the merge
+        del namemap["cell_id"]
+
+        emptydrops_df = emptydrops_df.rename(columns=namemap)
+
+    # Confirm that the emptydrops table is a subset of the cell metadata table, fail if not
+        if not emptydrops_df.cell_id.isin(metrics_df.cell_id).all():
+            logging.error(
+                "Not all emptydrops cells can be found in the metrics table."
+            )
+            raise Exception(
+                "Not all emptydrops cells can be found in the metrics table."
+            )
+        merged_df = metrics_df.merge(emptydrops_df, on="cell_id", how="outer")
+
+        final_df = cellorder_df.merge(merged_df, on="cell_id", how="left")
+
+        ColumnNames = IntColumnNames + ["emptydrops_Total"] + FloatColumnNames + \
+            [ "emptydrops_LogProb", "emptydrops_PValue", "emptydrops_FDR" ]
+        BoolColumnNames = ["emptydrops_Limited", "emptydrops_IsCell"]
+       
+    else:
+        final_df = cellorder_df.merge(metrics_df, on="cell_id", how="left")
+        ColumnNames = IntColumnNames + FloatColumnNames 
+        BoolColumnNames = []
 
     # Split the dataframe
-    final_df_float = final_df[FloatColumnNames]
+    final_df_float = final_df[ColumnNames]
 
     # Data types for storage
     header_datatype = "<U80"  # little-endian 80 char unicode
@@ -285,7 +270,9 @@ def add_cell_metrics(
     # Create a numpy array of the same shape of booleans
     final_df_bool = np.full(final_df[BoolColumnNames].shape, True)
 
-    if add_emptydrops_results == 'yes':
+    #if add_emptydrops_results == 'yes':
+    if "emptydrops_Limited" in final_df[BoolColumnNames].columns and
+       "emptydrops_IsCell" in final_df[BoolColumnNames].columns:
         for index, row in final_df[BoolColumnNames].iterrows():
             if row["emptydrops_Limited"] == "TRUE":
                 final_df_bool[index, 0] = True
