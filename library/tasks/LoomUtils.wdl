@@ -56,11 +56,11 @@ task SmartSeq2ZarrConversion {
 }
 
 
-task OptimusZarrConversion {
+task OptimusLoomGeneration {
 
   input {
     #runtime values
-    String docker = "quay.io/humancellatlas/secondary-analysis-zarr-output:0.0.4"
+    String docker = "quay.io/humancellatlas/secondary-analysis-loom-output:0.0.1-removeZarr"
     # name of the sample
     String sample_id
     # gene annotation file in GTF format
@@ -83,7 +83,7 @@ task OptimusZarrConversion {
   }
   
   meta {
-    description: "This task will converts some of the outputs of Optimus pipeline into a zarr file"
+    description: "This task will converts some of the outputs of Optimus pipeline into a loom file"
   }
 
   parameter_meta {
@@ -101,27 +101,18 @@ task OptimusZarrConversion {
         EXPRESSION_DATA_TYPE_PARAM="whole_transcript"
     fi
 
-    python3 /tools/create_zarr_optimus.py \
+    python3 /tools/create_loom_optimus.py \
        --empty_drops_file ${empty_drops_result} \
        --annotation_file ${annotation_file}\
        --cell_metrics ${cell_metrics}\
        --gene_metrics ${gene_metrics}\
        --cell_id ${cell_id}\
        --gene_id  ${gene_id} \
-       --output_path_for_zarr "${sample_id}.zarr" \
-       --format DirectoryStore \
+       --output_path_for_loom "out.loom" \
        --sample_id ${sample_id} \
        --count_matrix ${sparse_count_matrix} \
        --expression_data_type $EXPRESSION_DATA_TYPE_PARAM
 
-    mkdir zarrout
-    # get all the files in the zarr folder in  a list
-    a=`find "${sample_id}.zarr"  -type f`
-    for f in $a; do
-       # replace all / to ! as a work around for now.
-       b=`echo $f | tr "/" "\!"`
-       mv $f zarrout/$b
-    done
   }
 
   runtime {
@@ -133,7 +124,7 @@ task OptimusZarrConversion {
   }
 
   output {
-    Array[File] zarr_output_files = glob("zarrout/*zarr*")
+    File loom_output_files = "out.loom"
   }
 }
 
@@ -175,49 +166,3 @@ task SmartSeq2PlateToLoom {
 
 }
 
-
-task OptimusZarrToLoom {
-
-    input {
-        String sample_id
-        Array[File] zarr_files
-        String counting_mode = "sc_rna"
-
-        # runtime values
-        String docker = "quay.io/humancellatlas/zarr-to-loom:0.0.3-alpha-0"
-
-        Int preemptible = 3
-        Int cpu = 1
-    }
-    
-    meta {
-         description: "This task converts the Optimus Zarr output into a loom file"
-    }
-
-    parameter_meta {
-        cpu: "(optional) the number of cpus to provision for this task"
-        preemptible: "(optional) if non-zero, request a pre-emptible instance and allow for this number of preemptions before running the task on a non-preemptible machine"
-    }
-
-    command {
-        set -euo pipefail
-
-        mkdir packed_zarr
-        mv ${sep=' ' zarr_files} packed_zarr/
-        mkdir unpacked_zarr
-        unpackZARR.sh -i packed_zarr -o unpacked_zarr
-        optimus_zarr_to_loom.py --input-zarr unpacked_zarr --output-loom output.loom --sample-id ${sample_id}
-    }
-
-    runtime {
-        docker: docker
-        cpu: 1
-        memory: "16 GiB"
-        disks: "local-disk 100 HDD"
-        preemptible: preemptible
-    }
-
-    output {
-        File loom_output = "output.loom"
-    }
-}
