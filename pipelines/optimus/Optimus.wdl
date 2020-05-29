@@ -205,7 +205,8 @@ workflow Optimus {
 
     call Metrics.CalculateCellMetrics {
       input:
-        bam_input = CellSortBam.bam_output
+        bam_input = CellSortBam.bam_output,
+        original_gtf = annotations_gtf
     }
 
     call Picard.SortBam as PreCountSort {
