@@ -329,6 +329,7 @@ def add_cell_metrics(
         dtype=bool_store_datatype,
         data=final_df_bool,
     )
+
     if verbose:
         logging.info(
             "Added cell metadata_bool with {} rows and {} columns".format(
