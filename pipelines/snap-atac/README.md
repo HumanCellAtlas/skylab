@@ -27,7 +27,7 @@
 
 # Overview
 
-<img src="SnapATAC_v1.0.png" width="500">
+<img src="scATAC_diagram.png" width="500">
 
 # Introduction
 
