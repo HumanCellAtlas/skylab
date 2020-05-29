@@ -152,7 +152,7 @@ The main output of the scATAC workflow is the Snap file, Snap QC metrics, and th
 
 # Running on Terra
 
-If you would like to try the scATAC workflow (previously named "snap-atac") in Terra, you can import the most recent version from the [Broad Methods Repository](https://portal.firecloud.org/?return=terra#methods/snap-atac-v1_0/snap-atac-v1_0/2) (Google login required). Additionally, there is a [public SnapATAC_Pipeline workspace](https://app.terra.bio/#workspaces/brain-initiative-bcdc/SnapATAC_Pipeline) preloaded with the scATAC workflow. 
+If you would like to try the scATAC workflow (previously named "snap-atac") in Terra, you can import the most recent version from the [Broad Methods Repository](https://portal.firecloud.org/?return=terra#methods/snap-atac-v1_0/snap-atac-v1_0/2) (Google login required). Additionally, there is a [public SnapATAC_Pipeline workspace](https://app.terra.bio/#workspaces/brain-initiative-bcdc/SnapATAC_Pipeline) preloaded with the scATAC workflow and downsampled data.  
 
 # Versioning
 All scATAC workflow releases are documented in the [scATAC changelog](scATAC.changelog.md).
