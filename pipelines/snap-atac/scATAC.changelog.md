@@ -1,8 +1,9 @@
-# scATAC_v2.0.0
+# scATAC_v1.1.0
 
 2020-05-28 (Date of Last Commit)
 
-* Updated the workflow WDL to include new workflow name
+* Changed the pipeline name from "snap-atac" to "scATAC"
+* Updated the documentation
 
 # snap-atac_v1.0
 
