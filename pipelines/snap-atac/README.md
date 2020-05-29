@@ -43,7 +43,7 @@ The pipeline inputs are detailed in the table below. You can test the workflow b
 Prior to running the workflow, you will need to generate modified FASTQ files and an input_reference. 
 
 ### FASTQ Preparation
-The scATAC workflow requires paired reads in the form FASTQ files with the cell barcodes appended to the readnames. A description of the barcode demultiplexing can be found on the SnapATAC documentation (see barcode demultiplexing [here](https://github.com/r3fang/SnapATAC/wiki/FAQs#CEMBA_snap). The full cell barcode must form the first part of the read name (for both R1 and R2 files) and be separated from the rest of the line by a colon. The codeblock below demonstrates this format. 
+The scATAC workflow requires paired reads in the form FASTQ files with the cell barcodes appended to the readnames. A description of the barcode demultiplexing can be found on the SnapATAC documentation (see barcode demultiplexing section [here](https://github.com/r3fang/SnapATAC/wiki/FAQs#CEMBA_snap)). The full cell barcode must form the first part of the read name (for both R1 and R2 files) and be separated from the rest of the line by a colon. The codeblock below demonstrates this format. 
 
 ```
 @CAGTTGCACGTATAGAACAAGGATAGGATAAC:7001113:915:HJ535BCX2:1:1106:1139:1926 1:N:0:0
