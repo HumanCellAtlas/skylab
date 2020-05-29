@@ -38,7 +38,7 @@ The scATAC Pipeline was developed by the Broad DSDE Pipelines team to process si
 | Pipeline Features | Description | Source |
 | ---  |--- | --- |
 | Assay Type | Single nucleus ATAC-seq | [Preprint here ](https://www.biorxiv.org/content/biorxiv/early/2019/05/13/615179.full.pdf)
-| Overall Workflow  | Generates Snap file with cell x bin matrix at 10 kb resolution | Code available from [GitHub](snap-atac.wdl) |
+| Overall Workflow  | Generates Snap file with cell x bin matrix at 10 kb resolution | Code available from [GitHub](scATAC.wdl) |
 | Workflow Language | WDL 1.0 | [openWDL](https://github.com/openwdl/wdl) |
 | Aligner  | BWA | [Li H. and Durbin R., 2009](https://pubmed.ncbi.nlm.nih.gov/19451168/) |                     
 | Data Input File Format | File format in which sequencing data is provided | Paired-end FASTQs with cell barcodes appended to read names (read barcode demultiplexing section [here](https://github.com/r3fang/SnapATAC/wiki/FAQs#whatissnap)) |                     
@@ -46,7 +46,7 @@ The scATAC Pipeline was developed by the Broad DSDE Pipelines team to process si
 
 # Set-up
 ## Workflow Installation and Requirements
-The [scATAC workflow](snap-atac.wdl) is written in the Workflow Description Language WDL and can be downloaded by cloning the GitHub [Skylab repository](https://github.com/HumanCellAtlas/skylab). The workflow can be deployed using [Cromwell](https://software.broadinstitute.org/wdl/), a GA4GH compliant, flexible workflow management system that supports multiple computing platforms. For the latest workflow version and release notes, please see the scATAC [changelog](scATAC.changelog.md). 
+The [scATAC workflow](scATAC.wdl) is written in the Workflow Description Language WDL and can be downloaded by cloning the GitHub [Skylab repository](https://github.com/HumanCellAtlas/skylab). The workflow can be deployed using [Cromwell](https://software.broadinstitute.org/wdl/), a GA4GH compliant, flexible workflow management system that supports multiple computing platforms. For the latest workflow version and release notes, please see the scATAC [changelog](scATAC.changelog.md). 
 
 ## Pipeline Inputs
 The pipeline inputs are detailed in the table below. You can test the workflow by using the [human_example.json](human_example.json) example configuration file. 
@@ -77,7 +77,7 @@ The input_reference is a BWA compatible reference bundle in TAR file format. You
 
 # Workflow Tasks and Tools
 
-The [scATAC workflow](snap-atac.wdl) is divided into multiple tasks which are described in the table below. The table also links to the Docker Image for each task and to the documentation or code for the relevant software tool parameters.
+The [scATAC workflow](scATAC.wdl) is divided into multiple tasks which are described in the table below. The table also links to the Docker Image for each task and to the documentation or code for the relevant software tool parameters.
 
 | Task | Task description | Tool Docker Image | Parameter Descriptions or Code |
 |--- | --- | --- | --- |
@@ -159,6 +159,7 @@ All scATAC workflow releases are documented in the [scATAC changelog](scATAC.cha
 
 # Pipeline Improvements
 Please help us make our tools better by contacting [Kylee Degatano](mailto:kdegatano@broadinstitute.org)for pipeline-related suggestions or questions.
+
 
 
 
