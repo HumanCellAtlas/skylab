@@ -94,7 +94,7 @@ The AlignPairedEnd task takes the barcode demultiplexed FASTQ files and aligns r
 
 ### SnapPre
 
-The SnapPre task uses SnapTools to perform preprocessing and filtering on the aligned BAM. The task outputs are a Snap file and QC metrics. The tables below detail the filtering parameters for this task and the QC metrics.
+The SnapPre task uses SnapTools to perform preprocessing and filtering on the aligned BAM. The task outputs are a Snap file and QC metrics. The table below details the filtering parameters for the task.
 
 #### Filtering Parameters
 | Parameter | Description | Value |
@@ -107,21 +107,6 @@ The SnapPre task uses SnapTools to perform preprocessing and filtering on the al
 | --keep-secondary | Boolean variable indicates whether to keep secondary alignments | FALSE
 | --max-num | Max number of barcodes to be stored. Based on the coverage, top max_barcode barcodes are selected and stored | 1000000 |
 | --min-cov | Minimum number of barcodes a fragment requires to be included in the final output | 100 |
-
-#### Snap QC Metrics
-| QC Metric | Abbreviation |
-| --- | --- |
-| Total number of unique barcodes | No abbreviation |
-| Total number of fragments | TN |
-| Total number of uniquely mapped | UM | 
-| Total number of single ends | SE |
-| Total number of secondary alignments | SA |
-| Total number of paired ends | PE |
-| Total number of proper paired | PP |
-| Total number of proper frag len | PL |
-| Total number of usable fragments | US |
-| Total number of unique fragments | UQ |
-| Total number of chrM fragments | CM |
 
 
 ### SnapCellByBin
@@ -149,6 +134,23 @@ The main outputs of the scATAC workflow is the Snap file, Snap QC metrics, and t
 | breakout_binCoordinates | Text file with the AM session ('Cell x bin accessibility' matrix) binChrom and binStart fields |
 | breakout_binCounts  | Text file with the AM session ('Cell x bin accessibility' matrix) idx, idy, and count fields |
 | breakout_barcodesSection  | Text file with the data from the BD session ('Barcode session' table) |
+
+#### Snap QC Metrics
+The following table details the metrics available in the output_snap_qc file.
+
+| QC Metric | Abbreviation |
+| --- | --- |
+| Total number of unique barcodes | No abbreviation |
+| Total number of fragments | TN |
+| Total number of uniquely mapped | UM | 
+| Total number of single ends | SE |
+| Total number of secondary alignments | SA |
+| Total number of paired ends | PE |
+| Total number of proper paired | PP |
+| Total number of proper frag len | PL |
+| Total number of usable fragments | US |
+| Total number of unique fragments | UQ |
+| Total number of chrM fragments | CM |
 
 # Running on Terra
 
