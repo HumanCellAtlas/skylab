@@ -5,7 +5,7 @@
 
 # Overview
 
-<img src="SnapATAC_v1.0.png" width="1000">
+<img src="SnapATAC_v1.0.png" width="500">
 
 
 
