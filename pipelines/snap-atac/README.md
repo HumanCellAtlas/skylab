@@ -38,11 +38,11 @@ The scATAC Pipeline was developed by the Broad DSDE Pipelines team to process si
 | Pipeline Features | Description | Source |
 | ---  |--- | --- |
 | Assay Type | Single nucleus ATAC-seq | [Preprint here ](https://www.biorxiv.org/content/biorxiv/early/2019/05/13/615179.full.pdf)
-| Overall Workflow  | Snap file generator | Code available from [Github](snap-atac.wdl) |
+| Overall Workflow  | Generates Snap file with cell x bin matrix at 10 kb resolution | Code available from [GitHub](snap-atac.wdl) |
 | Workflow Language | WDL 1.0 | [openWDL](https://github.com/openwdl/wdl) |
 | Aligner  | BWA | [Li H. and Durbin R., 2009](https://pubmed.ncbi.nlm.nih.gov/19451168/) |                     
-| Data Input File Format | File format in which sequencing data is provided | FASTQ with cell barcodes appended to read names (read barcode demultiplexing section [here](https://github.com/r3fang/SnapATAC/wiki/FAQs#whatissnap)) |                     
-| Data Output File Format | File formats in which Optimus output is provided | [BAM](http://samtools.github.io/hts-specs/), [Snap](https://github.com/r3fang/SnapATAC/wiki/FAQs#whatissnap) |
+| Data Input File Format | File format in which sequencing data is provided | Paired-end FASTQs with cell barcodes appended to read names (read barcode demultiplexing section [here](https://github.com/r3fang/SnapATAC/wiki/FAQs#whatissnap)) |                     
+| Data Output File Format | File formats in which scATAC output is provided | [BAM](http://samtools.github.io/hts-specs/), [Snap](https://github.com/r3fang/SnapATAC/wiki/FAQs#whatissnap) |
 
 # Set-up
 ## Workflow Installation and Requirements
