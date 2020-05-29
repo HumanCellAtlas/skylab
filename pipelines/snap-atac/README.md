@@ -1,6 +1,6 @@
 | Pipeline Version | Date Updated | Documentation Author | Questions or Feedback |
 | :----: | :---: | :----: | :--------------: |
-| [SnapATAC 1.0 ](snap-atac.wdl) | May 18th 2020 | [Elizabeth Kiernan](mailto:ekiernan@broadinstitute.org) | Please file GitHub issues in skylab or contact [Kylee Degatano](mailto:kdegatano@broadinstitute.org) |
+| [scATAC 2.0 ](scATAC.wdl) | May 18th 2020 | [Elizabeth Kiernan](mailto:ekiernan@broadinstitute.org) | Please file GitHub issues in skylab or contact [Kylee Degatano](mailto:kdegatano@broadinstitute.org) |
 
 
 # Overview
@@ -11,7 +11,7 @@
 
 # Introduction
 
-The SnapATAC Pipeline was developed by the Broad DSDE Pipelines team to process single nucleus ATAC-seq datasets. The pipeline is based on the [SnapATAC pipeline](https://github.com/r3fang/SnapATAC) described by [Fang et al. (2019)](https://www.biorxiv.org/content/10.1101/615179v2.full). Overall, the pipeline uses the python module [SnapTools](https://github.com/r3fang/SnapTools) to align and process FASTQ files. It produces an hdf5-structured Snap file that includes a cell by bin count matrix at 10 kb resolution. In addition to the Snap file, the final outputs include a GA4GH-compliant aligned BAM and QC metrics.
+The scATAC Pipeline was developed by the Broad DSDE Pipelines team to process single nucleus ATAC-seq datasets. The pipeline is based on the [SnapATAC pipeline](https://github.com/r3fang/SnapATAC) described by [Fang et al. (2019)](https://www.biorxiv.org/content/10.1101/615179v2.full). Overall, the pipeline uses the python module [SnapTools](https://github.com/r3fang/SnapTools) to align and process FASTQ files. It produces an hdf5-structured Snap file that includes a cell by bin count matrix at 10 kb resolution. In addition to the Snap file, the final outputs include a GA4GH-compliant aligned BAM and QC metrics.
 
 ## Quick Start Table
 
@@ -26,7 +26,7 @@ The SnapATAC Pipeline was developed by the Broad DSDE Pipelines team to process 
 
 # Set-up
 ## Workflow Installation and Requirements
-The [SnapATAC workflow](snap-atac.wdl) is written in the Workflow Description Language WDL and can be downloaded by cloning the GitHub [Skylab repository](https://github.com/HumanCellAtlas/skylab). The workflow can be deployed using [Cromwell](https://software.broadinstitute.org/wdl/), a GA4GH compliant, flexible workflow management system that supports multiple computing platforms. For the latest workflow version and release notes, please see the SnapATAC [changelog](SnapATAC.changelog.md). 
+The [scATAC workflow](snap-atac.wdl) is written in the Workflow Description Language WDL and can be downloaded by cloning the GitHub [Skylab repository](https://github.com/HumanCellAtlas/skylab). The workflow can be deployed using [Cromwell](https://software.broadinstitute.org/wdl/), a GA4GH compliant, flexible workflow management system that supports multiple computing platforms. For the latest workflow version and release notes, please see the scATAC [changelog](scATAC.changelog.md). 
 
 ## Pipeline Inputs
 The pipeline inputs are detailed in the table below. You can test the workflow by using [human_example.json](human_example.json) example configuration file. 
@@ -43,7 +43,7 @@ The pipeline inputs are detailed in the table below. You can test the workflow b
 Prior to running the workflow, you will need to generate modified FASTQ files and an input_reference. 
 
 ### FASTQ Preparation
-The SnapATAC workflow requires paired reads in the form FASTQ files with the cell barcodes appended to the readnames. A description of the barcode demultiplexing can be found on the SnapATAC documentation (see barcode demultiplexing [here](https://github.com/r3fang/SnapATAC/wiki/FAQs#CEMBA_snap). The full cell barcode must form the first part of the read name (for both R1 and R2 files) and be separated from the rest of the line by a colon. The codeblock below demonstrates this format. 
+The scATAC workflow requires paired reads in the form FASTQ files with the cell barcodes appended to the readnames. A description of the barcode demultiplexing can be found on the SnapATAC documentation (see barcode demultiplexing [here](https://github.com/r3fang/SnapATAC/wiki/FAQs#CEMBA_snap). The full cell barcode must form the first part of the read name (for both R1 and R2 files) and be separated from the rest of the line by a colon. The codeblock below demonstrates this format. 
 
 ```
 @CAGTTGCACGTATAGAACAAGGATAGGATAAC:7001113:915:HJ535BCX2:1:1106:1139:1926 1:N:0:0
@@ -59,7 +59,7 @@ The input_reference is a BWA-compatible reference bundle in TAR file format. You
 
 # Workflow Tasks and Tools
 
-The [SnapATAC workflow](snap-atac.wdl) is divided into multiple tasks which are described in the table below. The table also links to the Docker Image for each task and to the documentation or code for the relevant software tool parameters.
+The [scATAC workflow](snap-atac.wdl) is divided into multiple tasks which are described in the table below. The table also links to the Docker Image for each task and to the documentation or code for the relevant software tool parameters.
 
 | Task | Task description | Tool Docker Image | Parameter Descriptions or Code |
 |--- | --- | --- | 
@@ -118,7 +118,7 @@ The BreakoutSnap task extracts data from the Snap file and exports it to individ
 
 # Outputs 
 
-The main output of the SnapATAC workflow is the Snap file, Snap QC metrics, and the GA4GH-compliant BAM file. All files with the prefix “breakout” are CSV files containing individual pieces of data from the Snap. 
+The main output of the scATAC workflow is the Snap file, Snap QC metrics, and the GA4GH-compliant BAM file. All files with the prefix “breakout” are CSV files containing individual pieces of data from the Snap. 
 
 | output file name | description |
 | --- | --- |
