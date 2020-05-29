@@ -62,7 +62,7 @@ The input_reference is a BWA-compatible reference bundle in TAR file format. You
 The [scATAC workflow](snap-atac.wdl) is divided into multiple tasks which are described in the table below. The table also links to the Docker Image for each task and to the documentation or code for the relevant software tool parameters.
 
 | Task | Task description | Tool Docker Image | Parameter Descriptions or Code |
-|--- | --- | --- | 
+|--- | --- | --- | --- |
 | AlignPairedEnd | Align the modified FASTQ files to the genome | [snaptools:0.0.1](https://github.com/HumanCellAtlas/skylab/blob/master/docker/snaptools/Dockerfile) | [SnapTools documentation](https://github.com/HumanCellAtlas/skylab/tree/master/docker/snaptools) |
 | SnapPre | Initial generation of snap file | [snaptools:0.0.1](https://github.com/HumanCellAtlas/skylab/blob/master/docker/snaptools/Dockerfile) | [SnapTools documentation](https://github.com/HumanCellAtlas/skylab/tree/master/docker/snaptools) |
 | SnapCellByBin | Binning of data by genomic bins | [snaptools:0.0.1](https://github.com/HumanCellAtlas/skylab/blob/master/docker/snaptools/Dockerfile) | [SnapTools documentation](https://github.com/HumanCellAtlas/skylab/tree/master/docker/snaptools) |
