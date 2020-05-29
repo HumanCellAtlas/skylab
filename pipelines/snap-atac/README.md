@@ -158,7 +158,7 @@ The main outputs of the scATAC workflow is the Snap file, Snap QC metrics, and t
 All scATAC workflow releases are documented in the [scATAC changelog](scATAC.changelog.md).
 
 # Pipeline Improvements
-Please help us make our tools better by contacting [Kylee Degatano](mailto:kdegatano@broadinstitute.org)for pipeline-related suggestions or questions.
+Please help us make our tools better by contacting [Kylee Degatano](mailto:kdegatano@broadinstitute.org) for pipeline-related suggestions or questions.
 
 
 
