@@ -132,5 +132,9 @@ The main output of the scATAC workflow is the Snap file, Snap QC metrics, and th
 | breakout_barcodesSection  | Text file with the data from the BD section ('Barcode session' table) |
 
 # Running on Terra
+
 # Versioning
+All scATAC workflow releases are documented in the [scATAC changelog](scATAC.changelog.md).
+
 # Pipeline Improvements
+Please help us make our tools better by contacting [Kylee Degatano](mailto:kdegatano@broadinstitute.org)for pipeline-related suggestions or questions.
