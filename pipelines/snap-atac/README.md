@@ -81,9 +81,9 @@ The [scATAC workflow](scATAC.wdl) is divided into multiple tasks which are descr
 
 | Task | Task description | Tool Docker Image | Parameter Descriptions or Code |
 |--- | --- | --- | --- |
-| AlignPairedEnd | Align the modified FASTQ files to the genome | [snaptools:0.0.1](https://github.com/HumanCellAtlas/skylab/blob/master/docker/snaptools/Dockerfile) | [SnapTools documentation](https://github.com/HumanCellAtlas/skylab/tree/master/docker/snaptools) |
-| SnapPre | Initial generation of snap file | [snaptools:0.0.1](https://github.com/HumanCellAtlas/skylab/blob/master/docker/snaptools/Dockerfile) | [SnapTools documentation](https://github.com/HumanCellAtlas/skylab/tree/master/docker/snaptools) |
-| SnapCellByBin | Binning of data by genomic bins | [snaptools:0.0.1](https://github.com/HumanCellAtlas/skylab/blob/master/docker/snaptools/Dockerfile) | [SnapTools documentation](https://github.com/HumanCellAtlas/skylab/tree/master/docker/snaptools) |
+| AlignPairedEnd | Align the modified FASTQ files to the genome | [snaptools:0.0.1](https://github.com/HumanCellAtlas/skylab/blob/master/docker/snaptools/Dockerfile) | [SnapTools documentation](https://github.com/r3fang/SnapTools) |
+| SnapPre | Initial generation of snap file | [snaptools:0.0.1](https://github.com/HumanCellAtlas/skylab/blob/master/docker/snaptools/Dockerfile) | [SnapTools documentation](https://github.com/r3fang/SnapTools) |
+| SnapCellByBin | Binning of data by genomic bins | [snaptools:0.0.1](https://github.com/HumanCellAtlas/skylab/blob/master/docker/snaptools/Dockerfile) | [SnapTools documentation](https://github.com/r3fang/SnapTools) |
 | MakeCompliantBAM | Generation of a GA4GH compliant BAM | [snaptools:0.0.1](https://github.com/HumanCellAtlas/skylab/blob/master/docker/snaptools/Dockerfile) | [Code](https://github.com/HumanCellAtlas/skylab/blob/master/docker/snaptools/makeCompliantBAM.py) |
 | BreakoutSnap | Extraction of tables from snap file into text format (for testing and user availability) | [snap-breakout:0.0.1](https://github.com/HumanCellAtlas/skylab/tree/master/docker/snap-breakout) | [Code](https://github.com/HumanCellAtlas/skylab/blob/master/docker/snap-breakout/breakoutSnap.py) |
 
