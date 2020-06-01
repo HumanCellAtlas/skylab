@@ -106,7 +106,7 @@ The SnapPre task uses SnapTools to perform preprocessing and filtering on the al
 | --keep-single | Boolean variable indicates whether to keep single-end reads | TRUE |
 | --keep-secondary | Boolean variable indicates whether to keep secondary alignments | FALSE
 | --max-num | Max number of barcodes to be stored. Based on the coverage, top max_barcode barcodes are selected and stored | 1000000 |
-| --min-cov | Minimum number of barcodes a fragment requires to be included in the final output | 100 |
+| --min-cov | Fragments with less than min-cov number of barcodes will be filtered | 100 |
 
 
 ### SnapCellByBin
