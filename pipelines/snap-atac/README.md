@@ -124,7 +124,7 @@ The BreakoutSnap task extracts data from the Snap file and exports it to individ
 
 The main outputs of the scATAC workflow is the Snap file, Snap QC metrics, and the GA4GH compliant BAM file. All files with the prefix “breakout” are CSV files containing individual pieces of data from the Snap. The sessions for the Snap file are described in the [SnapTools documentation](https://github.com/r3fang/SnapTools). Additionally, you can read detailed information on the [Snap file fields for each session](https://github.com/r3fang/SnapTools/blob/master/docs/snap_format.docx) (select "View Raw").
 
-| Output file name | Description |
+| Output File Name | Description |
 | --- | --- |
 | output_snap_qc | Quality control file corresponding to the snap file |
 | output_snap | Output snap file (in hdf5 container format) |
