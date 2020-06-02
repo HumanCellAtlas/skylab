@@ -61,7 +61,7 @@ workflow Optimus {
   }
 
   # version of this pipeline
-  String version = "optimus_v2.0.0"
+  String version = "optimus_v2.1.0"
 
   # this is used to scatter matched [r1_fastq, r2_fastq, i1_fastq] arrays
   Array[Int] indices = range(length(r1_fastq))
@@ -253,7 +253,7 @@ workflow Optimus {
       emptydrops_lower = emptydrops_lower
   }
 
-  call ZarrUtils.OptimusZarrConversion{
+  call ZarrUtils.OptimusLoomGeneration{
     input:
       sample_id = sample_id,
       annotation_file = annotations_gtf,
@@ -264,15 +264,6 @@ workflow Optimus {
       gene_id = MergeCountFiles.col_index,
       empty_drops_result = RunEmptyDrops.empty_drops_result,
       counting_mode = counting_mode
-  }
-
-  if (output_loom) {
-    call ZarrUtils.OptimusZarrToLoom {
-      input:
-        sample_id = sample_id,
-        zarr_files = OptimusZarrConversion.zarr_output_files,
-        counting_mode = counting_mode
-    }
   }
 
   output {
@@ -287,10 +278,7 @@ workflow Optimus {
     File gene_metrics = MergeGeneMetrics.gene_metrics
     File cell_calls = RunEmptyDrops.empty_drops_result
 
-    # zarr
-    Array[File] zarr_output_files = OptimusZarrConversion.zarr_output_files
-
     # loom
-    File? loom_output_file = OptimusZarrToLoom.loom_output
+    File loom_output_file = OptimusLoomGeneration.loom_output
   }
 }
