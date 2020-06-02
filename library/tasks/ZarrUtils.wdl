@@ -1,4 +1,4 @@
-version 1.1
+version 1.0
 
 task SmartSeq2ZarrConversion {
   input {
@@ -113,15 +113,6 @@ task OptimusLoomGeneration {
        --sample_id ${sample_id} \
        --count_matrix ${sparse_count_matrix} \
        --expression_data_type $EXPRESSION_DATA_TYPE_PARAM
-
-    mkdir loomout
-    # get all the files in the zarr folder in  a list
-    a=`find "${sample_id}.loom"  -type f`
-    for f in $a; do
-       # replace all / to ! as a work around for now.
-       b=`echo $f | tr "/" "\!"`
-       mv $f loomout/$b
-    done
   }
 
   runtime {
