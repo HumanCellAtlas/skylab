@@ -131,61 +131,35 @@ def  generate_row_attr(args):
 
 
 def generate_col_attr(args):
-    """Converts cell metrics from the Optimus pipeline to zarr file
+    metrics_df = pd.read_csv(metrics_file, dtype=str)
 
-    Args:
-        input_path (str): file containing gene metrics name and values
-        cell_ids (list): list of cell ids
-        verbose (bool): whether to output verbose messages for debugging purposes
-        empty_drops_path (str): emptydrops csv file
-    """
-    cell_ids = np.load(args.cell_ids)
-
-    # Read the csv input files
-    metrics_df = pd.read_csv(args.cell_metrics, dtype=str)
-    emptydrops_df = pd.read_csv(args.empty_drops_file, dtype=str)
+    add_emptydrops_results = args.add_emptydrops_results 
+    if add_emptydrops_results == 'yes':
+       emptydrops_df = pd.read_csv(args.empty_drops_file, dtype=str)
 
     # Check that input is valid
     if metrics_df.shape[0] == 0 or metrics_df.shape[1] == 0:
         logging.error("Cell metrics table is not valid")
         raise ValueError()
-    if emptydrops_df.shape[0] == 0 or emptydrops_df.shape[1] == 0:
-        logging.error("EmptyDrops table is not valid")
-        raise ValueError()
+
+    if add_emptydrops_results == 'yes':
+        if emptydrops_df.shape[0] == 0 or emptydrops_df.shape[1] == 0:
+            logging.error("EmptyDrops table is not valid")
+            raise ValueError()
 
     # Rename cell columns for both datasets to cell_id
-    emptydrops_df = emptydrops_df.rename(columns={"CellId": "cell_id"})
+    if add_emptydrops_results == 'yes':
+       emptydrops_df = emptydrops_df.rename(columns={"CellId": "cell_id"})
     metrics_df = metrics_df.rename(columns={"Unnamed: 0": "cell_id"})
 
     # Drop first row that contains non-cell information from metrics file, this contains aggregate information
     metrics_df = metrics_df.iloc[1:]
 
-    # Prefix emptydrops column names (except the key cell_id)
-    colnames = list(emptydrops_df.columns)
-    newcolnames = ["emptydrops_" + s for s in colnames]
-    namemap = dict(zip(colnames, newcolnames))
-    # Do not map the cell_id as it will be used for the merge
-    del namemap["cell_id"]
-    emptydrops_df = emptydrops_df.rename(columns=namemap)
-
-    # Confirm that the emptydrops table is a subset of the cell metadata table, fail if not
-    if not emptydrops_df.cell_id.isin(metrics_df.cell_id).all():
-        logging.error(
-            "Not all emptydrops cells can be found in the metrics table."
-        )
-        raise Exception(
-            "Not all emptydrops cells can be found in the metrics table."
-        )
-
-    # Merge the two tables
-    merged_df = metrics_df.merge(emptydrops_df, on="cell_id", how="outer")
-
     # Order the cells by merging with cell_ids
     cellorder_df = pd.DataFrame(data={"cell_id": cell_ids})
-    final_df = cellorder_df.merge(merged_df, on="cell_id", how="left")
 
     # Split the pandas DataFrame into different data types for storing in the ZARR
-    FloatColumnNames = [  # UInt
+    IntColumnNames = [  # UInt
         "n_reads",
         "noise_reads",
         "perfect_molecule_barcodes",
@@ -206,9 +180,10 @@ def generate_col_attr(args):
         "reads_unmapped",
         "reads_mapped_too_many_loci",
         "n_genes",
-        "genes_detected_multiple_observations",
-        "emptydrops_Total",
-        # Float32
+        "genes_detected_multiple_observations"
+    ] 
+
+    FloatColumnNames = [ # Float32
         "molecule_barcode_fraction_bases_above_30_mean",
         "molecule_barcode_fraction_bases_above_30_variance",
         "genomic_reads_fraction_bases_quality_above_30_mean",
@@ -219,14 +194,46 @@ def generate_col_attr(args):
         "fragments_per_molecule",
         "cell_barcode_fraction_bases_above_30_mean",
         "cell_barcode_fraction_bases_above_30_variance",
-        "emptydrops_LogProb",
-        "emptydrops_PValue",
-        "emptydrops_FDR",
+        "n_mitochondrial_genes",
+        "n_mitochondrial_molecules",
+        "pct_mitochondrial_molecules"
     ]
-    BoolColumnNames = ["emptydrops_Limited", "emptydrops_IsCell"]
+
+    # Prefix emptydrops column names (except the key cell_id)
+    newcolnames = []
+    if add_emptydrops_results == 'yes':
+        colnames = list(emptydrops_df.columns)
+        newcolnames = ["emptydrops_" + s for s in colnames]
+
+        namemap = dict(zip(colnames, newcolnames))
+        # Do not map the cell_id as it will be used for the merge
+        del namemap["cell_id"]
+
+        emptydrops_df = emptydrops_df.rename(columns=namemap)
+
+    # Confirm that the emptydrops table is a subset of the cell metadata table, fail if not
+        if not emptydrops_df.cell_id.isin(metrics_df.cell_id).all():
+            logging.error(
+                "Not all emptydrops cells can be found in the metrics table."
+            )
+            raise Exception(
+                "Not all emptydrops cells can be found in the metrics table."
+            )
+        merged_df = metrics_df.merge(emptydrops_df, on="cell_id", how="outer")
+
+        final_df = cellorder_df.merge(merged_df, on="cell_id", how="left")
+
+        ColumnNames = IntColumnNames + ["emptydrops_Total"] + FloatColumnNames + \
+            [ "emptydrops_LogProb", "emptydrops_PValue", "emptydrops_FDR" ]
+        BoolColumnNames = ["emptydrops_Limited", "emptydrops_IsCell"]
+       
+    else:
+        final_df = cellorder_df.merge(metrics_df, on="cell_id", how="left")
+        ColumnNames = IntColumnNames + FloatColumnNames 
+        BoolColumnNames = []
 
     # Split the dataframe
-    final_df_float = final_df[FloatColumnNames]
+    final_df_float = final_df[ColumnNames]
 
     # Data types for storage
     header_datatype = "<U80"  # little-endian 80 char unicode
@@ -238,20 +245,21 @@ def generate_col_attr(args):
     # Create a numpy array of the same shape of booleans
     final_df_bool = np.full(final_df[BoolColumnNames].shape, True)
 
-    for index, row in final_df[BoolColumnNames].iterrows():
-        if row["emptydrops_Limited"] == "TRUE":
-            final_df_bool[index, 0] = True
-        elif row["emptydrops_Limited"] == "FALSE":
-            final_df_bool[index, 0] = False
-        else:
-            final_df_bool[index, 0] = np.nan
-
-        if row["emptydrops_IsCell"] == "TRUE":
-            final_df_bool[index, 1] = True
-        elif row["emptydrops_IsCell"] == "FALSE":
-            final_df_bool[index, 1] = False
-        else:
-            final_df_bool[index, 1] = np.nan
+    if "emptydrops_Limited" in final_df[BoolColumnNames].columns:
+        for index, row in final_df[BoolColumnNames].iterrows():
+            if row["emptydrops_Limited"] == "TRUE":
+                final_df_bool[index, 0] = True
+            elif row["emptydrops_Limited"] == "FALSE":
+                final_df_bool[index, 0] = False
+            else:
+                final_df_bool[index, 0] = np.nan
+    
+            if row["emptydrops_IsCell"] == "TRUE":
+                final_df_bool[index, 1] = True
+            elif row["emptydrops_IsCell"] == "FALSE":
+                final_df_bool[index, 1] = False
+            else:
+                final_df_bool[index, 1] = np.nan
 
     final_df_float = final_df_float.apply(pd.to_numeric)
 
@@ -365,7 +373,6 @@ def create_loom_files(args):
     #generate loom file 
     loompy.create(args.output_loom_path, expr_sp_t, row_attrs, col_attrs, file_attrs=attrDict)
 
-
 def main():
     description = """This script converts the some of the Optimus outputs in to
                    loom format (http://linnarssonlab.org/loompy/index.html) relevant output.
@@ -378,6 +385,14 @@ def main():
         dest="empty_drops_file",
         required=True,
         help="A csv file with the output of the emptyDrops step in Optimus",
+    )
+
+    parser.add_argument(
+        "--add_emptydrops_data",
+        dest="add_emptydrops_results",
+        required=True,
+        choices = ['yes', 'no'],
+        help="if yes then add the emptydrops data or else do not add Optimus",
     )
 
     parser.add_argument(

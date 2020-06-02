@@ -59,8 +59,7 @@ task SmartSeq2ZarrConversion {
 task OptimusLoomGeneration {
 
   input {
-    #runtime values
-    String docker = "quay.io/humancellatlas/secondary-analysis-loom-output:0.0.1-removeZarr"
+    String docker = "quay.io/humancellatlas/secondary-analysis-zarr-output:0.0.6-removeZarr"
     # name of the sample
     String sample_id
     # gene annotation file in GTF format
@@ -93,26 +92,26 @@ task OptimusLoomGeneration {
   command {
     set -euo pipefail
 
-
-    if ~{counting_mode} == "sc_rna"
-    then
+    if [ "${counting_mode}" == "sc_rna" ]; then
         EXPRESSION_DATA_TYPE_PARAM="exonic" 
+        ADD_EMPTYDROPS_DATA="yes"
     else
         EXPRESSION_DATA_TYPE_PARAM="whole_transcript"
+        ADD_EMPTYDROPS_DATA="no" 
     fi
 
     python3 /tools/create_loom_optimus.py \
        --empty_drops_file ${empty_drops_result} \
+       --add_emptydrops_data $ADD_EMPTYDROPS_DATA \
        --annotation_file ${annotation_file}\
        --cell_metrics ${cell_metrics}\
        --gene_metrics ${gene_metrics}\
        --cell_id ${cell_id}\
        --gene_id  ${gene_id} \
-       --output_path_for_loom "out.loom" \
+       --output_path_for_loom "output.loom" \
        --sample_id ${sample_id} \
        --count_matrix ${sparse_count_matrix} \
        --expression_data_type $EXPRESSION_DATA_TYPE_PARAM
-
   }
 
   runtime {
@@ -124,7 +123,7 @@ task OptimusLoomGeneration {
   }
 
   output {
-    File loom_output_files = "out.loom"
+    File loom_output = "output.loom"
   }
 }
 

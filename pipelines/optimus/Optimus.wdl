@@ -61,7 +61,7 @@ workflow Optimus {
   }
 
   # version of this pipeline
-  String version = "optimus_v2.0.0"
+  String version = "optimus_v2.1.0"
 
   # this is used to scatter matched [r1_fastq, r2_fastq, i1_fastq] arrays
   Array[Int] indices = range(length(r1_fastq))
@@ -253,7 +253,7 @@ workflow Optimus {
       emptydrops_lower = emptydrops_lower
   }
 
-  call LoomUtils.OptimusLoomGeneration{
+  call ZarrUtils.OptimusLoomGeneration{
     input:
       sample_id = sample_id,
       annotation_file = annotations_gtf,

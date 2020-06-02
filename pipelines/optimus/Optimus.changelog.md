@@ -1,3 +1,9 @@
+#optimus_v2.1.0
+
+* Removed zarr file
+
+* Added emptyDrops for sn_rna mode
+
 # optimus_v2.0.0
 
 * Fixed bug that resulted in emptyDrops output being incorrect
