@@ -10,7 +10,7 @@
   * [Pipeline Inputs](#pipeline-inputs)
   * [Input File Preparation](#input-file-preparation)
     + [R1 and R2 FASTQ Preparation](#r1-and-r2-fastq-preparation)
-    + [Input_reference Preparation](#input-reference-preparation)
+    + [Input_reference Preparation](#input_reference-preparation)
 - [Workflow Tasks and Tools](#workflow-tasks-and-tools)
   * [Task Summary](#task-summary)
     + [AlignPairedEnd](#alignpairedend)
@@ -62,7 +62,7 @@ The pipeline inputs are detailed in the table below. You can test the workflow b
 ## Input File Preparation
 
 ### R1 and R2 FASTQ Preparation
-The scATAC workflow requires paired reads in the form FASTQ files with the cell barcodes appended to the readnames. A description of the barcode demultiplexing can be found on the SnapATAC documentation (see barcode demultiplexing section [here](https://github.com/r3fang/SnapATAC/wiki/FAQs#CEMBA_snap)). The full cell barcode must form the first part of the read name (for both R1 and R2 files) and be separated from the rest of the line by a colon. You can find an example python code to perform demultiplexing in the [SnapTools documentation here](https://github.com/r3fang/SnapTools/blob/master/snaptools/dex_fastq.py).The codeblock below demonstrates this format. 
+The scATAC workflow requires paired reads in the form FASTQ files with the cell barcodes appended to the readnames. A description of the barcode demultiplexing can be found on the SnapATAC documentation (see barcode demultiplexing section [here](https://github.com/r3fang/SnapATAC/wiki/FAQs#CEMBA_snap)). The full cell barcode must form the first part of the read name (for both R1 and R2 files) and be separated from the rest of the line by a colon. You can find an example python code to perform demultiplexing in the [SnapTools documentation here](https://github.com/r3fang/SnapTools/blob/master/snaptools/dex_fastq.py).The codeblock below demonstrates the correct format. 
 
 ```
 @CAGTTGCACGTATAGAACAAGGATAGGATAAC:7001113:915:HJ535BCX2:1:1106:1139:1926 1:N:0:0
