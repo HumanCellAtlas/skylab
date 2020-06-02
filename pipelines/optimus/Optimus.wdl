@@ -48,9 +48,6 @@ workflow Optimus {
     # Emptydrops lower cutoff
     Int emptydrops_lower = 100
 
-    # If true produce the optional loom output
-    Boolean output_loom = false
-
     # Set to true to override input checks and allow pipeline to proceed with invalid input
     Boolean force_no_check = false
 
