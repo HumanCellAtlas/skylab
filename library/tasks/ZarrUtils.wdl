@@ -60,7 +60,7 @@ task OptimusLoomGeneration {
 
   input {
     #runtime values
-    String docker = "quay.io/humancellatlas/secondary-analysis-loom-output:0.0.1-empty_drops"
+    String docker = "docker push quay.io/humancellatlas/secondary-analysis-zarr-output:0.0.6-removeZarr"
     # name of the sample
     String sample_id
     # gene annotation file in GTF format
