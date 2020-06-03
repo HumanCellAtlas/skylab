@@ -41,7 +41,7 @@ workflow TestOptimusPR {
       annotations_gtf = annotations_gtf,
       ref_genome_fasta = ref_genome_fasta,
       sample_id = sample_id,
-LoomUtils.wdlchemistry = chemistry,
+      chemistry = chemistry,
       force_no_check = force_no_check,
       counting_mode = counting_mode
   }
