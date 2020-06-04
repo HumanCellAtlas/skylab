@@ -1,3 +1,9 @@
+# smartseq2_v4.0.0
+
+2020-06-04 (Date of Last Commit)
+
+* Added loom output and removed the zarr output
+
 # smartseq2_v3.1.0
 
 2020-05-07 (Date of Last Commit)

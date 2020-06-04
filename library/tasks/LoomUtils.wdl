@@ -3,7 +3,7 @@ version 1.0
 task SmartSeq2LoomOutput {
   input {
     #runtime values
-    String docker = "quay.io/humancellatlas/secondary-analysis-zarr-output:0.0.6-removeZarr-ss2"
+    String docker = "quay.io/humancellatlas/secondary-analysis-loom-output:0.0.6-removeZarr-ss2"
     # the gene count file "<sample_id>_rsem.genes.results" in the task results folder call-RSEMExpression
     File rsem_gene_results
     # file named "<sample_id>_QCs.csv" in the folder  "call-GroupQCOutputs/glob-*" of the the SS2  output
@@ -15,7 +15,7 @@ task SmartSeq2LoomOutput {
   }
 
   meta {
-    description: "This  task will converts some of the outputs of Smart Seq 2 pipeline into a zarr file"
+    description: "This  task will converts some of the outputs of Smart Seq 2 pipeline into a loom file"
   }
 
   parameter_meta {
@@ -25,21 +25,11 @@ task SmartSeq2LoomOutput {
   command {
     set -euo pipefail
 
-    python3 /tools/create_zarr_ss2.py \
+    python3 /tools/create_loom_ss2.py \
        --qc_files ${sep=' ' smartseq_qc_files} \
        --rsem_genes_results  ${rsem_gene_results} \
-       --output_zarr_path  "${sample_name}.zarr" \
+       --output_loom_path  "${sample_name}.loom" \
        --sample_id ${sample_name} \
-       --format DirectoryStore
-
-    mkdir zarrout
-    # get all the files in the zarr folder in  a list
-    a=`find "${sample_name}.zarr"  -type f`
-    for f in $a; do
-       # replace all / to ! as a work around for now.
-       b=`echo $f | tr "/" "\!"`
-       mv $f zarrout/$b
-    done
   }
 
   runtime {
@@ -51,7 +41,7 @@ task SmartSeq2LoomOutput {
   }
 
   output {
-    Array[File] zarr_output_files = glob("zarrout/*zarr*")
+    File loom_output = "${sample_name}.loom"
   }
 }
 
@@ -60,7 +50,7 @@ task OptimusLoomGeneration {
 
   input {
     #runtime values
-    String docker = "quay.io/humancellatlas/secondary-analysis-zarr-output:0.0.6-removeZarr"
+    String docker = "quay.io/humancellatlas/secondary-analysis-loom-output:0.0.6-removeZarr"
     # name of the sample
     String sample_id
     # gene annotation file in GTF format
@@ -83,7 +73,7 @@ task OptimusLoomGeneration {
   }
   
   meta {
-    description: "This task will converts some of the outputs of Optimus pipeline into a zarr file"
+    description: "This task will converts some of the outputs of Optimus pipeline into a loom file"
   }
 
   parameter_meta {
@@ -131,10 +121,10 @@ task OptimusLoomGeneration {
 task SmartSeq2PlateToLoom {
     input {
         String batch_id
-        Array[File] zarr_files
+        Array[File] loom_files
 
         # runtime values
-        String docker = "quay.io/humancellatlas/zarr-to-loom:0.0.2"
+        String docker = "quay.io/humancellatlas/loom-to-loom:0.0.2"
 
         Int preemptible = 3
         Int cpu = 1
@@ -143,12 +133,12 @@ task SmartSeq2PlateToLoom {
     command {
         set -euo pipefail
 
-        mkdir packed_zarr
-        mv ${sep=' ' zarr_files} packed_zarr/
-        mkdir unpacked_zarr
-        unpackZARR.sh -i packed_zarr -o unpacked_zarr
+        mkdir packed_loom
+        mv ${sep=' ' loom_files} packed_loom/
+        mkdir unpacked_loom
+        unpackZARR.sh -i packed_loom -o unpacked_loom
 
-        ss2_plate_zarr_to_loom.py --input-zarr unpacked_zarr --output-loom output.loom --sample-id ${batch_id}
+        ss2_plate_loom_to_loom.py --input-loom unpacked_loom --output-loom output.loom --sample-id ${batch_id}
 
     }
 

@@ -32,11 +32,9 @@ workflow SmartSeq2SingleCell {
     File? fastq2
     Boolean paired_end
     Boolean force_no_check = false
-    # whether to convert the outputs to Zarr format, by default it's set to true
-    Boolean output_zarr = true
   }
   # version of this pipeline
-  String version = "smartseq2_v3.1.0"
+  String version = "smartseq2_v4.0.0"
 
   parameter_meta {
     genome_ref_fasta: "Genome reference in fasta format"
@@ -52,7 +50,6 @@ workflow SmartSeq2SingleCell {
     output_name: "Output name, can include path"
     fastq1: "R1 in paired end reads"
     fastq2: "R2 in paired end reads"
-    output_zarr: "whether to run the taks that converts the outputs to Zarr format, by default it's true"
     paired_end: "Boolean flag denoting if the sample is paired end or not"
   }
 
@@ -177,13 +174,11 @@ workflow SmartSeq2SingleCell {
       output_name = output_name
   }
 
-  if (output_zarr) {
-    call LoomUtils.SmartSeq2LoomOutput {
-      input:
-        rsem_gene_results = RSEMExpression.rsem_gene,
-        smartseq_qc_files = GroupQCOutputs.group_files,
-        sample_name=sample_name
-    }
+  call LoomUtils.SmartSeq2LoomOutput {
+    input:
+      rsem_gene_results = RSEMExpression.rsem_gene,
+      smartseq_qc_files = GroupQCOutputs.group_files,
+      sample_name=sample_name
   }
 
   output {
@@ -203,7 +198,7 @@ workflow SmartSeq2SingleCell {
     File rsem_gene_results = RSEMExpression.rsem_gene
     File rsem_isoform_results = RSEMExpression.rsem_isoform
 
-    # zarr
-    Array[File]? zarr_output_files = SmartSeq2LoomOutput.zarr_output_files
+    # loom
+    File loom_output_files = SmartSeq2LoomOutput.loom_output
   }
 }
