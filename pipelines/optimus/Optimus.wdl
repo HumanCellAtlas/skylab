@@ -10,7 +10,7 @@ import "TagGeneExon.wdl" as TagGeneExon
 import "SequenceDataWithMoleculeTagMetrics.wdl" as Metrics
 import "TagSortBam.wdl" as TagSortBam
 import "RunEmptyDrops.wdl" as RunEmptyDrops
-import "ZarrUtils.wdl" as ZarrUtils
+import "LoomUtils.wdl" as LoomUtils
 import "Picard.wdl" as Picard
 import "UmiCorrection.wdl" as UmiCorrection
 import "ScatterBam.wdl" as ScatterBam
@@ -250,7 +250,7 @@ workflow Optimus {
       emptydrops_lower = emptydrops_lower
   }
 
-  call ZarrUtils.OptimusLoomGeneration{
+  call LoomUtils.OptimusLoomGeneration{
     input:
       sample_id = sample_id,
       annotation_file = annotations_gtf,

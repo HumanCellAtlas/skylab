@@ -4,7 +4,7 @@ import "HISAT2.wdl" as HISAT2
 import "Picard.wdl" as Picard
 import "RSEM.wdl" as RSEM
 import "GroupMetricsOutputs.wdl" as GroupQCs
-import "ZarrUtils.wdl" as ZarrUtils
+import "LoomUtils.wdl" as LoomUtils
 import "SS2InputChecks.wdl" as SS2InputChecks
 
 workflow SmartSeq2SingleCell {
@@ -178,7 +178,7 @@ workflow SmartSeq2SingleCell {
   }
 
   if (output_zarr) {
-    call ZarrUtils.SmartSeq2ZarrConversion {
+    call LoomUtils.SmartSeq2LoomOutput {
       input:
         rsem_gene_results = RSEMExpression.rsem_gene,
         smartseq_qc_files = GroupQCOutputs.group_files,
@@ -204,6 +204,6 @@ workflow SmartSeq2SingleCell {
     File rsem_isoform_results = RSEMExpression.rsem_isoform
 
     # zarr
-    Array[File]? zarr_output_files = SmartSeq2ZarrConversion.zarr_output_files
+    Array[File]? zarr_output_files = SmartSeq2LoomOutput.zarr_output_files
   }
 }

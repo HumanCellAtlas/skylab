@@ -2,7 +2,7 @@ version 1.0
 
 import "SmartSeq2SingleSample.wdl" as single_cell_run
 import "SmartSeq2PlateAggregation.wdl" as ss2_plate_aggregation
-import "ZarrUtils.wdl" as ZarrUtils
+import "LoomUtils.wdl" as LoomUtils
        
 workflow MultiSampleSmartSeq2 {
   meta {
@@ -108,7 +108,7 @@ workflow MultiSampleSmartSeq2 {
   }
 
    if (output_loom) {
-    call ZarrUtils.SmartSeq2PlateToLoom as ZarrToLoom {
+    call LoomUtils.SmartSeq2PlateToLoom as ZarrToLoom {
        input:
          batch_id = batch_id,
          zarr_files = AggregateZarr.zarr_output_files
