@@ -49,7 +49,7 @@ def generate_col_attr(qc_paths):
 
     # Column attributes
     col_attrs = dict()
-    col_attrs["CellID"] = [cell_id]
+    col_attrs["cell_names"] = [cell_id]
     
     numeric_field_names = np.array(sorted_numeric_labels[:])
     for i in range(0, numeric_field_names.shape[0]):
@@ -105,7 +105,7 @@ def generate_row_attr_and_matrix(rsem_gene_results_path):
     del ycoord
     del value
 
-    row_attrs = {"Gene":np.array(sorted_gene_ids)}
+    row_attrs = {"ensembl_ids":np.array(sorted_gene_ids)}
 
     return row_attrs, expr_sp_t
 

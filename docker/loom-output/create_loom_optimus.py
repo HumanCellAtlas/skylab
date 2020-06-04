@@ -8,7 +8,6 @@ from scipy import sparse
 import pandas as pd
 import scipy as sc
 import logging
-from numcodecs import Blosc
 
 logging.basicConfig(level=logging.INFO)
 
@@ -108,7 +107,7 @@ def  generate_row_attr(args):
     nrows = len(gene_ids)
     
     #Generate row attribute dictionary
-    row_attrs = { "Gene":gene_names, "Accession": gene_ids}
+    row_attrs = { "gene_names":gene_names, "ensembl_ids": gene_ids}
 
     X=np.array(gene_metric_values)
     numeric_field_names = gene_metrics[0][1:]
@@ -268,7 +267,7 @@ def generate_col_attr(args):
 
     # COLUMN/CELL Metadata
     col_attrs = dict()
-    col_attrs["CellID"] = cell_ids
+    col_attrs["cell_names"] = cell_ids
     bool_field_names = final_df_bool_column_names
     for i in range(0, bool_field_names.shape[0]):
         name = bool_field_names[i]

@@ -7,8 +7,9 @@ import loompy
 def main():
     description = """Merge the outputs of multiple SS2 pipeline runs into a single Loom file"""
     parser = argparse.ArgumentParser(description=description)
-    parser.add_argument('--input-loom-directory',
-                        dest='input_loom_dir',
+    parser.add_argument('--input-loom-files',
+                        dest='input_loom_files',
+                        nargs="+",
                         required=True,
                         help="Path to input loom directory in DirectoryStore format")
     parser.add_argument('--output-loom-file',
@@ -22,7 +23,9 @@ def main():
     args = parser.parse_args()
 
     # The list of Loom files that we need to merge
-    loom_file_list = os.listdir(args.input_loom_dir)
+    
+    loom_file_list = args.input_loom_files
+    
     attrDict = dict()
     attrDict['sample_id'] = args.plate_sample_id
     loompy.combine(loom_file_list,output_file=args.output_loom_file,file_attrs = attrDict)

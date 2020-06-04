@@ -1,3 +1,8 @@
+# MultiSampleSmartSeq2_v2.0.0
+
+2019-06-04 (Date of Last Commit)
+* Removed zarr output and made loom output as default
+
 # MultiSampleSmartSeq2_v1.1.0
 
 2019-05-07 (Date of Last Commit)

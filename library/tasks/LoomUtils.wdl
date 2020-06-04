@@ -3,7 +3,7 @@ version 1.0
 task SmartSeq2LoomOutput {
   input {
     #runtime values
-    String docker = "quay.io/humancellatlas/secondary-analysis-loom-output:0.0.6-removeZarr-ss2"
+    String docker = "quay.io/humancellatlas/secondary-analysis-loom-output:0.0.2"
     # the gene count file "<sample_id>_rsem.genes.results" in the task results folder call-RSEMExpression
     File rsem_gene_results
     # file named "<sample_id>_QCs.csv" in the folder  "call-GroupQCOutputs/glob-*" of the the SS2  output
@@ -50,7 +50,7 @@ task OptimusLoomGeneration {
 
   input {
     #runtime values
-    String docker = "quay.io/humancellatlas/secondary-analysis-loom-output:0.0.6-removeZarr"
+    String docker = "quay.io/humancellatlas/secondary-analysis-loom-output:0.0.2" 
     # name of the sample
     String sample_id
     # gene annotation file in GTF format
@@ -118,42 +118,39 @@ task OptimusLoomGeneration {
   }
 }
 
-task SmartSeq2PlateToLoom {
+
+task AggregateSmartSeq2Loom {
     input {
-        String batch_id
-        Array[File] loom_files
+        Array[File] loom_input
+        String plateid
+        String docker = "quay.io/humancellatlas/secondary-analysis-loom-output:0.0.2"
+        Int disk = 100
+    }
 
-        # runtime values
-        String docker = "quay.io/humancellatlas/loom-to-loom:0.0.2"
-
-        Int preemptible = 3
-        Int cpu = 1
+    meta {
+      description: "aggregate the loom output"
     }
 
     command {
-        set -euo pipefail
+      set -e
+      
+      # Merge the loom files
+      python3 /tools/ss2_loom_merge.py --input-loom-files ${sep=' ' loom_input} \
+      --output-loom-file output.loom --plate-sample-id plateid
 
-        mkdir packed_loom
-        mv ${sep=' ' loom_files} packed_loom/
-        mkdir unpacked_loom
-        unpackZARR.sh -i packed_loom -o unpacked_loom
 
-        ss2_plate_loom_to_loom.py --input-loom unpacked_loom --output-loom output.loom --sample-id ${batch_id}
-
-    }
-
-    runtime {
-        docker: docker
-        cpu: 1
-        memory: "48 GiB"
-        disks: "local-disk 100 HDD"
-        preemptible: preemptible
     }
 
     output {
-        File loom_output = "output.loom"
+        File loom_output_file = "output.loom"
     }
 
+    runtime {
+      docker: docker
+      memory: "3.5 GiB"
+      disks: "local-disk ${disk} HDD"
+      cpu: 1
+      preemptible: 3
+      maxRetries: 1
+    }
 }
-
-
