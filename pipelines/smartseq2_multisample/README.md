@@ -61,7 +61,7 @@ The Loom output and BAM files are described in the [Smart-seq2 Single Sample REA
 
 | Zarr Array Deprecation Notice June 2020 |
 | --- |
-| Please note that we have deprecated the previously used Zarr array output. The pipeline now uses the Loom file format as the default output |
+| Please note that we have deprecated the previously used Zarr array output. The pipeline now uses the Loom file format as the default output. |
  
  # Versioning
 
