@@ -17,8 +17,8 @@ def main():
     truth_loom = loompy.connect(args.truth_loom_path)
     check_loom = loompy.connect(args.check_loom_path)
 
-    truth_loom_array = pd.DataFrame(data=truth_loom[:, :], index=truth_loom.row_attrs['Gene'], columns=truth_loom.col_attrs['CellID'])
-    check_loom_array = pd.DataFrame(data=check_loom[:,:], index=check_loom.row_attrs['Gene'], columns=check_loom.col_attrs['CellID'])
+    truth_loom_array = pd.DataFrame(data=truth_loom[:, :], index=truth_loom.row_attrs['gene_names'], columns=truth_loom.col_attrs['cell_names'])
+    check_loom_array = pd.DataFrame(data=check_loom[:,:], index=check_loom.row_attrs['gene_names'], columns=check_loom.col_attrs['cell_names'])
     check_loom_array = check_loom_array[truth_loom_array.columns]
 
     delta = (check_loom_array - truth_loom_array).abs().sum().sum()
