@@ -58,6 +58,10 @@ In addition to the Smart-seq2 Single Sample inputs, the Multi Sample workflow re
  | loom_output | A single Loom file  | File |
  
 The Loom output and BAM files are described in the [Smart-seq2 Single Sample README](/pipelines/smartseq2_single_sample/README.md).
+
+| Zarr Array Deprecation Notice June 2020 |
+| --- |
+| Please note that we have deprecated the previously used Zarr array output. The pipeline now uses the Loom file format as the default output |
  
  # Versioning
 
