@@ -147,6 +147,7 @@ def main():
 
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument('--qc_files',
+                        nargs = "+",
                         help=('the grouped QC files from the GroupQCOutputs task of SS2 '
                               'Single Sample workflow'))
 
