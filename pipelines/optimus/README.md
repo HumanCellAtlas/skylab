@@ -211,6 +211,9 @@ The Loom is the default output. See the [create_loom_optimus.py](https://github.
 
 The final Loom output contains the unnormalized (unfiltered), UMI-corrected expression matrices, as well as the gene and cell metrics detailed in the [Loom_schema documentation](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Loom_schema.md). 
 
+| Zarr Array Deprecation Notice June 2020 |
+| --- |
+| Please note that we have deprecated the previously used Zarr array output. The pipeline now uses the Loom file format as the default output |
 
 # Versioning
 
