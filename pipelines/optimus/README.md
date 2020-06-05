@@ -49,7 +49,7 @@ Optimus has been validated for analyzing both [human](https://github.com/HumanCe
 | Aligner  | STAR (v.2.5.3a) | [Dobin, et al.,2013](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3530905/) |
 | Transcript Quantification | Utilities for processing large-scale single cell datasets | [sctools](https://github.com/HumanCellAtlas/sctools)                          
 | Data Input File Format | File format in which sequencing data is provided | [FASTQ](https://academic.oup.com/nar/article/38/6/1767/3112533) |                     
-| Data Output File Format | File formats in which Optimus output is provided | [BAM](http://samtools.github.io/hts-specs/), Python numpy arrays (internal), Loom (generated with [Loompy v.2.0.17)](http://loompy.org/) |
+| Data Output File Format | File formats in which Optimus output is provided | [BAM](http://samtools.github.io/hts-specs/), Python numpy arrays (internal), Loom (generated with [Loompy v.3.0.6)](http://loompy.org/) |
 
 # Set-up
 
