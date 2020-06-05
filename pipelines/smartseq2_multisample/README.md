@@ -37,7 +37,6 @@ In addition to the Smart-seq2 Single Sample inputs, the Multi Sample workflow re
 | file_prefix | The URL path to the FASTQ file folder | String | 
 | input_file_names | Array of filename prefixes; workflow will append with \_1.fastq.gz and \_2.fastq.gz | Array of Strings |
 | bacth_id | Identifier for the batch of multiple samples | String |
-| output_loom | Boolean description for optional Loom output | Boolean |
 
  
  ## Smart-seq2 Multi Sample Task Summary
