@@ -12,8 +12,8 @@ def generate_col_attr(qc_paths):
         qc_path (str): path to the QCs csv
     """
     # read the QC values
-    qc_file = [p for p in os.listdir(qc_paths) if p.endswith("_QCs.csv")][0]
-    with open(qc_paths+qc_file, 'r') as f:
+    qc_path = [p for p in qc_paths if p.endswith("_QCs.csv")][0]    
+    with open(qc_path, 'r') as f:
         qc_values = [row for row in csv.reader(f)]
 
     metadata_labels = qc_values[0][1:]
