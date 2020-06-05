@@ -44,7 +44,7 @@ In addition to the Smart-seq2 Single Sample inputs, the Multi Sample workflow re
  The Smart-seq2 Multi Sample pipeline calls three tasks:
  
  1) [SmartSeq2SingleSample.wdl](/pipelines/smartseq2_single_sample/SmartSeq2SingleSample.wdl): a task that runs the Smart-seq2 Single Sample workflow
- 2) [SmartSeq2PlateAggregation.wdl](/library/tasks/SmartSeq2PlateAggregation.wdl): the wrapper pipeline that checks the inputs, initiates per cell processing and aggregates the results
+ 2) [LoomUtils.wdl](/library/tasks/LoomUtils.wdl): the wrapper pipeline that checks the inputs, initiates per cell processing and aggregates the results
  3) [LoomUtils.wdl](/library/tasks/LoomUtils.wdl): an optional task that converts the Zarr array to Loom file format 
  
  ## Outputs
