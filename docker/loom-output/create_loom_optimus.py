@@ -59,7 +59,6 @@ def  generate_row_attr(args):
 
     # read the gene ids  and adds into the gene_ids dataset
     gene_ids = np.load(args.gene_ids)
-    
     # add the gene names for the gene ids
     if args.annotation_file and len(gene_ids):
         gene_id_name_map = create_gene_id_name_map(args.annotation_file)
@@ -105,15 +104,15 @@ def  generate_row_attr(args):
             gene_metric_values.append([np.nan] * ncols)
 
     nrows = len(gene_ids)
-    
+
     #Generate row attribute dictionary
     row_attrs = { "gene_names":gene_names, "ensembl_ids": gene_ids}
 
-    X=np.array(gene_metric_values)
+    gene_metrics_data =np.array(gene_metric_values)
     numeric_field_names = gene_metrics[0][1:]
     for i in range(0, len(numeric_field_names)):
         name = numeric_field_names[i]
-        data = X[:, i]
+        data = gene_metrics_data[:, i]
         row_attrs[name] = data
     if args.verbose:
         logging.info("# of genes: {0}".format(nrows))
@@ -133,29 +132,22 @@ def generate_col_attr(args):
 
     # Read the csv input files
     metrics_df = pd.read_csv(args.cell_metrics, dtype=str)
-
-    add_emptydrops_results = args.add_emptydrops_results 
-    if add_emptydrops_results == 'yes':
-       emptydrops_df = pd.read_csv(args.empty_drops_file, dtype=str)
-
     # Check that input is valid
     if metrics_df.shape[0] == 0 or metrics_df.shape[1] == 0:
         logging.error("Cell metrics table is not valid")
         raise ValueError()
-
-    if add_emptydrops_results == 'yes':
-        if emptydrops_df.shape[0] == 0 or emptydrops_df.shape[1] == 0:
-            logging.error("EmptyDrops table is not valid")
-            raise ValueError()
-
-    # Rename cell columns for both datasets to cell_id
-    if add_emptydrops_results == 'yes':
-       emptydrops_df = emptydrops_df.rename(columns={"CellId": "cell_id"})
-    
     metrics_df = metrics_df.rename(columns={"Unnamed: 0": "cell_id"})
-
     # Drop first row that contains non-cell information from metrics file, this contains aggregate information
     metrics_df = metrics_df.iloc[1:]
+
+    add_emptydrops_results = args.add_emptydrops_results
+    if add_emptydrops_results == 'yes':
+       emptydrops_df = pd.read_csv(args.empty_drops_file, dtype=str)
+       if emptydrops_df.shape[0] == 0 or emptydrops_df.shape[1] == 0:
+           logging.error("EmptyDrops table is not valid")
+           raise ValueError()
+      # Rename cell columns for both datasets to cell_id
+       emptydrops_df = emptydrops_df.rename(columns={"CellId": "cell_id"})
 
     # Order the cells by merging with cell_ids
     cellorder_df = pd.DataFrame(data={"cell_id": cell_ids})
@@ -236,12 +228,6 @@ def generate_col_attr(args):
 
     # Split the dataframe
     final_df_float = final_df[ColumnNames]
-
-    # Data types for storage
-    header_datatype = "<U80"  # little-endian 80 char unicode
-    float_store_datatype = np.float32  # machine independent 32 bit float
-    bool_store_datatype = np.bool  # boolean
-
     # Create a numpy array for the column names
     final_df_bool_column_names = final_df[BoolColumnNames].columns.values
     # Create a numpy array of the same shape of booleans
@@ -269,10 +255,7 @@ def generate_col_attr(args):
     col_attrs = dict()
     col_attrs["cell_names"] = cell_ids
     bool_field_names = final_df_bool_column_names
-    for i in range(0, bool_field_names.shape[0]):
-        name = bool_field_names[i]
-        data = final_df_bool[:, i]
-        col_attrs[name] = data 
+
     # Create metadata tables and their headers for bool
     for i in range(0, bool_field_names.shape[0]):
         name = bool_field_names[i]

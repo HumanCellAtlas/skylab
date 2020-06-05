@@ -5,7 +5,6 @@ import numpy as np
 import scipy as sc
 import loompy
 
-
 def generate_col_attr(qc_paths):
     """Converts the QC of Smart Seq2 gene file pipeline outputs to loom file
     Args:
@@ -65,32 +64,15 @@ def generate_col_attr(qc_paths):
 
     return col_attrs
 
-def generate_row_attr_and_matrix(rsem_gene_results_path):
-    """Converts the Smart Seq2 gene file pipeline outputs to loom file
-    Args:
-        input_path (str): file where the SS2 pipeline expression counts are
-    """
-    reader = csv.DictReader(open(rsem_gene_results_path), delimiter="\t")
 
-    expression_values = {}
-    count_values = {}
-    for row in reader:
-        expression_values[row["gene_id"]] = float(row["TPM"])
-        count_values[row["gene_id"]] = float(row["expected_count"])
+def generate_csr_spase_coo(expr):
 
-    sorted_gene_ids = sorted(expression_values.keys())
-    sorted_tpms = [expression_values[g] for g in sorted_gene_ids]
-    sorted_counts = [count_values[g] for g in sorted_gene_ids]
-    
-    nrows, ncols = np.shape([sorted_tpms])
-    expr_sp = sc.sparse.coo_matrix((nrows, ncols), np.float32)
-
+    nrows, ncols = np.shape(expr)
+    expr_coo = sc.sparse.coo_matrix(expr[:])
     xcoord = []
     ycoord = []
     value = []
 
-    expr = [sorted_tpms]
-    expr_coo = sc.sparse.coo_matrix(expr[:])
     for k in range(0, expr_coo.data.shape[0]):
         xcoord.append(expr_coo.row[k])
         ycoord.append(expr_coo.col[k])
@@ -100,16 +82,29 @@ def generate_row_attr_and_matrix(rsem_gene_results_path):
     ycoord = np.asarray(ycoord)
     value = np.asarray(value)
 
-    expr_sp_t = sc.sparse.coo_matrix((value, (ycoord, xcoord)), shape=(expr_sp.shape[1], expr_sp.shape[0]))
-    del xcoord
-    del ycoord
-    del value
-
-    row_attrs = {"ensembl_ids":np.array(sorted_gene_ids)}
-
-    return row_attrs, expr_sp_t
+    expr_sp_t = sc.sparse.coo_matrix((value, (ycoord, xcoord)), shape=(ncols, nrows))
+    return expr_sp_t
 
 
+def generate_row_attr_and_matrix(rsem_gene_results_path):
+    """Converts the Smart Seq2 gene file pipeline outputs to loom file
+    Args:
+        input_path (str): file where the SS2 pipeline expression counts are
+    """
+    reader = csv.DictReader(open(rsem_gene_results_path), delimiter="\t")
+    expression_values = {}
+    count_values = {}
+    for row in reader:
+        expression_values[row["gene_id"]] = float(row["TPM"])
+        count_values[row["gene_id"]] = float(row["expected_count"])
+    sorted_gene_ids = sorted(expression_values.keys())
+    sorted_tpms = [expression_values[g] for g in sorted_gene_ids]
+    sorted_counts = [count_values[g] for g in sorted_gene_ids]
+    expression_tpms = generate_csr_spase_coo( [sorted_tpms])
+    expected_counts = generate_csr_spase_coo([sorted_counts])
+    row_attrs = {"ensembl_ids":np.array(sorted_gene_ids),"gene_names":np.array(sorted_gene_ids)}
+
+    return row_attrs, expression_tpms,expected_counts
 
 
 def create_loom_files(sample_id, qc_files, rsem_genes_results_file,
@@ -123,21 +118,21 @@ def create_loom_files(sample_id, qc_files, rsem_genes_results_file,
         rsem_genes_results_file (str): the file for the expression count
         output_loom_path (str): location of the output loom
     """
-    
     # generate a dictionarty of column attributes
     col_attrs =  generate_col_attr(qc_files) 
     
     # add the expression count matrix data
     # generate a dictionary of row attributes
-    row_attrs, expr_sp_t = generate_row_attr_and_matrix(rsem_genes_results_file)
+    row_attrs, expr_tpms, expr_counts = generate_row_attr_and_matrix(rsem_genes_results_file)
     
     attrDict = dict()
     attrDict['sample_id'] = sample_id
 
-
-    #generate loom file 
-    loompy.create(output_loom_path, expr_sp_t, row_attrs, col_attrs, file_attrs=attrDict)
-
+    #generate loom file
+    loompy.create(output_loom_path, expr_tpms, row_attrs, col_attrs, file_attrs=attrDict)
+    ds = loompy.connect(output_loom_path)
+    ds.layers['estimated_counts'] = expr_counts
+    ds.close()
 
 
 def main():
