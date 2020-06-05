@@ -186,7 +186,7 @@ The final Loom includes only the group_results CSV files and the rsem_gene_resul
 
 | Zarr Array Deprecation Notice June 2020 |
 | --- |
-| Please note that we have deprecated the previously used Zarr array output. The pipeline now uses the Loom file format as the default output |
+| Please note that we have deprecated the previously used Zarr array output. The pipeline now uses the Loom file format as the default output. |
 
 # Versioning
 All Smart-seq2 Single Sample release notes are documented in the [Smartseq2 Single Sample changelog](SmartSeq2SingleSample.changelog.md).
