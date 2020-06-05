@@ -165,7 +165,7 @@ After the Smart-seq2 workflow generates HISAT2, Picard and RSEM metrics, the [Gr
 *  RSEMExpression.rsem_cnt
 
 ## Outputs
-The table below details the final outputs of the Smart-seq2 Single Sample workflow.
+The table below details the final outputs of the Smart-seq2 Single Sample workflow. 
 
 | Output Name	|	Output Description |	Output Format |
 | --- | --- | --- | 
@@ -183,6 +183,10 @@ The table below details the final outputs of the Smart-seq2 Single Sample workfl
 | loom_output_files | Loom file containing RSEM TPM and expected_counts and metrics| Loom |
 
 The final Loom includes only the group_results CSV files and the rsem_gene_results (TPM and expected_count). Note that the TPMs are contained in the layer labeled "expression".
+
+| Zarr Array Deprecation Notice June 2020 |
+| --- |
+| Please note that we have deprecated the previously used Zarr array output. The pipeline now uses the Loom file format as the default output |
 
 # Versioning
 All Smart-seq2 Single Sample release notes are documented in the [Smartseq2 Single Sample changelog](SmartSeq2SingleSample.changelog.md).
