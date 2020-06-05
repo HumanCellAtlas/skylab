@@ -1,8 +1,8 @@
-#optimus_v2.1.0
+#optimus_v3.0.0
 
-* Removed zarr file
+* Removed zarr formatted matrix and metrics outputs and replaced with loom
 
-* Added emptyDrops for sn_rna mode
+* Removed emptyDrops for sn_rna mode
 
 # optimus_v2.0.0
 

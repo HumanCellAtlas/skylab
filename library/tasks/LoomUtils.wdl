@@ -99,7 +99,7 @@ task OptimusLoomGeneration {
        --gene_metrics ${gene_metrics}\
        --cell_id ${cell_id}\
        --gene_id  ${gene_id} \
-       --output_path_for_loom "output.loom" \
+       --output_path_for_loom "${sample_id}.loom" \
        --sample_id ${sample_id} \
        --count_matrix ${sparse_count_matrix} \
        --expression_data_type $EXPRESSION_DATA_TYPE_PARAM
@@ -114,7 +114,7 @@ task OptimusLoomGeneration {
   }
 
   output {
-    File loom_output = "output.loom"
+    File loom_output = "${sample_id}.loom"
   }
 }
 
@@ -136,13 +136,13 @@ task AggregateSmartSeq2Loom {
       
       # Merge the loom files
       python3 /tools/ss2_loom_merge.py --input-loom-files ${sep=' ' loom_input} \
-      --output-loom-file output.loom --plate-sample-id plateid
+      --output-loom-file "${plateid}.loom" --plate-sample-id plateid
 
 
     }
 
     output {
-        File loom_output_file = "output.loom"
+        File loom_output_file = "${plateid}.loom"
     }
 
     runtime {
