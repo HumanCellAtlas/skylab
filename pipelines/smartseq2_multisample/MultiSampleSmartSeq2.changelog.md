@@ -7,6 +7,8 @@
 
 * Loom file name has changed from out.loom to "plateid".loom
 
+* Added the expected counts in addition to TPMs in the loom matrix. 
+
 # MultiSampleSmartSeq2_v1.1.0
 
 2019-05-07 (Date of Last Commit)

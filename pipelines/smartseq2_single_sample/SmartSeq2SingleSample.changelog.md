@@ -8,6 +8,8 @@
 
 * Loom file name has changed from out.loom to "sample_id".loom
 
+* Added expected counts in addition to the TPMs in the loom matrix
+
 # smartseq2_v3.1.0
 
 2020-05-07 (Date of Last Commit)
