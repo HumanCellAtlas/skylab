@@ -120,7 +120,7 @@ def  generate_row_attr(args):
     return row_attrs
 
 def generate_col_attr(args):
-    """Converts cell metrics from the Optimus pipeline to zarr file
+    """Converts cell metrics from the Optimus pipeline to loom file
 
     Args:
         input_path (str): file containing gene metrics name and values
@@ -227,7 +227,7 @@ def generate_col_attr(args):
         BoolColumnNames = []
 
     # Split the dataframe
-    final_df_float = final_df[ColumnNames]
+    final_df_non_boolean = final_df[ColumnNames]
     # Create a numpy array for the column names
     final_df_bool_column_names = final_df[BoolColumnNames].columns.values
     # Create a numpy array of the same shape of booleans
@@ -249,7 +249,7 @@ def generate_col_attr(args):
             else:
                 final_df_bool[index, 1] = np.nan
 
-    final_df_float = final_df_float.apply(pd.to_numeric)
+    final_df_non_boolean = final_df_non_boolean.apply(pd.to_numeric)
 
     # COLUMN/CELL Metadata
     col_attrs = dict()
@@ -263,11 +263,11 @@ def generate_col_attr(args):
         col_attrs[name] = data
     
     # Create metadata tables and their headers for float
-    float_field_names = list(final_df_float.columns)
+    float_field_names = list(final_df_non_boolean.columns)
 
     for i in range(len(float_field_names)):
         name = float_field_names[i]
-        data = final_df_float[name].to_numpy()
+        data = final_df_non_boolean[name].to_numpy()
         col_attrs[name] = data 
 
     if args.verbose:
