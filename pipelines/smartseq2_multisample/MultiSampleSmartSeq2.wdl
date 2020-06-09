@@ -1,7 +1,7 @@
 version 1.0
 
-import "SmartSeq2SingleSample.wdl" as single_cell_run
-import "LoomUtils.wdl" as LoomUtils
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/MultiSampleSmartSeq2_v2.0.0_terra/pipelines/smartseq2_single_sample/SmartSeq2SingleSample.wdl" as single_cell_run
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/MultiSampleSmartSeq2_v2.0.0_terra/library/tasks/LoomUtils.wdl" as LoomUtils
        
 workflow MultiSampleSmartSeq2 {
   meta {
