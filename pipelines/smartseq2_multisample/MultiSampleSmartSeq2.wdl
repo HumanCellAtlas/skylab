@@ -1,10 +1,7 @@
 version 1.0
 
-import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/jw_MultiSampleSmartSeq2_Terra_arrays/pipelines/smartseq2_single_sample/SmartSeq2SingleSample.wdl" as single_cell_run
-import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/jw_MultiSampleSmartSeq2_Terra_arrays/library/tasks/SmartSeq2PlateAggregation.wdl" as ss2_plate_aggregation
-import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/jw_MultiSampleSmartSeq2_Terra_arrays/library/tasks/ZarrUtils.wdl" as ZarrUtils
-import "SmartSeq2SingleSample.wdl" as single_cell_run
-import "LoomUtils.wdl" as LoomUtils
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/MultiSampleSmartSeq2_v2.0.0_terra_array_inputs/pipelines/smartseq2_single_sample/SmartSeq2SingleSample.wdl" as single_cell_run
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/MultiSampleSmartSeq2_v2.0.0_terra_array_inputs/library/tasks/LoomUtils.wdl" as LoomUtils
 
 workflow MultiSampleSmartSeq2 {
   meta {
