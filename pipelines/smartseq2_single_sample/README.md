@@ -182,7 +182,7 @@ The table below details the final outputs of the Smart-seq2 Single Sample workfl
 | rsem_isoform_results | RSEM file containing isoform-level expression estimates | tab delimited |
 | loom_output_files | Loom file containing RSEM TPM and expected_counts and metrics| Loom |
 
-The final Loom includes only the group_results CSV files and the rsem_gene_results (TPM and expected_count). Note that the TPMs are contained in the attribute labeled "expression_values", whereas expected_count is contained in "count_values".
+The final Loom includes only the group_results CSV files and the rsem_gene_results (TPM and expected_count). Note that the TPMs are contained in the Loom “matrix", whereas expected_count is contained in the “layers/estimated_counts".
 
 | Zarr Array Deprecation Notice June 2020 |
 | --- |
