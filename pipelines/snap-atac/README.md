@@ -128,7 +128,7 @@ The main outputs of the scATAC workflow is the Snap file, Snap QC metrics, and t
 | --- | --- |
 | output_snap_qc | Quality control file corresponding to the snap file |
 | output_snap | Output snap file (in hdf5 container format) |
-| output_aligned_bam  | Output BAM file, compliant with GA4GH |
+| output_aligned_bam  | Output BAM file, compliant with GA4GH standards |
 | breakout_barcodes | Text file containing the FM ('Fragment session') barcodeLen and barcodePos fields  |
 | breakout_fragments | Text file containing the FM ('Fragments session') fragChrom, fragLen, and fragStart fields |
 | breakout_binCoordinates | Text file with the AM session ('Cell x bin accessibility' matrix) binChrom and binStart fields |
@@ -161,5 +161,4 @@ All scATAC workflow releases are documented in the [scATAC changelog](scATAC.cha
 
 # Pipeline Improvements
 Please help us make our tools better by contacting [Kylee Degatano](mailto:kdegatano@broadinstitute.org) for pipeline-related suggestions or questions.
-
 
