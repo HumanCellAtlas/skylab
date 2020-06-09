@@ -5,8 +5,7 @@
   "HISAT2.wdl": "library/tasks/HISAT2.wdl",
   "Picard.wdl": "library/tasks/Picard.wdl",
   "RSEM.wdl": "library/tasks/RSEM.wdl",
-  "ZarrUtils.wdl": "library/tasks/ZarrUtils.wdl",
+  "LoomUtils.wdl": "library/tasks/LoomUtils.wdl",
   "SS2InputChecks.wdl": "library/tasks/SS2InputChecks.wdl",
-  "SmartSeq2PlateAggregation.wdl": "library/tasks/SmartSeq2PlateAggregation.wdl",
   "GroupMetricsOutputs.wdl": "library/tasks/GroupMetricsOutputs.wdl"
 }

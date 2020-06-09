@@ -1,3 +1,11 @@
+#optimus_v3.0.0
+
+* Removed zarr formatted matrix and metrics outputs and replaced with loom
+
+* Removed emptyDrops for sn_rna mode
+
+* Loom file attribute names have changed: CellID: cell_names, Gene: gene_names and Accession: ensembl_ids
+
 # optimus_v2.0.0
 
 * Fixed bug that resulted in emptyDrops output being incorrect

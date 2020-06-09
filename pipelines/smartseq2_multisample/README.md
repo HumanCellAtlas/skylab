@@ -45,6 +45,7 @@ In addition to the Smart-seq2 Single Sample inputs, the Multi Sample workflow re
  1) [SmartSeq2SingleSample.wdl](/pipelines/smartseq2_single_sample/SmartSeq2SingleSample.wdl): a task that runs the Smart-seq2 Single Sample workflow
  2) [SmartSeq2PlateAggregation.wdl](/library/tasks/SmartSeq2PlateAggregation.wdl): the wrapper pipeline that checks the inputs, initiates per cell processing and aggregates the results
  3) [LoomUtils.wdl](/library/tasks/LoomUtils.wdl): a task that produces the Loom file output
+
  
  ## Outputs
  
