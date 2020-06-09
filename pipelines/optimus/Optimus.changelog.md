@@ -6,6 +6,8 @@
 
 * Loom file attribute names have changed: CellID: cell_names, Gene: gene_names and Accession: ensembl_ids
 
+* Added metrics for mitochondrial reads
+
 # optimus_v2.0.0
 
 * Fixed bug that resulted in emptyDrops output being incorrect

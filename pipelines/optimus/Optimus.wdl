@@ -222,7 +222,7 @@ workflow Optimus {
   call Merge.MergeSortBamFiles as MergeSorted {
     input:
       bam_inputs = PreMergeSort.bam_output,
-      sample_id = sample_id,
+      output_bam_filename = sample_id + ".bam",
       sort_order = "coordinate"
   }
 
