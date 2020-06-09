@@ -1,4 +1,4 @@
-#optimus_v3.0.0
+# optimus_v3.0.0
 
 * Removed zarr formatted matrix and metrics outputs and replaced with loom
 
