@@ -1,8 +1,7 @@
 version 1.0
 
 import "SmartSeq2SingleSample.wdl" as single_cell_run
-import "SmartSeq2PlateAggregation.wdl" as ss2_plate_aggregation
-import "ZarrUtils.wdl" as ZarrUtils
+import "LoomUtils.wdl" as LoomUtils
        
 workflow MultiSampleSmartSeq2 {
   meta {
@@ -28,11 +27,9 @@ workflow MultiSampleSmartSeq2 {
       Array[String] input_file_names
       String batch_id
       Boolean paired_end
-
-      Boolean output_loom
   }
   # Version of this pipeline
-  String version = "MultiSampleSmartSeq2_v1.1.0"
+  String version = "MultiSampleSmartSeq2_v2.0.0"
 
   # Parameter metadata information
   parameter_meta {
@@ -70,7 +67,6 @@ workflow MultiSampleSmartSeq2 {
             sample_name = input_file_names[idx],
             output_name = input_file_names[idx],
             paired_end = paired_end,
-            output_zarr = true
         }
       }
   }
@@ -91,36 +87,27 @@ workflow MultiSampleSmartSeq2 {
               sample_name = input_file_names[idx],
               output_name = input_file_names[idx],
               paired_end = paired_end,
-              output_zarr = true
           }
         }
   }
 
-  Array[Array[File]?] zarr_output_files = select_first([sc_pe.zarr_output_files, sc_se.zarr_output_files])
+  Array[File] loom_output_files = select_first([sc_pe.loom_output_files, sc_se.loom_output_files])
   Array[File] bam_files_intermediate = select_first([sc_pe.aligned_bam, sc_se.aligned_bam])
   Array[File] bam_index_files_intermediate = select_first([sc_pe.bam_index, sc_se.bam_index])
 
-  ### Aggregate the Zarr Files Directly ###
-  call ss2_plate_aggregation.AggregateSmartSeq2Zarr as AggregateZarr {
+  ### Aggregate the Loom Files Directly ###
+  call LoomUtils.AggregateSmartSeq2Loom as AggregateLoom {
     input:
-      zarr_input = zarr_output_files,
-      output_file_name = batch_id
+      loom_input = loom_output_files,
+      plateid = batch_id
   }
 
-   if (output_loom) {
-    call ZarrUtils.SmartSeq2PlateToLoom as ZarrToLoom {
-       input:
-         batch_id = batch_id,
-         zarr_files = AggregateZarr.zarr_output_files
-    }
-  }
 
   ### Pipeline output ###
   output {
     # Bam files and their indexes
     Array[File] bam_files = bam_files_intermediate
     Array[File] bam_index_files = bam_index_files_intermediate
-    Array[File] zarrout = AggregateZarr.zarr_output_files
-    File? loom_output = ZarrToLoom.loom_output
+    File loom_output = AggregateLoom.loom_output_file
   }
 }
