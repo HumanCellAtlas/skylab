@@ -12,6 +12,5 @@
     "MultiSampleSmartSeq2.sample_names": ["SRR5676728", "SRR5676730"],
     "MultiSampleSmartSeq2.fastq1_input_files": ["gs://hca-dcp-mint-test-data/datasets/sloan_sa_astrocytes/SRR5676728_1.fastq.gz", "gs://hca-dcp-mint-test-data/datasets/sloan_sa_astrocytes/SRR5676730_1.fastq.gz"],
     "MultiSampleSmartSeq2.fastq2_input_files": ["gs://hca-dcp-mint-test-data/datasets/sloan_sa_astrocytes/SRR5676728_2.fastq.gz", "gs://hca-dcp-mint-test-data/datasets/sloan_sa_astrocytes/SRR5676730_2.fastq.gz"],
-    "MultiSampleSmartSeq2.batch_id": "mouse_test",
-    "MultiSampleSmartSeq2.output_loom": true
+    "MultiSampleSmartSeq2.batch_id": "mouse_test"
 }

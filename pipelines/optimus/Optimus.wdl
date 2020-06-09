@@ -10,7 +10,7 @@ import "TagGeneExon.wdl" as TagGeneExon
 import "SequenceDataWithMoleculeTagMetrics.wdl" as Metrics
 import "TagSortBam.wdl" as TagSortBam
 import "RunEmptyDrops.wdl" as RunEmptyDrops
-import "ZarrUtils.wdl" as ZarrUtils
+import "LoomUtils.wdl" as LoomUtils
 import "Picard.wdl" as Picard
 import "UmiCorrection.wdl" as UmiCorrection
 import "ScatterBam.wdl" as ScatterBam
@@ -48,9 +48,6 @@ workflow Optimus {
     # Emptydrops lower cutoff
     Int emptydrops_lower = 100
 
-    # If true produce the optional loom output
-    Boolean output_loom = false
-
     # Set to true to override input checks and allow pipeline to proceed with invalid input
     Boolean force_no_check = false
 
@@ -61,7 +58,7 @@ workflow Optimus {
   }
 
   # version of this pipeline
-  String version = "optimus_v2.0.0"
+  String version = "optimus_v3.0.0"
 
   # this is used to scatter matched [r1_fastq, r2_fastq, i1_fastq] arrays
   Array[Int] indices = range(length(r1_fastq))
@@ -205,7 +202,8 @@ workflow Optimus {
 
     call Metrics.CalculateCellMetrics {
       input:
-        bam_input = CellSortBam.bam_output
+        bam_input = CellSortBam.bam_output,
+        original_gtf = annotations_gtf
     }
 
     call Picard.SortBam as PreCountSort {
@@ -252,7 +250,7 @@ workflow Optimus {
       emptydrops_lower = emptydrops_lower
   }
 
-  call ZarrUtils.OptimusZarrConversion{
+  call LoomUtils.OptimusLoomGeneration{
     input:
       sample_id = sample_id,
       annotation_file = annotations_gtf,
@@ -263,15 +261,6 @@ workflow Optimus {
       gene_id = MergeCountFiles.col_index,
       empty_drops_result = RunEmptyDrops.empty_drops_result,
       counting_mode = counting_mode
-  }
-
-  if (output_loom) {
-    call ZarrUtils.OptimusZarrToLoom {
-      input:
-        sample_id = sample_id,
-        zarr_files = OptimusZarrConversion.zarr_output_files,
-        counting_mode = counting_mode
-    }
   }
 
   output {
@@ -286,10 +275,7 @@ workflow Optimus {
     File gene_metrics = MergeGeneMetrics.gene_metrics
     File cell_calls = RunEmptyDrops.empty_drops_result
 
-    # zarr
-    Array[File] zarr_output_files = OptimusZarrConversion.zarr_output_files
-
     # loom
-    File? loom_output_file = OptimusZarrToLoom.loom_output
+    File loom_output_file = OptimusLoomGeneration.loom_output
   }
 }
