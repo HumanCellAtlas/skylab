@@ -12,7 +12,7 @@
   "SequenceDataWithMoleculeTagMetrics.wdl": "library/tasks/SequenceDataWithMoleculeTagMetrics.wdl",
   "TagSortBam.wdl": "library/tasks/TagSortBam.wdl",
   "RunEmptyDrops.wdl": "library/tasks/RunEmptyDrops.wdl",
-  "ZarrUtils.wdl": "library/tasks/ZarrUtils.wdl",
+  "LoomUtils.wdl": "library/tasks/LoomUtils.wdl",
   "Picard.wdl": "library/tasks/Picard.wdl",
   "UmiCorrection.wdl": "library/tasks/UmiCorrection.wdl",
   "ScatterBam.wdl": "library/tasks/ScatterBam.wdl",

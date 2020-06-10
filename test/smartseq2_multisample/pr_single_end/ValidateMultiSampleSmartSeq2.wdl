@@ -13,12 +13,12 @@ task ValidateSmartSeq2Plate {
     # catch intermittent failures
     set -eo pipefail
 
-    /tools/loomCompare.py --truth-loom ~{truth_loom} --check-loom ~{loom_output} --delta-cutoff 10
+    python3 /tools/loomCompare.py --truth-loom ~{truth_loom} --check-loom ~{loom_output} --delta-cutoff 10
 
   >>>
   
   runtime {
-    docker: "quay.io/humancellatlas/loom-delta-test:0.0.1"
+    docker: "quay.io/humancellatlas/secondary-analysis-loom-output:0.0.2"
     cpu: 1
     memory: "8 GiB"
     disks: "local-disk 1${disk_size} HDD"

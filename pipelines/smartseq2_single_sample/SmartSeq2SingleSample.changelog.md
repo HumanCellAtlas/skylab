@@ -1,3 +1,15 @@
+# smartseq2_v4.0.0
+
+2020-06-04 (Date of Last Commit)
+
+* Added loom output and removed the zarr output
+
+* Loom file attribute names have changed: CellID: cell_names, Gene: gene_names and Accession: ensembl_ids
+
+* Loom file name has changed from out.loom to "sample_id".loom
+
+* Added expected counts in addition to the TPMs in the loom matrix
+
 # smartseq2_v3.1.0
 
 2020-05-07 (Date of Last Commit)
