@@ -43,7 +43,7 @@ task MergeSortBamFiles {
       USE_THREADING=true \
       SORT_ORDER=${sort_order} \
       INPUT=${sep=' INPUT=' bam_inputs} \
-      OUTPUT=output_bam_filename \
+      OUTPUT=~{output_bam_filename} \
   }
 
   runtime {
