@@ -4,6 +4,7 @@ task MergeSortBamFiles {
   input {
     Array[File] bam_inputs
     String sort_order
+    String output_bam_filename
 
     Int compression_level = 5
 
@@ -42,7 +43,7 @@ task MergeSortBamFiles {
       USE_THREADING=true \
       SORT_ORDER=${sort_order} \
       INPUT=${sep=' INPUT=' bam_inputs} \
-      OUTPUT=merged.bam \
+      OUTPUT=~{output_bam_filename} \
   }
 
   runtime {
@@ -53,6 +54,6 @@ task MergeSortBamFiles {
     preemptible: preemptible
   }
   output {
-    File output_bam = "merged.bam"
+    File output_bam = output_bam_filename
   }
 }
