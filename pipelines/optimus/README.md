@@ -203,7 +203,7 @@ The following table lists the output files produced from the pipeline. For sampl
 | Output Name | Filename, if applicable | Output Type |Output Format |
 | ------ |------ | ------ | ------ | 
 | pipeline_version | | Version of the processing pipeline run on this data | String | 
-| bam | sample_id.bam | Aligned BAM | BAM |
+| bam | <sample_id>.bam | Aligned BAM | BAM |
 | matrix_row_index | sparse_counts_row_index.npy | Index of cells in expression matrix | Numpy array index |
 | matrix_col_index | sparse_counts_col_index.npy | Index of genes in expression matrix | Numpy array index | 
 | cell_metrics | merged-cell-metrics.csv.gz | cell metrics | compressed csv | Matrix of metrics by cells | 
