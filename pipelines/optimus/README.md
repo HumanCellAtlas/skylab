@@ -37,9 +37,9 @@ Optimus is a pipeline developed by the Data Coordination Platform (DCP) of the [
 
 Optimus has been validated for analyzing both [human](https://github.com/HumanCellAtlas/skylab/blob/master/benchmarking/optimus/optimus_report.rst) and [mouse](https://docs.google.com/document/d/1_3oO0ZQSrwEoe6D3GgKdSmAQ9qkzH_7wrE7x6_deL10/edit) data sets. More details about the human validation can be found in the [in the original file](https://docs.google.com/document/d/158ba_xQM9AYyu8VcLWsIvSoEYps6PQhgddTr9H0BFmY/edit).
 
-| **Update on Single Nuclei RNAseq (sn_RNA) Parameter** |
+| **Update on Single Nuclei RNAseq (sn_rna) Parameter** |
 | --- |
-| We are in the process of validating Optimus sn_RNA parameters, which are detailed in this documentation. Once the parameter is validated, we will provide the validation report link in the above section. | 
+| We are in the process of validating Optimus sn_rna parameters, which are detailed in this documentation. Once the parameter is validated, we will provide the validation report link in the above section. | 
 
 ## Quick Start Table
 
