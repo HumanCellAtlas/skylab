@@ -5,7 +5,7 @@
 * Removed EmptyDrops for sn_rna mode
 * Updated the Loom file attribute names: CellID to cell_names, Gene to gene_names, and Accession to ensembl_ids
 * Added metrics for mitochondrial reads
-* Changed the name of the merged.bam output to sample_id.bam
+* Added an optional input for the BAM basename; this input is listed as ‘bam_output_basename’and the default is 'sample_id'
 
 # optimus_v2.0.0
 2020-02-08 (Date of Last Commit)
