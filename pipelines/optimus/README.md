@@ -37,6 +37,10 @@ Optimus is a pipeline developed by the Data Coordination Platform (DCP) of the [
 
 Optimus has been validated for analyzing both [human](https://github.com/HumanCellAtlas/skylab/blob/master/benchmarking/optimus/optimus_report.rst) and [mouse](https://docs.google.com/document/d/1_3oO0ZQSrwEoe6D3GgKdSmAQ9qkzH_7wrE7x6_deL10/edit) data sets. More details about the human validation can be found in the [in the original file](https://docs.google.com/document/d/158ba_xQM9AYyu8VcLWsIvSoEYps6PQhgddTr9H0BFmY/edit).
 
+| **Update on Single Nuclei RNAseq (sn_RNA) Parameter** |
+| --- |
+| We are in the process of validating Optimus sn_RNA parameters, which are detailed in this documentation. Once the parameter is validated, we will provide the validation report link in the above section. | 
+
 ## Quick Start Table
 
 | Pipeline Features | Description | Source |
@@ -193,23 +197,21 @@ Output files of the pipeline include:
 3. Cell metadata, including cell metrics
 4. Gene metadata, including gene metrics
 
-The following table lists the output files produced from the pipeline. For samples that have sequenced over multiple lanes, the pipeline will output one merged version of each listed file.
+The following table lists the output files produced from the pipeline. For samples that have sequenced over multiple lanes, the pipeline will output one merged version of each listed file. 
 
 | Output Name | Filename, if applicable | Output Type |Output Format |
 | ------ |------ | ------ | ------ | 
 | pipeline_version | | Version of the processing pipeline run on this data | String | 
-| bam | merged.bam | aligned bam | bam |
+| bam | sample_id.bam | Aligned BAM | BAM |
 | matrix_row_index | sparse_counts_row_index.npy | Index of cells in expression matrix | Numpy array index |
 | matrix_col_index | sparse_counts_col_index.npy | Index of genes in expression matrix | Numpy array index | 
 | cell_metrics | merged-cell-metrics.csv.gz | cell metrics | compressed csv | Matrix of metrics by cells | 
 | gene_metrics | merged-gene-metrics.csv.gz | gene metrics | compressed csv | Matrix of metrics by genes | 
 | loom_output_file | output.loom | Loom | Loom | Loom file with expression data and metadata | N/A |
 
+The BAM output has the default prefix "sample_id", but this is an optional parameter; the BAM file can be renamed in the [Optimus WDL](Optimus.wdl) by replacing the "sample_id" in the code line `output_bam_filename = sample_id + ".bam"`. 
 
-The Loom is the default output. See the [create_loom_optimus.py](https://github.com/HumanCellAtlas/skylab/blob/master/docker/loom-output/create_loom_optimus.py) for the detailed code. 
-
-
-The final Loom output contains the unnormalized (unfiltered), UMI-corrected expression matrices, as well as the gene and cell metrics detailed in the [Loom_schema documentation](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Loom_schema.md). 
+The Loom is the default output. See the [create_loom_optimus.py](https://github.com/HumanCellAtlas/skylab/blob/master/docker/loom-output/create_loom_optimus.py) for the detailed code. The final Loom output contains the unnormalized (unfiltered), UMI-corrected expression matrices, as well as the gene and cell metrics detailed in the [Loom_schema documentation](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Loom_schema.md). 
 
 | Zarr Array Deprecation Notice June 2020 |
 | --- |
