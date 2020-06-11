@@ -37,9 +37,9 @@ Optimus is a pipeline developed by the Data Coordination Platform (DCP) of the [
 
 Optimus has been validated for analyzing both [human](https://github.com/HumanCellAtlas/skylab/blob/master/benchmarking/optimus/optimus_report.rst) and [mouse](https://docs.google.com/document/d/1_3oO0ZQSrwEoe6D3GgKdSmAQ9qkzH_7wrE7x6_deL10/edit) data sets. More details about the human validation can be found in the [in the original file](https://docs.google.com/document/d/158ba_xQM9AYyu8VcLWsIvSoEYps6PQhgddTr9H0BFmY/edit).
 
-| **Update on Single Nuclei RNAseq (sn_rna) Parameter** |
+| **Update on Single Nuclei RNAseq (sn_rna) Pipeline** |
 | --- |
-| We are in the process of validating Optimus sn_rna parameters, which are detailed in this documentation. Once the parameter is validated, we will provide the validation report link in the above section. | 
+| We are in the process of validating Optimus for snRNAseq using `sn_rna` parameter. These changes are detailed in the documentation. Once the pipeline is validated for snRNAseq, we will provide the validation report link in the above section. | 
 
 ## Quick Start Table
 
@@ -94,6 +94,7 @@ The JSON file also contains metadata for the reference information in the follow
 | Annotations_gtf | Cloud path to GTF containing gene annotations used for gene tagging (must match GTF in STAR reference) | NA | 
 | Chemistry | Optional string description of whether data was generated with 10x v2 or v3 chemistry. Optimus validates this string. If the string does not match one of the optional strings, the pipeline will fail. You can remove the checks by setting "force_no_check = true" in the input JSON | "tenX_v2" (default) or "tenX_v3" |
 | Counting_mode | String description of whether data is single-cell or single-nuclei | "sc_rna" or "sn_rna" |
+| Output_bam_basename | Optional string used for the output BAM file basename; the default is sample_id | NA |
 
 
 ### Sample Inputs for Analyses in a Terra Workspace
@@ -209,7 +210,6 @@ The following table lists the output files produced from the pipeline. For sampl
 | gene_metrics | merged-gene-metrics.csv.gz | gene metrics | compressed csv | Matrix of metrics by genes | 
 | loom_output_file | output.loom | Loom | Loom | Loom file with expression data and metadata | N/A |
 
-The BAM output has the default prefix "sample_id", but this is an optional parameter; the BAM file can be renamed in the [Optimus WDL](Optimus.wdl) by replacing the "sample_id" in the code line `output_bam_filename = sample_id + ".bam"`. 
 
 The Loom is the default output. See the [create_loom_optimus.py](https://github.com/HumanCellAtlas/skylab/blob/master/docker/loom-output/create_loom_optimus.py) for the detailed code. The final Loom output contains the unnormalized (unfiltered), UMI-corrected expression matrices, as well as the gene and cell metrics detailed in the [Loom_schema documentation](https://github.com/HumanCellAtlas/skylab/blob/master/pipelines/optimus/Loom_schema.md). 
 
