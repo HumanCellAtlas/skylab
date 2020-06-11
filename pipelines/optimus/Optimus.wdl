@@ -31,6 +31,7 @@ workflow Optimus {
     Array[File] r2_fastq
     Array[File]? i1_fastq
     String sample_id
+    String? output_bam_basename = sample_id
 
     # organism reference parameters
     File tar_star_reference
@@ -222,6 +223,7 @@ workflow Optimus {
   call Merge.MergeSortBamFiles as MergeSorted {
     input:
       bam_inputs = PreMergeSort.bam_output,
+      output_bam_filename = output_bam_basename + ".bam",
       sort_order = "coordinate"
   }
 
