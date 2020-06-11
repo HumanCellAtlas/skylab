@@ -1,15 +1,15 @@
-#optimus_v3.0.0
+# optimus_v3.0.0
+2020-06-10 (Date of Last Commit)
 
-* Removed zarr formatted matrix and metrics outputs and replaced with loom
-
+* Removed zarr formatted matrix and metrics outputs and replaced with Loom
 * Removed emptyDrops for sn_rna mode
-
-* Loom file attribute names have changed: CellID: cell_names, Gene: gene_names and Accession: ensembl_ids
+* Updated Loom file attribute names: CellID to cell_names, Gene to gene_names, and Accession to ensembl_ids
+* Added metrics for mitochondrial reads
 
 # optimus_v2.0.0
+2020-02-08 (Date of Last Commit)
 
 * Fixed bug that resulted in emptyDrops output being incorrect
-
 * Updated workflow to WDL 1.0
 
 # optimus_v1.4.0
@@ -17,11 +17,8 @@
 2019-11-08 (Date of Last Commit)
 
 * Addition of support for V3 chemistry
-
 * Addition of input parameter validation step
-
 * Greatly improved documentation
-
 * Improvements to ZARR output
 
 # optimus_v1.3.6
@@ -29,13 +26,9 @@
 2019-09-23 (Date of Last Commit)
 
 * EmptyDrops output is now included in the ZARR output
-
 * The GTF modification step is removed from the scatter, resulting in better performance and caching
-
 * Memory of several tasks is increased
-
 * The ZARR output is now compulsory and the relevant input flag has been removed
-
 * Support for loom format has been added and a new optional flag dictates if the file is created
 Documentation has been updated
 
@@ -57,7 +50,6 @@ Documentation has been updated
 2019-08-08 (Date of Last Commit)
 
 * Release a new patch version of Optimus with an ambitious memory allocation for CalculateCellMetrics task.
-
 * This version and all future versions have been scientifically validated on Mouse reference version mm10 (GRCm39, Gencode M21)
 
 # optimus_v1.3.2
