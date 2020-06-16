@@ -1,16 +1,17 @@
 # optimus_v3.0.0
 2020-06-10 (Date of Last Commit)
 
-* Removed zarr formatted matrix and metrics outputs and replaced with Loom
-* Removed emptyDrops for sn_rna mode
-* Updated Loom file attribute names: CellID to cell_names, Gene to gene_names, and Accession to ensembl_ids
+* Removed the Zarr formatted matrix and metrics outputs and replaced with Loom
+* Removed EmptyDrops for sn_rna mode
+* Updated the Loom file attribute names: CellID to cell_names, Gene to gene_names, and Accession to ensembl_ids
 * Added metrics for mitochondrial reads
+* Added an optional input for the BAM basename; this input is listed as ‘bam_output_basename’and the default is 'sample_id'
 
 # optimus_v2.0.0
 2020-02-08 (Date of Last Commit)
 
-* Fixed bug that resulted in emptyDrops output being incorrect
-* Updated workflow to WDL 1.0
+* Fixed a bug that resulted in emptyDrops output being incorrect
+* Updated the workflow to WDL 1.0
 
 # optimus_v1.4.0
 
