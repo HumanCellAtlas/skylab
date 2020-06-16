@@ -46,7 +46,7 @@ The scATAC Pipeline was developed by the Broad DSP Pipelines team to process sin
 
 # Set-up
 ## Workflow Installation and Requirements
-The [scATAC workflow](scATAC.wdl) is written in the Workflow Description Language WDL and can be downloaded by cloning the GitHub [Skylab repository](https://github.com/HumanCellAtlas/skylab). The workflow can be deployed using [Cromwell](https://software.broadinstitute.org/wdl/), a GA4GH compliant, flexible workflow management system that supports multiple computing platforms. For the latest workflow version and release notes, please see the scATAC [changelog](scATAC.changelog.md). 
+The [scATAC workflow](scATAC.wdl) is written in the Workflow Description Language WDL and can be downloaded by cloning the GitHub [Skylab repository](https://github.com/HumanCellAtlas/skylab). The workflow can be deployed using [Cromwell](https://cromwell.readthedocs.io/en/stable/), a GA4GH compliant, flexible workflow management system that supports multiple computing platforms. For the latest workflow version and release notes, please see the scATAC [changelog](scATAC.changelog.md). 
 
 ## Pipeline Inputs
 The pipeline inputs are detailed in the table below. You can test the workflow by using the [human_example.json](human_example.json) example configuration file. 
