@@ -99,7 +99,7 @@ The Smart-seq2 Single Sample workflow requires multiple reference indexes. Infor
 
 The [SmartSeq2SingleSample.wdl](SmartSeq2SingleSample.wdl) is in the [pipelines/smartseq2_single_sample folder](/pipelines/smartseq2_single_sample) of the HCA skylab repository and implements the workflow by importing individual tasks (written in WDL script) from the skylab [library](/library).
 
-## Smart-seq2 Task Summary
+## Smart-seq2 Task and Tool Summary
 
 Here we describe the tasks of the Smart-seq2 Single Sample pipeline; [the code](SmartSeq2SingleSample.wdl) and [library of tasks](/library/tasks) used by the pipeline are available through GitHub. 
 
@@ -113,6 +113,19 @@ Overall, the workflow is divided into two parts that are completed after an init
  1. Aligns reads to the transcriptome with HISAT v.2.1.0
  2. Quantifies gene expression using RSEM v.1.3.0
 
+#### Tasks and Tools Quick-start Table
+
+The workflow tasks and tools are listed in the table below. If you are looking for the parameters for each task/tool, please click on the task link and see the `command {}` section of the task. The task's Docker image is specified in the task `# runtime values` section as ``` String docker = ```. 
+
+| Task | Tool |
+| --- | --- |
+| [HISAT2](/library/tasks/HISAT2.wdl) | [HISAT2](https://www.nature.com/articles/s41587-019-0201-4) |
+| [Picard](/library/tasks/Picard.wdl) | [Picard](https://broadinstitute.github.io/picard/) |
+| [HISAT2RSEM](/library/tasks/HISAT2.wdl) | [HISAT2](https://www.nature.com/articles/s41587-019-0201-4) |
+| [RSEM](/library/tasks/RSEM.wdl) | [RSEM](https://deweylab.github.io/RSEM/README.html#de) |
+| [GroupMetricsOutputs](/library/tasks/GroupMetricsOutputs.wdl) | [sctools](https://sctools.readthedocs.io/en/latest/readme.html) |
+| [LoomUtils](LoomUtils.wdl) | [python3](https://www.python.org/download/releases/3.0/) | 
+| [SS2InputChecks](SS2InputChecks.wdl) | NA | 
 
 ### Part 1: Quality Control Tasks
 #### 1.1 Align reads to the genome using HISAT2
