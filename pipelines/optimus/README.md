@@ -258,4 +258,8 @@ There are four example configuration JSON files available for you to test the pi
 The Optimus pipeline is a single sample pipeline, but it can accept multiple FASTQ files if a sample is sequenced across lanes. In this case, the pipeline will merge the results from each lane into single output files. There will only be one merged file for each output type (i.e one Loom, etc.). If you would like to view an example configuration file for a multi-lane dataset, please see the <a href="mouse_v2_example.json">mouse_v2_example.json </a>.  Additionally, you can view sample outputs in the Optimus featured workspace on Terra: https://app.terra.bio/#workspaces/featured-workspaces-hca/HCA_Optimus_Pipeline. 
  </details>
 
-
+ <details>
+<summary>How do I find which parameters and Docker images were used for the different tasks (i.e. STAR alignment, emptyDrops, etc.) </summary>
+<br>
+Parameters are listed in the .wdl file for each task (see <a href="README.md/#optimus-tasks-summary">mouse_v2_example.json </a> If you are looking for the parameters for each task/tool, please click on the task link and see the `command {}` section of the task. The task's Docker image is specified in the task `# runtime values` section as ``` String docker = ```. 
+ </details>
