@@ -39,7 +39,7 @@ Optimus has been validated for analyzing both [human](https://github.com/HumanCe
 
 | **Update on Single Nuclei RNAseq (sn_rna) Pipeline** |
 | --- |
-| We are in the process of validating Optimus for snRNAseq using `sn_rna` parameter. These changes are detailed in the documentation. Once the pipeline is validated for snRNAseq, we will provide the validation report link in the above section. | 
+| We are in the process of validating Optimus for snRNAseq using the `sn_rna` parameter. These changes are detailed in the documentation. Once the pipeline is validated for snRNAseq, we will provide the validation report link in the above section. | 
 
 ## Quick Start Table
 
@@ -261,5 +261,7 @@ The Optimus pipeline is a single sample pipeline, but it can accept multiple FAS
  <details>
 <summary>How do I find which parameters and Docker images were used for the different tasks (i.e. STAR alignment, emptyDrops, etc.) </summary>
 <br>
-Parameters are listed in the .wdl file for each task (see the <a href="README.md/#optimus-task-summary">Task Summary Section </a>. If you are looking for the parameters for each task/tool, please click on the task link and see the `command {}` section of the task. The task's Docker image is specified in the task `# runtime values` section as ``` String docker = ```. 
+Parameters are listed in the .wdl file for each task. You can find a table list of the tasks in the <a href="README.md/#optimus-task-summary">Task Summary Section </a>. For parameters, click on the task link and see the `command {}` section of the task WDL. For the Docker image, see task WDL `# runtime values` section; the Docker is listed as ``` String docker = ```. 
  </details>
+
+
