@@ -107,12 +107,16 @@ If you are looking for the parameters used for each task/tool, click on the task
 
 | Task | Tool |
 | --- | --- |
-| [HISAT2](/library/tasks/HISAT2.wdl) | [HISAT2 software](https://www.nature.com/articles/s41587-019-0201-4) |
-| [Picard](/library/tasks/Picard.wdl) | [Picard software](https://broadinstitute.github.io/picard/) |
-| [HISAT2RSEM](/library/tasks/HISAT2.wdl) | [HISAT2 software](https://www.nature.com/articles/s41587-019-0201-4) |
-| [RSEM](/library/tasks/RSEM.wdl) | [RSEM software](https://deweylab.github.io/RSEM/README.html#de) |
-| [GroupMetricsOutputs](/library/tasks/GroupMetricsOutputs.wdl) | [sctools software](https://sctools.readthedocs.io/en/latest/readme.html) |
-| [LoomUtils](LoomUtils.wdl) | [python3 software](https://www.python.org/download/releases/3.0/) | 
+| [HISAT2.HISATPairedEnd](/library/tasks/HISAT2.wdl) | [HISAT2 software](https://www.nature.com/articles/s41587-019-0201-4) |
+| [HISAT2.HISATSingleEnd](/library/tasks/HISAT2.wdl) | [HISAT2 software](https://www.nature.com/articles/s41587-019-0201-4) |
+| [Picard.CollectMultipleMetrics](/library/tasks/Picard.wdl) | [Picard software](https://broadinstitute.github.io/picard/) |
+| [Picard.CollectRnaMetrics](/library/tasks/Picard.wdl) | [Picard software](https://broadinstitute.github.io/picard/) |
+| [Picard.CollectDuplicationMetrics](/library/tasks/Picard.wdl) | [Picard software](https://broadinstitute.github.io/picard/) |
+| [HISAT2.HISAT2RSEM](/library/tasks/HISAT2.wdl) | [HISAT2 software](https://www.nature.com/articles/s41587-019-0201-4) |
+| [HISAT2.HISAT2RSEMSingleEnd](/library/tasks/HISAT2.wdl) | [HISAT2 software](https://www.nature.com/articles/s41587-019-0201-4) |
+| [RSEM.RSEMExpression](/library/tasks/RSEM.wdl) | [RSEM software](https://deweylab.github.io/RSEM/README.html#de) |
+| [GroupMetricsOutputs.GroupQCOutputs](/library/tasks/GroupMetricsOutputs.wdl) | [sctools software](https://sctools.readthedocs.io/en/latest/readme.html) |
+| [LoomUtils.SmartSeq2LoomOutput](LoomUtils.wdl) | [python3 software](https://www.python.org/download/releases/3.0/) | 
 | [SS2InputChecks](SS2InputChecks.wdl) | NA | 
 
 Overall, the workflow is divided into two parts that are completed after an initial input validation step.
@@ -144,10 +148,10 @@ The [Picard task](/library/tasks/Picard.wdl) generates QC metrics by using three
 
 ### Part 2: Transcriptome Quantification Tasks
 #### 2.1 Align reads to the transcriptome using HISAT2
-The [HISAT2RSEM task](/library/tasks/HISAT2.wdl) uses HISAT2 to align reads to the reference transcriptome. The task requires the hisat2_ref_trans_index file and the sample FASTQ files as input. The output of this task is a transcriptome-aligned BAM file and an alignment log file.
+The [HISAT2.HISAT2RSEM task](/library/tasks/HISAT2.wdl) uses HISAT2 to align reads to the reference transcriptome. The task requires the hisat2_ref_trans_index file and the sample FASTQ files as input. The output of this task is a transcriptome-aligned BAM file and an alignment log file.
 
 #### 2.2 Quantify gene expression using RSEM
-[RSEM](https://deweylab.github.io/RSEM/README.html#de) is a software package for quantifying transcript abundances ([Li and Dewey, 2011](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-12-323)). The Smart-seq2 Single Sample workflow uses the [RSEM task](/library/tasks/RSEM.wdl) to calculate expression estimates from a transcriptome-aligned BAM file using the rsem_ref_index file for reference input. The RSEM tool [rsem-calculate-expression](http://deweylab.biostat.wisc.edu/rsem/rsem-calculate-expression.html) is used to estimate gene/isoform expression. 
+[RSEM](https://deweylab.github.io/RSEM/README.html#de) is a software package for quantifying transcript abundances ([Li and Dewey, 2011](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-12-323)). The Smart-seq2 Single Sample workflow uses the [RSEM.RSEMExpression task](/library/tasks/RSEM.wdl) to calculate expression estimates from a transcriptome-aligned BAM file using the rsem_ref_index file for reference input. The RSEM tool [rsem-calculate-expression](http://deweylab.biostat.wisc.edu/rsem/rsem-calculate-expression.html) is used to estimate gene/isoform expression. 
 
 
 The RSEM task returns the following output files:
