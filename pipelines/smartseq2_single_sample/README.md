@@ -12,7 +12,7 @@
     + [Sample Data Input](#sample-data-input)
     + [Additional Reference Inputs](#additional-reference-inputs)
 - [Running Smart-seq2](#running-smart-seq2)
-  * [Smart-seq2 Task Summary](#smart-seq2-task-summary)
+  * [Smart-seq2 Task and Tool Summary](#smart-seq2-task-and-tool-summary)
     + [Part 1: Quality Control Tasks](#part-1-quality-control-tasks)
       - [1.1 Align reads to the genome using HISAT2](#11-align-reads-to-the-genome-using-hisat2)
       - [1.2 Calculate summary metrics using Picard](#12-calculate-summary-metrics-using-picard)
@@ -113,7 +113,7 @@ Overall, the workflow is divided into two parts that are completed after an init
  1. Aligns reads to the transcriptome with HISAT v.2.1.0
  2. Quantifies gene expression using RSEM v.1.3.0
 
-#### Tasks and Tools Quick-start Table
+#### Tasks and Tool Table
 
 The workflow tasks and tools are listed in the table below. If you are looking for the parameters for each task/tool, please click on the task link and see the `command {}` section of the task. The task's Docker image is specified in the task `# runtime values` section as ``` String docker = ```. 
 
