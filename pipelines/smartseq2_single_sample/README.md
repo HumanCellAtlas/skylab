@@ -103,18 +103,17 @@ The [SmartSeq2SingleSample.wdl](SmartSeq2SingleSample.wdl) is in the [pipelines/
 
 Here we list the Smart-seq2 Single Sample pipeline's tasks and tools, and provide a pipeline summary of the overall workflow. You can also find these tasks in skylab [library](/library/tasks) on GitHub. 
 
-If you are looking for the parameters for each task/tool, please click on the task link in the table below and see the `command {}` section of the task. The task's Docker image is specified in the task `# runtime values` section as ``` String docker = ```. 
+If you are looking for the parameters used for each task/tool, click on the task link in the table below and see the `command {}` section of the task WDL. The task's Docker image is also specified in the task WDL in the `# runtime values` section as ``` String docker = ```. 
 
 | Task | Tool |
 | --- | --- |
-| [HISAT2](/library/tasks/HISAT2.wdl) | [HISAT2](https://www.nature.com/articles/s41587-019-0201-4) |
-| [Picard](/library/tasks/Picard.wdl) | [Picard](https://broadinstitute.github.io/picard/) |
-| [HISAT2RSEM](/library/tasks/HISAT2.wdl) | [HISAT2](https://www.nature.com/articles/s41587-019-0201-4) |
-| [RSEM](/library/tasks/RSEM.wdl) | [RSEM](https://deweylab.github.io/RSEM/README.html#de) |
-| [GroupMetricsOutputs](/library/tasks/GroupMetricsOutputs.wdl) | [sctools](https://sctools.readthedocs.io/en/latest/readme.html) |
-| [LoomUtils](LoomUtils.wdl) | [python3](https://www.python.org/download/releases/3.0/) | 
+| [HISAT2](/library/tasks/HISAT2.wdl) | [HISAT2 software](https://www.nature.com/articles/s41587-019-0201-4) |
+| [Picard](/library/tasks/Picard.wdl) | [Picard software](https://broadinstitute.github.io/picard/) |
+| [HISAT2RSEM](/library/tasks/HISAT2.wdl) | [HISAT2 software](https://www.nature.com/articles/s41587-019-0201-4) |
+| [RSEM](/library/tasks/RSEM.wdl) | [RSEM software](https://deweylab.github.io/RSEM/README.html#de) |
+| [GroupMetricsOutputs](/library/tasks/GroupMetricsOutputs.wdl) | [sctools software](https://sctools.readthedocs.io/en/latest/readme.html) |
+| [LoomUtils](LoomUtils.wdl) | [python3 software](https://www.python.org/download/releases/3.0/) | 
 | [SS2InputChecks](SS2InputChecks.wdl) | NA | 
-
 
 Overall, the workflow is divided into two parts that are completed after an initial input validation step.
 
