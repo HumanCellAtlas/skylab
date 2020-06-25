@@ -12,7 +12,6 @@
     + [Sample Data Input](#sample-data-input)
     + [Additional Reference Inputs](#additional-reference-inputs)
 - [Running Smart-seq2](#running-smart-seq2)
-  * [Smart-seq2 Tasks and Tools](#smart-seq2-tasks-and-tools)
   * [Smart-seq2 Workflow Summary](#smart-seq2-workflow-summary)
     + [Part 1: Quality Control Tasks](#part-1-quality-control-tasks)
       - [1.1 Align reads to the genome using HISAT2](#11-align-reads-to-the-genome-using-hisat2)
@@ -100,7 +99,17 @@ The Smart-seq2 Single Sample workflow requires multiple reference indexes. Infor
 
 The [SmartSeq2SingleSample.wdl](SmartSeq2SingleSample.wdl) is in the [pipelines/smartseq2_single_sample folder](/pipelines/smartseq2_single_sample) of the HCA skylab repository and implements the workflow by importing individual tasks (written in WDL script) from the skylab [library](/library).
 
-## Smart-seq2 Tasks and Tools
+## Smart-seq2 Workflow Summary
+
+Overall, the workflow is divided into two parts that are completed after an initial input validation step. Each workflow part comprises tasks (WDL scripts) that are summarized below and are available in skylab [library](../../library/tasks) in GitHub.
+
+**Part 1: Quality Control Tasks**
+ 1. Aligns reads to the genome with HISAT2 v.2.1.0
+ 2. Calculates summary metrics from an aligned BAM using Picard v.2.10.10
+
+**Part 2: Transcriptome Quantification Tasks**
+ 1. Aligns reads to the transcriptome with HISAT v.2.1.0
+ 2. Quantifies gene expression using RSEM v.1.3.0
 
 The table below provides links to each of the Smart-seq2 Single Sample pipeline's task WDL scripts, as well as documentation for each task's software tools. The task WDL can also be found in the skylab [library](/library/tasks) on GitHub. Details about each task are in the [Smart-seq2 Workflow Summary](#smart-seq2-workflow-summary) section.
 
@@ -119,18 +128,6 @@ If you are looking for the parameters used for each task/tool, click on the task
 | [GroupMetricsOutputs.GroupQCOutputs](/library/tasks/GroupMetricsOutputs.wdl) | [sctools software](https://sctools.readthedocs.io/en/latest/readme.html) |
 | [LoomUtils.SmartSeq2LoomOutput](LoomUtils.wdl) | [python3 software](https://www.python.org/download/releases/3.0/) | 
 | [SS2InputChecks](SS2InputChecks.wdl) | NA | 
-
-## Smart-seq2 Workflow Summary
-
-Overall, the workflow is divided into two parts that are completed after an initial input validation step.
-
-**Part 1: Quality Control Tasks**
- 1. Aligns reads to the genome with HISAT2 v.2.1.0
- 2. Calculates summary metrics from an aligned BAM using Picard v.2.10.10
-
-**Part 2: Transcriptome Quantification Tasks**
- 1. Aligns reads to the transcriptome with HISAT v.2.1.0
- 2. Quantifies gene expression using RSEM v.1.3.0
 
 
 ### Part 1: Quality Control Tasks
