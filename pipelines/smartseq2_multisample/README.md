@@ -57,7 +57,9 @@ In addition to the Smart-seq2 Single Sample inputs, the Multi Sample workflow re
  | bam_index_files |  An array of BAM index files generated with HISAT2 | Array |
  | loom_output | A single Loom file  | File |
  
-The Loom file is an aggregate of all the individual Loom files generated using the [Smart-seq2 Single Sample workflow](/pipelines/smartseq2_single_sample/SmartSeq2SingleSample.wdl). The aggregated Loom filename contains the <plateid> prefix, which is set by default to the batch_id string. Both the individual sample Loom files and individual BAM files are described in the [Smart-seq2 Single Sample README](/pipelines/smartseq2_single_sample/README.md).
+The Loom file is an aggregate of all the individual Loom files generated using the [Smart-seq2 Single Sample workflow](/pipelines/smartseq2_single_sample/SmartSeq2SingleSample.wdl). The aggregated Loom filename contains the <plateid> prefix, which is set by default to the `batch_id` string specified in the input. The <plateid> is also set as a global attribute in the Loom.
+ 
+ Both the individual sample Loom files and individual BAM files are described in the [Smart-seq2 Single Sample README](/pipelines/smartseq2_single_sample/README.md).
 
 | Zarr Array Deprecation Notice June 2020 |
 | --- |
