@@ -120,7 +120,7 @@ Overall, the workflow:
 8. Detects empty droplets
 9. Returns a GA4GH compliant BAM and an expression matrix in Loom formats
 
-The tools each Optimus task employs are detailed in the table below. If you are looking for the parameters for each task/tool, please click on the task link and see the `command {}` section of the task. The task's Docker image is specified in the task `# runtime values` section as ``` String docker = ```. 
+The tools each Optimus task employs are detailed in the table below. If you are looking for the parameters for each task/tool, please click on the task link and see the `command {}` section of the task WDL script. The task's Docker image is specified in the task WDL `# runtime values` section as ``` String docker = ```. 
 
 | Task | Tool | 
 | --- | --- |
