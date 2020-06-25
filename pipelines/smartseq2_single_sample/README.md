@@ -12,7 +12,8 @@
     + [Sample Data Input](#sample-data-input)
     + [Additional Reference Inputs](#additional-reference-inputs)
 - [Running Smart-seq2](#running-smart-seq2)
-  * [Smart-seq2 Task and Tool Summary](#smart-seq2-task-and-tool-summary)
+  * [Smart-seq2 Tasks and Tools](#smart-seq2-tasks-and-tools)
+  * [Smart-seq2 Workflow Summary](#smart-seq2-workflow-summary)
     + [Part 1: Quality Control Tasks](#part-1-quality-control-tasks)
       - [1.1 Align reads to the genome using HISAT2](#11-align-reads-to-the-genome-using-hisat2)
       - [1.2 Calculate summary metrics using Picard](#12-calculate-summary-metrics-using-picard)
@@ -99,9 +100,9 @@ The Smart-seq2 Single Sample workflow requires multiple reference indexes. Infor
 
 The [SmartSeq2SingleSample.wdl](SmartSeq2SingleSample.wdl) is in the [pipelines/smartseq2_single_sample folder](/pipelines/smartseq2_single_sample) of the HCA skylab repository and implements the workflow by importing individual tasks (written in WDL script) from the skylab [library](/library).
 
-## Smart-seq2 Task and Tool Summary
+## Smart-seq2 Tasks and Tools
 
-Here we list the Smart-seq2 Single Sample pipeline's tasks and tools, and provide a pipeline summary of the overall workflow. You can also find these tasks in skylab [library](/library/tasks) on GitHub. 
+The table below provides links to the Smart-seq2 Single Sample pipeline's tasks and tools, which can also be found in the skylab [library](/library/tasks) on GitHub. Details about each task are in the [Smart-seq2 Workflow Summary](#smart-seq2-workflow-summary) section.
 
 If you are looking for the parameters used for each task/tool, click on the task link in the table below and see the `command {}` section of the task WDL. The task's Docker image is also specified in the task WDL in the `# runtime values` section as ``` String docker = ```. 
 
@@ -118,6 +119,8 @@ If you are looking for the parameters used for each task/tool, click on the task
 | [GroupMetricsOutputs.GroupQCOutputs](/library/tasks/GroupMetricsOutputs.wdl) | [sctools software](https://sctools.readthedocs.io/en/latest/readme.html) |
 | [LoomUtils.SmartSeq2LoomOutput](LoomUtils.wdl) | [python3 software](https://www.python.org/download/releases/3.0/) | 
 | [SS2InputChecks](SS2InputChecks.wdl) | NA | 
+
+## Smart-seq2 Workflow Summary
 
 Overall, the workflow is divided into two parts that are completed after an initial input validation step.
 
