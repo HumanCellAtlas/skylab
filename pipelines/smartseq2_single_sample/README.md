@@ -102,7 +102,7 @@ The [SmartSeq2SingleSample.wdl](SmartSeq2SingleSample.wdl) is in the [pipelines/
 
 ## Smart-seq2 Tasks and Tools
 
-The table below provides links to the Smart-seq2 Single Sample pipeline's tasks and tools, which can also be found in the skylab [library](/library/tasks) on GitHub. Details about each task are in the [Smart-seq2 Workflow Summary](#smart-seq2-workflow-summary) section.
+The table below provides links to each of the Smart-seq2 Single Sample pipeline's task WDL scripts, as well as documentation for each task's software tools. The task WDL can also be found in the skylab [library](/library/tasks) on GitHub. Details about each task are in the [Smart-seq2 Workflow Summary](#smart-seq2-workflow-summary) section.
 
 If you are looking for the parameters used for each task/tool, click on the task link in the table below and see the `command {}` section of the task WDL. The task's Docker image is also specified in the task WDL in the `# runtime values` section as ``` String docker = ```. 
 
