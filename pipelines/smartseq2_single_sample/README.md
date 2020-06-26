@@ -101,7 +101,7 @@ The [SmartSeq2SingleSample.wdl](SmartSeq2SingleSample.wdl) is in the [pipelines/
 
 ## Smart-seq2 Workflow Summary
 
-Overall, the workflow is divided into two parts that are completed after an initial input validation step. Each workflow part comprises tasks (WDL scripts) that are summarized below and are available in skylab [library](../../library/tasks) in GitHub.
+Overall, the workflow is divided into two parts that are completed after an initial input validation step. Each workflow part comprises tasks (WDL scripts) that are summarized below and are available in the skylab [library](../../library/tasks) in GitHub.
 
 **Part 1: Quality Control Tasks**
  1. Aligns reads to the genome with HISAT2 v.2.1.0
