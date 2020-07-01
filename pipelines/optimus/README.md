@@ -39,7 +39,7 @@ Optimus has been validated for analyzing both [human](https://github.com/HumanCe
 
 | **Update on Single Nuclei RNAseq (sn_rna) Pipeline** |
 | --- |
-| We are in the process of validating Optimus for snRNAseq using `sn_rna` parameter. These changes are detailed in the documentation. Once the pipeline is validated for snRNAseq, we will provide the validation report link in the above section. | 
+| We are in the process of validating Optimus for snRNAseq using the `sn_rna` parameter. These changes are detailed in the documentation. Once the pipeline is validated for snRNAseq, we will provide the validation report link in the above section. | 
 
 ## Quick Start Table
 
@@ -120,7 +120,7 @@ Overall, the workflow:
 8. Detects empty droplets
 9. Returns a GA4GH compliant BAM and an expression matrix in Loom formats
 
-The tools each Optimus task employs are detailed in the following table:
+The tools each Optimus task employs are detailed in the table below. If you are looking for the parameters for each task/tool, please click on the task link and see the `command {}` section of the task WDL script. The task's Docker image is specified in the task WDL `# runtime values` section as ``` String docker = ```. 
 
 | Task | Tool | 
 | --- | --- |
@@ -256,6 +256,12 @@ There are four example configuration JSON files available for you to test the pi
 <summary>What outputs are expected if my sample has been sequenced over multiple lanes? </summary>
 <br>
 The Optimus pipeline is a single sample pipeline, but it can accept multiple FASTQ files if a sample is sequenced across lanes. In this case, the pipeline will merge the results from each lane into single output files. There will only be one merged file for each output type (i.e one Loom, etc.). If you would like to view an example configuration file for a multi-lane dataset, please see the <a href="mouse_v2_example.json">mouse_v2_example.json </a>.  Additionally, you can view sample outputs in the Optimus featured workspace on Terra: https://app.terra.bio/#workspaces/featured-workspaces-hca/HCA_Optimus_Pipeline. 
+ </details>
+
+ <details>
+<summary>How do I find which parameters and Docker images were used for the different tasks (i.e. STAR alignment, emptyDrops, etc.) </summary>
+<br>
+Parameters are listed in each task WDL. For a list of the tasks, see the table in the <a href="README.md/#optimus-task-summary">Task Summary Section </a>. Select the link for the task of interest and then view the parameters in the task WDL "command {}" section. For the task Docker image, see task WDL "# runtime values" section; the Docker is listed as "String docker =  ". If you want to learn more about all the different parameters available for a software tool, please select the relevant link in the table's "Tool" column. 
  </details>
 
 
