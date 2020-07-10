@@ -88,7 +88,7 @@ The global attributes in the Loom apply to the whole file, not any specific part
 | `STRAND_BALANCE.UNPAIRED` | [Picard](https://broadinstitute.github.io/picard/picard-metric-definitions.html) |
 | `TOTAL_CLUSTERS` | [Picard](https://broadinstitute.github.io/picard/picard-metric-definitions.html) |
 | `TOTAL_READS.UNPAIRED` | [Picard](https://broadinstitute.github.io/picard/picard-metric-definitions.html) |
-| `Total reads` |
+| `Total reads` | [HISAT2](https://ccb.jhu.edu/software/hisat2/manual.shtml) | Total number of aligned reads |
 | `UNMAPPED_READS` | [Picard](https://broadinstitute.github.io/picard/picard-metric-definitions.html) |
 | `UNPAIRED_READS_EXAMINED` | [Picard](https://broadinstitute.github.io/picard/picard-metric-definitions.html) |
 | `UNPAIRED_READ_DUPLICATES` | [Picard](https://broadinstitute.github.io/picard/picard-metric-definitions.html) |
