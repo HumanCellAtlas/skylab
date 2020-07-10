@@ -10,7 +10,7 @@ The global attributes in the Loom apply to the whole file, not any specific part
 | Attribute | Details |
 | :-- | :-- |
 | LOOM_SPEC_VERSION | String with the loom file spec version |
-| CreationDate | String describing if the pipeline counts exonic or whole transcript (exonic and intronic) reads. For the single-cell mode (counting_mode = sc_rna), the value will be "exonic"; for the single-nuclei mode (counting_mode = sn_rna), the value will be "whole_transcript" |
+| CreationDate | Date Loom file was generated |
 | sample_id | The plateid listed in the pipeline configuration file; by default it is set to the batch_id. |
  
 
@@ -21,9 +21,9 @@ The global attributes in the Loom apply to the whole file, not any specific part
 | `ACCUMULATION_LEVEL` | [Picard](https://broadinstitute.github.io/picard/picard-metric-definitions.html) |
 | `ALIGNED_READS` | [Picard](https://broadinstitute.github.io/picard/picard-metric-definitions.html) |
 | `AT_DROPOUT` | [Picard](https://broadinstitute.github.io/picard/picard-metric-definitions.html) |
-| `Aligned 0 time` | 
-| `Aligned 1 time` | 
-| `Aligned >1 times` | 
+| `Aligned 0 time` | [HISAT2](https://ccb.jhu.edu/software/hisat2/manual.shtml) | Number and percent reads aligned 0 times |
+| `Aligned 1 time` | [HISAT2](https://ccb.jhu.edu/software/hisat2/manual.shtml) | Number and percent reads aligned 1 time |
+| `Aligned >1 times` | [HISAT2](https://ccb.jhu.edu/software/hisat2/manual.shtml) | Number and percent reads aligned more than 1 time |
 | `BAD_CYCLES.UNPAIRED` | [Picard](https://broadinstitute.github.io/picard/picard-metric-definitions.html) |
 | `CODING_BASES` | [Picard](https://broadinstitute.github.io/picard/picard-metric-definitions.html) |
 | `CORRECT_STRAND_READS` | [Picard](https://broadinstitute.github.io/picard/picard-metric-definitions.html) |
@@ -46,7 +46,7 @@ The global attributes in the Loom apply to the whole file, not any specific part
 | `NUM_R1_TRANSCRIPT_STRAND_READS` | [Picard](https://broadinstitute.github.io/picard/picard-metric-definitions.html) |
 | `NUM_R2_TRANSCRIPT_STRAND_READS` | [Picard](https://broadinstitute.github.io/picard/picard-metric-definitions.html) |
 | `NUM_UNEXPLAINED_READS` | [Picard](https://broadinstitute.github.io/picard/picard-metric-definitions.html) |
-| `Overall alignment rate` |
+| `Overall alignment rate` | [HISAT2](https://ccb.jhu.edu/software/hisat2/manual.shtml) | Overall percent of reads that aligned |
 | `PCT_ADAPTER.UNPAIRED` | [Picard](https://broadinstitute.github.io/picard/picard-metric-definitions.html) |
 | `PCT_CHIMERAS.UNPAIRED` | [Picard](https://broadinstitute.github.io/picard/picard-metric-definitions.html) |
 | `PCT_CODING_BASES` | [Picard](https://broadinstitute.github.io/picard/picard-metric-definitions.html) |
