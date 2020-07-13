@@ -95,7 +95,7 @@ The global attributes in the Loom apply to the whole file, not any specific part
 | `UTR_BASES` | [Picard](https://broadinstitute.github.io/picard/picard-metric-definitions.html) |
 | `WINDOW_SIZE` | [Picard](https://broadinstitute.github.io/picard/picard-metric-definitions.html) |
 | `alignable reads` |
-| `cell_names` |
+| `cell_names` | ---| The unique identifier for each cell based on cell barcodes |
 | `filtered reads` |
 | `multiple mapped` |
 | `strand` |
