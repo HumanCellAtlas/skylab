@@ -5,6 +5,8 @@ Secondary analysis pipelines for the Human Cell Atlas.
 [![License](https://img.shields.io/github/license/HumanCellAtlas/skylab.svg?style=flat-square)](https://github.com/HumanCellAtlas/skylab/blob/master/LICENSE)
 [![Snyk Vulnerabilities for GitHub Repo (Specific Manifest)](https://img.shields.io/snyk/vulnerabilities/github/HumanCellAtlas/skylab/docker/cellranger/requirements.txt.svg?style=flat-square&label=Snyk%20Scripts%20Vulnerabilities&logo=Snyk)](https://snyk.io/test/github/HumanCellAtlas/skylab?targetFile=docker/cellranger/requirements.txt)
 
+## Pipelines in this repository will be migrated to [https://github.com/broadinstitute/warp](WARP: WDL Analysis Research Pipelines) for future maintenance. Old releases and git history will remain here for posterity, but the repository will be archived. Please reach out if you'd like an email before we archive at kdegatano@broadinstitute.org. 
+
 ## Pipelines
 - [cellranger](https://github.com/HumanCellAtlas/skylab/tree/master/pipelines/cellranger) secondary analysis pipeline
 - [Optimus](https://github.com/HumanCellAtlas/skylab/tree/master/pipelines/optimus) secondary analysis pipeline
