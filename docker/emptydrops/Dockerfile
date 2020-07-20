@@ -1,5 +1,8 @@
 # Start with an ubuntu system and update it
-FROM ubuntu:16.04
+FROM ubuntu:18.04
+
+# Avoid interaction during package install
+ENV DEBIAN_FRONTEND=noninteractive
 
 # Image label
 LABEL maintainer="Nick Barkas <nbarkas@broadinstititute.org>" \

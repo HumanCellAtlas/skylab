@@ -1,17 +1,21 @@
+version 1.0
+
 task ValidateOptimusMouse {
-      File bam
-      File matrix
-      File matrix_row_index
-      File matrix_col_index
-      File gene_metrics
-      File cell_metrics
+  input {
+    File bam
+    File matrix
+    File matrix_row_index
+    File matrix_col_index
+    File gene_metrics
+    File cell_metrics
 
-      String expected_bam_hash
-      String expected_matrix_hash
-      String expected_gene_metric_hash
-      String expected_cell_metric_hash
+    String expected_bam_hash
+    String expected_matrix_hash
+    String expected_gene_metric_hash
+    String expected_cell_metric_hash
+  }
 
-      Int required_disk = ceil((size(bam, "G") + size(matrix, "G")) * 1.1)
+  Int required_disk = ceil((size(bam, "G") + size(matrix, "G")) * 1.1)
 
   command <<<
 
@@ -23,28 +27,28 @@ task ValidateOptimusMouse {
     # metadata
 
 
-    unzip "${matrix}"
+    unzip "~{matrix}"
     matrix_hash=$(find . -name "*.npy" -type f -exec md5sum {} \; | sort -k 2 | md5sum | awk '{print $1}')
-    gene_metric_hash=$(zcat "${gene_metrics}" | md5sum | awk '{print $1}')
-    cell_metric_hash=$(zcat "${cell_metrics}" | md5sum | awk '{print $1}')
+    gene_metric_hash=$(zcat "~{gene_metrics}" | md5sum | awk '{print $1}')
+    cell_metric_hash=$(zcat "~{cell_metrics}" | md5sum | awk '{print $1}')
 
     # calculate hash as above, but ignore run-specific bam headers
-    bam_hash=$(samtools view "${bam}" | md5sum | awk '{print $1}')
+    bam_hash=$(samtools view "~{bam}" | md5sum | awk '{print $1}')
 
     # test each output for equivalence, echoing any failure states to stdout
     fail=false
-    if [ "$bam_hash" != "${expected_bam_hash}" ]; then
-      >&2 echo "bam_hash ($bam_hash) did not match expected hash (${expected_bam_hash})"
+    if [ "$bam_hash" != "~{expected_bam_hash}" ]; then
+      >&2 echo "bam_hash (${bam_hash}) did not match expected hash (~{expected_bam_hash})"
       fail=true
     fi
 
-    if [ "$gene_metric_hash" != "${expected_gene_metric_hash}" ]; then
-      >&2 echo "gene_metric_hash ($gene_metric_hash) did not match expected hash (${expected_gene_metric_hash})"
+    if [ "$gene_metric_hash" != "~{expected_gene_metric_hash}" ]; then
+      >&2 echo "gene_metric_hash ($gene_metric_hash) did not match expected hash (~{expected_gene_metric_hash})"
       fail=true
     fi
 
-    if [ "$cell_metric_hash" != "${expected_cell_metric_hash}" ]; then
-      >&2 echo "cell_metric_hash ($cell_metric_hash) did not match expected hash (${expected_cell_metric_hash})"
+    if [ "$cell_metric_hash" != "~{expected_cell_metric_hash}" ]; then
+      >&2 echo "cell_metric_hash ($cell_metric_hash) did not match expected hash (~{expected_cell_metric_hash})"
       fail=true
     fi
 

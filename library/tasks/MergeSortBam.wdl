@@ -1,19 +1,25 @@
+version 1.0
+
 task MergeSortBamFiles {
-  Array[File] bam_inputs
-  String sort_order
+  input {
+    Array[File] bam_inputs
+    String sort_order
+    String output_bam_filename
 
-  Int compression_level = 5
+    Int compression_level = 5
 
-  # runtime values
-  String docker = "us.gcr.io/broad-gotc-prod/genomes-in-the-cloud:2.3.3-1513176735"
-  Int machine_mem_mb = 18150
+    # runtime values
+    String docker = "us.gcr.io/broad-gotc-prod/genomes-in-the-cloud:2.3.3-1513176735"
+    Int machine_mem_mb = 18150
+    Int cpu = 1
+    # default to 500GiB of space
+    Int disk = 500
+    # by default request non preemptible machine to make sure the slow mergsort step completes
+    Int preemptible = 0
+  }
+
   # give the command 500MiB of overhead
   Int command_mem_mb = machine_mem_mb - 500
-  Int cpu = 1
-  # default to 500GiB of space
-  Int disk = 500
-  # by default request non preemptible machine to make sure the slow mergsort step completes
-  Int preemptible = 0
 
   meta {
     description: "Merge multiple bam files in the specified sort order"
@@ -37,7 +43,7 @@ task MergeSortBamFiles {
       USE_THREADING=true \
       SORT_ORDER=${sort_order} \
       INPUT=${sep=' INPUT=' bam_inputs} \
-      OUTPUT=merged.bam \
+      OUTPUT=~{output_bam_filename} \
   }
 
   runtime {
@@ -48,6 +54,6 @@ task MergeSortBamFiles {
     preemptible: preemptible
   }
   output {
-    File output_bam = "merged.bam"
+    File output_bam = output_bam_filename
   }
 }

@@ -1,15 +1,20 @@
-task SortBam {
-    File bam_input
-    String sort_order = "coordinate"
+version 1.0
 
-    # runtime values
-    String docker = "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
-    Int machine_mem_mb = 8250
-    Int machine_overhead_mb = 500
+task SortBam {
+    input {
+        File bam_input
+        String sort_order = "coordinate"
+
+        # runtime values
+        String docker = "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
+        Int machine_mem_mb = 8250
+        Int machine_overhead_mb = 500
+        Int cpu = 1
+        Int preemptible = 3
+    }
+
     Int command_mem_mb = machine_mem_mb - machine_overhead_mb
-    Int cpu = 1
     Int disk = ceil(size(bam_input, "Gi") * 6) + 50
-    Int preemptible = 3
 
     meta {
         description: "Sorts bam"
@@ -38,17 +43,19 @@ task SortBam {
 }
 
 task SortBamAndIndex {
-    File bam_input
-    String sort_order = "coordinate"
+    input {
+        File bam_input
+        String sort_order = "coordinate"
 
-    # runtime values
-    String docker = "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
-    Int machine_mem_mb = 8250
-    Int machine_overhead_mb = 500
-    Int command_mem_mb = machine_mem_mb - machine_overhead_mb
-    Int cpu = 1
-    Int disk = ceil(size(bam_input, "Gi") * 6) + 50
-    Int preemptible = 3
+        # runtime values
+        String docker = "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
+        Int machine_mem_mb = 8250
+        Int machine_overhead_mb = 500
+        Int command_mem_mb = machine_mem_mb - machine_overhead_mb
+        Int cpu = 1
+        Int disk = ceil(size(bam_input, "Gi") * 6) + 50
+        Int preemptible = 3
+    }
 
     meta {
         description: "Sorts bam by genomic position"
@@ -80,19 +87,21 @@ task SortBamAndIndex {
 }
 
 task CollectMultipleMetrics {
-  File aligned_bam
-  File genome_ref_fasta
-  String output_basename
+  input {
+    File aligned_bam
+    File genome_ref_fasta
+    String output_basename
 
-  # runtime values
-  String docker ="quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
-  Int machine_mem_mb = 8250
-  # give the command 1 GiB of overhead
-  Int command_mem_mb = machine_mem_mb - 1000
-  Int cpu = 1
-  # use provided disk number or dynamically size on our own, with 10GiB of additional disk
-  Int disk = ceil(size(aligned_bam, "GiB") + size(genome_ref_fasta, "GiB") + 10)
-  Int preemptible = 5
+    # runtime values
+    String docker ="quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
+    Int machine_mem_mb = 8250
+    # give the command 1 GiB of overhead
+    Int command_mem_mb = machine_mem_mb - 1000
+    Int cpu = 1
+    # use provided disk number or dynamically size on our own, with 10GiB of additional disk
+    Int disk = ceil(size(aligned_bam, "GiB") + size(genome_ref_fasta, "GiB") + 10)
+    Int preemptible = 5
+  }
 
   meta {
     description: "This Picard task will collect multiple QC metrics, such as CollectAlignmentSummaryMetrics and CollectInsertSizeMetrics."
@@ -145,7 +154,7 @@ task CollectMultipleMetrics {
     File gc_bias_dist_pdf = "${output_basename}.gc_bias.pdf"
     File gc_bias_summary_metrics = "${output_basename}.gc_bias.summary_metrics.txt"
     Array[File] insert_size_hist = glob("${output_basename}.insert_size_histogram.pdf")
-    Array[File] insert_size_metrics = glob("${output_basename}.insert_size_metrics.txt")
+    Array[File?] insert_size_metrics = glob("${output_basename}.insert_size_metrics.txt")
     File quality_distribution_metrics = "${output_basename}.quality_distribution_metrics.txt"
     File quality_distribution_dist_pdf = "${output_basename}.quality_distribution.pdf"
     File quality_by_cycle_metrics = "${output_basename}.quality_by_cycle_metrics.txt"
@@ -159,21 +168,24 @@ task CollectMultipleMetrics {
 }
 
 task CollectRnaMetrics {
-  File aligned_bam
-  File ref_flat
-  File rrna_intervals
-  String output_basename
-  String stranded
+  input {
+    File aligned_bam
+    File ref_flat
+    File rrna_intervals
+    String output_basename
+    String stranded
 
-  # runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
-  Int machine_mem_mb = 3850
-  # give the command 500 MiB of overhead
-  Int command_mem_mb = machine_mem_mb - 500
-  Int cpu = 1
-  # use provided disk number or dynamically size on our own, with 10GiB of additional disk
-  Int disk = ceil(size(aligned_bam, "GiB") + size(ref_flat, "GiB") + size(rrna_intervals, "GiB") + 10)
-  Int preemptible = 5
+    # runtime values
+    String docker = "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
+    Int machine_mem_mb = 3850
+    # give the command 500 MiB of overhead
+    Int command_mem_mb = machine_mem_mb - 500
+    Int cpu = 1
+    # use provided disk number or dynamically size on our own, with 10GiB of additional disk
+    Int disk = ceil(size(aligned_bam, "GiB") + size(ref_flat, "GiB") + size(rrna_intervals, "GiB") + 10)
+    Int preemptible = 5
+  }
+  
 
   meta {
     description: "This Picard task will collect RnaSeqMetrics."
@@ -222,18 +234,21 @@ task CollectRnaMetrics {
 
 # Here we use "-XX:ParallelGCThreads=2" to run MarkDuplication on multiple threads 
 task CollectDuplicationMetrics {
-  File aligned_bam
-  String output_basename
+  input {
+    File aligned_bam
+    String output_basename
 
-  # runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
-  Int machine_mem_mb = 8250
-  # give the command 1 GiB of overhead
-  Int command_mem_mb = machine_mem_mb - 1000
-  Int cpu = 2
-  # use provided disk number or dynamically size on our own, with 10GiB of additional disk
-  Int disk = ceil(size(aligned_bam, "GiB") + 10)
-  Int preemptible = 5
+    # runtime values
+    String docker = "quay.io/humancellatlas/secondary-analysis-picard:v0.2.2-2.10.10"
+    Int machine_mem_mb = 8250
+    # give the command 1 GiB of overhead
+    Int command_mem_mb = machine_mem_mb - 1000
+    Int cpu = 2
+    # use provided disk number or dynamically size on our own, with 10GiB of additional disk
+    Int disk = ceil(size(aligned_bam, "GiB") + 10)
+    Int preemptible = 5
+  }
+  
 
   meta {
     description: "This Picard task will collect alignment DuplicationMetrics."

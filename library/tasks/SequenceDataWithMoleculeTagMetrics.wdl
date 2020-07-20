@@ -1,19 +1,23 @@
-task CalculateGeneMetrics {
-  File bam_input
+version 1.0
 
-  # runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.3"
-  Int machine_mem_mb = 22000
-  Int cpu = 1
-  Int disk = ceil(size(bam_input, "Gi") * 4)
-  Int preemptible = 3
+task CalculateGeneMetrics {
+  input {
+    File bam_input
+
+    # runtime values
+    String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.7"
+    Int machine_mem_mb = 22000
+    Int cpu = 1
+    Int disk = ceil(size(bam_input, "Gi") * 4)
+    Int preemptible = 3
+  }
 
   meta {
     description: "Calculate gene metrics from the reads in bam_input."
   }
 
   parameter_meta {
-    bam_input: "An aligned bam file augmented with CB, UB, GE, CY, UY, and XF tags."
+    bam_input: "an aligned bam file augmented with CB, UB, GE, CY, UY, and XF tags."
     docker: "(optional) the docker image containing the runtime environment for this task"
     machine_mem_mb: "(optional) the amount of memory (MiB) to provision for this task"
     cpu: "(optional) the number of cpus to provision for this task"
@@ -41,14 +45,17 @@ task CalculateGeneMetrics {
 }
 
 task CalculateCellMetrics {
-  File bam_input
+  input {
+    File bam_input
+    File original_gtf
 
-  # runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.3"
-  Int machine_mem_mb = 45000
-  Int cpu = 1
-  Int disk = ceil(size(bam_input, "Gi") * 2)
-  Int preemptible = 3
+    # runtime values
+    String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.8"
+    Int machine_mem_mb = 45000
+    Int cpu = 1
+    Int disk = ceil(size(bam_input, "Gi") * 2)
+    Int preemptible = 3
+  }
 
   meta {
     description: "Calculate cell metrics from the reads in bam_input."
@@ -66,7 +73,7 @@ task CalculateCellMetrics {
   command {
     set -e
 
-    CalculateCellMetrics -i "${bam_input}" -o cell-metrics.csv.gz
+    CalculateCellMetrics -i "${bam_input}" -o cell-metrics.csv.gz --gtf-annotation-file "${original_gtf}"
   }
 
   runtime {
@@ -84,14 +91,16 @@ task CalculateCellMetrics {
 
 
 task MergeGeneMetrics {
-  Array[File] metric_files
+  input {
+    Array[File] metric_files
 
-  # runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.3"
-  Int machine_mem_mb = 3850
-  Int cpu = 1
-  Int disk = 20
-  Int preemptible = 3
+    # runtime values
+    String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.7"
+    Int machine_mem_mb = 3850
+    Int cpu = 1
+    Int disk = 20
+    Int preemptible = 3
+  }
 
   meta {
     description: "Merge an array of gene metric files with the same metric categories and potentially overlapping sets of gene features"
@@ -126,14 +135,16 @@ task MergeGeneMetrics {
 }
 
 task MergeCellMetrics {
-  Array[File] metric_files
+  input {
+    Array[File] metric_files
 
-  # runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.3"
-  Int machine_mem_mb = 3850
-  Int cpu = 1
-  Int disk = 20
-  Int preemptible = 3
+    # runtime values
+    String docker = "quay.io/humancellatlas/secondary-analysis-sctools:v0.3.7"
+    Int machine_mem_mb = 3850
+    Int cpu = 1
+    Int disk = 20
+    Int preemptible = 3
+  }
 
   meta {
     description: "Concatenate multiple cell metrics files into a single matrix"
