@@ -40,7 +40,7 @@ echo "Waiting for workflow ${WORKFLOW_ID} to complete..."
 cromwell-tools wait "${WORKFLOW_ID}" \
   --service-account-key "${CROMWELL_KEY_FILE}" \
   --url "${CROMWELL_URL}" \
-  --timeout-minutes 90 \
+  --timeout-minutes 180 \
   --poll-interval-seconds 30
 
 echo "Checking workflow completion status."

@@ -1,3 +1,5 @@
+version 1.0
+
 import "FastqToUBam.wdl" as FastqToUBam
 import "Attach10xBarcodes.wdl" as Attach
 import "SplitBamByCellBarcode.wdl" as Split
@@ -8,7 +10,7 @@ import "TagGeneExon.wdl" as TagGeneExon
 import "SequenceDataWithMoleculeTagMetrics.wdl" as Metrics
 import "TagSortBam.wdl" as TagSortBam
 import "RunEmptyDrops.wdl" as RunEmptyDrops
-import "ZarrUtils.wdl" as ZarrUtils
+import "LoomUtils.wdl" as LoomUtils
 import "Picard.wdl" as Picard
 import "UmiCorrection.wdl" as UmiCorrection
 import "ScatterBam.wdl" as ScatterBam
@@ -19,40 +21,48 @@ workflow Optimus {
   meta {
     description: "The optimus 3' pipeline processes 10x genomics sequencing data based on the v2 chemistry. It corrects cell barcodes and UMIs, aligns reads, marks duplicates, and returns data as alignments in BAM format and as counts in sparse matrix exchange format."
   }
+
+  input {
+    # Mode for counting either "sc_rna" or "sn_rna"
+    String counting_mode = "sc_rna"
+
+    # Sequencing data inputs
+    Array[File] r1_fastq
+    Array[File] r2_fastq
+    Array[File]? i1_fastq
+    String sample_id
+    String? output_bam_basename = sample_id
+
+    # organism reference parameters
+    File tar_star_reference
+    File annotations_gtf
+    File ref_genome_fasta
+
+    # 10x parameters
+    File whitelist
+    # tenX_v2, tenX_v3
+    String chemistry = "tenX_v2" 
+
+    # environment-specific parameters
+    String fastq_suffix = ""
+    
+    # Emptydrops lower cutoff
+    Int emptydrops_lower = 100
+
+    # Set to true to override input checks and allow pipeline to proceed with invalid input
+    Boolean force_no_check = false
+
+    # this pipeline does not set any preemptible varibles and only relies on the task-level preemptible settings
+    # you could override the tasklevel preemptible settings by passing it as one of the workflows inputs
+    # for example: `"Optimus.StarAlign.preemptible": 3` will let the StarAlign task, which by default disables the
+    # usage of preemptible machines, attempt to request for preemptible instance up to 3 times. 
+  }
+
   # version of this pipeline
-  String version = "optimus_v1.4.0"
+  String version = "optimus_v3.0.0"
 
-  # Sequencing data inputs
-  Array[File] r1_fastq
-  Array[File] r2_fastq
-  Array[File]? i1_fastq
-  String sample_id
-
-  # organism reference parameters
-  File tar_star_reference
-  File annotations_gtf
-  File ref_genome_fasta
-
-  # 10x parameters
-  File whitelist
-  # tenX_v2, tenX_v3
-  String chemistry = "tenX_v2" 
-
-  # environment-specific parameters
-  String fastq_suffix = ""
   # this is used to scatter matched [r1_fastq, r2_fastq, i1_fastq] arrays
   Array[Int] indices = range(length(r1_fastq))
-
-  # If true produce the optional loom output
-  Boolean output_loom = false
-
-  # Set to true to override input checks and allow pipeline to proceed with invalid input
-  Boolean force_no_check = false
-
-  # this pipeline does not set any preemptible varibles and only relies on the task-level preemptible settings
-  # you could override the tasklevel preemptible settings by passing it as one of the workflows inputs
-  # for example: `"Optimus.StarAlign.preemptible": 3` will let the StarAlign task, which by default disables the
-  # usage of preemptible machines, attempt to request for preemptible instance up to 3 times. 
 
   parameter_meta {
     r1_fastq: "forward read, contains cell barcodes and molecule barcodes"
@@ -72,7 +82,8 @@ workflow Optimus {
   call OptimusInputChecks.checkOptimusInput {
     input:
       force_no_check = force_no_check,
-      chemistry = chemistry
+      chemistry = chemistry,
+      counting_mode = counting_mode
   }
 
   scatter (index in indices) {
@@ -139,15 +150,29 @@ workflow Optimus {
         bam_input = bam,
         tar_star_reference = tar_star_reference
     }
-    call TagGeneExon.TagGeneExon as TagGenes {
-      input:
-        bam_input = StarAlign.bam_output,
-        annotations_gtf = ModifyGtf.modified_gtf
+
+    if (counting_mode == "sc_rna") {
+      call TagGeneExon.TagGeneExon as TagGenes {
+        input:
+          bam_input = StarAlign.bam_output,
+          annotations_gtf = ModifyGtf.modified_gtf
+      }
+    }
+    if (counting_mode == "sn_rna") {
+      call TagGeneExon.TagReadWithGeneFunction as TagGeneFunction {
+        input:
+          bam_input = StarAlign.bam_output,
+          annotations_gtf = ModifyGtf.modified_gtf,
+          gene_name_tag = "GE",
+          gene_strand_tag = "GS",
+          gene_function_tag = "XF",
+          use_strand_info = "false"
+      }
     }
 
     call Picard.SortBamAndIndex as PreUMISort {
       input:
-        bam_input = TagGenes.bam_output
+        bam_input = select_first([TagGenes.bam_output, TagGeneFunction.bam_output])
     }
 
     call UmiCorrection.CorrectUMItools as CorrectUMItools {
@@ -178,7 +203,8 @@ workflow Optimus {
 
     call Metrics.CalculateCellMetrics {
       input:
-        bam_input = CellSortBam.bam_output
+        bam_input = CellSortBam.bam_output,
+        original_gtf = annotations_gtf
     }
 
     call Picard.SortBam as PreCountSort {
@@ -197,6 +223,7 @@ workflow Optimus {
   call Merge.MergeSortBamFiles as MergeSorted {
     input:
       bam_inputs = PreMergeSort.bam_output,
+      output_bam_filename = output_bam_basename + ".bam",
       sort_order = "coordinate"
   }
 
@@ -221,10 +248,11 @@ workflow Optimus {
     input:
       sparse_count_matrix = MergeCountFiles.sparse_count_matrix,
       row_index = MergeCountFiles.row_index,
-      col_index = MergeCountFiles.col_index
+      col_index = MergeCountFiles.col_index,
+      emptydrops_lower = emptydrops_lower
   }
 
-  call ZarrUtils.OptimusZarrConversion{
+  call LoomUtils.OptimusLoomGeneration{
     input:
       sample_id = sample_id,
       annotation_file = annotations_gtf,
@@ -233,15 +261,8 @@ workflow Optimus {
       sparse_count_matrix = MergeCountFiles.sparse_count_matrix,
       cell_id = MergeCountFiles.row_index,
       gene_id = MergeCountFiles.col_index,
-      empty_drops_result = RunEmptyDrops.empty_drops_result
-  }
-
-  if (output_loom) {
-    call ZarrUtils.OptimusZarrToLoom {
-      input:
-        sample_id = sample_id,
-        zarr_files = OptimusZarrConversion.zarr_output_files
-    }
+      empty_drops_result = RunEmptyDrops.empty_drops_result,
+      counting_mode = counting_mode
   }
 
   output {
@@ -256,10 +277,7 @@ workflow Optimus {
     File gene_metrics = MergeGeneMetrics.gene_metrics
     File cell_calls = RunEmptyDrops.empty_drops_result
 
-    # zarr
-    Array[File] zarr_output_files = OptimusZarrConversion.zarr_output_files
-
     # loom
-    File? loom_output_file = OptimusZarrToLoom.loom_output
+    File loom_output_file = OptimusLoomGeneration.loom_output
   }
 }

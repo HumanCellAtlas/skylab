@@ -1,6 +1,11 @@
+version 1.0
+
 task checkOptimusInput {
-  String chemistry
-  Boolean force_no_check
+  input {
+    String chemistry
+    String counting_mode
+    Boolean force_no_check
+  }  
 
   meta {
     description: "checks optimus input values and fails the pipeline immediately"
@@ -15,8 +20,14 @@ task checkOptimusInput {
     ## Perform checks
     if [[ ! ("${chemistry}" == "tenX_v2" || "${chemistry}" == "tenX_v3") ]]
     then
-	pass="false"
-	echo "ERROR: Invalid value \"${chemistry}\" for input \"chemistry\""
+      pass="false"
+      echo "ERROR: Invalid value \"${chemistry}\" for input \"chemistry\""
+    fi
+
+    if [[ ! ("${counting_mode}" == "sc_rna" || "${counting_mode}" == "sn_rna") ]]
+    then
+      pass="false"
+      echo "ERROR: Invalid value \"${counting_mode}\" for input \"counting_mode\""
     fi
 
     if [[ ${force_no_check} == "true" ]]

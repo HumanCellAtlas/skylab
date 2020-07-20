@@ -1,10 +1,13 @@
+version 1.0
+
 task HISAT2PairedEnd {
-  File hisat2_ref
-  File fastq1
-  File fastq2
-  String ref_name
-  String output_basename
-  String sample_name
+  input {
+    File hisat2_ref
+    File fastq1
+    File? fastq2
+    String ref_name
+    String output_basename
+    String sample_name
 
   # runtime values
   String docker = "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
@@ -14,7 +17,7 @@ task HISAT2PairedEnd {
   # Need room for unsorted + sorted bam + temp sorting space + zipped and unzipped ref. Add 10 GiB buffer.
   Int disk = ceil((size(fastq1, "GiB") + size(fastq2, "GiB")) * 100 + size(hisat2_ref, "GiB") * 2 + 10)
   Int preemptible = 5
-
+}
   meta {
     description: "HISAT2 alignment task will align paired-end fastq reads to reference genome."
   }
@@ -96,21 +99,23 @@ task HISAT2PairedEnd {
 }
 
 task HISAT2RSEM {
-  File hisat2_ref
-  File fastq1
-  File fastq2
-  String ref_name
-  String output_basename
-  String sample_name
+  input {
+    File hisat2_ref
+    File fastq1
+    File? fastq2
+    String ref_name
+    String output_basename
+    String sample_name
 
-  # runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
-  Int machine_mem_mb = 16500
-  Int cpu = 4
-  # Using (fastq1 + fastq2) x 100 gives factor of a few buffer. BAM can be up to ~5 x (fastq1 + fastq2).
-  # Need room for unsorted + sorted bam + temp sorting space + zipped and unzipped ref. Add 10 GiB buffer.
-  Int disk = ceil((size(fastq1, "GiB") + size(fastq2, "GiB")) * 100 + size(hisat2_ref, "GiB") * 2 + 10)
-  Int preemptible = 5
+    # runtime values
+    String docker = "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
+    Int machine_mem_mb = 16500
+    Int cpu = 4
+    # Using (fastq1 + fastq2) x 100 gives factor of a few buffer. BAM can be up to ~5 x (fastq1 + fastq2).
+    # Need room for unsorted + sorted bam + temp sorting space + zipped and unzipped ref. Add 10 GiB buffer.
+    Int disk = ceil((size(fastq1, "GiB") + size(fastq2, "GiB")) * 100 + size(hisat2_ref, "GiB") * 2 + 10)
+    Int preemptible = 5
+  }
 
   meta {
     description: "This HISAT2 alignment task will align paired-end fastq reads to transcriptome only. "
@@ -198,6 +203,7 @@ task HISAT2RSEM {
 }
 
 task HISAT2SingleEnd {
+input {
   File hisat2_ref
   File fastq
   String ref_name
@@ -212,7 +218,7 @@ task HISAT2SingleEnd {
   # Need room for unsorted + sorted bam + temp sorting space + zipped and unzipped ref. Add 10 GiB buffer.
   Int disk = ceil((size(fastq, "GiB") * 100) + size(hisat2_ref, "GiB") * 2 + 10)
   Int preemptible = 5
-
+}
   meta {
     description: "This HISAT2 alignment task will align single-end fastq reads to reference genome."
   }
@@ -232,25 +238,34 @@ task HISAT2SingleEnd {
 
   command {
     set -e
-    tar --no-same-owner -xvf "${hisat2_ref}"
+    tar --no-same-owner -xvf "~{hisat2_ref}"
+
+    # fix file names if necessary.
+    if [ "~{fastq}" != *.fastq.gz ]; then
+        FQ=~{fastq}.fastq.gz
+        mv ~{fastq} ~{fastq}.fastq.gz
+    else
+        FQ=~{fastq}
+    fi
 
     # The parameters for this task are copied from the HISAT2PairedEnd task.
     mkfifo samtools_pipe
     samtools view -1 -h -o "${output_basename}_unsorted.bam" samtools_pipe & pid=$!
     hisat2 -t \
-      -x ${ref_name}/${ref_name} \
-      -U ${fastq} \
-      --rg-id=${sample_name} --rg SM:${sample_name} --rg LB:${sample_name} \
-      --rg PL:ILLUMINA --rg PU:${sample_name} \
-      --new-summary --summary-file "${output_basename}.log" \
-      --met-file ${output_basename}.hisat2.met.txt --met 5 \
+      -x ~{ref_name}/~{ref_name} \
+      -U $FQ \
+      --rg-id=~{sample_name} --rg SM:~{sample_name} --rg LB:~{sample_name} \
+      --rg PL:ILLUMINA --rg PU:~{sample_name} \
+      --new-summary --summary-file "~{output_basename}.log" \
+      --met-file ~{output_basename}.hisat2.met.txt --met 5 \
       --seed 12345 \
       -k 10 \
       --secondary \
-      -p ${cpu} -S samtools_pipe
+      -p ~{cpu} -S samtools_pipe
     wait $pid
-    samtools sort -@ ${cpu} -O bam -o "${output_basename}.bam" "${output_basename}_unsorted.bam"
-    samtools index "${output_basename}.bam"
+    samtools sort -@ ~{cpu} -O bam -o "~{output_basename}.bam" "~{output_basename}_unsorted.bam"
+    samtools index "~{output_basename}.bam"
+
   }
 
   runtime {
@@ -270,16 +285,18 @@ task HISAT2SingleEnd {
 }
 
 task HISAT2InspectIndex {
-  File hisat2_ref
-  String ref_name
+  input {
+    File hisat2_ref
+    String ref_name
 
-  # runtime values
-  String docker =  "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
-  Int machine_mem_mb = 3850
-  Int cpu = 1
-  # use provided disk number or dynamically size on our own, with 10GiB of additional disk
-  Int disk = ceil(size(hisat2_ref, "GiB") + 10)
-  Int preemptible = 5
+    # runtime values
+    String docker =  "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
+    Int machine_mem_mb = 3850
+    Int cpu = 1
+    # use provided disk number or dynamically size on our own, with 10GiB of additional disk
+    Int disk = ceil(size(hisat2_ref, "GiB") + 10)
+    Int preemptible = 5
+  }
 
   meta {
     description: "This task will test reference indexing files built for HISAT2 aligner."
@@ -316,18 +333,20 @@ task HISAT2InspectIndex {
 }
 
 task HISAT2RSEMSingleEnd {
-  File hisat2_ref
-  File fastq
-  String ref_name
-  String output_basename
-  String sample_name
+  input {
+    File hisat2_ref
+    File fastq
+    String ref_name
+    String output_basename
+    String sample_name
 
-  # runtime values
-  String docker = "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
-  Int machine_mem_mb = 15000
-  Int cpu = 4
-  Int disk = ceil((size(fastq, "GiB")) * 100 + size(hisat2_ref, "GiB") * 2 + 10)
-  Int preemptible = 5
+    # runtime values
+    String docker = "quay.io/humancellatlas/secondary-analysis-hisat2:v0.2.2-2-2.1.0"
+    Int machine_mem_mb = 15000
+    Int cpu = 4
+    Int disk = ceil((size(fastq, "GiB")) * 100 + size(hisat2_ref, "GiB") * 2 + 10)
+    Int preemptible = 5
+  }
 
   meta {
     description: "This HISAT2 alignment task will align paired-end fastq reads to transcriptome only. "
