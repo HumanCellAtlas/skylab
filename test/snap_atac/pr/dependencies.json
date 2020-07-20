@@ -1,4 +1,4 @@
 {
-  "snap-atac.wdl": "pipelines/snap-atac/snap-atac.wdl",
+  "snap-atac.wdl": "pipelines/snap-atac/scATAC.wdl",
   "ValidateSnapATAC.wdl": "test/snap_atac/pr/ValidateSnapATAC.wdl"
 }
