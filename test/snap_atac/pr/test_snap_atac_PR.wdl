@@ -1,6 +1,6 @@
 version 1.0
 
-import "snap-atac.wdl" as target
+import "scATAC.wdl" as target
 import "ValidateSnapATAC.wdl" as checker
 
 # this workflow will be run by the jenkins script that gets executed by PRs.
