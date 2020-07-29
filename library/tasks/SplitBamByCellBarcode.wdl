@@ -13,6 +13,7 @@ task SplitBamByCellBarcode {
 
     # we can calculate disk size for arrays of input files in WDL 1.0
     Int disk = 3500
+
     # by default request non preemptible machine to make sure the slow cell barcode split step completes
     Int preemptible = 0
   }
