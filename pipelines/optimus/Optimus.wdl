@@ -1,21 +1,21 @@
 version 1.0
 
-import "FastqToUBam.wdl" as FastqToUBam
-import "Attach10xBarcodes.wdl" as Attach
-import "SplitBamByCellBarcode.wdl" as Split
-import "MergeSortBam.wdl" as Merge
-import "CreateCountMatrix.wdl" as Count
-import "StarAlignBamSingleEnd.wdl" as StarAlignBam
-import "TagGeneExon.wdl" as TagGeneExon
-import "SequenceDataWithMoleculeTagMetrics.wdl" as Metrics
-import "TagSortBam.wdl" as TagSortBam
-import "RunEmptyDrops.wdl" as RunEmptyDrops
-import "LoomUtils.wdl" as LoomUtils
-import "Picard.wdl" as Picard
-import "UmiCorrection.wdl" as UmiCorrection
-import "ScatterBam.wdl" as ScatterBam
-import "ModifyGtf.wdl" as ModifyGtf
-import "OptimusInputChecks.wdl" as OptimusInputChecks
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/library/tasks/FastqToUBam.wdl" as FastqToUBam
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/library/tasks/Attach10xBarcodes.wdl" as Attach
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/library/tasks/SplitBamByCellBarcode.wdl" as Split
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/library/tasks/MergeSortBam.wdl" as Merge
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/library/tasks/CreateCountMatrix.wdl" as Count
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/library/tasks/StarAlignBamSingleEnd.wdl" as StarAlignBam
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/library/tasks/TagGeneExon.wdl" as TagGeneExon
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/library/tasks/SequenceDataWithMoleculeTagMetrics.wdl" as Metrics
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/library/tasks/TagSortBam.wdl" as TagSortBam
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/library/tasks/RunEmptyDrops.wdl" as RunEmptyDrops
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/library/tasks/LoomUtils.wdl" as LoomUtils
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/library/tasks/Picard.wdl" as Picard
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/library/tasks/UmiCorrection.wdl" as UmiCorrection
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/library/tasks/ScatterBam.wdl" as ScatterBam
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/library/tasks/ModifyGtf.wdl" as ModifyGtf
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/library/tasks/OptimusInputChecks.wdl" as OptimusInputChecks
 
 workflow Optimus {
   meta {
