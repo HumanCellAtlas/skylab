@@ -1,21 +1,21 @@
 version 1.0
 
-import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/library/tasks/FastqToUBam.wdl" as FastqToUBam
-import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/library/tasks/Attach10xBarcodes.wdl" as Attach
-import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/library/tasks/SplitBamByCellBarcode.wdl" as Split
-import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/library/tasks/MergeSortBam.wdl" as Merge
-import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/library/tasks/CreateCountMatrix.wdl" as Count
-import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/library/tasks/StarAlignBamSingleEnd.wdl" as StarAlignBam
-import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/library/tasks/TagGeneExon.wdl" as TagGeneExon
-import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/library/tasks/SequenceDataWithMoleculeTagMetrics.wdl" as Metrics
-import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/library/tasks/TagSortBam.wdl" as TagSortBam
-import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/library/tasks/RunEmptyDrops.wdl" as RunEmptyDrops
-import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/library/tasks/LoomUtils.wdl" as LoomUtils
-import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/library/tasks/Picard.wdl" as Picard
-import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/library/tasks/UmiCorrection.wdl" as UmiCorrection
-import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/library/tasks/ScatterBam.wdl" as ScatterBam
-import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/library/tasks/ModifyGtf.wdl" as ModifyGtf
-import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/master/library/tasks/OptimusInputChecks.wdl" as OptimusInputChecks
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/kmk-split-bam-by-cellbarcode_terra/library/tasks/FastqToUBam.wdl" as FastqToUBam
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/kmk-split-bam-by-cellbarcode_terra/library/tasks/Attach10xBarcodes.wdl" as Attach
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/kmk-split-bam-by-cellbarcode_terra/library/tasks/SplitBamByCellBarcode.wdl" as Split
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/kmk-split-bam-by-cellbarcode_terra/library/tasks/MergeSortBam.wdl" as Merge
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/kmk-split-bam-by-cellbarcode_terra/library/tasks/CreateCountMatrix.wdl" as Count
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/kmk-split-bam-by-cellbarcode_terra/library/tasks/StarAlignBamSingleEnd.wdl" as StarAlignBam
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/kmk-split-bam-by-cellbarcode_terra/library/tasks/TagGeneExon.wdl" as TagGeneExon
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/kmk-split-bam-by-cellbarcode_terra/library/tasks/SequenceDataWithMoleculeTagMetrics.wdl" as Metrics
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/kmk-split-bam-by-cellbarcode_terra/library/tasks/TagSortBam.wdl" as TagSortBam
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/kmk-split-bam-by-cellbarcode_terra/library/tasks/RunEmptyDrops.wdl" as RunEmptyDrops
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/kmk-split-bam-by-cellbarcode_terra/library/tasks/LoomUtils.wdl" as LoomUtils
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/kmk-split-bam-by-cellbarcode_terra/library/tasks/Picard.wdl" as Picard
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/kmk-split-bam-by-cellbarcode_terra/library/tasks/UmiCorrection.wdl" as UmiCorrection
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/kmk-split-bam-by-cellbarcode_terra/library/tasks/ScatterBam.wdl" as ScatterBam
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/kmk-split-bam-by-cellbarcode_terra/library/tasks/ModifyGtf.wdl" as ModifyGtf
+import "https://raw.githubusercontent.com/HumanCellAtlas/skylab/kmk-split-bam-by-cellbarcode_terra/library/tasks/OptimusInputChecks.wdl" as OptimusInputChecks
 
 workflow Optimus {
   meta {
